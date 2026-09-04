@@ -12,6 +12,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "mod" / "BrogueDoom" / "models" / "stairs"
+ABYSS_RGB = (0, 0, 0)
 
 
 class ObjBuilder:
@@ -210,7 +211,7 @@ def write_chasm_cliff_texture(path: Path) -> None:
             if y >= fade_start:
                 remaining = (height - 1 - y) / (height - 1 - fade_start)
                 blend = remaining * remaining * (3.0 - 2.0 * remaining)
-                abyss = (3, 3, 6)
+                abyss = ABYSS_RGB
                 red = round(abyss[0] + (red - abyss[0]) * blend)
                 green = round(abyss[1] + (green - abyss[1]) * blend)
                 blue = round(abyss[2] + (blue - abyss[2]) * blend)
@@ -230,7 +231,7 @@ def write_open_void_wall_texture(source: Path, path: Path) -> None:
     source_pixels = source_tile.load()
     fade_tile = Image.new("RGB", (tile_size, tile_size))
     fade_pixels = fade_tile.load()
-    abyss = (3, 3, 6)
+    abyss = ABYSS_RGB
     for y in range(tile_size):
         for x in range(tile_size):
             # Vary the dark boundary across short horizontal runs so the sky
@@ -252,6 +253,17 @@ def write_open_void_wall_texture(source: Path, path: Path) -> None:
     wall.save(path, format="PNG", optimize=False, compress_level=9)
 
 
+def write_black_sky_texture(path: Path) -> None:
+    """Write an exact-black opaque sky so the upper wall fade has no seam."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    Image.new("RGB", (256, 128), ABYSS_RGB).save(
+        path,
+        format="PNG",
+        optimize=False,
+        compress_level=9,
+    )
+
+
 def main() -> int:
     OUTPUT.mkdir(parents=True, exist_ok=True)
     upstairs().write(OUTPUT / "upstairs.obj")
@@ -262,6 +274,7 @@ def main() -> int:
     write_pit_texture(ROOT / "mod" / "BrogueDoom" / "graphics" / "BRGPIT.png")
     write_chasm_cliff_texture(ROOT / "mod" / "BrogueDoom" / "graphics" / "BRGCLIFF.png")
     graphics = ROOT / "mod" / "BrogueDoom" / "graphics"
+    write_black_sky_texture(graphics / "PBRSKYBL.png")
     write_open_void_wall_texture(graphics / "BRGROCK.png", graphics / "PBRCVUP.png")
     write_open_void_wall_texture(graphics / "BRGSTONE.png", graphics / "PBRMSUP.png")
     return 0

@@ -143,19 +143,12 @@ Texture "BRGCLIFF", 64, 128
 	Patch "BRGCLIFF", 0, 0
 }
 
-// A deliberately featureless, near-black cylindrical sky for every dungeon
+// A deliberately featureless, true-black cylindrical sky for every dungeon
 // floor below depth 1. Sectors use F_SKY1 so this reads as open vertical void
 // instead of a dark horizontal ceiling plane.
 Texture "BRGSKY", 256, 128
 {
-	Patch "BRGPIT", 0, 0
-	Patch "BRGPIT", 64, 0
-	Patch "BRGPIT", 128, 0
-	Patch "BRGPIT", 192, 0
-	Patch "BRGPIT", 0, 64
-	Patch "BRGPIT", 64, 64
-	Patch "BRGPIT", 128, 64
-	Patch "BRGPIT", 192, 64
+	Patch "PBRSKYBL", 0, 0
 }
 
 Flat "BRGEARTH", 1254, 1254

@@ -36,13 +36,13 @@ platform cannot inherit the neighboring liquid as its vertical face.
 
 Depth 1 retains a continuous cave ceiling at 224 units. Depths 2–40 raise the
 logical ceiling to 352 units and use GZDoom's `F_SKY1` ceiling with the
-dedicated near-black `BRGSKY` texture. Because sky ceilings do not draw a
+dedicated true-black `BRGSKY` texture. Because sky ceilings do not draw a
 horizontal plane, looking upward after a fall reads as open darkness rather
 than the underside of the independently generated floor above. Their one-sided
 boundary walls use tall `BRGCVUP`, `BRGWTUP`, or `BRGMSUP` textures: normal
 rock or masonry reaches the original 224-unit cave line, then an irregular
-128-unit attached band fades upward into the black sky. Keeping this gradient
-on the wall avoids the camera-relative horizon band produced by painting it
+128-unit attached band fades upward to exact black. Keeping this gradient on
+the wall avoids the camera-relative horizon band produced by painting it
 into the sky texture. This is presentation only: Brogue's separately generated
 levels are still not claimed to align vertically.
 

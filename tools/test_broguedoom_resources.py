@@ -59,7 +59,7 @@ class BrogueDoomResourceTests(unittest.TestCase):
         stride = 1 + width * 4
         rows = [raw[y * stride + 1:(y + 1) * stride] for y in range(height)]
         self.assertTrue(all(rows[-1][x + 3] == 255 for x in range(0, width * 4, 4)))
-        self.assertTrue(all(tuple(rows[-1][x:x + 3]) == (3, 3, 6) for x in range(0, width * 4, 4)))
+        self.assertTrue(all(tuple(rows[-1][x:x + 3]) == (0, 0, 0) for x in range(0, width * 4, 4)))
         upper_average = sum(rows[64][x] for x in range(0, width * 4, 4)) / width
         fringe_average = sum(rows[112][x] for x in range(0, width * 4, 4)) / width
         self.assertGreater(upper_average, fringe_average * 3)
@@ -92,6 +92,7 @@ class BrogueDoomResourceTests(unittest.TestCase):
             self.assertGreater((GRAPHICS / name).stat().st_size, 1000, name)
         self.assertGreater((GRAPHICS / "BRGPIT.png").stat().st_size, 100, "BRGPIT.png")
         self.assertGreater((GRAPHICS / "BRGCLIFF.png").stat().st_size, 100, "BRGCLIFF.png")
+        self.assertGreater((GRAPHICS / "PBRSKYBL.png").stat().st_size, 100, "PBRSKYBL.png")
         self.assertGreater((GRAPHICS / "PBRCVUP.png").stat().st_size, 1000, "PBRCVUP.png")
         self.assertGreater((GRAPHICS / "PBRMSUP.png").stat().st_size, 1000, "PBRMSUP.png")
         self.assertGreater((GRAPHICS / "BRGLAVA_BM.png").stat().st_size, 1000, "BRGLAVA_BM.png")
@@ -101,6 +102,10 @@ class BrogueDoomResourceTests(unittest.TestCase):
             with Image.open(GRAPHICS / name) as image:
                 image = image.convert("RGB")
                 self.assertEqual(image.size, (256, 1024))
+                self.assertEqual(
+                    image.crop((0, 0, 256, 16)).getextrema(),
+                    ((0, 0), (0, 0), (0, 0)),
+                )
                 top = ImageStat.Stat(image.crop((0, 0, 256, 16))).mean
                 rock = ImageStat.Stat(image.crop((0, 300, 256, 500))).mean
                 self.assertLess(sum(top), sum(rock) * 0.15, name)
@@ -158,7 +163,9 @@ class BrogueDoomResourceTests(unittest.TestCase):
         start = declarations.index('Texture "BRGSKY", 256, 128')
         end = declarations.index("}\n", start)
         sky = declarations[start:end]
-        self.assertEqual(sky.count('Patch "BRGPIT"'), 8)
+        self.assertEqual(sky.count('Patch "PBRSKYBL"'), 1)
+        with Image.open(GRAPHICS / "PBRSKYBL.png") as image:
+            self.assertEqual(image.convert("RGB").getextrema(), ((0, 0), (0, 0), (0, 0)))
 
     def test_bridge_deck_has_a_dedicated_original_material(self) -> None:
         registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
