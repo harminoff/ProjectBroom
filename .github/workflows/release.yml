@@ -52,7 +52,7 @@ jobs:
         shell: powershell
         run: .\scripts\package-release.ps1 -Version '${{ steps.version.outputs.value }}'
       - name: Upload workflow artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ProjectBroom-${{ steps.version.outputs.value }}
           path: artifacts/release/${{ steps.version.outputs.value }}/*
