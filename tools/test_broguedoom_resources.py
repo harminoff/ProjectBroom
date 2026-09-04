@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import struct
 import unittest
+import zlib
 from pathlib import Path
 
 
@@ -33,6 +35,33 @@ FRONTEND = ROOT / "src" / "gzdoom-bridge" / "brogue_bridge_frontend.cpp"
 
 
 class BrogueDoomResourceTests(unittest.TestCase):
+    def test_chasm_cliff_fades_opaquely_into_abyss(self) -> None:
+        data = (GRAPHICS / "BRGCLIFF.png").read_bytes()
+        self.assertEqual(data[:8], b"\x89PNG\r\n\x1a\n")
+        position = 8
+        compressed = bytearray()
+        width = height = None
+        while position < len(data):
+            length = struct.unpack(">I", data[position:position + 4])[0]
+            kind = data[position + 4:position + 8]
+            payload = data[position + 8:position + 8 + length]
+            position += 12 + length
+            if kind == b"IHDR":
+                width, height = struct.unpack(">II", payload[:8])
+            elif kind == b"IDAT":
+                compressed.extend(payload)
+            elif kind == b"IEND":
+                break
+        self.assertEqual((width, height), (64, 128))
+        raw = zlib.decompress(bytes(compressed))
+        stride = 1 + width * 4
+        rows = [raw[y * stride + 1:(y + 1) * stride] for y in range(height)]
+        self.assertTrue(all(rows[-1][x + 3] == 255 for x in range(0, width * 4, 4)))
+        self.assertTrue(all(tuple(rows[-1][x:x + 3]) == (3, 3, 6) for x in range(0, width * 4, 4)))
+        upper_average = sum(rows[64][x] for x in range(0, width * 4, 4)) / width
+        fringe_average = sum(rows[112][x] for x in range(0, width * 4, 4)) / width
+        self.assertGreater(upper_average, fringe_average * 3)
+
     def test_level_transition_detaches_frontend_actors_before_map_change(self) -> None:
         frontend = FRONTEND.read_text(encoding="utf-8")
         transition = frontend[frontend.index("bool SyncLevelEvent"):frontend.index("bool EnsureStarted")]

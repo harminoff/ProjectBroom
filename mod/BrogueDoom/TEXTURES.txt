@@ -104,8 +104,8 @@ Texture "BRGVOID", 64, 64
 }
 
 // A full-height rocky cliff face for the 128-unit drop into a chasm. The rock
-// remains readable down the entire wall and darkens gradually toward the abyss
-// instead of becoming a featureless black rectangle below a narrow lip.
+// remains readable below the ledge, then dissolves through an irregular dark
+// fringe into the abyss instead of ending at a ruler-straight lower edge.
 Texture "BRGCLIFF", 64, 128
 {
 	XScale 1.000000

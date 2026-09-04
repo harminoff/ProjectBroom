@@ -196,7 +196,24 @@ def write_chasm_cliff_texture(path: Path) -> None:
             stone = max(42, min(142, stone))
             # Warm gray-brown separates the cliff from both the cooler cave
             # walls and the dirt floor while retaining a natural rock palette.
-            row.extend((stone, max(34, stone - 22), max(30, stone - 34), 255))
+            red = stone
+            green = max(34, stone - 22)
+            blue = max(30, stone - 34)
+
+            # Dissolve the last roughly quarter of the face into the abyss
+            # instead of exposing a ruler-straight wall/floor intersection.
+            # The varying start row creates a ragged, fog-like fringe, while
+            # retaining fully opaque pixels avoids masked-wall sorting seams.
+            fade_start = 86 + ((x * 7 + (x // 5) * 11) % 15)
+            if y >= fade_start:
+                remaining = (height - 1 - y) / (height - 1 - fade_start)
+                blend = remaining * remaining * (3.0 - 2.0 * remaining)
+                abyss = (3, 3, 6)
+                red = round(abyss[0] + (red - abyss[0]) * blend)
+                green = round(abyss[1] + (green - abyss[1]) * blend)
+                blue = round(abyss[2] + (blue - abyss[2]) * blend)
+
+            row.extend((red, green, blue, 255))
         rows.append(bytes(row))
     write_rgba_png(path, width, height, rows)
 

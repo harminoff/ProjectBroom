@@ -17,7 +17,8 @@ Ground-to-chasm portals use shared, nonblocking beveled edges recessed 10 units
 into the abyss. Both sectors reference the same angled shoulders, so their
 polygons remain closed while the 64-unit square silhouette is softened. A
 purpose-built `BRGCLIFF` lower texture supplies a full-height rocky cliff that
-darkens gradually toward the abyss while remaining readable across the gap.
+remains readable across the gap, then dissolves through an irregular dark
+fringe into the abyss instead of ending at a ruler-straight lower edge.
 Bridge edges remain straight so the deck width and Brogue cardinal topology
 stay visually unambiguous. Player and creature projections still land on the
 unchanged Brogue cell centers.
@@ -34,8 +35,9 @@ generated levels are still not claimed to align vertically.
 
 Chasm darkness on depth 1 is rendered only below floor level by the recessed
 pit floor and shaft walls. Chasm sectors retain ordinary cave light so the
-brown-gray cliff faces across or around an opening remain readable; the
-dedicated near-black abyss flat provides the apparent depth. A cell-local black ceiling was
+brown-gray cliff faces across or around an opening remain readable; their lower
+fringe fades into the dedicated near-black abyss flat that provides the apparent
+depth. A cell-local black ceiling was
 rejected because its horizontal polygons projected as moving rectangular
 occluders when viewed from a bridge or brink.
 
