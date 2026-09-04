@@ -296,7 +296,7 @@ class CompilerTests(unittest.TestCase):
         self.assertIn("twosided = false;", map_text)
         self.assertIn("sideback = ", map_text)
 
-    def test_liquid_height_transitions_use_structural_banks(self) -> None:
+    def test_dry_ground_above_liquid_uses_a_structural_bank(self) -> None:
         model = sample_model()
         cells = {(cell["x"], cell["y"]): cell for cell in model["levels"][0]["cells"]}
         liquid = cells[(10, 10)]
@@ -307,6 +307,26 @@ class CompilerTests(unittest.TestCase):
             material = transition_material(liquid, ground, "1", 1, cells, layout)
             self.assertIn(material, {"BRGCAVE", "BRGWET", "BRGMASON"}, symbol)
             self.assertNotIn(material, {"BRGWFALL", "BRGLFALL"}, symbol)
+
+    def test_higher_liquid_surface_flows_down_the_exposed_edge(self) -> None:
+        model = sample_model()
+        cells = {(cell["x"], cell["y"]): cell for cell in model["levels"][0]["cells"]}
+        higher = cells[(10, 10)]
+        lower = cells[(11, 10)]
+        for higher_symbol, lower_symbol, expected in (
+            ("SHALLOW_WATER", "DEEP_WATER", "BRGWFALL"),
+            ("MUD", "DEEP_WATER", "BRGWFALL"),
+            ("LAVA", "DEEP_WATER", "BRGLFALL"),
+        ):
+            higher["layers"]["liquid"] = {"id": 3, "symbol": higher_symbol}
+            lower["layers"]["liquid"] = {"id": 3, "symbol": lower_symbol}
+            layout = build_material_layout(cells, cells)
+            for front, back in ((higher, lower), (lower, higher)):
+                self.assertEqual(
+                    transition_material(front, back, "1", 1, cells, layout),
+                    expected,
+                    (higher_symbol, lower_symbol),
+                )
 
     def test_lower_depth_boundaries_use_attached_upward_fade(self) -> None:
         model = sample_model()

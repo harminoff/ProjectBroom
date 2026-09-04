@@ -29,10 +29,12 @@ Generated sidedefs use UDMF's canonical `texturetop`, `texturebottom`, and
 lower-texture path exposed horizontal floor or liquid materials across vertical
 height transitions. The verifier now rejects those legacy fields and requires
 an actual bottom texture on both sides of every floor-height transition.
-Ordinary height offsets for water, lava, mud, and other surfaces use the
-higher cell's structural cave, wet-rock, or masonry bank. Animated
-`BRGWFALL`/`BRGLFALL` sheets are not selected for these offsets, so a raised
-platform cannot inherit the neighboring liquid as its vertical face.
+Height-transition faces follow the higher cell's visible surface. Dry ground
+uses its structural cave, wet-rock, or masonry bank even when the lower cell is
+water, so islands cannot inherit a liquid edge from their surroundings. When
+the higher surface itself is water, sludge, or lava, the exposed edge instead
+uses the animated `BRGWFALL` or `BRGLFALL` sheet so the liquid visibly travels
+down toward the lower surface.
 
 Depth 1 retains a continuous cave ceiling at 224 units. Depths 2–40 raise the
 logical ceiling to 352 units and use GZDoom's `F_SKY1` ceiling with the

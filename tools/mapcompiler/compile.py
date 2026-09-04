@@ -45,7 +45,7 @@ CONTOUR_DEPTH = 8
 CONTOUR_SHOULDER = 12
 CONTOUR_MIN_RUN = 3
 CONTOUR_RUN_STRIDE = 4
-COMPILER_VERSION = "39"
+COMPILER_VERSION = "40"
 RENDER_MAPPING_PATH = Path(__file__).with_name("terrain_render_map.json")
 THEME_REGISTRY_PATH = PROJECT_ROOT / "assets" / "terrain" / "broguedoom_cave_registry.json"
 RESOURCE_GRAPHICS_DIR = PROJECT_ROOT / "mod" / "BrogueDoom" / "graphics"
@@ -970,17 +970,22 @@ def transition_material(
     front_floor = floor_height(front_cell)
     back_floor = floor_height(back_cell)
     lower_cell = front_cell if front_floor < back_floor else back_cell
+    higher_cell = front_cell if front_floor > back_floor else back_cell
     lower_position = (int(lower_cell["x"]), int(lower_cell["y"]))
     theme = str(layout["theme_by_position"].get(lower_position, terrain_theme(lower_cell, cells)))
-    # The compiler's water/lava floor offsets are presentation depth, not
-    # evidence that Brogue contains a waterfall. Using the lower liquid's
-    # animated fall texture turned every island and shoreline into a vertical
-    # sheet of water. Chasms are the one real recessed void and retain their
-    # dedicated cliff face; all other height changes expose the higher cell's
-    # structural bank material.
+    # A height transition exposes the edge of its higher surface. Only an
+    # intrinsically liquid higher cell should flow down that edge. Do not use
+    # the region theme here: dry ground adjacent to water is classified as
+    # CAVE_WET for palette cohesion and would otherwise become a waterfall.
+    higher_theme = terrain_theme(higher_cell, cells, include_adjacency=False)
+    fall = TERRAIN_THEME_REGISTRY["themes"][higher_theme].get("fall")
+    if fall and front_floor != back_floor:
+        return str(fall)
+
+    # Dry ground above a chasm exposes the dedicated cliff; every other dry
+    # transition exposes the higher cell's structural bank material.
     if theme == "CHASM" and front_floor != back_floor:
         return "BRGCLIFF"
-    higher_cell = front_cell if front_floor > back_floor else back_cell
     return wall_material(higher_cell, seed, depth, cells, layout)
 
 
