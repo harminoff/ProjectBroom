@@ -184,17 +184,19 @@ def write_chasm_cliff_texture(path: Path) -> None:
                     elif distance < second:
                         second = distance
             grain = ((x * 17 + y * 31 + (winner & 31)) % 9) - 4
-            depth_falloff = (y * 28) // (height - 1)
-            stone = 58 - depth_falloff + ((winner >> 16) % 13) + grain
+            depth_falloff = (y * 48) // (height - 1)
+            stone = 126 - depth_falloff + ((winner >> 16) % 17) + grain
             if second - nearest < 28:
-                stone -= 20
+                stone -= 30
             # Break up the top silhouette with a narrow, irregular shadow line
             # while retaining visible rock immediately beneath the floor edge.
             lip_depth = 4 + ((x * 11 + (x // 7) * 5) % 6)
             if y == lip_depth:
-                stone -= 12
-            stone = max(18, min(68, stone))
-            row.extend((stone, max(14, stone - 6), max(16, stone - 3), 255))
+                stone -= 18
+            stone = max(42, min(142, stone))
+            # Warm gray-brown separates the cliff from both the cooler cave
+            # walls and the dirt floor while retaining a natural rock palette.
+            row.extend((stone, max(34, stone - 22), max(30, stone - 34), 255))
         rows.append(bytes(row))
     write_rgba_png(path, width, height, rows)
 

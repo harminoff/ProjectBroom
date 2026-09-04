@@ -33,9 +33,9 @@ liquid or chasm transitions. This is presentation only: Brogue's separately
 generated levels are still not claimed to align vertically.
 
 Chasm darkness on depth 1 is rendered only below floor level by the recessed
-pit floor and shaft walls. Chasm sectors retain the minimum ordinary cave light
-so structural walls across or around an opening remain readable; the dedicated
-near-black materials provide the apparent depth. A cell-local black ceiling was
+pit floor and shaft walls. Chasm sectors retain ordinary cave light so the
+brown-gray cliff faces across or around an opening remain readable; the
+dedicated near-black abyss flat provides the apparent depth. A cell-local black ceiling was
 rejected because its horizontal polygons projected as moving rectangular
 occluders when viewed from a bridge or brink.
 

@@ -30,7 +30,7 @@ CELL_SIZE = 64
 # still owns falling and level transitions; this depth only presents a dark,
 # bounded cave opening beneath the unchanged cell portal.
 CHASM_FLOOR_Z = -128
-CHASM_LIGHT_LEVEL = 120
+CHASM_LIGHT_LEVEL = 144
 CHASM_PORTAL_DEPTH = 10
 CHASM_PORTAL_SHOULDER = 14
 OPEN_VOID_CEILING_Z = 224
@@ -44,7 +44,7 @@ CONTOUR_DEPTH = 8
 CONTOUR_SHOULDER = 12
 CONTOUR_MIN_RUN = 3
 CONTOUR_RUN_STRIDE = 4
-COMPILER_VERSION = "34"
+COMPILER_VERSION = "35"
 RENDER_MAPPING_PATH = Path(__file__).with_name("terrain_render_map.json")
 THEME_REGISTRY_PATH = PROJECT_ROOT / "assets" / "terrain" / "broguedoom_cave_registry.json"
 RESOURCE_GRAPHICS_DIR = PROJECT_ROOT / "mod" / "BrogueDoom" / "graphics"
