@@ -100,6 +100,10 @@ class BrogueDoomResourceTests(unittest.TestCase):
             for frame in range(8):
                 name = f"{prefix}{frame:03d}.png"
                 self.assertGreater((GRAPHICS / name).stat().st_size, 1000, name)
+        for prefix in ("PBWCF", "PBSCF"):
+            for frame in range(8):
+                name = f"{prefix}{frame:03d}.png"
+                self.assertGreater((GRAPHICS / name).stat().st_size, 1000, name)
 
     def test_open_void_walls_fade_upward_without_alpha_holes(self) -> None:
         for name in ("PBRCVUP.png", "PBRMSUP.png"):
@@ -153,7 +157,12 @@ class BrogueDoomResourceTests(unittest.TestCase):
         for name in ("BRGWATR", "BRGSLDG", "BRGMOLT", "BRGLFALL"):
             self.assertIn(name, animdefs)
         self.assertNotIn("WARP TEXTURE BRGWFALL", animdefs)
-        for base, frame_prefix in (("BRGWFALL", "BRGWF"), ("BRGSFALL", "BRGSF")):
+        for base, frame_prefix in (
+            ("BRGWFALL", "BRGWF"),
+            ("BRGSFALL", "BRGSF"),
+            ("BRGWCLF", "BWCF"),
+            ("BRGSCLF", "BSCF"),
+        ):
             self.assertIn(f"TEXTURE {base}", animdefs)
             self.assertIn(f"PIC {base} TICS", animdefs)
             for frame in range(1, 8):
@@ -174,9 +183,23 @@ class BrogueDoomResourceTests(unittest.TestCase):
         self.assertGreater(water_mean[2], water_mean[0] * 10)
         self.assertGreater(sludge_mean[0], sludge_mean[2] * 2)
 
+    def test_liquid_chasm_faces_retain_rock_and_animate(self) -> None:
+        cliff = Image.open(GRAPHICS / "BRGCLIFF.png").convert("RGB")
+        for prefix in ("PBWCF", "PBSCF"):
+            frames = [
+                Image.open(GRAPHICS / f"{prefix}{frame:03d}.png").convert("RGB")
+                for frame in range(8)
+            ]
+            self.assertTrue(all(image.size == (64, 128) for image in frames))
+            self.assertIsNotNone(ImageChops.difference(frames[0], frames[1]).getbbox())
+            difference = ImageChops.difference(cliff, frames[0])
+            changed = sum(1 for pixel in difference.getdata() if pixel != (0, 0, 0))
+            self.assertGreater(changed, 64 * 128 // 3)
+            self.assertLess(changed, 64 * 128 * 9 // 10)
+
     def test_scaled_wall_textures_use_world_panning(self) -> None:
         declarations = TEXTURES.read_text(encoding="utf-8")
-        for name in ("BRGCAVE", "BRGWET", "BRGMASON", "BRGCVUP", "BRGWTUP", "BRGMSUP", "BRGWFALL", "BRGSFALL", "BRGLFALL", "BRGVOID", "BRGCLIFF"):
+        for name in ("BRGCAVE", "BRGWET", "BRGMASON", "BRGCVUP", "BRGWTUP", "BRGMSUP", "BRGWFALL", "BRGSFALL", "BRGWCLF", "BRGSCLF", "BRGLFALL", "BRGVOID", "BRGCLIFF"):
             start = declarations.index(f'Texture "{name}"')
             end = declarations.index("}\n", start)
             self.assertIn("WorldPanning", declarations[start:end], name)
@@ -359,7 +382,7 @@ class BrogueDoomResourceTests(unittest.TestCase):
     def test_complete_brogue_monster_roster_is_generated(self) -> None:
         catalog = json.loads(MONSTER_CATALOG.read_text(encoding="utf-8"))
         registry = json.loads(MONSTER_REGISTRY.read_text(encoding="utf-8"))
-        self.assertEqual(catalog["bridgeApiVersion"], 12)
+        self.assertEqual(catalog["bridgeApiVersion"], 13)
         self.assertEqual(catalog["count"], 68)
         self.assertEqual(registry["nonPlayerModelCount"], 67)
         self.assertEqual(registry["presentationModelCount"], 68)

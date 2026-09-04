@@ -1,6 +1,6 @@
 # Brogue CE → GZDoom runtime bridge
 
-Status: bridge API v12, native GZDoom monster presentation, authoritative weapon and consumable commands, generalized Brogue confirmation forwarding, an authoritative loss screen, fall-source/landing events, and visual-only first-person weapon models are implemented and built from the official GZDoom 4.14.2 source checkout.
+Status: bridge API v13, native GZDoom monster presentation, authoritative weapon and consumable commands, generalized Brogue confirmation forwarding, an authoritative loss screen, fall-source/landing events, and visual-only first-person weapon models are implemented and built from the official GZDoom 4.14.2 source checkout.
 
 ## Chasms and fall shafts
 
@@ -32,11 +32,15 @@ an actual bottom texture on both sides of every floor-height transition.
 Height-transition faces follow the higher cell's visible surface. Dry ground
 uses its structural cave, wet-rock, or masonry bank even when the lower cell is
 water, so islands cannot inherit a liquid edge from their surroundings. When
-the higher surface itself is liquid, the exposed edge instead uses a matching
-animated sheet: blue `BRGWFALL` for water, brown-olive `BRGSFALL` for sludge,
-or `BRGLFALL` for lava. Water and sludge use purpose-built eight-frame vertical
-streak animations whose highlights advance downward; they do not warp the
-horizontal floor artwork across the wall.
+the higher surface itself is liquid, an ordinary liquid-to-liquid step uses a
+matching animated sheet: blue `BRGWFALL` for water, brown-olive `BRGSFALL` for
+sludge, or `BRGLFALL` for lava. A water- or mud-to-chasm edge instead uses
+`BRGWCLF` or `BRGSCLF`: the rocky cliff remains visible beneath irregular
+animated streams and both fade into the abyss. This prevents the 124-unit
+chasm boundary from reading as disconnected black billboard boxes. Water and
+sludge use purpose-built eight-frame vertical streak animations whose
+highlights advance downward; they do not warp the horizontal floor artwork
+across the wall.
 
 Depth 1 retains a continuous cave ceiling at 224 units. Depths 2–40 raise the
 logical ceiling to 352 units and use GZDoom's `F_SKY1` ceiling with the
@@ -59,7 +63,7 @@ rejected because its horizontal polygons projected as moving rectangular
 occluders when viewed from a bridge or brink.
 
 Immediately before `startLevel()` replaces the source `pmap`, the adapter
-records the exact cell from which the player fell. API v12 marks the resulting
+records the exact cell from which the player fell. API v13 marks the resulting
 `LEVEL_CHANGE_REQUESTED` event with `BROGUE_EVENT_FLAG_LEVEL_FALL` and copies
 the source and authoritative destination coordinates into `fromX/fromY` and
 `toX/toY`. Once the destination map is live, GZDoom places a presentation-only
@@ -326,7 +330,7 @@ brg_monster_omniscience false
 
 ## Lighting and particle presentation
 
-The bridge API v12 cell snapshot exposes copied `isFire` and `isGas` semantic
+The bridge API v13 cell snapshot exposes copied `isFire`, `isGas`, and `isMud` semantic
 flags alongside liquid and lava state. The native frontend uses those flags to
 maintain non-interactive `BrogueLavaFx`, `BrogueFireFx`, and `BrogueGasFx`
 actors at the same Brogue cell centers used by the map compiler. Movement into
@@ -376,7 +380,7 @@ not restore the authoritative Brogue simulation.
 ## Known limitations
 
 - The native source build currently uses a Windows DLL loaded beside `gzdoom.exe`; it is in-process but not yet a statically linked GZDoom target.
-- The API v12 GUI snapshot exposes copied Brogue-owned player statistics,
+- The API v13 GUI snapshot exposes copied Brogue-owned player statistics,
   equipment slots, inventory order and letters, item descriptions and action
   masks, three message lines, and each cell's final `getCellAppearance()`
   Unicode glyph and foreground/background RGB colors in addition to discovery

@@ -8,6 +8,7 @@ from pathlib import Path
 
 from .compile import (
     ANIMATED_FLAT_BASES,
+    AUTO_DESCENT,
     CHASM_FLOOR_Z,
     CHASM_LIGHT_LEVEL,
     CHASM_PORTAL_DEPTH,
@@ -326,6 +327,27 @@ class CompilerTests(unittest.TestCase):
                     transition_material(front, back, "1", 1, cells, layout),
                     expected,
                     (higher_symbol, lower_symbol),
+                )
+
+    def test_liquid_over_chasm_keeps_an_animated_cliff_face(self) -> None:
+        model = sample_model()
+        cells = {(cell["x"], cell["y"]): cell for cell in model["levels"][0]["cells"]}
+        higher = cells[(10, 10)]
+        lower = cells[(11, 10)]
+        lower["layers"]["liquid"] = {"id": 89, "symbol": "CHASM"}
+        lower.setdefault("semantic", {})["isChasm"] = True
+        lower["terrainFlags"] |= AUTO_DESCENT
+        for higher_symbol, expected in (
+            ("SHALLOW_WATER", "BRGWCLF"),
+            ("MUD", "BRGSCLF"),
+        ):
+            higher["layers"]["liquid"] = {"id": 3, "symbol": higher_symbol}
+            layout = build_material_layout(cells, cells)
+            for front, back in ((higher, lower), (lower, higher)):
+                self.assertEqual(
+                    transition_material(front, back, "1", 1, cells, layout),
+                    expected,
+                    (higher_symbol, expected),
                 )
 
     def test_lower_depth_boundaries_use_attached_upward_fade(self) -> None:

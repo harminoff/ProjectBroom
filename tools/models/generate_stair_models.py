@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import math
 from pathlib import Path
 import struct
 import zlib
@@ -291,7 +292,7 @@ def write_liquid_fall_frames(source: Path, output_dir: Path, prefix: str, sludge
                 )
 
             column_noise = (x * 37 + (x // 5) * 19 + (x // 17) * 53) & 255
-            stream = 0.10 + (column_noise / 255.0) * 0.24
+            stream = 0.18 + (column_noise / 255.0) * 0.32
             if column_noise % 23 < 4:
                 stream += 0.18
             phase_offset = (x * 13 + (x // 11) * 23) % 128
@@ -301,11 +302,72 @@ def write_liquid_fall_frames(source: Path, output_dir: Path, prefix: str, sludge
                 # loop without the omnidirectional swirl produced by warp.
                 phase = (y - frame * 16 - phase_offset) % 128
                 drop = (44 - phase) / 44.0 if phase < 44 else 0.0
-                factor = 0.64 + stream + drop * (0.58 if sludge else 1.10)
+                # Keep even the troughs legible under Brogue's deliberately
+                # low cave light. Earlier frames averaged almost black, so a
+                # perfectly valid wall read as a camera-facing black quad.
+                factor = 0.88 + stream + drop * (0.76 if sludge else 1.28)
                 pixels[x, y] = tuple(min(255, round(channel * factor)) for channel in base)
 
         image.save(
             output_dir / f"{prefix}{frame:03d}.png",
+            format="PNG",
+            optimize=False,
+            compress_level=9,
+        )
+
+
+def write_liquid_cliff_frames(
+    cliff_source: Path,
+    fall_dir: Path,
+    fall_prefix: str,
+    output_prefix: str,
+    sludge: bool = False,
+) -> None:
+    """Layer directional liquid ribbons over rock for liquid-to-chasm edges.
+
+    A chasm transition must remain a cliff. Using the opaque waterfall sheet
+    as the entire 124-unit lower wall produced disconnected dark rectangles.
+    These frames retain the rocky bank, expose narrow moving streams, and let
+    both dissolve into the existing abyss fringe near the bottom.
+    """
+    cliff = Image.open(cliff_source).convert("RGB")
+    width, height = cliff.size
+    output_dir = cliff_source.parent
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    for frame in range(8):
+        fall = Image.open(fall_dir / f"{fall_prefix}{frame:03d}.png").convert("RGB").resize(
+            (width, height),
+            Image.Resampling.LANCZOS,
+        )
+        rock_pixels = cliff.load()
+        fall_pixels = fall.load()
+        image = Image.new("RGB", (width, height))
+        pixels = image.load()
+        for y in range(height):
+            # The stream disappears into the same abyss fringe as the cliff,
+            # avoiding a rectangular lower termination.
+            bottom_fade = max(0.0, min(1.0, (height - y) / 40.0))
+            for x in range(width):
+                # Several deterministic, irregular channels leave rock visible
+                # between them. The mask wraps at the texture edges so adjacent
+                # 64-unit Brogue faces do not expose hard vertical seams.
+                channel = (
+                    0.62
+                    + 0.28 * math.sin((x + 7) * math.tau / 23.0)
+                    + 0.18 * math.sin((x + 19) * math.tau / 11.0)
+                )
+                coverage = max(0.0, min(0.82, (channel - 0.36) * 1.65)) * bottom_fade
+                if sludge:
+                    coverage *= 0.78
+                rock = rock_pixels[x, y]
+                liquid = fall_pixels[x, y]
+                pixels[x, y] = tuple(
+                    round(rock[index] * (1.0 - coverage) + liquid[index] * coverage)
+                    for index in range(3)
+                )
+        image.save(
+            output_dir / f"{output_prefix}{frame:03d}.png",
             format="PNG",
             optimize=False,
             compress_level=9,
@@ -327,6 +389,8 @@ def main() -> int:
     write_open_void_wall_texture(graphics / "BRGSTONE.png", graphics / "PBRMSUP.png")
     write_liquid_fall_frames(graphics / "BRGWATER.png", graphics, "PBWFL")
     write_liquid_fall_frames(graphics / "BRGDIRT.png", graphics, "PBSFL", sludge=True)
+    write_liquid_cliff_frames(graphics / "BRGCLIFF.png", graphics, "PBWFL", "PBWCF")
+    write_liquid_cliff_frames(graphics / "BRGCLIFF.png", graphics, "PBSFL", "PBSCF", sludge=True)
     return 0
 
 

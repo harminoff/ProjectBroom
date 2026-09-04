@@ -2024,6 +2024,7 @@ FString CellDescription(const BrogueBridgeCellState *cell)
 	if (cell->isBridge) return "Bridge";
 	if (cell->isLava) return "Lava";
 	if (cell->isDeepWater) return "Deep water";
+	if (cell->isMud) return "Mud";
 	if (cell->isLiquid) return "Water";
 	if (cell->isChasm) return "Chasm";
 	if (cell->isSolid) return "Cavern wall";

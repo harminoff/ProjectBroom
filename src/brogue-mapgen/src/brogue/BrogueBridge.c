@@ -652,6 +652,7 @@ static void captureCell(BrogueBridgeCellState *outCell, int x, int y) {
     outCell->isSecret = (mechanicalFlags & TM_IS_SECRET) != 0;
     outCell->isLiquid = isLiquid;
     outCell->isDeepWater = (terrainFlags & T_IS_DEEP_WATER) != 0;
+    outCell->isMud = cell->layers[LIQUID] == MUD;
     outCell->isLava = isLava;
     outCell->isFire = isFire;
     outCell->isGas = isGas;
@@ -979,6 +980,7 @@ static uint64_t stateHash(const BrogueBridgeState *state) {
         hash = hashU32(hash, cell->isSecret);
         hash = hashU32(hash, cell->isLiquid);
         hash = hashU32(hash, cell->isDeepWater);
+        hash = hashU32(hash, cell->isMud);
         hash = hashU32(hash, cell->isLava);
         hash = hashU32(hash, cell->isFire);
         hash = hashU32(hash, cell->isGas);

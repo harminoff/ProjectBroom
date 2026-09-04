@@ -45,7 +45,7 @@ CONTOUR_DEPTH = 8
 CONTOUR_SHOULDER = 12
 CONTOUR_MIN_RUN = 3
 CONTOUR_RUN_STRIDE = 4
-COMPILER_VERSION = "41"
+COMPILER_VERSION = "42"
 RENDER_MAPPING_PATH = Path(__file__).with_name("terrain_render_map.json")
 THEME_REGISTRY_PATH = PROJECT_ROOT / "assets" / "terrain" / "broguedoom_cave_registry.json"
 RESOURCE_GRAPHICS_DIR = PROJECT_ROOT / "mod" / "BrogueDoom" / "graphics"
@@ -83,6 +83,22 @@ RESOURCE_ASSET_FILES = (
     "PBSFL005.png",
     "PBSFL006.png",
     "PBSFL007.png",
+    "PBWCF000.png",
+    "PBWCF001.png",
+    "PBWCF002.png",
+    "PBWCF003.png",
+    "PBWCF004.png",
+    "PBWCF005.png",
+    "PBWCF006.png",
+    "PBWCF007.png",
+    "PBSCF000.png",
+    "PBSCF001.png",
+    "PBSCF002.png",
+    "PBSCF003.png",
+    "PBSCF004.png",
+    "PBSCF005.png",
+    "PBSCF006.png",
+    "PBSCF007.png",
 )
 RESOURCE_PRESENTATION_FILES = (
     "MODELDEF",
@@ -96,7 +112,7 @@ RESOURCE_PRESENTATION_FILES = (
     "models/stairs/down_void.obj",
     "models/stairs/fall_shaft.obj",
 )
-CUSTOM_TEXTURES = {"BRGCAVE", "BRGWET", "BRGMASON", "BRGCVUP", "BRGWTUP", "BRGMSUP", "BRGDOOR", "BRGWFALL", "BRGSFALL", "BRGLFALL", "BRGVOID", "BRGCLIFF", "BRGSKY"}
+CUSTOM_TEXTURES = {"BRGCAVE", "BRGWET", "BRGMASON", "BRGCVUP", "BRGWTUP", "BRGMSUP", "BRGDOOR", "BRGWFALL", "BRGSFALL", "BRGWCLF", "BRGSCLF", "BRGLFALL", "BRGVOID", "BRGCLIFF", "BRGSKY"}
 CUSTOM_FLATS = {"BRGEARTH", "BRGCEIL", "BRGMOSS", "BRGFLAG", "BRGBRID", "BRGWATR", "BRGSLDG", "BRGMOLT", "BRGCHASM", "BRGABYSS"}
 
 OPEN_VOID_WALL_TEXTURES = {
@@ -994,6 +1010,14 @@ def transition_material(
     # the region theme here: dry ground adjacent to water is classified as
     # CAVE_WET for palette cohesion and would otherwise become a waterfall.
     higher_theme = terrain_theme(higher_cell, cells, include_adjacency=False)
+    if theme == "CHASM" and front_floor != back_floor:
+        # A liquid beside the abyss still exposes a rock cliff. Composite
+        # textures carry animated liquid ribbons over that cliff instead of
+        # replacing the complete lower tier with an opaque waterfall panel.
+        if higher_theme == "WATER":
+            return "BRGWCLF"
+        if higher_theme == "SLUDGE":
+            return "BRGSCLF"
     fall = TERRAIN_THEME_REGISTRY["themes"][higher_theme].get("fall")
     if fall and front_floor != back_floor:
         return str(fall)

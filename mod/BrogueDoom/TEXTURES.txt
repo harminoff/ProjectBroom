@@ -125,6 +125,27 @@ Texture "BRGSF05", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL005
 Texture "BRGSF06", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL006", 0, 0 }
 Texture "BRGSF07", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL007", 0, 0 }
 
+// Liquid-to-chasm transitions remain rocky cliffs with animated streams.
+// Keeping these fully opaque avoids masked-wall sorting artifacts while the
+// generated pixels blend the liquid into the cliff and its abyss fringe.
+Texture "BRGWCLF", 64, 128 { WorldPanning Patch "PBWCF000", 0, 0 }
+Texture "BWCF01", 64, 128 { WorldPanning Patch "PBWCF001", 0, 0 }
+Texture "BWCF02", 64, 128 { WorldPanning Patch "PBWCF002", 0, 0 }
+Texture "BWCF03", 64, 128 { WorldPanning Patch "PBWCF003", 0, 0 }
+Texture "BWCF04", 64, 128 { WorldPanning Patch "PBWCF004", 0, 0 }
+Texture "BWCF05", 64, 128 { WorldPanning Patch "PBWCF005", 0, 0 }
+Texture "BWCF06", 64, 128 { WorldPanning Patch "PBWCF006", 0, 0 }
+Texture "BWCF07", 64, 128 { WorldPanning Patch "PBWCF007", 0, 0 }
+
+Texture "BRGSCLF", 64, 128 { WorldPanning Patch "PBSCF000", 0, 0 }
+Texture "BSCF01", 64, 128 { WorldPanning Patch "PBSCF001", 0, 0 }
+Texture "BSCF02", 64, 128 { WorldPanning Patch "PBSCF002", 0, 0 }
+Texture "BSCF03", 64, 128 { WorldPanning Patch "PBSCF003", 0, 0 }
+Texture "BSCF04", 64, 128 { WorldPanning Patch "PBSCF004", 0, 0 }
+Texture "BSCF05", 64, 128 { WorldPanning Patch "PBSCF005", 0, 0 }
+Texture "BSCF06", 64, 128 { WorldPanning Patch "PBSCF006", 0, 0 }
+Texture "BSCF07", 64, 128 { WorldPanning Patch "PBSCF007", 0, 0 }
+
 Texture "BRGLFALL", 1254, 1254
 {
 	XScale 9.796875
