@@ -266,7 +266,7 @@ Sprite "BRGGA0", 1536, 1024
 	Patch "BRGGRASS", 0, 0
 }
 
-Sprite "BRGFA0", 1536, 1024
+Sprite "BGFUA0", 1536, 1024
 {
 	XScale 32.000
 	YScale 32.000
@@ -290,7 +290,7 @@ Sprite "BRGVA0", 1536, 1024
 	Patch "BRGFOLIA", 0, 0
 }
 
-Sprite "BRGDA0", 1536, 1024
+Sprite "BGDVA0", 1536, 1024
 {
 	XScale 32.000
 	YScale 32.000

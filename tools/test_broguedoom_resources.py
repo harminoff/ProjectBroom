@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+from collections import Counter
 import json
+import re
 import struct
 import unittest
 import zlib
@@ -37,6 +39,23 @@ FRONTEND = ROOT / "src" / "gzdoom-bridge" / "brogue_bridge_frontend.cpp"
 
 
 class BrogueDoomResourceTests(unittest.TestCase):
+    def test_sprite_declarations_are_unique(self) -> None:
+        declarations = TEXTURES.read_text(encoding="utf-8")
+        sprite_names = re.findall(r'^Sprite\s+"([A-Z0-9]+)"', declarations, re.MULTILINE | re.IGNORECASE)
+        counts = Counter(name.upper() for name in sprite_names)
+        duplicates = sorted(name for name, count in counts.items() if count > 1)
+        self.assertEqual(duplicates, [])
+
+    def test_ground_props_do_not_reuse_structural_marker_frames(self) -> None:
+        declarations = TEXTURES.read_text(encoding="utf-8")
+        zscript = BROGUE_ZSCRIPT.read_text(encoding="utf-8")
+        self.assertIn('Sprite "BGFUA0", 1536, 1024', declarations)
+        self.assertIn('States { Spawn: BGFU A -1; Stop; }', zscript)
+        self.assertIn('Sprite "BGDVA0", 1536, 1024', declarations)
+        self.assertIn('States { Spawn: BGDV A -1; Stop; }', zscript)
+        self.assertIn('States { Spawn: BRGF A -1; Stop; }', zscript)
+        self.assertIn('States { Spawn: BRGD A -1; Stop; }', zscript)
+
     def test_chasm_cliff_fades_opaquely_into_abyss(self) -> None:
         data = (GRAPHICS / "BRGCLIFF.png").read_bytes()
         self.assertEqual(data[:8], b"\x89PNG\r\n\x1a\n")
