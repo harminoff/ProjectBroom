@@ -1,0 +1,63 @@
+// Project Broom presentation-only lights. Ambient lights deliberately opt out of
+// shadow maps so the enhanced default remains inexpensive on large caverns.
+
+flickerlight BROGUE_LAVA_LIGHT
+{
+	color 1.0 0.24 0.035
+	size 78
+	secondarySize 96
+	chance 0.18
+	attenuate 1
+	noshadowmap 1
+}
+
+flickerlight BROGUE_FIRE_LIGHT
+{
+	color 1.0 0.50 0.10
+	size 104
+	secondarySize 132
+	chance 0.28
+	attenuate 1
+	noshadowmap 1
+}
+
+pointlight BROGUE_IMPACT_LIGHT
+{
+	color 1.0 0.72 0.25
+	size 52
+	attenuate 1
+	noshadowmap 1
+}
+
+object BrogueLavaFx
+{
+	frame TNT1A { light BROGUE_LAVA_LIGHT }
+}
+
+object BrogueFireFx
+{
+	frame TNT1A { light BROGUE_FIRE_LIGHT }
+}
+
+object BrogueImpactFx
+{
+	frame TNT1A { light BROGUE_IMPACT_LIGHT }
+}
+
+brightmap flat BRGMOLT
+{
+	map "graphics/BRGLAVA_BM.png"
+}
+
+brightmap texture BRGLFALL
+{
+	map "graphics/BRGLAVA_BM.png"
+}
+
+Glow
+{
+	Flats
+	{
+		BRGMOLT, FF3F08, 40
+	}
+}

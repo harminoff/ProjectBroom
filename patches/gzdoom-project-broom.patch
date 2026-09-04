@@ -1,0 +1,94 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 95b67a2..174e276 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -1193,6 +1193,7 @@ set( GAME_SOURCES
+ 	${SYSTEM_SOURCES}
+ 	${FASTMATH_SOURCES}
+ 	${PCH_SOURCES}
++	${CMAKE_SOURCE_DIR}/../../src/gzdoom-bridge/brogue_bridge_frontend.cpp
+ 	common/utility/x86.cpp
+ 	common/thirdparty/strnatcmp.c
+ 	common/thirdparty/utf8proc/utf8proc.c
+@@ -1273,6 +1274,8 @@ target_link_libraries( zdoom ${PROJECT_LIBRARIES} lzma ${ZMUSIC_LIBRARIES} )
+ include_directories(
+ 	BEFORE
+ 	.
++	${CMAKE_SOURCE_DIR}/../../src/gzdoom-bridge
++	${CMAKE_SOURCE_DIR}/../../src/brogue-mapgen/src/brogue
+ 	common/audio/sound
+ 	common/audio/music
+ 	common/2d
+diff --git a/src/g_game.cpp b/src/g_game.cpp
+index 35f2672..03b26d8 100644
+--- a/src/g_game.cpp
++++ b/src/g_game.cpp
+@@ -79,6 +79,7 @@
+ #include "p_setup.h"
+ #include "d_event.h"
+ #include "model.h"
++#include "brogue_bridge_frontend.h"
+ 
+ #include "v_video.h"
+ #include "g_hub.h"
+@@ -816,6 +817,7 @@ void G_BuildTiccmd (ticcmd_t *cmd)
+ 
+ 	cmd->ucmd.forwardmove <<= 8;
+ 	cmd->ucmd.sidemove <<= 8;
++	BrogueBridge_PrepareTiccmd(cmd);
+ }
+ 
+ static int LookAdjust(int look)
+@@ -987,6 +989,9 @@ CCMD (spycancel)
+ bool G_Responder (event_t *ev)
+ {
+ 	// check events
++	if (BrogueBridge_HandleInput(ev))
++		return true;
++
+ 	if (ev->type != EV_Mouse && primaryLevel->localEventManager->Responder(ev)) // [ZZ] ZScript ate the event // update 07.03.17: mouse events are handled directly
+ 		return true;
+ 	
+diff --git a/src/g_statusbar/shared_sbar.cpp b/src/g_statusbar/shared_sbar.cpp
+index faacecc..baf5b41 100644
+--- a/src/g_statusbar/shared_sbar.cpp
++++ b/src/g_statusbar/shared_sbar.cpp
+@@ -64,6 +64,7 @@
+ #include "v_palette.h"
+ #include "v_draw.h"
+ #include "m_fixed.h"
++#include "brogue_bridge_frontend.h"
+ 
+ #include "../version.h"
+ 
+@@ -1204,6 +1205,7 @@ void DBaseStatusBar::DrawBottomStuff (EHudState state)
+ 
+ void DBaseStatusBar::DrawTopStuff (EHudState state)
+ {
++	BrogueBridge_DrawHud();
+ 	if (demoplayback && demover != DEMOGAMEVERSION)
+ 	{
+ 		DrawText(twod, SmallFont, CR_TAN, 0, GetTopOfStatusbar() - 40 * CleanYfac,
+diff --git a/src/menu/doommenu.cpp b/src/menu/doommenu.cpp
+index 5718bd6..f9811b0 100644
+--- a/src/menu/doommenu.cpp
++++ b/src/menu/doommenu.cpp
+@@ -68,6 +68,7 @@
+ #include "shiftstate.h"
+ #include "s_music.h"
+ #include "hwrenderer/scene/hw_drawinfo.h"
++#include "brogue_bridge_frontend.h"
+ 
+ EXTERN_CVAR(Int, cl_gfxlocalization)
+ EXTERN_CVAR(Bool, m_quickexit)
+@@ -230,6 +231,10 @@ bool M_SetSpecialMenu(FName& menu, int param)
+ 	case NAME_Startgame:
+ 		// sent either from skill menu or confirmation screen. Skill gets only set if sent from skill menu
+ 		// Now we can finally start the game. Ugh...
++		// A Brogue New Game must discard any prior authoritative bridge session
++		// before BRG01 is loaded again. The launcher-selected seed remains in
++		// brg_seed and both geometry and simulation restart from that same seed.
++		BrogueBridge_Shutdown();
+ 		LastSkill = param;
+ 		NewGameStartupInfo.Skill = param;
+ 		[[fallthrough]];

@@ -1,0 +1,14 @@
+EXPORTS
+    brogue_bridge_initialize
+    brogue_bridge_start_game
+    brogue_bridge_get_state
+    brogue_bridge_get_monster_catalog
+    brogue_bridge_perform_action
+    brogue_bridge_perform_command
+    brogue_bridge_preview_throw
+    brogue_bridge_inspect_cell
+    brogue_bridge_shutdown
+    brogue_bridge_result_name
+    brogue_bridge_action_name
+    brogue_bridge_event_name
+    brogue_bridge_command_name

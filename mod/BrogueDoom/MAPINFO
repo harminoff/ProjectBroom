@@ -1,0 +1,33 @@
+DoomEdNums
+{
+    15000 = BrogueUpStair
+    15001 = BrogueDownStair
+    15002 = BrogueUpStairMarker
+    15003 = BrogueDownStairMarker
+    15010 = BrogueGrassProp
+    15011 = BrogueFungusProp
+    15012 = BrogueLuminousFungusProp
+    15013 = BrogueFoliageProp
+    15014 = BrogueDeadVegetationProp
+    15020 = BrogueDoorMarker
+    15021 = BrogueBarricadeMarker
+}
+
+GameInfo
+{
+    AddEventHandlers = "BrogueWorldHandler", "UCMinimap_EventHandler", "UCMinimap_StaticHandler"
+    TitlePage = "TITLEPIC"
+    TitleMusic = ""
+    TitleTime = 86400
+    PageTime = 86400
+    DimColor = "00 00 00"
+    DimAmount = 0.58
+}
+
+ClearEpisodes
+Episode BRG01
+{
+    Name = "Project Broom"
+    Key = "b"
+    NoSkillMenu
+}

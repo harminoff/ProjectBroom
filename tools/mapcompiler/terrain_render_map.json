@@ -1,0 +1,1292 @@
+{
+  "NOTHING": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "GRANITE": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": true
+  },
+  "FLOOR": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "FLOOR_FLOODABLE": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "CARPET": {
+    "floor": "FLAT5",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MARBLE_FLOOR": {
+    "floor": "FLAT5",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "WALL": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": true
+  },
+  "DOOR": {
+    "floor": "FLAT1",
+    "wall": "DOORTRAK",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "OPEN_DOOR": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "SECRET_DOOR": {
+    "floor": "FLAT1",
+    "wall": "DOORTRAK",
+    "floorHeight": 0,
+    "solid": true
+  },
+  "LOCKED_DOOR": {
+    "floor": "FLAT1",
+    "wall": "DOORTRAK",
+    "floorHeight": 0,
+    "solid": true
+  },
+  "OPEN_IRON_DOOR_INERT": {
+    "floor": "FLAT1",
+    "wall": "DOORTRAK",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "DOWN_STAIRS": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "UP_STAIRS": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "DUNGEON_EXIT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "DUNGEON_PORTAL": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "TORCH_WALL": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "CRYSTAL_WALL": {
+    "floor": "FLAT1",
+    "wall": "COMPBLUE",
+    "floorHeight": 0,
+    "solid": true
+  },
+  "PORTCULLIS_CLOSED": {
+    "floor": "FLAT1",
+    "wall": "DOORTRAK",
+    "floorHeight": 0,
+    "solid": true
+  },
+  "PORTCULLIS_DORMANT": {
+    "floor": "FLAT1",
+    "wall": "DOORTRAK",
+    "floorHeight": 0,
+    "solid": true
+  },
+  "WOODEN_BARRICADE": {
+    "floor": "FLAT1",
+    "wall": "DOORTRAK",
+    "floorHeight": 0,
+    "solid": true
+  },
+  "PILOT_LIGHT_DORMANT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "PILOT_LIGHT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "HAUNTED_TORCH_DORMANT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "HAUNTED_TORCH_TRANSITIONING": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "HAUNTED_TORCH": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "WALL_LEVER_HIDDEN": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "WALL_LEVER": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "WALL_LEVER_PULLED": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "WALL_LEVER_HIDDEN_DORMANT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "STATUE_INERT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "STATUE_DORMANT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "STATUE_CRACKING": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "STATUE_INSTACRACK": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "PORTAL": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "TURRET_DORMANT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "WALL_MONSTER_DORMANT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "DARK_FLOOR_DORMANT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "DARK_FLOOR_DARKENING": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "DARK_FLOOR": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MACHINE_TRIGGER_FLOOR": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ALTAR_INERT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ALTAR_KEYHOLE": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ALTAR_CAGE_OPEN": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ALTAR_CAGE_CLOSED": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ALTAR_SWITCH": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ALTAR_SWITCH_RETRACTING": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ALTAR_CAGE_RETRACTABLE": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "PEDESTAL": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MONSTER_CAGE_OPEN": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MONSTER_CAGE_CLOSED": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "COFFIN_CLOSED": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "COFFIN_OPEN": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "GAS_TRAP_POISON_HIDDEN": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "GAS_TRAP_POISON": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "TRAP_DOOR_HIDDEN": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "TRAP_DOOR": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "GAS_TRAP_PARALYSIS_HIDDEN": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "GAS_TRAP_PARALYSIS": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MACHINE_PARALYSIS_VENT_HIDDEN": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MACHINE_PARALYSIS_VENT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "GAS_TRAP_CONFUSION_HIDDEN": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "GAS_TRAP_CONFUSION": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "FLAMETHROWER_HIDDEN": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "FLAMETHROWER": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "FLOOD_TRAP_HIDDEN": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "FLOOD_TRAP": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "NET_TRAP_HIDDEN": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "NET_TRAP": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ALARM_TRAP_HIDDEN": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ALARM_TRAP": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MACHINE_POISON_GAS_VENT_HIDDEN": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MACHINE_POISON_GAS_VENT_DORMANT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MACHINE_POISON_GAS_VENT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MACHINE_METHANE_VENT_HIDDEN": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MACHINE_METHANE_VENT_DORMANT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MACHINE_METHANE_VENT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "STEAM_VENT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MACHINE_PRESSURE_PLATE": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MACHINE_PRESSURE_PLATE_USED": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MACHINE_GLYPH": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MACHINE_GLYPH_INACTIVE": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "DEWAR_CAUSTIC_GAS": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "DEWAR_CONFUSION_GAS": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "DEWAR_PARALYSIS_GAS": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "DEWAR_METHANE_GAS": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "DEEP_WATER": {
+    "floor": "FWATER1",
+    "wall": "STONE2",
+    "floorHeight": -16,
+    "solid": false
+  },
+  "SHALLOW_WATER": {
+    "floor": "FWATER1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MUD": {
+    "floor": "FWATER1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "CHASM": {
+    "floor": "RROCK20",
+    "wall": "STONE2",
+    "floorHeight": -64,
+    "solid": false
+  },
+  "CHASM_EDGE": {
+    "floor": "RROCK20",
+    "wall": "STONE2",
+    "floorHeight": -64,
+    "solid": false
+  },
+  "MACHINE_COLLAPSE_EDGE_DORMANT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MACHINE_COLLAPSE_EDGE_SPREADING": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "LAVA": {
+    "floor": "LAVA1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "LAVA_RETRACTABLE": {
+    "floor": "LAVA1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "LAVA_RETRACTING": {
+    "floor": "LAVA1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "SUNLIGHT_POOL": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "DARKNESS_PATCH": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ACTIVE_BRIMSTONE": {
+    "floor": "LAVA1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "INERT_BRIMSTONE": {
+    "floor": "LAVA1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "OBSIDIAN": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "BRIDGE": {
+    "floor": "FLAT5",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "BRIDGE_FALLING": {
+    "floor": "FLAT5",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "BRIDGE_EDGE": {
+    "floor": "FLAT5",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "STONE_BRIDGE": {
+    "floor": "FLAT5",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MACHINE_FLOOD_WATER_DORMANT": {
+    "floor": "FWATER1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MACHINE_FLOOD_WATER_SPREADING": {
+    "floor": "FWATER1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MACHINE_MUD_DORMANT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ICE_DEEP": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ICE_DEEP_MELT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ICE_SHALLOW": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ICE_SHALLOW_MELT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "HOLE": {
+    "floor": "RROCK20",
+    "wall": "STONE2",
+    "floorHeight": -64,
+    "solid": false
+  },
+  "HOLE_GLOW": {
+    "floor": "RROCK20",
+    "wall": "STONE2",
+    "floorHeight": -64,
+    "solid": false
+  },
+  "HOLE_EDGE": {
+    "floor": "RROCK20",
+    "wall": "STONE2",
+    "floorHeight": -64,
+    "solid": false
+  },
+  "FLOOD_WATER_DEEP": {
+    "floor": "FWATER1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "FLOOD_WATER_SHALLOW": {
+    "floor": "FWATER1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "GRASS": {
+    "floor": "RROCK19",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "DEAD_GRASS": {
+    "floor": "RROCK20",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "GRAY_FUNGUS": {
+    "floor": "SLIME16",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "LUMINESCENT_FUNGUS": {
+    "floor": "FLAT22",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "LICHEN": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "HAY": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "RED_BLOOD": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "GREEN_BLOOD": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "PURPLE_BLOOD": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ACID_SPLATTER": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "VOMIT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "URINE": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "UNICORN_POOP": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "WORM_BLOOD": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ASH": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "BURNED_CARPET": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "PUDDLE": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "BONES": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "RUBBLE": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "JUNK": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "BROKEN_GLASS": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ECTOPLASM": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "EMBERS": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "SPIDERWEB": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "NETTING": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "FOLIAGE": {
+    "floor": "RROCK19",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "DEAD_FOLIAGE": {
+    "floor": "RROCK20",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "TRAMPLED_FOLIAGE": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "FUNGUS_FOREST": {
+    "floor": "SLIME16",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "TRAMPLED_FUNGUS_FOREST": {
+    "floor": "RROCK19",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "FORCEFIELD": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "FORCEFIELD_MELT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "SACRED_GLYPH": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MANACLE_TL": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MANACLE_BR": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MANACLE_TR": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MANACLE_BL": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MANACLE_T": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MANACLE_B": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MANACLE_L": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MANACLE_R": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "PORTAL_LIGHT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "GUARDIAN_GLOW": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "PLAIN_FIRE": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "BRIMSTONE_FIRE": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "FLAMEDANCER_FIRE": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "GAS_FIRE": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "GAS_EXPLOSION": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "DART_EXPLOSION": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ITEM_FIRE": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "CREATURE_FIRE": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "POISON_GAS": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "CONFUSION_GAS": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ROT_GAS": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "STENCH_SMOKE_GAS": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "PARALYSIS_GAS": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "METHANE_GAS": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "STEAM": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "DARKNESS_CLOUD": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "HEALING_CLOUD": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "BLOODFLOWER_STALK": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "BLOODFLOWER_POD": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "HAVEN_BEDROLL": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "DEEP_WATER_ALGAE_WELL": {
+    "floor": "FWATER1",
+    "wall": "STONE2",
+    "floorHeight": -16,
+    "solid": false
+  },
+  "DEEP_WATER_ALGAE_1": {
+    "floor": "FWATER1",
+    "wall": "STONE2",
+    "floorHeight": -16,
+    "solid": false
+  },
+  "DEEP_WATER_ALGAE_2": {
+    "floor": "FWATER1",
+    "wall": "STONE2",
+    "floorHeight": -16,
+    "solid": false
+  },
+  "ANCIENT_SPIRIT_VINES": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ANCIENT_SPIRIT_GRASS": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "AMULET_SWITCH": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "COMMUTATION_ALTAR": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "COMMUTATION_ALTAR_INERT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "PIPE_GLOWING": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "PIPE_INERT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "RESURRECTION_ALTAR": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "RESURRECTION_ALTAR_INERT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MACHINE_TRIGGER_FLOOR_REPEATING": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "SACRIFICE_ALTAR_DORMANT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "SACRIFICE_ALTAR": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "SACRIFICE_LAVA": {
+    "floor": "LAVA1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "SACRIFICE_CAGE_DORMANT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "DEMONIC_STATUE": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "STATUE_INERT_DOORWAY": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "STATUE_DORMANT_DOORWAY": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "CHASM_WITH_HIDDEN_BRIDGE": {
+    "floor": "RROCK20",
+    "wall": "STONE2",
+    "floorHeight": -64,
+    "solid": false
+  },
+  "CHASM_WITH_HIDDEN_BRIDGE_ACTIVE": {
+    "floor": "RROCK20",
+    "wall": "STONE2",
+    "floorHeight": -64,
+    "solid": false
+  },
+  "MACHINE_CHASM_EDGE": {
+    "floor": "RROCK20",
+    "wall": "STONE2",
+    "floorHeight": -64,
+    "solid": false
+  },
+  "RAT_TRAP_WALL_DORMANT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "RAT_TRAP_WALL_CRACKING": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ELECTRIC_CRYSTAL_OFF": {
+    "floor": "FLAT1",
+    "wall": "COMPBLUE",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "ELECTRIC_CRYSTAL_ON": {
+    "floor": "FLAT1",
+    "wall": "COMPBLUE",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "TURRET_LEVER": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "WORM_TUNNEL_MARKER_DORMANT": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "WORM_TUNNEL_MARKER_ACTIVE": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "WORM_TUNNEL_OUTER_WALL": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": true
+  },
+  "BRAZIER": {
+    "floor": "FLAT1",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MUD_FLOOR": {
+    "floor": "RROCK19",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  },
+  "MUD_WALL": {
+    "floor": "RROCK19",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": true
+  },
+  "MUD_DOORWAY": {
+    "floor": "RROCK19",
+    "wall": "STONE2",
+    "floorHeight": 0,
+    "solid": false
+  }
+}

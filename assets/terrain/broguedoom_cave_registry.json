@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "name": "Project Broom Original Cave",
+  "source": {
+    "resource": "mod/BrogueDoom/graphics",
+    "provenance": "Original project artwork generated for Project Broom"
+  },
+  "defaultTheme": "CAVE_NATURAL",
+  "variantScope": "semantic-region",
+  "surfaceTints": {
+    "GRASS": 10008464,
+    "FOLIAGE": 8943456,
+    "DEAD_FOLIAGE": 11579568,
+    "GRAY_FUNGUS": 11119017,
+    "LUMINESCENT_FUNGUS": 8574890,
+    "FUNGUS_FOREST": 8249464,
+    "TRAMPLED_FOLIAGE": 10526880,
+    "TRAMPLED_FUNGUS_FOREST": 9539696,
+    "ANCIENT_SPIRIT_GRASS": 8637781,
+    "DEAD_GRASS": 11908533,
+    "LICHEN": 9289318
+  },
+  "animations": {
+    "water": {"kind": "flat", "base": "BRGWATR", "frames": ["BRGWATR"], "tics": 5, "providedBy": "Project Broom ANIMDEFS warp"},
+    "sludge": {"kind": "flat", "base": "BRGSLDG", "frames": ["BRGSLDG"], "tics": 7, "providedBy": "Project Broom ANIMDEFS warp"},
+    "lava": {"kind": "flat", "base": "BRGMOLT", "frames": ["BRGMOLT"], "tics": 5, "providedBy": "Project Broom ANIMDEFS warp"}
+  },
+  "themes": {
+    "CAVE_NATURAL": {"walls": ["BRGCAVE"], "floors": ["BRGEARTH"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR"},
+    "CAVE_DIRT": {"walls": ["BRGCAVE"], "floors": ["BRGEARTH"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR"},
+    "CAVE_WET": {"walls": ["BRGWET"], "floors": ["BRGEARTH"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR", "fall": "BRGWFALL"},
+    "CAVE_MOSS": {"walls": ["BRGWET"], "floors": ["BRGMOSS"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR"},
+    "RUINS_WORKED_STONE": {"walls": ["BRGMASON"], "floors": ["BRGFLAG"], "ceilings": ["BRGFLAG"], "door": "BRGDOOR"},
+    "FORTIFIED_MASONRY": {"walls": ["BRGMASON"], "floors": ["BRGFLAG"], "ceilings": ["BRGFLAG"], "door": "BRGDOOR"},
+    "WARREN_GOBLIN": {"walls": ["BRGCAVE"], "floors": ["BRGEARTH"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR"},
+    "MAGICAL_CRYSTAL": {"walls": ["BRGMASON"], "floors": ["BRGFLAG"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR"},
+    "BRIDGE": {"walls": ["BRGMASON"], "floors": ["BRGBRID"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR"},
+    "WATER": {"walls": ["BRGWET"], "floors": ["BRGWATR"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR", "fall": "BRGWFALL", "animation": "water"},
+    "SLUDGE": {"walls": ["BRGWET"], "floors": ["BRGSLDG"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR", "fall": "BRGWFALL", "animation": "sludge"},
+    "LAVA": {"walls": ["BRGCAVE"], "floors": ["BRGMOLT"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR", "fall": "BRGLFALL", "animation": "lava"},
+    "CHASM": {"walls": ["BRGVOID"], "floors": ["BRGABYSS"], "ceilings": ["BRGABYSS"], "door": "BRGDOOR", "fall": "BRGVOID"},
+    "CRYPT": {"walls": ["BRGMASON"], "floors": ["BRGFLAG"], "ceilings": ["BRGFLAG"], "door": "BRGDOOR"}
+  },
+  "rules": [
+    {"theme": "BRIDGE", "layer": "surface", "symbols": ["BRIDGE", "BRIDGE_FALLING", "BRIDGE_EDGE", "STONE_BRIDGE"]},
+    {"theme": "LAVA", "layer": "liquid", "symbols": ["LAVA", "LAVA_RETRACTABLE", "LAVA_RETRACTING", "ACTIVE_BRIMSTONE", "INERT_BRIMSTONE", "SACRIFICE_LAVA"]},
+    {"theme": "CHASM", "layer": "liquid", "symbols": ["CHASM", "CHASM_WITH_HIDDEN_BRIDGE", "HOLE", "HOLE_GLOW"]},
+    {"theme": "MAGICAL_CRYSTAL", "layer": "dungeon", "symbols": ["CRYSTAL_WALL", "ELECTRIC_CRYSTAL_OFF", "ELECTRIC_CRYSTAL_ON", "DUNGEON_PORTAL", "PORTAL", "PORTAL_LIGHT"]},
+    {"theme": "WATER", "layer": "liquid", "symbols": ["DEEP_WATER", "SHALLOW_WATER", "FLOOD_WATER_DEEP", "FLOOD_WATER_SHALLOW", "DEEP_WATER_ALGAE_WELL", "DEEP_WATER_ALGAE_1", "DEEP_WATER_ALGAE_2"]},
+    {"theme": "SLUDGE", "layer": "liquid", "symbols": ["MUD"]},
+    {"theme": "WARREN_GOBLIN", "layer": "dungeon", "symbols": ["MUD_WALL", "MUD_FLOOR", "MUD_DOORWAY", "WOODEN_BARRICADE"]},
+    {"theme": "CRYPT", "layer": "dungeon", "symbols": ["COFFIN_CLOSED", "COFFIN_OPEN"]},
+    {"theme": "RUINS_WORKED_STONE", "layer": "dungeon", "symbols": ["CARPET", "MARBLE_FLOOR", "ALTAR_INERT", "ALTAR_KEYHOLE", "ALTAR_CAGE_OPEN", "ALTAR_CAGE_CLOSED", "ALTAR_SWITCH", "ALTAR_SWITCH_RETRACTING", "PEDESTAL", "MONSTER_CAGE_OPEN", "MONSTER_CAGE_CLOSED"]}
+  ],
+  "adjacencyRules": [
+    {"theme": "CAVE_WET", "neighborLayer": "liquid", "neighborSymbols": ["MUD", "DEEP_WATER", "SHALLOW_WATER", "FLOOD_WATER_DEEP", "FLOOD_WATER_SHALLOW"]}
+  ]
+}

@@ -1,0 +1,29 @@
+name: Presentation improvement
+description: Propose visual, audio, UI, input, accessibility, or performance work.
+title: "[Presentation]: "
+labels: [presentation]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Presentation problem
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed presentation change
+    validations:
+      required: true
+  - type: textarea
+    id: authority
+    attributes:
+      label: Authority boundary
+      description: Explain why this cannot alter Brogue simulation outcomes, timing, or RNG.
+    validations:
+      required: true
+  - type: textarea
+    id: assets
+    attributes:
+      label: Asset provenance
+      description: Give source, author, and license for any proposed third-party assets.

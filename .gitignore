@@ -1,0 +1,52 @@
+# Dependency and build workspaces
+/.deps/
+/.build/
+/artifacts/
+/generated/
+/crash-analysis/
+/tooling/
+
+# Local player/runtime state
+/BrogueRunHistory.txt
+/CrashReport*.zip
+/ProjectBroom.exe
+*.log
+*.dmp
+*.mdmp
+*.sav
+
+# Native build products
+tools/BrogueDoomLauncher/bin/
+tools/BrogueDoomLauncher/obj/
+**/build/
+**/build-*/
+*.dll
+*.exe
+*.ilk
+*.lib
+*.pdb
+*.exp
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# IDE and OS state
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.VC.db
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Optional inspection-only downloads
+/third_party/cc4/*.wad
+/reference-wads/
+/downloads/

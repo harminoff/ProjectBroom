@@ -1,0 +1,29 @@
+BrogueUI
+{
+    TEMPLATE "BFU%03d"
+    BASE 33
+    FIRST 33
+    COUNT 94
+    SPACEWIDTH 12
+    KERNING 0
+}
+
+BrogueMap
+{
+    TEMPLATE "BFM%03d"
+    BASE 33
+    FIRST 33
+    COUNT 94
+    SPACEWIDTH 5
+    KERNING 0
+}
+
+BrogueMenu
+{
+    TEMPLATE "BFT%03d"
+    BASE 33
+    FIRST 33
+    COUNT 94
+    SPACEWIDTH 12
+    KERNING 0
+}

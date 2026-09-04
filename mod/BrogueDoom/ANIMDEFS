@@ -1,0 +1,7 @@
+// Presentation-only warping for Project Broom's original liquid materials.
+// Brogue CE remains authoritative for liquid identity and behavior.
+warp flat BRGWATR 1.80
+warp flat BRGSLDG 0.65
+warp flat BRGMOLT 1.25
+warp texture BRGWFALL 1.80
+warp texture BRGLFALL 1.25

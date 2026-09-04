@@ -1,0 +1,54 @@
+// Static presentation models. Brogue's invisible logical stair actors retain
+// authoritative interaction and exact cell-center coordinates.
+Model BrogueUpStairMarker
+{
+    Path "models/stairs"
+    Model 0 "upstairs.obj"
+    Skin 0 "graphics/BRGSTONE.png"
+    Model 1 "up_hatch.obj"
+    Skin 1 "graphics/BRGPIT.png"
+    Scale 1.0 1.0 1.0
+    FrameIndex BRGU A 0 0
+}
+
+Model BrogueDownStairMarker
+{
+    Path "models/stairs"
+    Model 0 "downstairs.obj"
+    Skin 0 "graphics/BRGSTONE.png"
+    Model 1 "down_void.obj"
+    Skin 1 "graphics/BRGPIT.png"
+    Scale 1.0 1.0 1.0
+    FrameIndex BRGN A 0 0
+}
+
+Model BrogueFallShaftMarker
+{
+    Path "models/stairs"
+    Model 0 "fall_shaft.obj"
+    Skin 0 "graphics/BRGPIT.png"
+    Scale 1.0 1.0 1.0
+    FrameIndex BRGF A 0 0
+}
+
+Model BrogueDoorMarker
+{
+    Path "models/doors"
+    Model 0 "door_panel.obj"
+    Skin 0 "graphics/BRGDOOR0.png"
+    Scale 1.0 1.0 1.0
+    FrameIndex BRGD A 0 0
+}
+
+Model BrogueBarricadeMarker
+{
+    Path "models/doors"
+    Model 0 "wooden_barricade.obj"
+    Skin 0 "graphics/BRGBRIDGE.png"
+    Scale 1.0 1.0 1.0
+    FrameIndex BRGB A 0 0
+}
+
+#include "models/pickups/MODELDEF.txt"
+#include "models/monsters/MODELDEF.txt"
+#include "models/weapons/MODELDEF.txt"

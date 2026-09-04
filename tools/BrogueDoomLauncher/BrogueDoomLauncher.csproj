@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>ProjectBroom</AssemblyName>
+    <AssemblyTitle>Project Broom</AssemblyTitle>
+    <Product>Project Broom</Product>
+    <Title>Project Broom</Title>
+    <Description>Project Broom game launcher</Description>
+    <RootNamespace>BrogueDoomLauncher</RootNamespace>
+  </PropertyGroup>
+</Project>

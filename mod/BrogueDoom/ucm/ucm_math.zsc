@@ -1,0 +1,144 @@
+extend class UCMinimap_EventHandler 
+{
+	// Math Util
+	clearscope float VDist2D(Vector2 one, Vector2 two)
+	{
+		return (one-two).Length();
+	}	
+	clearscope double Lerp(double a, double b, double lerpFactor)
+	{
+		if(lerpFactor < 0 || lerpFactor > 1.) lerpFactor = 1.;
+		double result = ((1. - lerpFactor) * a) + (lerpFactor * b);
+		return result;
+	}
+	clearscope vector2 SwapVector(vector2 vec)
+	{
+		double oldx = vec.x;
+		vec.x = vec.y;
+		vec.y = oldx;
+		return vec;
+	}
+	clearscope vector2, double clamp_vec(vector2 dest, vector2 origin, double dist)
+	{
+		double fulldist = VDist2D(dest, origin);
+		if(fulldist > dist) 
+		{
+			double vecangle = atan2(origin.y-dest.y, origin.x-dest.x);
+			return ( (origin.x-cos(vecangle)*dist), (origin.y-sin(vecangle)*dist) ), fulldist;
+		}
+		return dest, fulldist;
+	}
+	// Draw Util
+	ui void plotPixel (int x0, int y0, Color col = Color(0,0,0), vector2 scale = (0.5,0.5), double alpha = 1.0, uint RenderStyle = STYLE_Translucent)
+	{
+		if(pix)
+		{
+			vector2 texsize;
+			[texsize.x, texsize.y] = TexMan.GetSize(curpix);
+			Screen.DrawTexture(curpix,true,x0,y0,
+				DTA_DestWidth, int(texsize.x*scale.x),
+				DTA_DestHeight, int(texsize.y*scale.y),
+				DTA_Alpha, alpha*0.7,
+				DTA_ColorOverlay, col,
+				DTA_LegacyRenderStyle, RenderStyle
+			);
+		}
+	}
+	ui void drawLine( double x0, double y0, double x1, double y1, Color col, vector2 origin = (0,0), double maxdist = 128, double alpha = 1.0)
+	{	
+		if( (x0 < 0    && x1 < 0)    || 
+		    (y0 < 0    && y1 < 0)    || 
+		    (x0 > scrw && x1 > scrw) || 
+			(y0 > scrh && y1 > scrh)    ) return;
+			
+		if(maxdist < scrw)
+		{
+			double fromdist = VDist2D((x0,y0), origin);
+			double todist = VDist2D((x1,y1), origin);
+			if( (fromdist > maxdist || todist > maxdist) ) 
+			{
+				if(fromdist > maxdist*1.2 && todist > maxdist*1.2) return;
+				// Clamp crossing endpoints once. The old implementation walked every
+				// pixel and issued a DrawTexture call for each one.
+				if(fromdist > maxdist)
+				{
+					vector2 clipped;
+					double ignored;
+					[clipped, ignored] = clamp_vec((x0,y0), origin, maxdist);
+					x0 = clipped.x;
+					y0 = clipped.y;
+				}
+				if(todist > maxdist)
+				{
+					vector2 clipped;
+					double ignored;
+					[clipped, ignored] = clamp_vec((x1,y1), origin, maxdist);
+					x1 = clipped.x;
+					y1 = clipped.y;
+				}
+			}
+		}
+		// Brogue maps contain hundreds of visible boundary segments. The native
+		// one-pixel path is dramatically cheaper than building a thick polygon
+		// for every segment on every rendered frame and remains clear at this
+		// minimap scale.
+		Screen.DrawLine(x0,y0,x1,y1,col,alpha*255);
+	}
+	ui void drawCircle(double x0, double y0, double radius=500, Color col=Color(0,0,0), double alpha = 1.0)
+	{
+		// The upstream helper plotted hundreds of tiny textures every frame.
+		// A fixed native line loop is visually equivalent at HUD resolution and
+		// avoids that severe per-frame batching cost.
+		int segments = 64;
+		double oldx = x0 + radius;
+		double oldy = y0;
+		for(int i = 1; i <= segments; i++)
+		{
+			double angle = i * 360.0 / segments;
+			double xpos = x0 + cos(angle) * radius;
+			double ypos = y0 + sin(angle) * radius;
+			Screen.DrawLine(oldx, oldy, xpos, ypos, col, alpha * 255);
+			oldx = xpos;
+			oldy = ypos;
+		}
+	}
+	ui void FillCircle(double x0, double y0, double radius, Color col=Color(0xFF,0,0,0), double alpha=1.0, double points=60)
+	{
+		int angfrac = ceil(360/points);
+		if(!bg_circle)
+		{
+			Shape2D circle = new("Shape2D");
+			circle.PushCoord((0,0)); // Middle
+			for(double i = 0; i <= points; i++) circle.PushCoord((cos(angfrac*i),sin(angfrac*i)));
+			for(double i = 1; i <= points; i++) circle.PushTriangle(i,i+1,0);
+			bg_circle = circle;
+		}
+		bg_circle.Clear(Shape2D.C_Verts);
+		bg_circle.PushVertex((x0,y0)); // Middle
+		for(double i = 0; i <= points; i++) bg_circle.PushVertex((x0+cos(angfrac*i)*radius,y0+sin(angfrac*i)*radius));
+		Screen.DrawShape(TexMan.CheckForTexture("BLANK", TexMan.Type_Any), false, bg_circle, DTA_ColorOverlay, col, DTA_Alpha, alpha);
+	}	
+	ui void DrawScaledString( Font fnt, String str, Vector2 pos, Color tint = Color(0,0,0,0), 
+						Vector2 scale = (1, 1), double Alpha = 1., 
+						int translation = Font.CR_UNTRANSLATED, int linespacing = 20 )
+	{
+		Array<String> lines;
+		str.Split(lines, "\n");
+		
+		pos.x *= 1./(scale.x*0.5);
+		pos.y *= 1./(scale.y*0.5);
+		
+		for(int i = 0; i < lines.Size(); i++)
+		{
+			 float lineoffs = (linespacing*i);
+			 Screen.DrawText(fnt, translation, pos.x, pos.y+lineoffs, 
+				lines[i],
+				DTA_VirtualWidthF,  int(1920.*(1./scale.x*0.5)),
+				DTA_VirtualHeightF, int(1080.*(1./scale.y*0.5)),
+				DTA_KeepRatio, true,
+				DTA_Alpha, alpha,
+				DTA_ColorOverlay, tint
+			);
+		}		
+	}
+}

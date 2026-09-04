@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "components": {
+    "brogueCE": {
+      "source": "https://github.com/tmewett/BrogueCE.git",
+      "commit": "7f52dd93b7fa553dd6e354ccd44229a3c22d8a76",
+      "variant": "normal",
+      "dungeonVersion": "CE 1.11",
+      "license": "AGPL-3.0-or-later",
+      "location": "src/brogue-mapgen"
+    },
+    "gzdoom": {
+      "source": "https://github.com/ZDoom/gzdoom.git",
+      "tag": "g4.14.2",
+      "commit": "99aa489d09015a95bb78df2b30ede29f328cc874",
+      "license": "GPL-3.0",
+      "patch": "patches/gzdoom-project-broom.patch",
+      "windowsRuntime": {
+        "source": "https://github.com/ZDoom/gzdoom/releases/download/g4.14.2/gzdoom-4-14-2-Windows.zip",
+        "archiveSha256": "6d01c5bb48610cebfa9dfd0b7705a1e20bfd56032a74484ac256d8c4e3c51bee",
+        "openal32Sha256": "4e2d830d2a3aa85bf17033aa50745e7c1a8bb11ae350fe14fedd2a1292a6e0e8",
+        "sndfileSha256": "4e3bd2de8e1485110eaebef8e1239471f73d608773831c323bf528e05645655e",
+        "zmusicSha256": "62888d23f2dd7d17e7715212adf94f0d68f8b9bbca5692ca23918a248ac80b83"
+      }
+    },
+    "zmusic": {
+      "source": "https://github.com/ZDoom/ZMusic.git",
+      "tag": "1.1.14",
+      "commit": "89f3d65734470fb7ec0c1e69f73a0cfcc88ed557",
+      "license": "GPL-3.0-or-later"
+    },
+    "libsndfile": {
+      "source": "https://github.com/libsndfile/libsndfile.git",
+      "tag": "1.2.2",
+      "commit": "72f6af15e8f85157bd622ed45b979025828b7001",
+      "license": "LGPL-2.1-or-later"
+    },
+    "openalSoft": {
+      "source": "https://github.com/kcat/openal-soft.git",
+      "tag": "1.23.1",
+      "commit": "d3875f333fb6abe2f39d82caca329414871ae53b",
+      "license": "LGPL-2.0-or-later"
+    },
+    "freedoom": {
+      "source": "https://github.com/freedoom/freedoom/releases/download/v0.13.0/freedoom-0.13.0.zip",
+      "version": "0.13.0",
+      "archiveSha256": "3f9b264f3e3ce503b4fb7f6bdcb1f419d93c7b546f4df3e874dd878db9688f59",
+      "freedoom2Sha256": "a8772e088847032510d97ba2312406a6998f21cbab44d4ff10696faa9c0ecd4b",
+      "license": "BSD-3-Clause"
+    },
+    "ultimateClassicMinimap": {
+      "source": "https://github.com/Lewisk3/UltimateClassicMinimap.git",
+      "commit": "0c690b839b333da1823b935e9d6db7fa9379cfd9",
+      "license": "MIT",
+      "location": "mod/BrogueDoom"
+    }
+  },
+  "release": {
+    "platform": "win-x64",
+    "initialVersion": "0.1.0-alpha.1",
+    "bridgeApiVersion": 12,
+    "mapCompilerVersion": 31
+  }
+}

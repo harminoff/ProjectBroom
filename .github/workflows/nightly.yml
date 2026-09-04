@@ -1,0 +1,35 @@
+name: Nightly parity matrix
+
+on:
+  schedule:
+    - cron: '23 8 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  long-run:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        seed: [1, 2, 3, 12345, 8675309]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            make
+            mingw-w64-ucrt-x86_64-gcc
+      - name: Build bridge
+        shell: powershell
+        run: .\scripts\build-bridge.ps1
+      - name: Deterministic long run
+        shell: powershell
+        run: .\scripts\run-bridge-test.ps1 -Seed ${{ matrix.seed }} -LongRun 500

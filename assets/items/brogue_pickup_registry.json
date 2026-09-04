@@ -1,0 +1,1008 @@
+{
+  "schemaVersion": 1,
+  "source": "Brogue CE local Rogue.h and Globals.c item catalogs",
+  "itemKindCount": 100,
+  "atlas": "mod/BrogueDoom/graphics/BRGITEMS.png",
+  "items": [
+    {
+      "category": 1,
+      "categorySymbol": "FOOD",
+      "kind": 0,
+      "name": "ration of food",
+      "class": "BroguePickupC0001K00",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "food_00.obj"
+    },
+    {
+      "category": 1,
+      "categorySymbol": "FOOD",
+      "kind": 1,
+      "name": "mango",
+      "class": "BroguePickupC0001K01",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "food_01.obj"
+    },
+    {
+      "category": 2,
+      "categorySymbol": "WEAPON",
+      "kind": 0,
+      "name": "dagger",
+      "class": "BroguePickupC0002K00",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "weapon_00.obj"
+    },
+    {
+      "category": 2,
+      "categorySymbol": "WEAPON",
+      "kind": 1,
+      "name": "sword",
+      "class": "BroguePickupC0002K01",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "weapon_01.obj"
+    },
+    {
+      "category": 2,
+      "categorySymbol": "WEAPON",
+      "kind": 2,
+      "name": "broadsword",
+      "class": "BroguePickupC0002K02",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "weapon_02.obj"
+    },
+    {
+      "category": 2,
+      "categorySymbol": "WEAPON",
+      "kind": 3,
+      "name": "whip",
+      "class": "BroguePickupC0002K03",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "weapon_03.obj"
+    },
+    {
+      "category": 2,
+      "categorySymbol": "WEAPON",
+      "kind": 4,
+      "name": "rapier",
+      "class": "BroguePickupC0002K04",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "weapon_04.obj"
+    },
+    {
+      "category": 2,
+      "categorySymbol": "WEAPON",
+      "kind": 5,
+      "name": "flail",
+      "class": "BroguePickupC0002K05",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "weapon_05.obj"
+    },
+    {
+      "category": 2,
+      "categorySymbol": "WEAPON",
+      "kind": 6,
+      "name": "mace",
+      "class": "BroguePickupC0002K06",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "weapon_06.obj"
+    },
+    {
+      "category": 2,
+      "categorySymbol": "WEAPON",
+      "kind": 7,
+      "name": "war hammer",
+      "class": "BroguePickupC0002K07",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "weapon_07.obj"
+    },
+    {
+      "category": 2,
+      "categorySymbol": "WEAPON",
+      "kind": 8,
+      "name": "spear",
+      "class": "BroguePickupC0002K08",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "weapon_08.obj"
+    },
+    {
+      "category": 2,
+      "categorySymbol": "WEAPON",
+      "kind": 9,
+      "name": "war pike",
+      "class": "BroguePickupC0002K09",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "weapon_09.obj"
+    },
+    {
+      "category": 2,
+      "categorySymbol": "WEAPON",
+      "kind": 10,
+      "name": "axe",
+      "class": "BroguePickupC0002K10",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "weapon_10.obj"
+    },
+    {
+      "category": 2,
+      "categorySymbol": "WEAPON",
+      "kind": 11,
+      "name": "war axe",
+      "class": "BroguePickupC0002K11",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "weapon_11.obj"
+    },
+    {
+      "category": 2,
+      "categorySymbol": "WEAPON",
+      "kind": 12,
+      "name": "dart",
+      "class": "BroguePickupC0002K12",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "weapon_12.obj"
+    },
+    {
+      "category": 2,
+      "categorySymbol": "WEAPON",
+      "kind": 13,
+      "name": "incendiary dart",
+      "class": "BroguePickupC0002K13",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "weapon_13.obj"
+    },
+    {
+      "category": 2,
+      "categorySymbol": "WEAPON",
+      "kind": 14,
+      "name": "javelin",
+      "class": "BroguePickupC0002K14",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "weapon_14.obj"
+    },
+    {
+      "category": 4,
+      "categorySymbol": "ARMOR",
+      "kind": 0,
+      "name": "leather armor",
+      "class": "BroguePickupC0004K00",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "armor_00.obj"
+    },
+    {
+      "category": 4,
+      "categorySymbol": "ARMOR",
+      "kind": 1,
+      "name": "scale mail",
+      "class": "BroguePickupC0004K01",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "armor_01.obj"
+    },
+    {
+      "category": 4,
+      "categorySymbol": "ARMOR",
+      "kind": 2,
+      "name": "chain mail",
+      "class": "BroguePickupC0004K02",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "armor_02.obj"
+    },
+    {
+      "category": 4,
+      "categorySymbol": "ARMOR",
+      "kind": 3,
+      "name": "banded mail",
+      "class": "BroguePickupC0004K03",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "armor_03.obj"
+    },
+    {
+      "category": 4,
+      "categorySymbol": "ARMOR",
+      "kind": 4,
+      "name": "splint mail",
+      "class": "BroguePickupC0004K04",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "armor_04.obj"
+    },
+    {
+      "category": 4,
+      "categorySymbol": "ARMOR",
+      "kind": 5,
+      "name": "plate armor",
+      "class": "BroguePickupC0004K05",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "armor_05.obj"
+    },
+    {
+      "category": 8,
+      "categorySymbol": "POTION",
+      "kind": 0,
+      "name": "life",
+      "class": "BroguePickupC0008K00",
+      "genericClass": "BroguePickupC0008Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "potion_00.obj"
+    },
+    {
+      "category": 8,
+      "categorySymbol": "POTION",
+      "kind": 1,
+      "name": "strength",
+      "class": "BroguePickupC0008K01",
+      "genericClass": "BroguePickupC0008Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "potion_01.obj"
+    },
+    {
+      "category": 8,
+      "categorySymbol": "POTION",
+      "kind": 2,
+      "name": "telepathy",
+      "class": "BroguePickupC0008K02",
+      "genericClass": "BroguePickupC0008Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "potion_02.obj"
+    },
+    {
+      "category": 8,
+      "categorySymbol": "POTION",
+      "kind": 3,
+      "name": "levitation",
+      "class": "BroguePickupC0008K03",
+      "genericClass": "BroguePickupC0008Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "potion_03.obj"
+    },
+    {
+      "category": 8,
+      "categorySymbol": "POTION",
+      "kind": 4,
+      "name": "detect magic",
+      "class": "BroguePickupC0008K04",
+      "genericClass": "BroguePickupC0008Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "potion_04.obj"
+    },
+    {
+      "category": 8,
+      "categorySymbol": "POTION",
+      "kind": 5,
+      "name": "haste",
+      "class": "BroguePickupC0008K05",
+      "genericClass": "BroguePickupC0008Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "potion_05.obj"
+    },
+    {
+      "category": 8,
+      "categorySymbol": "POTION",
+      "kind": 6,
+      "name": "fire immunity",
+      "class": "BroguePickupC0008K06",
+      "genericClass": "BroguePickupC0008Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "potion_06.obj"
+    },
+    {
+      "category": 8,
+      "categorySymbol": "POTION",
+      "kind": 7,
+      "name": "invisibility",
+      "class": "BroguePickupC0008K07",
+      "genericClass": "BroguePickupC0008Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "potion_07.obj"
+    },
+    {
+      "category": 8,
+      "categorySymbol": "POTION",
+      "kind": 8,
+      "name": "poison",
+      "class": "BroguePickupC0008K08",
+      "genericClass": "BroguePickupC0008Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "potion_08.obj"
+    },
+    {
+      "category": 8,
+      "categorySymbol": "POTION",
+      "kind": 9,
+      "name": "paralysis",
+      "class": "BroguePickupC0008K09",
+      "genericClass": "BroguePickupC0008Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "potion_09.obj"
+    },
+    {
+      "category": 8,
+      "categorySymbol": "POTION",
+      "kind": 10,
+      "name": "hallucination",
+      "class": "BroguePickupC0008K10",
+      "genericClass": "BroguePickupC0008Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "potion_10.obj"
+    },
+    {
+      "category": 8,
+      "categorySymbol": "POTION",
+      "kind": 11,
+      "name": "confusion",
+      "class": "BroguePickupC0008K11",
+      "genericClass": "BroguePickupC0008Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "potion_11.obj"
+    },
+    {
+      "category": 8,
+      "categorySymbol": "POTION",
+      "kind": 12,
+      "name": "incineration",
+      "class": "BroguePickupC0008K12",
+      "genericClass": "BroguePickupC0008Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "potion_12.obj"
+    },
+    {
+      "category": 8,
+      "categorySymbol": "POTION",
+      "kind": 13,
+      "name": "darkness",
+      "class": "BroguePickupC0008K13",
+      "genericClass": "BroguePickupC0008Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "potion_13.obj"
+    },
+    {
+      "category": 8,
+      "categorySymbol": "POTION",
+      "kind": 14,
+      "name": "descent",
+      "class": "BroguePickupC0008K14",
+      "genericClass": "BroguePickupC0008Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "potion_14.obj"
+    },
+    {
+      "category": 8,
+      "categorySymbol": "POTION",
+      "kind": 15,
+      "name": "lichen",
+      "class": "BroguePickupC0008K15",
+      "genericClass": "BroguePickupC0008Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "potion_15.obj"
+    },
+    {
+      "category": 16,
+      "categorySymbol": "SCROLL",
+      "kind": 0,
+      "name": "enchanting",
+      "class": "BroguePickupC0016K00",
+      "genericClass": "BroguePickupC0016Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "scroll_00.obj"
+    },
+    {
+      "category": 16,
+      "categorySymbol": "SCROLL",
+      "kind": 1,
+      "name": "identify",
+      "class": "BroguePickupC0016K01",
+      "genericClass": "BroguePickupC0016Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "scroll_01.obj"
+    },
+    {
+      "category": 16,
+      "categorySymbol": "SCROLL",
+      "kind": 2,
+      "name": "teleportation",
+      "class": "BroguePickupC0016K02",
+      "genericClass": "BroguePickupC0016Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "scroll_02.obj"
+    },
+    {
+      "category": 16,
+      "categorySymbol": "SCROLL",
+      "kind": 3,
+      "name": "remove curse",
+      "class": "BroguePickupC0016K03",
+      "genericClass": "BroguePickupC0016Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "scroll_03.obj"
+    },
+    {
+      "category": 16,
+      "categorySymbol": "SCROLL",
+      "kind": 4,
+      "name": "recharging",
+      "class": "BroguePickupC0016K04",
+      "genericClass": "BroguePickupC0016Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "scroll_04.obj"
+    },
+    {
+      "category": 16,
+      "categorySymbol": "SCROLL",
+      "kind": 5,
+      "name": "protect armor",
+      "class": "BroguePickupC0016K05",
+      "genericClass": "BroguePickupC0016Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "scroll_05.obj"
+    },
+    {
+      "category": 16,
+      "categorySymbol": "SCROLL",
+      "kind": 6,
+      "name": "protect weapon",
+      "class": "BroguePickupC0016K06",
+      "genericClass": "BroguePickupC0016Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "scroll_06.obj"
+    },
+    {
+      "category": 16,
+      "categorySymbol": "SCROLL",
+      "kind": 7,
+      "name": "sanctuary",
+      "class": "BroguePickupC0016K07",
+      "genericClass": "BroguePickupC0016Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "scroll_07.obj"
+    },
+    {
+      "category": 16,
+      "categorySymbol": "SCROLL",
+      "kind": 8,
+      "name": "magic mapping",
+      "class": "BroguePickupC0016K08",
+      "genericClass": "BroguePickupC0016Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "scroll_08.obj"
+    },
+    {
+      "category": 16,
+      "categorySymbol": "SCROLL",
+      "kind": 9,
+      "name": "negation",
+      "class": "BroguePickupC0016K09",
+      "genericClass": "BroguePickupC0016Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "scroll_09.obj"
+    },
+    {
+      "category": 16,
+      "categorySymbol": "SCROLL",
+      "kind": 10,
+      "name": "shattering",
+      "class": "BroguePickupC0016K10",
+      "genericClass": "BroguePickupC0016Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "scroll_10.obj"
+    },
+    {
+      "category": 16,
+      "categorySymbol": "SCROLL",
+      "kind": 11,
+      "name": "discord",
+      "class": "BroguePickupC0016K11",
+      "genericClass": "BroguePickupC0016Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "scroll_11.obj"
+    },
+    {
+      "category": 16,
+      "categorySymbol": "SCROLL",
+      "kind": 12,
+      "name": "aggravate monster",
+      "class": "BroguePickupC0016K12",
+      "genericClass": "BroguePickupC0016Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "scroll_12.obj"
+    },
+    {
+      "category": 16,
+      "categorySymbol": "SCROLL",
+      "kind": 13,
+      "name": "summon monster",
+      "class": "BroguePickupC0016K13",
+      "genericClass": "BroguePickupC0016Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "scroll_13.obj"
+    },
+    {
+      "category": 32,
+      "categorySymbol": "STAFF",
+      "kind": 0,
+      "name": "lightning",
+      "class": "BroguePickupC0032K00",
+      "genericClass": "BroguePickupC0032Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "staff_00.obj"
+    },
+    {
+      "category": 32,
+      "categorySymbol": "STAFF",
+      "kind": 1,
+      "name": "firebolt",
+      "class": "BroguePickupC0032K01",
+      "genericClass": "BroguePickupC0032Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "staff_01.obj"
+    },
+    {
+      "category": 32,
+      "categorySymbol": "STAFF",
+      "kind": 2,
+      "name": "poison",
+      "class": "BroguePickupC0032K02",
+      "genericClass": "BroguePickupC0032Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "staff_02.obj"
+    },
+    {
+      "category": 32,
+      "categorySymbol": "STAFF",
+      "kind": 3,
+      "name": "tunneling",
+      "class": "BroguePickupC0032K03",
+      "genericClass": "BroguePickupC0032Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "staff_03.obj"
+    },
+    {
+      "category": 32,
+      "categorySymbol": "STAFF",
+      "kind": 4,
+      "name": "blinking",
+      "class": "BroguePickupC0032K04",
+      "genericClass": "BroguePickupC0032Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "staff_04.obj"
+    },
+    {
+      "category": 32,
+      "categorySymbol": "STAFF",
+      "kind": 5,
+      "name": "entrancement",
+      "class": "BroguePickupC0032K05",
+      "genericClass": "BroguePickupC0032Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "staff_05.obj"
+    },
+    {
+      "category": 32,
+      "categorySymbol": "STAFF",
+      "kind": 6,
+      "name": "obstruction",
+      "class": "BroguePickupC0032K06",
+      "genericClass": "BroguePickupC0032Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "staff_06.obj"
+    },
+    {
+      "category": 32,
+      "categorySymbol": "STAFF",
+      "kind": 7,
+      "name": "discord",
+      "class": "BroguePickupC0032K07",
+      "genericClass": "BroguePickupC0032Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "staff_07.obj"
+    },
+    {
+      "category": 32,
+      "categorySymbol": "STAFF",
+      "kind": 8,
+      "name": "conjuration",
+      "class": "BroguePickupC0032K08",
+      "genericClass": "BroguePickupC0032Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "staff_08.obj"
+    },
+    {
+      "category": 32,
+      "categorySymbol": "STAFF",
+      "kind": 9,
+      "name": "healing",
+      "class": "BroguePickupC0032K09",
+      "genericClass": "BroguePickupC0032Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "staff_09.obj"
+    },
+    {
+      "category": 32,
+      "categorySymbol": "STAFF",
+      "kind": 10,
+      "name": "haste",
+      "class": "BroguePickupC0032K10",
+      "genericClass": "BroguePickupC0032Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "staff_10.obj"
+    },
+    {
+      "category": 32,
+      "categorySymbol": "STAFF",
+      "kind": 11,
+      "name": "protection",
+      "class": "BroguePickupC0032K11",
+      "genericClass": "BroguePickupC0032Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "staff_11.obj"
+    },
+    {
+      "category": 64,
+      "categorySymbol": "WAND",
+      "kind": 0,
+      "name": "teleportation",
+      "class": "BroguePickupC0064K00",
+      "genericClass": "BroguePickupC0064Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "wand_00.obj"
+    },
+    {
+      "category": 64,
+      "categorySymbol": "WAND",
+      "kind": 1,
+      "name": "slowing",
+      "class": "BroguePickupC0064K01",
+      "genericClass": "BroguePickupC0064Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "wand_01.obj"
+    },
+    {
+      "category": 64,
+      "categorySymbol": "WAND",
+      "kind": 2,
+      "name": "polymorph",
+      "class": "BroguePickupC0064K02",
+      "genericClass": "BroguePickupC0064Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "wand_02.obj"
+    },
+    {
+      "category": 64,
+      "categorySymbol": "WAND",
+      "kind": 3,
+      "name": "negation",
+      "class": "BroguePickupC0064K03",
+      "genericClass": "BroguePickupC0064Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "wand_03.obj"
+    },
+    {
+      "category": 64,
+      "categorySymbol": "WAND",
+      "kind": 4,
+      "name": "domination",
+      "class": "BroguePickupC0064K04",
+      "genericClass": "BroguePickupC0064Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "wand_04.obj"
+    },
+    {
+      "category": 64,
+      "categorySymbol": "WAND",
+      "kind": 5,
+      "name": "beckoning",
+      "class": "BroguePickupC0064K05",
+      "genericClass": "BroguePickupC0064Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "wand_05.obj"
+    },
+    {
+      "category": 64,
+      "categorySymbol": "WAND",
+      "kind": 6,
+      "name": "plenty",
+      "class": "BroguePickupC0064K06",
+      "genericClass": "BroguePickupC0064Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "wand_06.obj"
+    },
+    {
+      "category": 64,
+      "categorySymbol": "WAND",
+      "kind": 7,
+      "name": "invisibility",
+      "class": "BroguePickupC0064K07",
+      "genericClass": "BroguePickupC0064Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "wand_07.obj"
+    },
+    {
+      "category": 64,
+      "categorySymbol": "WAND",
+      "kind": 8,
+      "name": "empowerment",
+      "class": "BroguePickupC0064K08",
+      "genericClass": "BroguePickupC0064Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "wand_08.obj"
+    },
+    {
+      "category": 128,
+      "categorySymbol": "RING",
+      "kind": 0,
+      "name": "clairvoyance",
+      "class": "BroguePickupC0128K00",
+      "genericClass": "BroguePickupC0128Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "ring_00.obj"
+    },
+    {
+      "category": 128,
+      "categorySymbol": "RING",
+      "kind": 1,
+      "name": "stealth",
+      "class": "BroguePickupC0128K01",
+      "genericClass": "BroguePickupC0128Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "ring_01.obj"
+    },
+    {
+      "category": 128,
+      "categorySymbol": "RING",
+      "kind": 2,
+      "name": "regeneration",
+      "class": "BroguePickupC0128K02",
+      "genericClass": "BroguePickupC0128Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "ring_02.obj"
+    },
+    {
+      "category": 128,
+      "categorySymbol": "RING",
+      "kind": 3,
+      "name": "transference",
+      "class": "BroguePickupC0128K03",
+      "genericClass": "BroguePickupC0128Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "ring_03.obj"
+    },
+    {
+      "category": 128,
+      "categorySymbol": "RING",
+      "kind": 4,
+      "name": "light",
+      "class": "BroguePickupC0128K04",
+      "genericClass": "BroguePickupC0128Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "ring_04.obj"
+    },
+    {
+      "category": 128,
+      "categorySymbol": "RING",
+      "kind": 5,
+      "name": "awareness",
+      "class": "BroguePickupC0128K05",
+      "genericClass": "BroguePickupC0128Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "ring_05.obj"
+    },
+    {
+      "category": 128,
+      "categorySymbol": "RING",
+      "kind": 6,
+      "name": "wisdom",
+      "class": "BroguePickupC0128K06",
+      "genericClass": "BroguePickupC0128Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "ring_06.obj"
+    },
+    {
+      "category": 128,
+      "categorySymbol": "RING",
+      "kind": 7,
+      "name": "reaping",
+      "class": "BroguePickupC0128K07",
+      "genericClass": "BroguePickupC0128Generic",
+      "identityHiddenUntilKnown": true,
+      "model": "ring_07.obj"
+    },
+    {
+      "category": 256,
+      "categorySymbol": "CHARM",
+      "kind": 0,
+      "name": "health",
+      "class": "BroguePickupC0256K00",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "charm_00.obj"
+    },
+    {
+      "category": 256,
+      "categorySymbol": "CHARM",
+      "kind": 1,
+      "name": "protection",
+      "class": "BroguePickupC0256K01",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "charm_01.obj"
+    },
+    {
+      "category": 256,
+      "categorySymbol": "CHARM",
+      "kind": 2,
+      "name": "haste",
+      "class": "BroguePickupC0256K02",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "charm_02.obj"
+    },
+    {
+      "category": 256,
+      "categorySymbol": "CHARM",
+      "kind": 3,
+      "name": "fire immunity",
+      "class": "BroguePickupC0256K03",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "charm_03.obj"
+    },
+    {
+      "category": 256,
+      "categorySymbol": "CHARM",
+      "kind": 4,
+      "name": "invisibility",
+      "class": "BroguePickupC0256K04",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "charm_04.obj"
+    },
+    {
+      "category": 256,
+      "categorySymbol": "CHARM",
+      "kind": 5,
+      "name": "telepathy",
+      "class": "BroguePickupC0256K05",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "charm_05.obj"
+    },
+    {
+      "category": 256,
+      "categorySymbol": "CHARM",
+      "kind": 6,
+      "name": "levitation",
+      "class": "BroguePickupC0256K06",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "charm_06.obj"
+    },
+    {
+      "category": 256,
+      "categorySymbol": "CHARM",
+      "kind": 7,
+      "name": "shattering",
+      "class": "BroguePickupC0256K07",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "charm_07.obj"
+    },
+    {
+      "category": 256,
+      "categorySymbol": "CHARM",
+      "kind": 8,
+      "name": "guardian",
+      "class": "BroguePickupC0256K08",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "charm_08.obj"
+    },
+    {
+      "category": 256,
+      "categorySymbol": "CHARM",
+      "kind": 9,
+      "name": "teleportation",
+      "class": "BroguePickupC0256K09",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "charm_09.obj"
+    },
+    {
+      "category": 256,
+      "categorySymbol": "CHARM",
+      "kind": 10,
+      "name": "recharging",
+      "class": "BroguePickupC0256K10",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "charm_10.obj"
+    },
+    {
+      "category": 256,
+      "categorySymbol": "CHARM",
+      "kind": 11,
+      "name": "negation",
+      "class": "BroguePickupC0256K11",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "charm_11.obj"
+    },
+    {
+      "category": 512,
+      "categorySymbol": "GOLD",
+      "kind": 0,
+      "name": "gold",
+      "class": "BroguePickupC0512K00",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "gold_00.obj"
+    },
+    {
+      "category": 1024,
+      "categorySymbol": "AMULET",
+      "kind": 0,
+      "name": "Amulet of Yendor",
+      "class": "BroguePickupC1024K00",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "amulet_00.obj"
+    },
+    {
+      "category": 2048,
+      "categorySymbol": "GEM",
+      "kind": 0,
+      "name": "lumenstone",
+      "class": "BroguePickupC2048K00",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "gem_00.obj"
+    },
+    {
+      "category": 4096,
+      "categorySymbol": "KEY",
+      "kind": 0,
+      "name": "door key",
+      "class": "BroguePickupC4096K00",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "key_00.obj"
+    },
+    {
+      "category": 4096,
+      "categorySymbol": "KEY",
+      "kind": 1,
+      "name": "cage key",
+      "class": "BroguePickupC4096K01",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "key_01.obj"
+    },
+    {
+      "category": 4096,
+      "categorySymbol": "KEY",
+      "kind": 2,
+      "name": "crystal orb",
+      "class": "BroguePickupC4096K02",
+      "genericClass": null,
+      "identityHiddenUntilKnown": false,
+      "model": "key_02.obj"
+    }
+  ]
+}

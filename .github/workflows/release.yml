@@ -1,0 +1,64 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: SemVer without leading v
+        required: true
+        default: 0.1.0-alpha.1
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  package:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            make
+            mingw-w64-ucrt-x86_64-gcc
+      - name: Determine version
+        id: version
+        shell: powershell
+        run: |
+          $version = if ('${{ github.event_name }}' -eq 'workflow_dispatch') { '${{ inputs.version }}' } else { '${{ github.ref_name }}'.TrimStart('v') }
+          "value=$version" >> $env:GITHUB_OUTPUT
+      - name: Audit, build, test, and package
+        shell: powershell
+        run: .\scripts\package-release.ps1 -Version '${{ steps.version.outputs.value }}'
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ProjectBroom-${{ steps.version.outputs.value }}
+          path: artifacts/release/${{ steps.version.outputs.value }}/*
+          if-no-files-found: error
+      - name: Attest runtime archive
+        if: github.event.repository.visibility == 'public'
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: artifacts/release/${{ steps.version.outputs.value }}/ProjectBroom-Windows-x64-${{ steps.version.outputs.value }}.zip
+      - name: Publish GitHub prerelease
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create '${{ github.ref_name }}' artifacts/release/${{ steps.version.outputs.value }}/*.zip artifacts/release/${{ steps.version.outputs.value }}/SHA256SUMS.txt artifacts/release/${{ steps.version.outputs.value }}/release-manifest.json --verify-tag --prerelease --generate-notes --title 'Project Broom ${{ github.ref_name }}'

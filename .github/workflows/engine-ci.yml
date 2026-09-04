@@ -1,0 +1,56 @@
+name: Engine integration
+
+on:
+  pull_request:
+    paths:
+      - 'src/gzdoom-bridge/**'
+      - 'src/brogue-mapgen/**'
+      - 'patches/**'
+      - 'mod/**'
+      - 'assets/**'
+      - 'scripts/**'
+      - 'tools/mapcompiler/**'
+      - '.github/workflows/engine-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/gzdoom-bridge/**'
+      - 'src/brogue-mapgen/**'
+      - 'patches/**'
+      - 'mod/**'
+      - 'assets/**'
+      - 'scripts/**'
+      - 'tools/mapcompiler/**'
+
+permissions:
+  contents: read
+
+jobs:
+  build-engine:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            make
+            mingw-w64-ucrt-x86_64-gcc
+      - name: Bootstrap pinned dependencies
+        shell: powershell
+        run: .\scripts\bootstrap-dev.ps1
+      - name: Build complete source bridge
+        shell: powershell
+        run: .\scripts\build-dev.ps1
+      - name: Verify engine executable
+        shell: powershell
+        run: |
+          $engine = @('.build\gzdoom\gzdoom.exe', '.build\gzdoom\Release\gzdoom.exe') | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $engine) { throw 'Custom GZDoom executable was not produced.' }

@@ -1,0 +1,32 @@
+* text=auto eol=lf
+
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.sln text eol=crlf
+*.vcxproj text eol=crlf
+*.vcxproj.filters text eol=crlf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.bmp binary
+*.ico binary
+*.wav binary
+*.ogg binary
+*.flac binary
+*.wad binary
+*.pk3 binary
+*.zip binary
+*.7z binary
+*.exe binary
+*.dll binary
+*.lib binary
+*.pdb binary
+
+# Wavefront OBJ files used by the mod are text and should remain diffable.
+*.obj text eol=lf
+
+src/brogue-mapgen/** linguist-vendored
+mod/BrogueDoom/models/generated/** linguist-generated

@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "weaponCount": 15,
+  "weapons": [
+    {
+      "kind": 0,
+      "name": "dagger",
+      "class": "BrogueViewWeaponK00",
+      "model": "weapon_00.obj",
+      "animationFamily": "thrust"
+    },
+    {
+      "kind": 1,
+      "name": "sword",
+      "class": "BrogueViewWeaponK01",
+      "model": "weapon_01.obj",
+      "animationFamily": "slash"
+    },
+    {
+      "kind": 2,
+      "name": "broadsword",
+      "class": "BrogueViewWeaponK02",
+      "model": "weapon_02.obj",
+      "animationFamily": "heavy"
+    },
+    {
+      "kind": 3,
+      "name": "whip",
+      "class": "BrogueViewWeaponK03",
+      "model": "weapon_03.obj",
+      "animationFamily": "lash"
+    },
+    {
+      "kind": 4,
+      "name": "rapier",
+      "class": "BrogueViewWeaponK04",
+      "model": "weapon_04.obj",
+      "animationFamily": "thrust"
+    },
+    {
+      "kind": 5,
+      "name": "flail",
+      "class": "BrogueViewWeaponK05",
+      "model": "weapon_05.obj",
+      "animationFamily": "flail"
+    },
+    {
+      "kind": 6,
+      "name": "mace",
+      "class": "BrogueViewWeaponK06",
+      "model": "weapon_06.obj",
+      "animationFamily": "heavy"
+    },
+    {
+      "kind": 7,
+      "name": "war hammer",
+      "class": "BrogueViewWeaponK07",
+      "model": "weapon_07.obj",
+      "animationFamily": "heavy"
+    },
+    {
+      "kind": 8,
+      "name": "spear",
+      "class": "BrogueViewWeaponK08",
+      "model": "weapon_08.obj",
+      "animationFamily": "thrust"
+    },
+    {
+      "kind": 9,
+      "name": "war pike",
+      "class": "BrogueViewWeaponK09",
+      "model": "weapon_09.obj",
+      "animationFamily": "thrust"
+    },
+    {
+      "kind": 10,
+      "name": "axe",
+      "class": "BrogueViewWeaponK10",
+      "model": "weapon_10.obj",
+      "animationFamily": "sweep"
+    },
+    {
+      "kind": 11,
+      "name": "war axe",
+      "class": "BrogueViewWeaponK11",
+      "model": "weapon_11.obj",
+      "animationFamily": "sweep"
+    },
+    {
+      "kind": 12,
+      "name": "dart",
+      "class": "BrogueViewWeaponK12",
+      "model": "weapon_12.obj",
+      "animationFamily": "throw"
+    },
+    {
+      "kind": 13,
+      "name": "incendiary dart",
+      "class": "BrogueViewWeaponK13",
+      "model": "weapon_13.obj",
+      "animationFamily": "throw"
+    },
+    {
+      "kind": 14,
+      "name": "javelin",
+      "class": "BrogueViewWeaponK14",
+      "model": "weapon_14.obj",
+      "animationFamily": "throw"
+    }
+  ]
+}

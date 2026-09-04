@@ -1,0 +1,632 @@
+// Real-time playtimer
+class UCMinimap_StaticHandler : StaticEventHandler
+{
+	transient CVar cv_playtime;
+	transient CVar cv_mapdeaths;
+	String curmap;
+	override void WorldLoaded(WorldEvent e)
+	{
+		PlayerInfo plr = players[consoleplayer];
+		if(!plr) return;
+		cv_playtime = CVar.GetCVar("ucm_map_playtime", plr);
+		cv_mapdeaths = CVar.GetCVar("ucm_map_deaths", plr);
+		if(curmap != level.MapName && cv_playtime && cv_mapdeaths) 
+		{
+			cv_playtime.SetInt(0);
+			cv_mapdeaths.SetInt(0);
+			curmap = level.MapName;
+		}
+	}
+	override void WorldThingDied(WorldEvent e)
+	{
+		if(PlayerPawn(e.Thing)) 
+			cv_mapdeaths.SetInt(cv_mapdeaths.GetInt()+1);
+	}
+	override void WorldTick() { cv_playtime.SetInt(cv_playtime.getInt()+1); }
+}
+
+// Minimap and Radar
+class UCMinimap_EventHandler : EventHandler 
+{
+	int playtime_tics;
+	transient bool waypointmenu_forceopen;  // Triggers waypoint menu
+	transient bool waypointmenu_forceclose; 
+	ui transient Shape2D bg_circle;
+	ui transient vector2 baseoffs;
+	ui transient TextureID curpix; 
+	ui transient TextureID pix;
+	ui transient TextureID indpix;
+	ui transient double prevMS;
+	ui transient double deltatime;
+	ui transient double map_size;
+	ui transient double scrw;
+	ui transient double scrh;
+	ui transient double plr_rot;
+	ui transient double curzoom;
+	ui transient vector2 mappos; // Interpolated player position.
+	transient Array<int> btn_lines;	
+	
+	// CVars
+	private transient CVar cv_xoffset;
+	private transient CVar cv_yoffset;
+	private transient CVar cv_mapfollow;
+	private transient CVar cv_mapshowall;
+	private transient CVar cv_hidden;
+	private transient CVar cv_drawmap;
+	private transient CVar cv_hidemonsters;
+	private transient CVar cv_fullmapsize;
+	private transient CVar cv_maxmapsize;
+	private transient CVar cv_domaprotation;
+	private transient CVar cv_showdist;
+	private transient CVar cv_showrep;
+	private transient CVar cv_mapsize;
+	private transient CVar cv_radarzoom;
+	private transient CVar cv_drawplayer;
+	private transient CVar cv_drawcompass;
+	private transient CVar cv_renderdistance;
+	private transient CVar cv_radardistance;
+	private transient CVar cv_switchdistance;
+	private transient CVar cv_drawitems;
+	private transient CVar cv_drawmissiles;
+	private transient CVar cv_drawhealthbars;
+	private transient CVar cv_markstartandexit;
+	private transient CVar cv_mapdeaths;
+	private transient CVar cv_drawkeys;
+	private transient CVar cv_color_normal; 
+	private transient CVar cv_color_solid; 
+	private transient CVar cv_color_action; 
+	private transient CVar cv_color_border; 
+	private transient CVar cv_color_backg; 
+	private transient CVar cv_color_lum;
+	private transient CVar cv_color_alpha;
+	private transient CVar cv_color_backgalpha;
+	private transient CVar cv_color_compass;
+	private transient CVar cv_color_stats;
+	private transient CVar cv_playtime;
+	private transient CVar wp_name;
+	private transient CVar wp_color;
+	
+	// Held button states
+	enum MBT
+	{
+		MBT_UP	    = 1,
+		MBT_DOWN 	= 1<<1,
+		MBT_LEFT	= 1<<2,
+		MBT_RIGHT   = 1<<3,
+		MBT_ZOOMIN  = 1<<4,
+		MBT_ZOOMOUT = 1<<5
+	};
+	uint mapbtns;
+	
+	override void OnRegister()
+	{
+		PlayerInfo plr = players[consoleplayer];
+		if(!plr) return;
+	
+		cv_xoffset    		= CVar.GetCVar("ucm_xoffset", plr);
+		cv_yoffset    		= CVar.GetCVar("ucm_yoffset", plr);
+		cv_mapfollow	 	= CVar.GetCVar("ucm_mapfollow", plr);
+		cv_mapshowall 		= CVar.GetCVar("ucm_mapshowall", plr);
+		cv_hidden			= CVar.GetCVar("ucm_hide", plr);
+		cv_drawmap          = CVar.GetCVar("ucm_drawmap", plr);
+		cv_drawcompass      = CVar.GetCVar("ucm_drawcompass", plr);
+		cv_fullmapsize		= CVar.GetCVar("ucm_drawfullscreen", plr);
+		cv_maxmapsize		= CVar.GetCVar("ucm_drawmaxsize", plr);
+		cv_domaprotation	= CVar.GetCVar("ucm_drawrotation", plr);
+		cv_showdist			= CVar.GetCVar("ucm_showdistance", plr);
+		cv_showrep			= CVar.GetCVar("ucm_showrepeatable", plr);
+		cv_mapsize			= CVar.GetCVar("ucm_mapsize", plr);
+		cv_radarzoom		= CVar.GetCVar("ucm_radarzoom", plr);
+		cv_renderdistance	= CVar.GetCVar("ucm_maprenderdist", plr);
+		cv_drawplayer		= CVar.GetCVar("ucm_drawplayer", plr);
+		cv_radardistance	= CVar.GetCVar("ucm_radardist", plr);
+		cv_switchdistance   = CVar.GetCVar("ucm_maxswitchdist", plr); 
+		cv_color_normal		= CVar.GetCVar("ucm_color_normal", plr); 
+		cv_color_solid		= CVar.GetCVar("ucm_color_solid", plr); 
+		cv_color_action		= CVar.GetCVar("ucm_color_action", plr); 
+		cv_color_border		= CVar.GetCVar("ucm_color_border", plr);
+		cv_color_backg		= CVar.GetCVar("ucm_color_backg", plr);
+		cv_color_compass    = CVar.GetCVar("ucm_color_compas", plr);
+		cv_color_lum		= CVar.GetCVar("ucm_color_lum", plr);
+		cv_color_alpha		= CVar.GetCVar("ucm_color_alpha", plr);
+		cv_color_backgalpha	= CVar.GetCVar("ucm_color_backgalpha", plr);
+		cv_playtime  		= CVar.GetCVar("ucm_map_playtime", plr);
+		cv_color_stats 		= CVar.GetCVar("ucm_color_stats", plr);
+		cv_drawitems		= CVar.GetCVar("ucm_drawitems", plr);
+		cv_drawmissiles		= CVar.GetCVar("ucm_drawmissiles", plr);
+		cv_hidemonsters     = CVar.GetCVar("ucm_hidemonsters", plr); 
+		cv_drawhealthbars   = CVar.GetCVar("ucm_drawhealthbars", plr); 
+		cv_markstartandexit = CVar.GetCVar("ucm_markstartexit", plr); 
+		cv_mapdeaths 		= CVar.GetCVar("ucm_map_deaths", plr);
+		cv_drawkeys         = CVar.GetCVar("ucm_drawkeys", plr);
+		
+		wp_name  = CVar.GetCVar("waypoint_name", plr);
+		wp_color = CVar.GetCVar("waypoint_color", plr);
+	}
+	
+	override void WorldTick()
+	{
+		if((mapbtns & MBT_ZOOMIN) && cv_radarzoom.GetFloat() > 0.01) 
+			cv_radarzoom.SetFloat(cv_radarzoom.GetFloat()-0.1);
+		if((mapbtns & MBT_ZOOMOUT) && cv_radarzoom.GetFloat() < 500)
+			cv_radarzoom.SetFloat(cv_radarzoom.getFloat()+0.1);
+		
+		if(cv_xoffset.GetInt() < 0 && cv_yoffset.GetInt() < 0)
+			SendNetworkEvent("align.upperleft");
+	}
+		
+	override void RenderOverlay(RenderEvent e)
+	{
+		let plr = players[consoleplayer].mo;
+		if(!plr || gamestate != GS_LEVEL) return;	
+		
+		// Deltatime
+		if(!prevMS)
+		{
+			prevMS = MSTime();
+			return;
+		}
+		double ftime = MSTime()-prevMS;
+		prevMS = MSTime();
+		double dtime = 1000.0 / 60.0;
+		deltatime = (ftime/dtime);
+			
+		// Setup
+		scrw = Screen.GetWidth();
+		scrh = Screen.GetHeight();
+		if(mappos.x+mappos.y == 0) mappos = plr.pos.xy; 
+		
+		// Face animations
+		int faceind = (((Level.time+1) / 35) % 3);
+		if(faceind > 2) faceind = 0;
+		
+		// Textures
+		TextureID switchtex  = TexMan.CheckForTexture("SWTIND",TexMan.Type_Any);
+		TextureID rswitchtex = TexMan.CheckForTexture("RSWTIND",TexMan.Type_Any);
+		TextureID plrtex     = TexMan.CheckForTexture("STFST0" .. faceind,TexMan.Type_Any);
+		if(   !pix) pix    = TexMan.CheckForTexture("PXL",TexMan.Type_Any);
+		if(!indpix) indpix = TexMan.CheckForTexture("INDPXL",TexMan.Type_Any);
+		curpix = pix;
+		
+		// CVars 
+		Vector2 useroffs    = (cv_xoffset.GetInt(), cv_yoffset.GetInt());
+		bool dontShowAll 	= !cv_mapshowall.getBool() && !level.allmap;
+		bool hidden 		= cv_hidden.GetBool() && map_size <= 10; 
+		bool fullmapsize 	= cv_fullmapsize.GetBool(); 
+		bool maxmapsize  	= cv_maxmapsize.GetBool(); 
+		bool domaprotation  = cv_domaprotation.GetBool(); 
+		bool showdist 		= cv_showdist.GetBool(); 
+		bool showrep  		= cv_showrep.GetBool();
+		double to_mapsize 		  = fullmapsize ? scrw*2 : (!maxmapsize ? cv_mapsize.getFloat() : 512);
+		double size_mod   		  = fullmapsize ? scrw/128. : map_size/128.;
+		double minimap_renderdist = cv_renderdistance.getInt();
+		
+		// If the map was recently loaded, reset interpolation.
+		if(level.maptime < 5) 
+		{
+			map_size = to_mapsize;
+			mappos = plr.pos.xy;
+			size_mod = map_size/128.;
+			plr_rot = plr.angle;
+			if(plr.player.camera) plr_rot = plr.player.camera.angle;
+			baseoffs = ((25*size_mod)-useroffs.x, (25*size_mod)-useroffs.y);
+			curzoom = cv_radarzoom.GetFloat();
+		}
+		
+		// Colors
+		int col_bright      = int(255.*cv_color_lum.getFloat()) << 24;
+		int alpha_mask      = 0xFF << 24;
+		Color linecol 		= col_bright + cv_color_normal.getInt();  
+		Color solid_linecol = col_bright + cv_color_solid.getInt(); 
+		Color acton_linecol = col_bright + cv_color_action.getInt(); 
+		Color radrcol       = col_bright + cv_color_border.getInt(); 
+		Color backgcol      = alpha_mask + cv_color_backg.getInt(); 
+		double line_alpha   = cv_color_alpha.getFloat();
+		
+
+		// Size and Offsets		
+		curzoom = Lerp(curzoom, cv_radarzoom.GetFloat(), 0.25*deltatime);
+		if(curzoom == 0) curzoom = 1;
+		
+		if(!cv_hidden.GetBool())
+			map_size = Lerp(map_size, to_mapsize*(scrw/1920.), 0.25*deltatime);
+		else 
+			map_size = Lerp(map_size, 0, 0.25*deltatime);
+		
+		float xres = 1920./scrw;
+		float yres = 1080./scrh;
+
+		if(!fullmapsize && maxmapsize) 
+		{
+			double scrside = useroffs.x > scrw/2. ? -600 : -100;
+			baseoffs.x = Lerp(baseoffs.x,scrside*xres,0.25*deltatime);
+			baseoffs.y = Lerp(baseoffs.y,35*yres,0.25*deltatime);
+		}
+		else
+		{
+			baseoffs.x = Lerp(baseoffs.x,(25*size_mod)-useroffs.x,0.25*deltatime);
+			baseoffs.y = Lerp(baseoffs.y,(25*size_mod)-useroffs.y,0.25*deltatime);
+		}
+				
+		// Rotation and Positioning
+		if(cv_mapfollow.GetBool())
+		{
+			plr_rot = Lerp(plr_rot, domaprotation ? plr.angle : 90, 0.5*deltatime);
+			if(plr.player.camera)
+			{
+				plr_rot = (domaprotation ? plr.player.camera.angle : 90); // Do not Lerp
+			}
+			mappos.x = Lerp(mappos.x, plr.pos.x, 0.5*deltatime);
+			mappos.y = Lerp(mappos.y, plr.pos.y, 0.5*deltatime);
+		}
+		else
+		{
+			double movspd = (plr.player.cmd.buttons & BT_SPEED ? 20 : 10) * deltatime;
+			movspd *= curzoom;
+			plr_rot = Lerp(plr_rot, 90, 0.25*deltatime);
+			if(mapbtns & MBT_UP    ) mappos.y += movspd;
+			if(mapbtns & MBT_DOWN  ) mappos.y -= movspd;
+			if(mapbtns & MBT_LEFT  ) mappos.x -= movspd;
+			if(mapbtns & MBT_RIGHT ) mappos.x += movspd;
+		}
+		Vector2 dp = Actor.RotateVector( (0,0), plr_rot-90 );
+		Vector2 map_middle = (dp.x-baseoffs.x+(156*size_mod),dp.y-baseoffs.y+(140*size_mod));
+		if(fullmapsize)
+		{
+			map_middle = (scrw/2., scrh/2.)-(0,90/yres);
+			baseoffs = map_middle;
+		}
+		
+		// Draw Minimap BG
+		if(!hidden)
+			FillCircle(map_middle.x,map_middle.y,MAP_SIZE+4,backgcol,cv_color_backgalpha.getFloat());
+		
+		// Draw Minimap		
+		if( cv_drawmap.getBool() && !hidden )
+		{
+			for (int i = 0; i < Level.Lines.Size(); i++)
+			{
+				Line ln = Level.Lines[i];
+				if(ln.flags & Line.ML_DONTDRAW) continue;
+				if( !(ln.flags & Line.ML_MAPPED) && dontShowAll ) continue;
+			
+				Vector2 ln_pos = ln.v1.p;
+				Vector2 ln_len = ln.v2.p;
+				
+				// Check render distance
+				if(
+					   abs(ln_pos.x-mappos.x) > minimap_renderdist
+					&& abs(ln_len.x-mappos.x) > minimap_renderdist 
+					|| abs(ln_pos.y-mappos.y) > minimap_renderdist
+					&& abs(ln_len.y-mappos.y) > minimap_renderdist)
+				{
+					continue;
+				}
+					
+				Vector2 amapoffs = fullmapsize ? baseoffs : -baseoffs+((156, 140)*size_mod);
+				ln_pos = Actor.RotateVector(SwapVector(ln_pos-mappos),plr_rot+180);
+				ln_len = Actor.RotateVector(SwapVector(ln_len-mappos),plr_rot+180);					
+				ln_pos += amapoffs*curzoom;
+				ln_len += amapoffs*curzoom;
+				ln_pos /= curzoom;
+				ln_len /= curzoom;
+			
+				bool actionable = ln.special & SPAC_Cross || ln.special & SPAC_Use;
+				Color drawcol = (ln.flags & Line.ML_BLOCKING) ? solid_linecol : actionable ? acton_linecol : linecol;				
+				drawLine(ln_pos.x,ln_pos.y,ln_len.x,ln_len.y,drawcol, map_middle, MAP_SIZE, line_alpha);
+			}
+		}
+		
+		// Draw Border
+		if(!hidden && !fullmapsize)
+			drawCircle(map_middle.x,map_middle.y, MAP_SIZE+4, radrcol, line_alpha);
+			
+		// Draw Switches
+		if(switchtex && rswitchtex && plrtex && !hidden)
+		{			
+			double maxswitch = cv_switchdistance.getInt();
+			
+			for(uint i = 0; i < btn_lines.Size(); i++)
+			{
+				if(maxswitch <= 0) break;
+				
+				Line ln = Level.Lines[btn_lines[i]];
+				if(!ln) continue;
+				if( ln.special == 0 ) continue;		
+				double dist = VDist2D( (ln.v1.p.x/2 + ln.v2.p.x/2, (ln.v2.p.y/2 + ln.v2.p.y/2)), mappos ) / 32;	
+				if(dist > maxswitch) continue;
+				double l_angle = VectorAngle(ln.delta.x,ln.delta.y);		
+				int x = (mappos.x - (ln.v1.p.x/2 + ln.v2.p.x/2) );
+				int y = (mappos.y - (ln.v1.p.y/2 + ln.v2.p.y/2) );
+				Vector2 dp = Actor.RotateVector( SwapVector((x,y)), plr_rot );
+				dp /= curzoom;
+				
+				vector2 finalpos = dp+map_middle;
+				finalpos = clamp_vec(finalpos, map_middle, MAP_SIZE-4);
+				curpix = ((ln.flags & Line.ML_REPEAT_SPECIAL) && showrep) ? rswitchtex : switchtex;
+				double swscale = clamp(size_mod, 0.25, 2.0);
+				plotPixel(finalpos.x, finalpos.y, scale:(swscale,swscale));
+				if(showdist) Screen.DrawText("bigfont",Font.CR_GREEN,finalpos.x-5,finalpos.y-5, string.format("%d",dist));
+			}
+		}
+	
+		// Draw Radar
+		if(!hidden) 
+		{			
+			double frontangle = plr_rot+180;
+			double maxdist = cv_radardistance.getFloat();
+			ThinkerIterator act_it = ThinkerIterator.Create("Actor");
+			Actor obj;		
+			while(obj = Actor(act_it.Next()))
+			{		
+				let objItem = Inventory(obj);
+				bool isKey = obj is "Key";
+				bool brogueMonster = obj is "BrogueMonsterProxyBase";
+				bool radarMonster = obj.bISMONSTER || brogueMonster;
+				if(maxdist <= 0) break;
+				if(brogueMonster && obj.alpha <= 0) continue;
+				if(!radarMonster && !objItem && !obj.bMISSILE && !isKey) continue;
+				if(obj.bMISSILE && !cv_drawmissiles.GetBool()) continue;
+				if( objItem && !isKey && ( (!objItem.bCOUNTITEM && cv_drawitems.getInt() < 2) || !cv_drawitems.getInt() ) ) continue;
+				if( objItem && !cv_drawkeys.GetBool()) continue;
+				
+				double angdiff = obj.bMISSILE ? 45*5 : (obj.angle-plr.AngleTo(obj))+90;
+				TextureID stex = obj.CurState.GetSpriteTexture(((angdiff+135)%361)/45);
+				vector2 texsize;
+				[texsize.x, texsize.y] = TexMan.GetSize(stex);
+				double x = mappos.x - (obj.pos.x - (texsize.x/2.));
+				double y = mappos.y - (obj.pos.y - (texsize.y/2.));
+				uint renderstyle = obj.getRenderStyle();
+				
+				int dis = obj.Distance2D(plr);
+				if( dis < (maxdist*10.) || isKey )
+				{
+					vector2 delta = Actor.RotateVector( SwapVector((x,y)), frontangle);
+					delta.x /= curzoom;
+					delta.y /= curzoom;
+					// Brogue proxies deliberately have no Doom AI target. Their presence
+					// and visibility already came from the authoritative simulation.
+					bool hastarget = brogueMonster ? true : (dontShowAll ? (obj.target != NULL) : true);
+					if( !(obj is plr.GetClass()) && (hastarget || objItem) )
+					{
+						vector2 finalpos = ((map_middle.x-delta.x), (map_middle.y-delta.y));
+						double drawdist; 
+						[finalpos, drawdist] = clamp_vec(finalpos, map_middle, MAP_SIZE-4);
+						
+						Color dColor = Color(90,0xFF,0,0);
+						double dAlpha = obj.alpha * (drawdist>MAP_SIZE-4 ? 0.6 : 1.0);
+						double dScale = 2.0;
+						dScale *= size_mod;
+						dScale *= clamp(1.0-(drawdist/512.), isKey ? 0.75 : 0.35, 1.0);
+						dScale = clamp(dScale, 0.5, 3.0);
+						dScale /= (curzoom/6.);
+						if(radarMonster || obj.bMISSILE) dScale = clamp(dScale, 1.0, 3.5);
+						if(obj.bFRIENDLY) dColor = Color(65, 0xFF, 0xFF, 0);
+						bool radarvisible = drawdist<MAP_SIZE-4;
+ 						curpix = stex;
+						if(!radarMonster)
+						{
+							dScale = clamp(dScale, isKey ? 5.0 : 1.0, isKey ? 10.0 : 5.0);
+							if(!isKey && radarvisible)
+								plotPixel(finalpos.x, finalpos.y, 0, (dScale,dScale)*(obj.bMISSILE ? 0.18 : 0.2), dAlpha*line_alpha, renderstyle);
+							else if(isKey)
+								plotPixel(finalpos.x, finalpos.y, 0, (dScale,dScale)*0.25, dAlpha*line_alpha, renderstyle);
+						}
+						else if(radarMonster && !cv_hidemonsters.GetBool())
+						{
+							if(obj.health > 0)
+								plotPixel(finalpos.x, finalpos.y, dColor, (dScale,dScale)*0.2, dAlpha*line_alpha, renderstyle);
+							else if(radarvisible)
+								plotPixel(finalpos.x, finalpos.y, 0, (dScale,dScale)*0.2, dAlpha*line_alpha, renderstyle);
+						}
+						else if(radarMonster && obj.health > 0)
+						{
+							curpix = indpix;
+							plotPixel(finalpos.x, finalpos.y, dColor, (dScale,dScale), dAlpha*line_alpha, renderstyle);
+						}
+						if(radarMonster && cv_drawhealthbars.getBool() && radarvisible)
+						{
+							vector2 hbarpos = finalpos + (0, 5/size_mod)/yres;
+							double curhealth = clamp(obj.health / double(obj.GetMaxHealth()), 0, 1.0);
+							double healthmax = (20/xres) * curhealth;
+							Color hpcol_high = 0x00FF00;
+							Color hpcol_low  = 0xFF0000;
+							Color hpcol = (0xFF<<24) + int(Lerp(hpcol_high,hpcol_low,1. - curhealth));
+							Screen.DrawThickLine(hbarpos.x-healthmax/2,hbarpos.y,hbarpos.x+healthmax/2,hbarpos.y,7/xres,hpcol,floor(255*0.5));
+							//Screen.DrawThickLine(finalpos.x,finalpos.y-10,finalpos.x+20,finalpos.y-10,10,0xFFFF0000,255);
+						}
+					}
+				}
+			}
+			
+			// Draw Waypoints
+			let wp_data = I_WaypointStorage(plr.FindInventory("I_WaypointStorage"));
+			if(wp_data)
+			{
+				for(int i = 0; i < wp_data.waypoints.Size(); i++)
+				{
+					let wp = WaypointObject(wp_data.waypoints[i]);
+					double x = mappos.x - wp.pos.x;
+					double y = mappos.y - wp.pos.y;
+					vector2 delta    = Actor.RotateVector( SwapVector((x,y)), frontangle) / curzoom;
+					vector2 finalpos = map_middle-delta;
+					double wpscale = 4.0;
+					finalpos = clamp_vec(finalpos, map_middle, MAP_SIZE);
+					curpix = pix;
+					plotPixel(finalpos.x, finalpos.y, wp.col, (wpscale,wpscale));
+					Color textcol = wp.col - (0x90<<24);
+					Screen.DrawText("bigfont", Font.CR_UNTRANSLATED,
+						finalpos.x-(wpscale/2),finalpos.y-(wpscale/2), wp.nickname, DTA_ColorOverlay, textcol);
+				}
+			}
+			// Draw Player
+			if(cv_drawplayer.GetBool())
+			{
+				double plrscale = clamp(0.75*size_mod, 0.25, 1.0);
+				curpix = plrtex;
+				if(cv_mapfollow.GetBool())
+					plotPixel(map_middle.x-(16*plrscale),map_middle.y-(16*plrscale), scale:(plrscale,plrscale));
+				else
+				{
+					double x = mappos.x - plr.pos.x;
+					double y = mappos.y - plr.pos.y;
+					vector2 delta = Actor.RotateVector( SwapVector((x,y)), frontangle);
+					delta.x /= curzoom;
+					delta.y /= curzoom;		
+					vector2 finalpos = ((map_middle.x-delta.x), (map_middle.y-delta.y));
+					if(VDist2D(finalpos, map_middle) < MAP_SIZE+8)
+						plotPixel(finalpos.x-(16*plrscale),finalpos.y-(16*plrscale), scale:(plrscale,plrscale));
+				}
+			}
+			// Draw Compass (Get normal map middle, when not scaled to fullscreen)
+			double normmapsize = cv_mapsize.getFloat();
+			double normsizemod = normmapsize/128.;
+			vector2 normoffs = ((25*normsizemod)-useroffs.x, (25*normsizemod)-useroffs.y);
+			vector2 normal_mapmiddle = (dp.x-normoffs.x+(156*normsizemod),dp.y-normoffs.y+(150*normsizemod));
+			normal_mapmiddle = (normal_mapmiddle.x/xres, normal_mapmiddle.y/yres);
+			if(cv_drawcompass.GetBool())
+			{
+				curpix = pix;
+				Color compasscol = (0x90 << 24) + cv_color_compass.GetInt();
+				double cradius = fullmapsize ? 128/xres : map_size;
+				vector2 truemid = fullmapsize ? normal_mapmiddle : map_middle;
+				vector2 midoffs = -(6,5);
+				vector2 northpos = truemid+midoffs+(Actor.RotateVector((cradius,cradius)*0.78, frontangle-45    ));
+				vector2 southpos = truemid+midoffs+(Actor.RotateVector((cradius,cradius)*0.78, frontangle-45+180));
+				vector2 eastpos  = truemid+midoffs+(Actor.RotateVector((cradius,cradius)*0.78, frontangle-45+90 ));
+				vector2 westpos  = truemid+midoffs+(Actor.RotateVector((cradius,cradius)*0.78, frontangle-45-90 ));
+				uint ftrns = Font.CR_UNTRANSLATED;
+				DrawCircle(truemid.x, truemid.y, cradius*1.1, int(compasscol*0.5), 0.5);
+				if(fullmapsize)
+				{
+					DrawLine(northpos.x+6,northpos.y+5,southpos.x+6,southpos.y+5,compasscol,truemid,cradius*1.1);
+					DrawLine(eastpos.x+6,eastpos.y+5,westpos.x+6,westpos.y+5,compasscol,truemid,cradius*1.1);
+				}
+				Screen.DrawText("bigfont", ftrns, northpos.x, northpos.y, "N", DTA_ColorOverlay, compasscol);
+				Screen.DrawText("bigfont", ftrns, southpos.x, southpos.y, "S", DTA_ColorOverlay, compasscol);
+				Screen.DrawText("bigfont", ftrns,  eastpos.x,  eastpos.y, "E", DTA_ColorOverlay, compasscol);
+				Screen.DrawText("bigfont", ftrns,  westpos.x,  westpos.y, "W", DTA_ColorOverlay, compasscol);
+			}
+			
+			// Draw fullscreen text
+			if(fullmapsize)
+			{
+				Color txtcol = (0x90<<24) + cv_color_stats.GetInt();
+				Color percol = clamp(txtcol+0x00CCCCCC, txtcol, 0x90DDDDDD);
+				vector2 txtpos = (5,2);
+				vector2 txtdiff = (0,6);
+				vector2 txtscale = (0.7, 0.7);
+				uint ftrns = Font.CR_UNTRANSLATED;
+				double killsper = level.total_monsters ? level.killed_monsters/double(level.total_monsters)*100 : 100;
+				double secretsper = level.total_secrets ? (level.found_secrets/double(level.total_secrets))*100 : 100;
+				double itemsper = level.total_items ? (level.found_items/double(level.total_items))*100 : 100;
+				double playhours   = cv_playtime.getInt()/(35*60*60);
+				double playminutes = cv_playtime.getInt()/(35*60) - (playhours*60);
+				double playseconds = cv_playtime.getInt()/35. - (playminutes*60) - (playhours*60*60);
+				string playtime = String.Format("Time: \c[Green]%.2d:%.2d:%.2d",playhours,playminutes,playseconds);
+				if(playhours >= 1) playtime = playtime .. "\c[Red](SUCKS)"; 
+				string kills = String.Format("Kills \c[Green]%d/%d (%d%)", 
+					level.killed_monsters,level.total_monsters,
+					killsper
+				);
+				string secrets = String.Format("Secrets \c[Green]%d/%d (%d%)", 
+					level.found_secrets,level.total_secrets,
+					secretsper
+				);
+				string items = String.Format("Items \c[Green]%d/%d (%d%)", 
+					level.found_items,level.total_items,
+					itemsper
+				);
+				string mapinfo = String.Format("\c[Red]%s: \c[White]%s", level.MapName, level.LevelName);
+				DrawScaledString("bigfont", kills, txtpos, 
+					killsper >= 100 ? percol : txtcol, txtscale
+				);
+				txtpos += txtdiff;
+				DrawScaledString("bigfont", secrets, txtpos,  
+					secretsper >= 100 ? percol : txtcol, txtscale
+				);
+				txtpos = (424,2);
+				DrawScaledString("bigfont", playtime, txtpos,  
+					playhours>=1 ? percol : txtcol, txtscale
+				);
+				txtpos += txtdiff;
+				DrawScaledString("bigfont", items, txtpos,  
+					itemsper >= 100 ? percol : txtcol, txtscale
+				);
+				txtpos = (213,7);
+				DrawScaledString("bigfont", mapinfo, txtpos, scale:txtscale);
+				txtpos += txtdiff;
+				DrawScaledString("bigfont", "Deaths: \c[Red]" .. cv_mapdeaths.getInt(), txtpos, txtcol, txtscale);
+			}
+		}
+		
+		// Waypoint menu
+		if(waypointmenu_forceclose)
+		{
+			let m = Menu.getCurrentMenu();
+			if(m) m.Close();
+			SendNetworkEvent("ucm.waypointmenu.done");
+		}
+	}
+
+	// Fetch Switches
+	void FindSwitches()
+	{	
+		btn_lines.Clear();
+		bool mustuse = CVar.FindCVar("ucm_mustuse").getBool();
+		int specific = CVar.FindCVar("ucm_specific").getInt();
+		for(uint i = 0; i < Level.Lines.Size(); i++)
+		{
+			Line ln = Level.Lines[i];
+			bool isactivatable = (ln.special & (SPAC_Use|SPAC_Impact|SPAC_Push));
+	
+			if(specific && ln.special == specific) btn_lines.Push(i);
+			else if(specific) continue;
+			else
+			{
+				if (isactivatable && mustuse) 
+					btn_lines.Push(i);
+				else if(!mustuse && ln.special) 
+					btn_lines.Push(i);
+			}
+		}
+	}
+	bool, vector2 GetSpecialLinePos(uint special)
+	{
+		for(uint i = 0; i < Level.Lines.Size(); i++)
+		{
+			Line ln = Level.Lines[i];
+			if(ln.special != special) continue;
+			return true, (ln.v1.p.x/2 + ln.v2.p.x/2, ln.v2.p.y/2 + ln.v2.p.y/2);
+		}
+		return false, (0, 0);
+	}
+	
+	override void WorldLoaded(WorldEvent e)
+	{
+		PlayerInfo plr = players[consoleplayer];
+		if(!plr) return;
+		
+		FindSwitches();		
+		let wp = I_WaypointStorage(plr.mo.FindInventory("I_WaypointStorage"));
+		if(wp) 
+			wp.waypoints.Clear();
+		else
+		{
+			plr.mo.GiveInventory("I_WaypointStorage", 1);
+			wp = I_WaypointStorage(plr.mo.FindInventory("I_WaypointStorage"));
+		}
+		
+		// Create start and end waypoints.
+		if(cv_markstartandexit && wp && cv_markstartandexit.GetBool())
+		{
+			bool _exitpos;
+			vector2 exitpos; 
+			[_exitpos, exitpos] = GetSpecialLinePos(243);
+			if(!wp.FindNamedWaypoint("Start")) 
+				wp.AddWaypoint("Start", 0xFF00FF00, plr.mo.pos.xy);
+			if(!wp.FindNamedWaypoint("Exit") && _exitpos) 
+				wp.AddWaypoint("Exit", 0xFFFF0000, exitpos);
+		}
+	}
+}

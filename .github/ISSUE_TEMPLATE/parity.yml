@@ -1,0 +1,43 @@
+name: Brogue parity difference
+description: Report behavior that differs from pinned Brogue CE.
+title: "[Parity]: "
+labels: [bridge-parity, needs-authority-analysis]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Project Broom version
+    validations:
+      required: true
+  - type: input
+    id: seed
+    attributes:
+      label: Seed, depth, and turn
+    validations:
+      required: true
+  - type: textarea
+    id: sequence
+    attributes:
+      label: Exact action sequence
+    validations:
+      required: true
+  - type: textarea
+    id: standalone
+    attributes:
+      label: Standalone Brogue CE result
+      description: Explain how the pinned standalone build behaved.
+    validations:
+      required: true
+  - type: textarea
+    id: projectbroom
+    attributes:
+      label: Project Broom result
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope confirmation
+      options:
+        - label: This requests parity with existing Brogue CE behavior, not new gameplay.
+          required: true

@@ -1,0 +1,49 @@
+name: Runtime bug
+description: Report a reproducible Project Broom defect.
+title: "[Bug]: "
+labels: [bug, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: Do not attach generated dungeon JSON unless a maintainer requests it.
+  - type: input
+    id: version
+    attributes:
+      label: Project Broom version
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Windows and graphics environment
+      description: Windows version, GPU, renderer, and relevant settings.
+    validations:
+      required: true
+  - type: input
+    id: seed
+    attributes:
+      label: Seed and depth
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Include the action sequence and whether it reproduces after restart.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics and evidence
+      description: Attach the diagnostic bundle, crash report, screenshots, or video as appropriate.

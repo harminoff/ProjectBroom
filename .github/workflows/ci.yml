@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  source-and-python:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Audit public source
+        shell: powershell
+        run: .\scripts\audit-public-tree.ps1
+      - name: Resource and map compiler tests
+        run: python -m unittest tools.test_broguedoom_resources tools.mapcompiler.test_compile
+      - name: Compile launcher
+        run: dotnet build tools\BrogueDoomLauncher\BrogueDoomLauncher.csproj -c Release --nologo
+
+  native-bridge:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            make
+            mingw-w64-ucrt-x86_64-gcc
+      - name: Build Brogue bridge
+        shell: powershell
+        run: .\scripts\build-bridge.ps1
+      - name: Bridge deterministic tests
+        run: python -m unittest tools.test_brogue_bridge
+      - name: Long-run bridge smoke
+        shell: powershell
+        run: .\scripts\run-bridge-test.ps1 -Seed 1 -LongRun 300

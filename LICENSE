@@ -1,0 +1,16 @@
+Project Broom original source code is licensed under the GNU Affero General
+Public License, version 3 or (at your option) any later version.
+
+The complete AGPL text is distributed at:
+
+    src/brogue-mapgen/LICENSE.txt
+
+Original Project Broom artwork, textures, models, sprites, music, and sound
+assets are licensed separately under Creative Commons Attribution-ShareAlike
+4.0 International. See ASSETS-LICENSE.md.
+
+Vendored and bundled third-party components retain their own licenses and
+copyright notices. See THIRD_PARTY_NOTICES.md and the license files shipped
+with each release.
+
+SPDX-License-Identifier: AGPL-3.0-or-later

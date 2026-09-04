@@ -1,0 +1,11 @@
+version "4.14.2"
+
+#include "brogue.zs"
+#include "brogue_pickups.zs"
+#include "brogue_monsters.zs"
+#include "brogue_weapons.zs"
+#include "brogue_fx.zs"
+#include "ucm/ucm_waypoints.zsc"
+#include "ucm/ucm_minimap.zsc"
+#include "ucm/ucm_math.zsc"
+#include "ucm/ucm_interactivity.zsc"
