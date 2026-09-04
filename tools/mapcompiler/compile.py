@@ -44,7 +44,7 @@ CONTOUR_DEPTH = 8
 CONTOUR_SHOULDER = 12
 CONTOUR_MIN_RUN = 3
 CONTOUR_RUN_STRIDE = 4
-COMPILER_VERSION = "36"
+COMPILER_VERSION = "37"
 RENDER_MAPPING_PATH = Path(__file__).with_name("terrain_render_map.json")
 THEME_REGISTRY_PATH = PROJECT_ROOT / "assets" / "terrain" / "broguedoom_cave_registry.json"
 RESOURCE_GRAPHICS_DIR = PROJECT_ROOT / "mod" / "BrogueDoom" / "graphics"
@@ -1242,7 +1242,7 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
         if back is None:
             blocked = True
             front_side = len(sidedefs)
-            sidedefs.append({"sector": edge["front"], "offsetx": texture_offset, "texturemiddle": boundary_material(front_cell, edge["boundary"], game_seed, depth, cells, material_layout), "textureupper": "-", "texturelower": "-"})
+            sidedefs.append({"sector": edge["front"], "offsetx": texture_offset, "texturemiddle": boundary_material(front_cell, edge["boundary"], game_seed, depth, cells, material_layout), "texturetop": "-", "texturebottom": "-"})
             back_side = None
         else:
             blocked = False
@@ -1264,9 +1264,9 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
             else:
                 upper_texture = "-"
             front_side = len(sidedefs)
-            sidedefs.append({"sector": edge["front"], "offsetx": texture_offset, "texturemiddle": "-", "textureupper": upper_texture, "texturelower": lower_texture})
+            sidedefs.append({"sector": edge["front"], "offsetx": texture_offset, "texturemiddle": "-", "texturetop": upper_texture, "texturebottom": lower_texture})
             back_side = len(sidedefs)
-            sidedefs.append({"sector": back, "offsetx": texture_offset, "texturemiddle": "-", "textureupper": upper_texture, "texturelower": lower_texture})
+            sidedefs.append({"sector": back, "offsetx": texture_offset, "texturemiddle": "-", "texturetop": upper_texture, "texturebottom": lower_texture})
             two_sided = True
         if back is None:
             two_sided = False
@@ -1298,8 +1298,12 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
         parts.append("sidedef {\n")
         parts.append(f"  offsetx = {side['offsetx']}; offsety = 0;\n")
         parts.append(f"  texturemiddle = {text(side['texturemiddle'])};\n")
-        parts.append(f"  textureupper = {text(side['textureupper'])};\n")
-        parts.append(f"  texturelower = {text(side['texturelower'])};\n")
+        # UDMF names these tiers top and bottom. `textureupper`/`texturelower`
+        # are not aliases: GZDoom ignores them as unknown custom keys, leaving
+        # height transitions untextured and exposing renderer plane-bleed
+        # fallbacks instead of the intended cliff, bank, or structural wall.
+        parts.append(f"  texturetop = {text(side['texturetop'])};\n")
+        parts.append(f"  texturebottom = {text(side['texturebottom'])};\n")
         parts.append(f"  sector = {side['sector']};\n")
         parts.append("}\n")
 

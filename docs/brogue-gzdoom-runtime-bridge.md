@@ -23,6 +23,13 @@ Bridge edges remain straight so the deck width and Brogue cardinal topology
 stay visually unambiguous. Player and creature projections still land on the
 unchanged Brogue cell centers.
 
+Generated sidedefs use UDMF's canonical `texturetop`, `texturebottom`, and
+`texturemiddle` fields. Earlier builds emitted the nonstandard names
+`textureupper` and `texturelower`; GZDoom ignored those keys and its missing
+lower-texture path exposed horizontal floor or liquid materials across vertical
+height transitions. The verifier now rejects those legacy fields and requires
+an actual bottom texture on both sides of every floor-height transition.
+
 Every sector on every depth shares one 224-unit logical ceiling height. Depth 1
 uses one continuous cave ceiling material, while depths 2–40 instead use
 GZDoom's `F_SKY1` ceiling with the dedicated near-black `BRGSKY` texture.

@@ -176,6 +176,16 @@ def verify_map(level: dict[str, Any], textmap: str, width: int, height: int) -> 
 
     sidedef_sector: list[int] = []
     for index, body in enumerate(side_blocks):
+        if re.search(r"\btexture(?:upper|lower)\s*=", body):
+            raise VerifyError(
+                f"BRG{depth:02d}: sidedef {index} uses a nonstandard UDMF texture tier name"
+            )
+        # Parse every canonical tier even when it is intentionally empty. This
+        # keeps misspelled keys from silently becoming GZDoom missing-texture
+        # fallbacks at runtime.
+        string_property(body, "texturetop")
+        string_property(body, "texturebottom")
+        string_property(body, "texturemiddle")
         sector = int_property(body, "sector")
         if sector < 0 or sector >= len(sector_blocks):
             raise VerifyError(f"BRG{depth:02d}: sidedef {index} references an invalid sector")
@@ -213,6 +223,18 @@ def verify_map(level: dict[str, Any], textmap: str, width: int, height: int) -> 
             raise VerifyError(f"BRG{depth:02d}: linedef {index} has inconsistent two-sided fields")
         if bool_property(body, "blocking") != (not two_sided):
             raise VerifyError(f"BRG{depth:02d}: linedef {index} has an incorrect passability boundary")
+
+        if back_side is not None:
+            front_floor = int_property(sector_blocks[front_sector], "heightfloor")
+            back_sector = sidedef_sector[back_side]
+            back_floor = int_property(sector_blocks[back_sector], "heightfloor")
+            if front_floor != back_floor:
+                for side_index in (front_side, back_side):
+                    if string_property(side_blocks[side_index], "texturebottom") == "-":
+                        raise VerifyError(
+                            f"BRG{depth:02d}: floor-height transition on linedef {index} "
+                            f"is missing its bottom texture"
+                        )
 
         v1 = int_property(body, "v1")
         v2 = int_property(body, "v2")

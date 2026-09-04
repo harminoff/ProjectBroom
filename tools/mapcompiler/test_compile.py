@@ -46,7 +46,7 @@ from .compile import (
     terrain_theme,
     wall_material,
 )
-from .verify import verify_map, verify_package
+from .verify import VerifyError, verify_map, verify_package
 
 
 def sample_model() -> dict:
@@ -170,7 +170,9 @@ class CompilerTests(unittest.TestCase):
         map_text, _, _ = make_map_text(level, 79, 29)
         self.assertIn(f"heightfloor = {CHASM_FLOOR_Z};", map_text)
         self.assertIn('texturefloor = "BRGABYSS";', map_text)
-        self.assertIn('texturelower = "BRGCLIFF";', map_text)
+        self.assertIn('texturebottom = "BRGCLIFF";', map_text)
+        self.assertNotIn("texturelower =", map_text)
+        self.assertNotIn("textureupper =", map_text)
         chasm_sector = next(
             block
             for block in map_text.split("sector\n")
@@ -238,7 +240,7 @@ class CompilerTests(unittest.TestCase):
         self.assertIn("heightceiling = 224;", bridge_sector)
         self.assertIn('texturefloor = "BRGBRID";', bridge_sector)
         self.assertIn('textureceiling = "BRGCEIL";', bridge_sector)
-        self.assertEqual(map_text.count('textureupper = "-";'), stats["sidedefCount"])
+        self.assertEqual(map_text.count('texturetop = "-";'), stats["sidedefCount"])
 
     def test_depths_below_first_use_one_open_black_sky_ceiling(self) -> None:
         model = sample_model()
@@ -250,7 +252,7 @@ class CompilerTests(unittest.TestCase):
             first_floor_text.count(f"heightceiling = {OPEN_VOID_CEILING_Z};"),
             first_stats["sectorCount"],
         )
-        self.assertEqual(first_floor_text.count('textureupper = "-";'), first_stats["sidedefCount"])
+        self.assertEqual(first_floor_text.count('texturetop = "-";'), first_stats["sidedefCount"])
 
         level["depth"] = 2
         lower_floor_text, _, lower_stats = make_map_text(level, 79, 29)
@@ -307,8 +309,8 @@ class CompilerTests(unittest.TestCase):
         self.assertIn("arg0 = 10;\n  arg1 = 10;", map_text)
         self.assertIn("alpha = 1.000000;", map_text)
         self.assertNotIn('texturemiddle = "BRGDOOR";', map_text)
-        self.assertNotIn('textureupper = "BRGDOOR";', map_text)
-        self.assertNotIn('texturelower = "BRGDOOR";', map_text)
+        self.assertNotIn('texturetop = "BRGDOOR";', map_text)
+        self.assertNotIn('texturebottom = "BRGDOOR";', map_text)
         self.assertIn("type = 15002;", map_text)
         self.assertIn("type = 15003;", map_text)
         self.assertGreaterEqual(map_text.count("x = 96; y = 1760;"), 3)
@@ -494,6 +496,13 @@ class CompilerTests(unittest.TestCase):
         model = sample_model()
         map_text, _, _ = make_map_text(model["levels"][0], 79, 29)
         verify_map(model["levels"][0], map_text, 79, 29)
+
+    def test_verifier_rejects_legacy_sidedef_texture_tier_names(self) -> None:
+        model = sample_model()
+        map_text, _, _ = make_map_text(model["levels"][0], 79, 29)
+        broken = map_text.replace("texturebottom =", "texturelower =", 1)
+        with self.assertRaisesRegex(VerifyError, "nonstandard UDMF texture tier name"):
+            verify_map(model["levels"][0], broken, 79, 29)
 
     def test_semantic_solidness_is_authoritative_when_present(self) -> None:
         model = sample_model()
