@@ -9,6 +9,7 @@ from pathlib import Path
 from .compile import (
     ANIMATED_FLAT_BASES,
     CHASM_FLOOR_Z,
+    CHASM_LIGHT_LEVEL,
     CONTOUR_DEPTH,
     CONTOUR_MIN_RUN,
     CONTOUR_RUN_STRIDE,
@@ -151,12 +152,28 @@ class CompilerTests(unittest.TestCase):
         self.assertTrue(cell_is_chasm_void(void))
         self.assertFalse(cell_is_chasm_void(brink))
         self.assertEqual(floor_height(void), CHASM_FLOOR_Z)
+        self.assertEqual(CHASM_FLOOR_Z, -128)
         self.assertEqual(floor_height(brink), 0)
+        layout = build_material_layout(cells, cells)
+        self.assertEqual(
+            sector_light(void, (10, 10), 1, cells, layout),
+            CHASM_LIGHT_LEVEL,
+        )
+        self.assertEqual(
+            boundary_material(void, cells[(10, 9)], cells=cells, layout=layout),
+            "BRGCAVE",
+        )
 
         map_text, _, _ = make_map_text(level, 79, 29)
         self.assertIn(f"heightfloor = {CHASM_FLOOR_Z};", map_text)
         self.assertIn('texturefloor = "BRGABYSS";', map_text)
         self.assertIn('texturelower = "BRGVOID";', map_text)
+        chasm_sector = next(
+            block
+            for block in map_text.split("sector\n")
+            if "user_brogue_x = 10;" in block and "user_brogue_y = 10;" in block
+        )
+        self.assertIn(f"lightlevel = {CHASM_LIGHT_LEVEL};", chasm_sector)
 
     def test_chasm_bridge_shares_black_canopy_without_upper_wall_slab(self) -> None:
         model = sample_model()

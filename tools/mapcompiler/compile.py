@@ -24,7 +24,13 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 CELL_SIZE = 64
-CHASM_FLOOR_Z = -512
+# Chasms are a visual recess, not a literal 512-unit shaft in the Doom map.
+# A very deep sector makes its lower sidedefs dominate the view and read as
+# full-height black columns when a room is visible across the opening. Brogue
+# still owns falling and level transitions; this depth only presents a dark,
+# bounded cave opening beneath the unchanged cell portal.
+CHASM_FLOOR_Z = -128
+CHASM_LIGHT_LEVEL = 112
 OPEN_VOID_CEILING_Z = 224
 OPEN_VOID_SKY_FLAT = "F_SKY1"
 OPEN_VOID_SKY_TEXTURE = "BRGSKY"
@@ -36,7 +42,7 @@ CONTOUR_DEPTH = 8
 CONTOUR_SHOULDER = 12
 CONTOUR_MIN_RUN = 3
 CONTOUR_RUN_STRIDE = 4
-COMPILER_VERSION = "31"
+COMPILER_VERSION = "32"
 RENDER_MAPPING_PATH = Path(__file__).with_name("terrain_render_map.json")
 THEME_REGISTRY_PATH = PROJECT_ROOT / "assets" / "terrain" / "broguedoom_cave_registry.json"
 RESOURCE_GRAPHICS_DIR = PROJECT_ROOT / "mod" / "BrogueDoom" / "graphics"
@@ -964,7 +970,10 @@ def sector_light(
     if theme == "LAVA":
         return 192
     if theme == "CHASM":
-        return 80
+        # BRGABYSS and BRGVOID provide the darkness. Keeping the sector itself
+        # at the minimum cave light prevents its structural perimeter walls
+        # from becoming featureless floor-to-ceiling silhouettes.
+        return CHASM_LIGHT_LEVEL
     if theme == "WATER":
         return max(base, 128)
     if any(terrain_theme(neighbor, cells) == "LAVA" for neighbor in adjacent_cells(cell, cells)):

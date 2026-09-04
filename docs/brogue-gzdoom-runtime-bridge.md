@@ -6,8 +6,12 @@ Status: bridge API v12, native GZDoom monster presentation, authoritative weapon
 
 The map compiler uses Brogue's `isChasm` semantic together with the
 authoritative `T_AUTO_DESCENT` terrain flag. Actual falling cells are rendered
-as 512-unit near-black pits; safe chasm-edge cells remain at the surrounding
-floor height. This avoids treating Brogue's broader edge semantic as a hole.
+as bounded 128-unit near-black cave openings; safe chasm-edge cells remain at
+the surrounding floor height. The bounded recess keeps the room across a
+chasm visible instead of projecting tall black lower-wall columns into the
+view. Brogue still resolves the fall and level transition, so this visual depth
+does not affect gameplay. This also avoids treating Brogue's broader edge
+semantic as a hole.
 
 Every sector on every depth shares one 224-unit logical ceiling height. Depth 1
 uses one continuous cave ceiling material, while depths 2–40 instead use
@@ -19,10 +23,12 @@ uniform height also prevents upper-sidedef slabs around doors, bridges, and
 liquid or chasm transitions. This is presentation only: Brogue's separately
 generated levels are still not claimed to align vertically.
 
-Chasm darkness on depth 1 is rendered only below floor level by the deep pit
-floor and shaft walls. A cell-local black ceiling was rejected because its
-horizontal polygons projected as moving rectangular occluders when viewed from
-a bridge or brink.
+Chasm darkness on depth 1 is rendered only below floor level by the recessed
+pit floor and shaft walls. Chasm sectors retain the minimum ordinary cave light
+so structural walls across or around an opening remain readable; the dedicated
+near-black materials provide the apparent depth. A cell-local black ceiling was
+rejected because its horizontal polygons projected as moving rectangular
+occluders when viewed from a bridge or brink.
 
 Immediately before `startLevel()` replaces the source `pmap`, the adapter
 records the exact cell from which the player fell. API v12 marks the resulting
