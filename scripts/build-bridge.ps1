@@ -8,13 +8,11 @@ $make = Resolve-ProjectBroomMsysTool "make.exe"
 $gcc = Resolve-ProjectBroomMsysTool "x86_64-w64-mingw32-gcc.exe"
 $sh = Resolve-ProjectBroomMsysTool "sh.exe"
 Enable-ProjectBroomMsysPath @($make, $gcc, $sh)
-$gccFlavor = Split-Path -Leaf (Split-Path -Parent (Split-Path -Parent $gcc))
-$makePath = "PATH=/usr/bin:/$gccFlavor/bin:/bin"
 $makeShell = $sh.Replace('\', '/')
 
 Push-Location $sourceRoot
 try {
-    & $make $makePath "SHELL=$makeShell" SYSTEM=WINDOWS GRAPHICS=NO RELEASE=YES BRIDGE=YES bin/brogue-bridge.exe bin/brogue-bridge.dll
+    & $make "SHELL=$makeShell" SYSTEM=WINDOWS GRAPHICS=NO RELEASE=YES BRIDGE=YES bin/brogue-bridge.exe bin/brogue-bridge.dll
     if ($LASTEXITCODE -ne 0) {
         throw "Brogue bridge build failed with exit code $LASTEXITCODE."
     }
