@@ -38,7 +38,7 @@
     "WATER": {"walls": ["BRGWET"], "floors": ["BRGWATR"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR", "fall": "BRGWFALL", "animation": "water"},
     "SLUDGE": {"walls": ["BRGWET"], "floors": ["BRGSLDG"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR", "fall": "BRGWFALL", "animation": "sludge"},
     "LAVA": {"walls": ["BRGCAVE"], "floors": ["BRGMOLT"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR", "fall": "BRGLFALL", "animation": "lava"},
-    "CHASM": {"walls": ["BRGVOID"], "floors": ["BRGABYSS"], "ceilings": ["BRGABYSS"], "door": "BRGDOOR", "fall": "BRGCLIP"},
+    "CHASM": {"walls": ["BRGCLIFF"], "floors": ["BRGABYSS"], "ceilings": ["BRGABYSS"], "door": "BRGDOOR", "fall": "BRGCLIFF"},
     "CRYPT": {"walls": ["BRGMASON"], "floors": ["BRGFLAG"], "ceilings": ["BRGFLAG"], "door": "BRGDOOR"}
   },
   "rules": [

@@ -146,26 +146,55 @@ def write_pit_texture(path: Path) -> None:
     write_rgba_png(path, width, height, rows)
 
 
-def write_chasm_lip_texture(path: Path) -> None:
-    """Write a rough stone lip that falls away into the near-black abyss."""
+def write_chasm_cliff_texture(path: Path) -> None:
+    """Write a full-height rocky cliff that darkens toward the abyss."""
     width, height = 64, 128
+    cell_width = 16
+    cell_height = 14
+
+    def cell_hash(gx: int, gy: int) -> int:
+        # X wraps so the generated cliff tiles without a vertical seam.
+        wrapped_x = gx % (width // cell_width)
+        value = (wrapped_x * 0x45D9F3B + gy * 0x119DE1F3 + 0xB0A6E) & 0xFFFFFFFF
+        value ^= value >> 16
+        value = (value * 0x45D9F3B) & 0xFFFFFFFF
+        return value ^ (value >> 16)
+
     rows = []
     for y in range(height):
         row = bytearray([0])
         for x in range(width):
-            lip_depth = 20 + ((x * 11 + (x // 7) * 5) % 9)
-            if y < lip_depth:
-                stone = 30 + ((x // 6) * 13 + (y // 5) * 17 + x * 3) % 25
-                mortar = ((x + (y // 6) * 9) % 19) < 2 or y in (7, 15)
-                if mortar:
-                    stone = max(18, stone - 14)
-                if y >= lip_depth - 3:
-                    stone = max(12, stone - 18)
-                row.extend((stone, max(16, stone - 3), max(18, stone - 1), 255))
-            else:
-                grain = ((x * 17 + y * 31) % 5) - 2
-                base = 4 + min(7, (y - lip_depth) // 12)
-                row.extend((max(0, base + grain), max(0, base + grain), base + 3, 255))
+            grid_x = x // cell_width
+            grid_y = y // cell_height
+            nearest = 1 << 30
+            second = 1 << 30
+            winner = 0
+            for gy in range(grid_y - 1, grid_y + 2):
+                for gx in range(grid_x - 1, grid_x + 2):
+                    value = cell_hash(gx, gy)
+                    center_x = gx * cell_width + 4 + value % 9
+                    center_y = gy * cell_height + 3 + (value >> 8) % 9
+                    dx = x - center_x
+                    dy = y - center_y
+                    distance = dx * dx + (dy * dy * 5) // 4
+                    if distance < nearest:
+                        second = nearest
+                        nearest = distance
+                        winner = value
+                    elif distance < second:
+                        second = distance
+            grain = ((x * 17 + y * 31 + (winner & 31)) % 9) - 4
+            depth_falloff = (y * 28) // (height - 1)
+            stone = 58 - depth_falloff + ((winner >> 16) % 13) + grain
+            if second - nearest < 28:
+                stone -= 20
+            # Break up the top silhouette with a narrow, irregular shadow line
+            # while retaining visible rock immediately beneath the floor edge.
+            lip_depth = 4 + ((x * 11 + (x // 7) * 5) % 6)
+            if y == lip_depth:
+                stone -= 12
+            stone = max(18, min(68, stone))
+            row.extend((stone, max(14, stone - 6), max(16, stone - 3), 255))
         rows.append(bytes(row))
     write_rgba_png(path, width, height, rows)
 
@@ -178,7 +207,7 @@ def main() -> int:
     down_void().write(OUTPUT / "down_void.obj")
     fall_shaft().write(OUTPUT / "fall_shaft.obj")
     write_pit_texture(ROOT / "mod" / "BrogueDoom" / "graphics" / "BRGPIT.png")
-    write_chasm_lip_texture(ROOT / "mod" / "BrogueDoom" / "graphics" / "BRGCLIP.png")
+    write_chasm_cliff_texture(ROOT / "mod" / "BrogueDoom" / "graphics" / "BRGCLIFF.png")
     return 0
 
 

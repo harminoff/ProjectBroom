@@ -60,7 +60,7 @@ class BrogueDoomResourceTests(unittest.TestCase):
         ):
             self.assertGreater((GRAPHICS / name).stat().st_size, 1000, name)
         self.assertGreater((GRAPHICS / "BRGPIT.png").stat().st_size, 100, "BRGPIT.png")
-        self.assertGreater((GRAPHICS / "BRGCLIP.png").stat().st_size, 100, "BRGCLIP.png")
+        self.assertGreater((GRAPHICS / "BRGCLIFF.png").stat().st_size, 100, "BRGCLIFF.png")
         self.assertGreater((GRAPHICS / "BRGLAVA_BM.png").stat().st_size, 1000, "BRGLAVA_BM.png")
 
     def test_authoritative_visual_effects_are_wired(self) -> None:
@@ -104,12 +104,12 @@ class BrogueDoomResourceTests(unittest.TestCase):
 
     def test_scaled_wall_textures_use_world_panning(self) -> None:
         declarations = TEXTURES.read_text(encoding="utf-8")
-        for name in ("BRGCAVE", "BRGWET", "BRGMASON", "BRGWFALL", "BRGLFALL", "BRGVOID", "BRGCLIP"):
+        for name in ("BRGCAVE", "BRGWET", "BRGMASON", "BRGWFALL", "BRGLFALL", "BRGVOID", "BRGCLIFF"):
             start = declarations.index(f'Texture "{name}"')
             end = declarations.index("}\n", start)
             self.assertIn("WorldPanning", declarations[start:end], name)
         self.assertIn('Flat "BRGABYSS", 64, 64', declarations)
-        self.assertIn('Texture "BRGCLIP", 64, 128', declarations)
+        self.assertIn('Texture "BRGCLIFF", 64, 128', declarations)
 
     def test_subterranean_void_sky_is_declared(self) -> None:
         declarations = TEXTURES.read_text(encoding="utf-8")

@@ -170,7 +170,7 @@ class CompilerTests(unittest.TestCase):
         map_text, _, _ = make_map_text(level, 79, 29)
         self.assertIn(f"heightfloor = {CHASM_FLOOR_Z};", map_text)
         self.assertIn('texturefloor = "BRGABYSS";', map_text)
-        self.assertIn('texturelower = "BRGCLIP";', map_text)
+        self.assertIn('texturelower = "BRGCLIFF";', map_text)
         chasm_sector = next(
             block
             for block in map_text.split("sector\n")
