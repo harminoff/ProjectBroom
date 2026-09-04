@@ -105,13 +105,25 @@ Texture "BRGDOOR", 574, 1180
 	Patch "BRGDOOR0", -340, -38
 }
 
-Texture "BRGWFALL", 1254, 1254
-{
-	XScale 9.796875
-	YScale 9.796875
-	WorldPanning
-	Patch "BRGWATER", 0, 0
-}
+// Purpose-built vertical water and sludge frames. At scale 2 each 256px tile
+// spans 128 world units; ANIMDEFS advances their highlights downward.
+Texture "BRGWFALL", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBWFL000", 0, 0 }
+Texture "BRGWF01", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBWFL001", 0, 0 }
+Texture "BRGWF02", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBWFL002", 0, 0 }
+Texture "BRGWF03", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBWFL003", 0, 0 }
+Texture "BRGWF04", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBWFL004", 0, 0 }
+Texture "BRGWF05", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBWFL005", 0, 0 }
+Texture "BRGWF06", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBWFL006", 0, 0 }
+Texture "BRGWF07", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBWFL007", 0, 0 }
+
+Texture "BRGSFALL", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL000", 0, 0 }
+Texture "BRGSF01", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL001", 0, 0 }
+Texture "BRGSF02", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL002", 0, 0 }
+Texture "BRGSF03", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL003", 0, 0 }
+Texture "BRGSF04", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL004", 0, 0 }
+Texture "BRGSF05", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL005", 0, 0 }
+Texture "BRGSF06", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL006", 0, 0 }
+Texture "BRGSF07", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL007", 0, 0 }
 
 Texture "BRGLFALL", 1254, 1254
 {

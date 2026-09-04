@@ -315,7 +315,7 @@ class CompilerTests(unittest.TestCase):
         lower = cells[(11, 10)]
         for higher_symbol, lower_symbol, expected in (
             ("SHALLOW_WATER", "DEEP_WATER", "BRGWFALL"),
-            ("MUD", "DEEP_WATER", "BRGWFALL"),
+            ("MUD", "DEEP_WATER", "BRGSFALL"),
             ("LAVA", "DEEP_WATER", "BRGLFALL"),
         ):
             higher["layers"]["liquid"] = {"id": 3, "symbol": higher_symbol}

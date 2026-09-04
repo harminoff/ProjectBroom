@@ -45,7 +45,7 @@ CONTOUR_DEPTH = 8
 CONTOUR_SHOULDER = 12
 CONTOUR_MIN_RUN = 3
 CONTOUR_RUN_STRIDE = 4
-COMPILER_VERSION = "40"
+COMPILER_VERSION = "41"
 RENDER_MAPPING_PATH = Path(__file__).with_name("terrain_render_map.json")
 THEME_REGISTRY_PATH = PROJECT_ROOT / "assets" / "terrain" / "broguedoom_cave_registry.json"
 RESOURCE_GRAPHICS_DIR = PROJECT_ROOT / "mod" / "BrogueDoom" / "graphics"
@@ -67,6 +67,22 @@ RESOURCE_ASSET_FILES = (
     "PBRSKYBL.png",
     "PBRCVUP.png",
     "PBRMSUP.png",
+    "PBWFL000.png",
+    "PBWFL001.png",
+    "PBWFL002.png",
+    "PBWFL003.png",
+    "PBWFL004.png",
+    "PBWFL005.png",
+    "PBWFL006.png",
+    "PBWFL007.png",
+    "PBSFL000.png",
+    "PBSFL001.png",
+    "PBSFL002.png",
+    "PBSFL003.png",
+    "PBSFL004.png",
+    "PBSFL005.png",
+    "PBSFL006.png",
+    "PBSFL007.png",
 )
 RESOURCE_PRESENTATION_FILES = (
     "MODELDEF",
@@ -80,7 +96,7 @@ RESOURCE_PRESENTATION_FILES = (
     "models/stairs/down_void.obj",
     "models/stairs/fall_shaft.obj",
 )
-CUSTOM_TEXTURES = {"BRGCAVE", "BRGWET", "BRGMASON", "BRGCVUP", "BRGWTUP", "BRGMSUP", "BRGDOOR", "BRGWFALL", "BRGLFALL", "BRGVOID", "BRGCLIFF", "BRGSKY"}
+CUSTOM_TEXTURES = {"BRGCAVE", "BRGWET", "BRGMASON", "BRGCVUP", "BRGWTUP", "BRGMSUP", "BRGDOOR", "BRGWFALL", "BRGSFALL", "BRGLFALL", "BRGVOID", "BRGCLIFF", "BRGSKY"}
 CUSTOM_FLATS = {"BRGEARTH", "BRGCEIL", "BRGMOSS", "BRGFLAG", "BRGBRID", "BRGWATR", "BRGSLDG", "BRGMOLT", "BRGCHASM", "BRGABYSS"}
 
 OPEN_VOID_WALL_TEXTURES = {

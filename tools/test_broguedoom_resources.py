@@ -6,7 +6,7 @@ import unittest
 import zlib
 from pathlib import Path
 
-from PIL import Image, ImageStat
+from PIL import Image, ImageChops, ImageStat
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -96,6 +96,10 @@ class BrogueDoomResourceTests(unittest.TestCase):
         self.assertGreater((GRAPHICS / "PBRCVUP.png").stat().st_size, 1000, "PBRCVUP.png")
         self.assertGreater((GRAPHICS / "PBRMSUP.png").stat().st_size, 1000, "PBRMSUP.png")
         self.assertGreater((GRAPHICS / "BRGLAVA_BM.png").stat().st_size, 1000, "BRGLAVA_BM.png")
+        for prefix in ("PBWFL", "PBSFL"):
+            for frame in range(8):
+                name = f"{prefix}{frame:03d}.png"
+                self.assertGreater((GRAPHICS / name).stat().st_size, 1000, name)
 
     def test_open_void_walls_fade_upward_without_alpha_holes(self) -> None:
         for name in ("PBRCVUP.png", "PBRMSUP.png"):
@@ -144,14 +148,35 @@ class BrogueDoomResourceTests(unittest.TestCase):
             if "fall" in theme:
                 self.assertIn(f'"{theme["fall"].upper()}"', declarations, f"{theme_name}: fall")
 
-    def test_liquids_use_original_warped_materials(self) -> None:
+    def test_liquid_floors_warp_and_falls_animate_directionally(self) -> None:
         animdefs = ANIMDEFS.read_text(encoding="utf-8").upper()
-        for name in ("BRGWATR", "BRGSLDG", "BRGMOLT", "BRGWFALL", "BRGLFALL"):
+        for name in ("BRGWATR", "BRGSLDG", "BRGMOLT", "BRGLFALL"):
             self.assertIn(name, animdefs)
+        self.assertNotIn("WARP TEXTURE BRGWFALL", animdefs)
+        for base, frame_prefix in (("BRGWFALL", "BRGWF"), ("BRGSFALL", "BRGSF")):
+            self.assertIn(f"TEXTURE {base}", animdefs)
+            self.assertIn(f"PIC {base} TICS", animdefs)
+            for frame in range(1, 8):
+                self.assertIn(f"PIC {frame_prefix}{frame:02d} TICS", animdefs)
+
+    def test_water_and_sludge_falls_have_distinct_downward_frames(self) -> None:
+        loaded: dict[str, list[Image.Image]] = {}
+        for prefix in ("PBWFL", "PBSFL"):
+            loaded[prefix] = [
+                Image.open(GRAPHICS / f"{prefix}{frame:03d}.png").convert("RGB")
+                for frame in range(8)
+            ]
+            self.assertTrue(all(image.size == (256, 256) for image in loaded[prefix]))
+            self.assertIsNotNone(ImageChops.difference(loaded[prefix][0], loaded[prefix][1]).getbbox())
+
+        water_mean = ImageStat.Stat(loaded["PBWFL"][0]).mean
+        sludge_mean = ImageStat.Stat(loaded["PBSFL"][0]).mean
+        self.assertGreater(water_mean[2], water_mean[0] * 10)
+        self.assertGreater(sludge_mean[0], sludge_mean[2] * 2)
 
     def test_scaled_wall_textures_use_world_panning(self) -> None:
         declarations = TEXTURES.read_text(encoding="utf-8")
-        for name in ("BRGCAVE", "BRGWET", "BRGMASON", "BRGCVUP", "BRGWTUP", "BRGMSUP", "BRGWFALL", "BRGLFALL", "BRGVOID", "BRGCLIFF"):
+        for name in ("BRGCAVE", "BRGWET", "BRGMASON", "BRGCVUP", "BRGWTUP", "BRGMSUP", "BRGWFALL", "BRGSFALL", "BRGLFALL", "BRGVOID", "BRGCLIFF"):
             start = declarations.index(f'Texture "{name}"')
             end = declarations.index("}\n", start)
             self.assertIn("WorldPanning", declarations[start:end], name)

@@ -264,6 +264,54 @@ def write_black_sky_texture(path: Path) -> None:
     )
 
 
+def write_liquid_fall_frames(source: Path, output_dir: Path, prefix: str, sludge: bool = False) -> None:
+    """Generate an eight-frame, vertically streaked downward-flow animation."""
+    size = 256
+    source_image = Image.open(source).convert("RGB").resize(
+        (size, size),
+        Image.Resampling.LANCZOS,
+    )
+    column_palette = source_image.resize((size, 1), Image.Resampling.BOX)
+    global_color = source_image.resize((1, 1), Image.Resampling.BOX).getpixel((0, 0))
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    for frame in range(8):
+        image = Image.new("RGB", (size, size))
+        pixels = image.load()
+        for x in range(size):
+            column_color = column_palette.getpixel((x, 0))
+            base = tuple(round(global_color[channel] * 0.62 + column_color[channel] * 0.38) for channel in range(3))
+            if sludge:
+                # Keep mud visibly separate from blue water: dense brown with
+                # a restrained olive cast inherited from Brogue's sludge flat.
+                base = (
+                    round(base[0] * 0.82),
+                    round(base[1] * 0.90 + 3),
+                    round(base[2] * 0.58),
+                )
+
+            column_noise = (x * 37 + (x // 5) * 19 + (x // 17) * 53) & 255
+            stream = 0.10 + (column_noise / 255.0) * 0.24
+            if column_noise % 23 < 4:
+                stream += 0.18
+            phase_offset = (x * 13 + (x // 11) * 23) % 128
+            for y in range(size):
+                # Eight 16-pixel advances complete one 128-pixel cycle. The
+                # bright head and its long tail therefore move downward and
+                # loop without the omnidirectional swirl produced by warp.
+                phase = (y - frame * 16 - phase_offset) % 128
+                drop = (44 - phase) / 44.0 if phase < 44 else 0.0
+                factor = 0.64 + stream + drop * (0.58 if sludge else 1.10)
+                pixels[x, y] = tuple(min(255, round(channel * factor)) for channel in base)
+
+        image.save(
+            output_dir / f"{prefix}{frame:03d}.png",
+            format="PNG",
+            optimize=False,
+            compress_level=9,
+        )
+
+
 def main() -> int:
     OUTPUT.mkdir(parents=True, exist_ok=True)
     upstairs().write(OUTPUT / "upstairs.obj")
@@ -277,6 +325,8 @@ def main() -> int:
     write_black_sky_texture(graphics / "PBRSKYBL.png")
     write_open_void_wall_texture(graphics / "BRGROCK.png", graphics / "PBRCVUP.png")
     write_open_void_wall_texture(graphics / "BRGSTONE.png", graphics / "PBRMSUP.png")
+    write_liquid_fall_frames(graphics / "BRGWATER.png", graphics, "PBWFL")
+    write_liquid_fall_frames(graphics / "BRGDIRT.png", graphics, "PBSFL", sludge=True)
     return 0
 
 

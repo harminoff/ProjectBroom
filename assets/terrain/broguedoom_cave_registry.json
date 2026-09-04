@@ -36,7 +36,7 @@
     "MAGICAL_CRYSTAL": {"walls": ["BRGMASON"], "floors": ["BRGFLAG"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR"},
     "BRIDGE": {"walls": ["BRGMASON"], "floors": ["BRGBRID"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR"},
     "WATER": {"walls": ["BRGWET"], "floors": ["BRGWATR"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR", "fall": "BRGWFALL", "animation": "water"},
-    "SLUDGE": {"walls": ["BRGWET"], "floors": ["BRGSLDG"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR", "fall": "BRGWFALL", "animation": "sludge"},
+    "SLUDGE": {"walls": ["BRGWET"], "floors": ["BRGSLDG"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR", "fall": "BRGSFALL", "animation": "sludge"},
     "LAVA": {"walls": ["BRGCAVE"], "floors": ["BRGMOLT"], "ceilings": ["BRGCEIL"], "door": "BRGDOOR", "fall": "BRGLFALL", "animation": "lava"},
     "CHASM": {"walls": ["BRGCLIFF"], "floors": ["BRGABYSS"], "ceilings": ["BRGABYSS"], "door": "BRGDOOR", "fall": "BRGCLIFF"},
     "CRYPT": {"walls": ["BRGMASON"], "floors": ["BRGFLAG"], "ceilings": ["BRGFLAG"], "door": "BRGDOOR"}

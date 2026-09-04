@@ -32,9 +32,11 @@ an actual bottom texture on both sides of every floor-height transition.
 Height-transition faces follow the higher cell's visible surface. Dry ground
 uses its structural cave, wet-rock, or masonry bank even when the lower cell is
 water, so islands cannot inherit a liquid edge from their surroundings. When
-the higher surface itself is water, sludge, or lava, the exposed edge instead
-uses the animated `BRGWFALL` or `BRGLFALL` sheet so the liquid visibly travels
-down toward the lower surface.
+the higher surface itself is liquid, the exposed edge instead uses a matching
+animated sheet: blue `BRGWFALL` for water, brown-olive `BRGSFALL` for sludge,
+or `BRGLFALL` for lava. Water and sludge use purpose-built eight-frame vertical
+streak animations whose highlights advance downward; they do not warp the
+horizontal floor artwork across the wall.
 
 Depth 1 retains a continuous cave ceiling at 224 units. Depths 2–40 raise the
 logical ceiling to 352 units and use GZDoom's `F_SKY1` ceiling with the
