@@ -3,5 +3,46 @@
 warp flat BRGWATR 1.80
 warp flat BRGSLDG 0.65
 warp flat BRGMOLT 1.25
-warp texture BRGWFALL 1.80
 warp texture BRGLFALL 1.25
+
+// Explicit vertical frames move highlights downward. Warping the horizontal
+// floor artwork on a wall made the face swirl in every direction instead.
+texture BRGWFALL
+	pic BRGWFALL tics 2
+	pic BRGWF01 tics 2
+	pic BRGWF02 tics 2
+	pic BRGWF03 tics 2
+	pic BRGWF04 tics 2
+	pic BRGWF05 tics 2
+	pic BRGWF06 tics 2
+	pic BRGWF07 tics 2
+
+texture BRGSFALL
+	pic BRGSFALL tics 4
+	pic BRGSF01 tics 4
+	pic BRGSF02 tics 4
+	pic BRGSF03 tics 4
+	pic BRGSF04 tics 4
+	pic BRGSF05 tics 4
+	pic BRGSF06 tics 4
+	pic BRGSF07 tics 4
+
+texture BRGWCLF
+	pic BRGWCLF tics 2
+	pic BWCF01 tics 2
+	pic BWCF02 tics 2
+	pic BWCF03 tics 2
+	pic BWCF04 tics 2
+	pic BWCF05 tics 2
+	pic BWCF06 tics 2
+	pic BWCF07 tics 2
+
+texture BRGSCLF
+	pic BRGSCLF tics 4
+	pic BSCF01 tics 4
+	pic BSCF02 tics 4
+	pic BSCF03 tics 4
+	pic BSCF04 tics 4
+	pic BSCF05 tics 4
+	pic BSCF06 tics 4
+	pic BSCF07 tics 4

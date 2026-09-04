@@ -256,7 +256,7 @@ class BrogueGrassProp : BroguePropBase
 class BrogueFungusProp : BroguePropBase
 {
     Default { Scale 0.68; }
-    States { Spawn: BRGF A -1; Stop; }
+    States { Spawn: BGFU A -1; Stop; }
 }
 
 class BrogueLuminousFungusProp : BroguePropBase
@@ -284,7 +284,7 @@ class BrogueDeadVegetationProp : BroguePropBase
         Alpha 0.72;
         RenderStyle "Translucent";
     }
-    States { Spawn: BRGD A -1; Stop; }
+    States { Spawn: BGDV A -1; Stop; }
 }
 
 class BrogueWorldHandler : EventHandler

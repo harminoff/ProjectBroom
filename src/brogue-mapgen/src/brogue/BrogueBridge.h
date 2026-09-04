@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-#define BROGUE_BRIDGE_API_VERSION 12u
+#define BROGUE_BRIDGE_API_VERSION 13u
 #define BROGUE_BRIDGE_MAX_CELLS 2291u
 #define BROGUE_BRIDGE_MAX_CREATURES 1024u
 #define BROGUE_BRIDGE_MAX_ITEMS 1024u
@@ -342,6 +342,7 @@ typedef struct BrogueBridgeCellState {
     uint8_t isSecret;
     uint8_t isLiquid;
     uint8_t isDeepWater;
+    uint8_t isMud;
     uint8_t isLava;
     uint8_t isFire;
     uint8_t isGas;

@@ -82,7 +82,7 @@ class BrogueBridgeTests(unittest.TestCase):
                 cwd=BRIDGE_DIR, check=True, capture_output=True, text=True,
             )
             catalog = __import__("json").loads(output.read_text(encoding="utf-8"))
-        self.assertEqual(catalog["bridgeApiVersion"], 12)
+        self.assertEqual(catalog["bridgeApiVersion"], 13)
         self.assertEqual(catalog["count"], 68)
         self.assertEqual(catalog["kinds"][0]["symbol"], "MK_YOU")
         self.assertEqual(catalog["kinds"][1]["symbol"], "MK_RAT")
@@ -114,9 +114,9 @@ class BrogueBridgeTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertEqual(
             hashlib.sha256(first.encode("utf-8")).hexdigest(),
-            # API v12 includes authoritative fire/gas cell semantics in the
-            # normalized hash while retaining deterministic text output.
-            "ac3fbd0acfd2a6bcedf24b07d8f0b606159586328a71fd791e923253df8c3306",
+            # API v13 adds authoritative mud semantics to the normalized cell
+            # hash while retaining deterministic text output.
+            "f980b157b1ef9809c3a46e7df79e43cad1d32e8fa2a849ca24a4df4173de1fcc",
         )
         action_matches = lines_matching(first, ACTION_RE)
         self.assertEqual(len(action_matches), 6)

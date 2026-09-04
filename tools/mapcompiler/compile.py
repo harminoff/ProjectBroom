@@ -24,8 +24,17 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 CELL_SIZE = 64
-CHASM_FLOOR_Z = -512
-OPEN_VOID_CEILING_Z = 224
+# Chasms are a visual recess, not a literal 512-unit shaft in the Doom map.
+# A very deep sector makes its lower sidedefs dominate the view and read as
+# full-height black columns when a room is visible across the opening. Brogue
+# still owns falling and level transitions; this depth only presents a dark,
+# bounded cave opening beneath the unchanged cell portal.
+CHASM_FLOOR_Z = -128
+CHASM_LIGHT_LEVEL = 144
+CHASM_PORTAL_DEPTH = 10
+CHASM_PORTAL_SHOULDER = 14
+CAVE_CEILING_Z = 224
+OPEN_VOID_CEILING_Z = 352
 OPEN_VOID_SKY_FLAT = "F_SKY1"
 OPEN_VOID_SKY_TEXTURE = "BRGSKY"
 EXPECTED_WIDTH = 79
@@ -36,7 +45,7 @@ CONTOUR_DEPTH = 8
 CONTOUR_SHOULDER = 12
 CONTOUR_MIN_RUN = 3
 CONTOUR_RUN_STRIDE = 4
-COMPILER_VERSION = "31"
+COMPILER_VERSION = "42"
 RENDER_MAPPING_PATH = Path(__file__).with_name("terrain_render_map.json")
 THEME_REGISTRY_PATH = PROJECT_ROOT / "assets" / "terrain" / "broguedoom_cave_registry.json"
 RESOURCE_GRAPHICS_DIR = PROJECT_ROOT / "mod" / "BrogueDoom" / "graphics"
@@ -54,6 +63,42 @@ RESOURCE_ASSET_FILES = (
     "BRGUSTA.png",
     "BRGDSTA.png",
     "BRGPIT.png",
+    "BRGCLIFF.png",
+    "PBRSKYBL.png",
+    "PBRCVUP.png",
+    "PBRMSUP.png",
+    "PBWFL000.png",
+    "PBWFL001.png",
+    "PBWFL002.png",
+    "PBWFL003.png",
+    "PBWFL004.png",
+    "PBWFL005.png",
+    "PBWFL006.png",
+    "PBWFL007.png",
+    "PBSFL000.png",
+    "PBSFL001.png",
+    "PBSFL002.png",
+    "PBSFL003.png",
+    "PBSFL004.png",
+    "PBSFL005.png",
+    "PBSFL006.png",
+    "PBSFL007.png",
+    "PBWCF000.png",
+    "PBWCF001.png",
+    "PBWCF002.png",
+    "PBWCF003.png",
+    "PBWCF004.png",
+    "PBWCF005.png",
+    "PBWCF006.png",
+    "PBWCF007.png",
+    "PBSCF000.png",
+    "PBSCF001.png",
+    "PBSCF002.png",
+    "PBSCF003.png",
+    "PBSCF004.png",
+    "PBSCF005.png",
+    "PBSCF006.png",
+    "PBSCF007.png",
 )
 RESOURCE_PRESENTATION_FILES = (
     "MODELDEF",
@@ -67,8 +112,17 @@ RESOURCE_PRESENTATION_FILES = (
     "models/stairs/down_void.obj",
     "models/stairs/fall_shaft.obj",
 )
-CUSTOM_TEXTURES = {"BRGCAVE", "BRGWET", "BRGMASON", "BRGDOOR", "BRGWFALL", "BRGLFALL", "BRGVOID", "BRGSKY"}
+CUSTOM_TEXTURES = {"BRGCAVE", "BRGWET", "BRGMASON", "BRGCVUP", "BRGWTUP", "BRGMSUP", "BRGDOOR", "BRGWFALL", "BRGSFALL", "BRGWCLF", "BRGSCLF", "BRGLFALL", "BRGVOID", "BRGCLIFF", "BRGSKY"}
 CUSTOM_FLATS = {"BRGEARTH", "BRGCEIL", "BRGMOSS", "BRGFLAG", "BRGBRID", "BRGWATR", "BRGSLDG", "BRGMOLT", "BRGCHASM", "BRGABYSS"}
+
+OPEN_VOID_WALL_TEXTURES = {
+    "BRGCAVE": "BRGCVUP",
+    "BRGWET": "BRGWTUP",
+    "BRGMASON": "BRGMSUP",
+    # One-sided walls reached from a chasm still need the upward fade. The
+    # ground-to-chasm lower tier keeps BRGCLIFF's separate downward fade.
+    "BRGCLIFF": "BRGCVUP",
+}
 
 PROP_RULES: dict[str, tuple[str, int, int]] = {
     # surface symbol: (presentation role, DoomEdNum, one placement per N cells)
@@ -390,6 +444,8 @@ def contoured_side_points(
     side_index: int,
     *,
     contoured: bool,
+    depth: int = CONTOUR_DEPTH,
+    shoulder: int = CONTOUR_SHOULDER,
 ) -> list[tuple[int, int]]:
     """Return an exact portal edge or a topology-safe wall recess.
 
@@ -401,14 +457,14 @@ def contoured_side_points(
     start, end = cell_side_coordinates(height, x, y)[side_index]
     if not contoured:
         return [start, end]
-    outward = ((0, CONTOUR_DEPTH), (CONTOUR_DEPTH, 0), (0, -CONTOUR_DEPTH), (-CONTOUR_DEPTH, 0))[side_index]
+    outward = ((0, depth), (depth, 0), (0, -depth), (-depth, 0))[side_index]
     dx = (end[0] - start[0]) // CELL_SIZE
     dy = (end[1] - start[1]) // CELL_SIZE
     first = (
-        start[0] + dx * CONTOUR_SHOULDER + outward[0],
-        start[1] + dy * CONTOUR_SHOULDER + outward[1],
+        start[0] + dx * shoulder + outward[0],
+        start[1] + dy * shoulder + outward[1],
     )
-    second_distance = CELL_SIZE - CONTOUR_SHOULDER
+    second_distance = CELL_SIZE - shoulder
     second = (
         start[0] + dx * second_distance + outward[0],
         start[1] + dy * second_distance + outward[1],
@@ -450,6 +506,72 @@ def boundary_uses_contour(
         run_length >= CONTOUR_MIN_RUN
         and 0 < run_index < run_length - 1
         and (run_index - 1) % CONTOUR_RUN_STRIDE == 0
+    )
+
+
+def is_chasm_portal(
+    cell: dict[str, Any],
+    neighbor: dict[str, Any] | None,
+    cells: dict[tuple[int, int], dict[str, Any]],
+) -> bool:
+    """Return true for a ground-to-abyss portal that may receive a visual lip."""
+    if neighbor is None:
+        return False
+    if cell_is_chasm_bridge(cell, cells) or cell_is_chasm_bridge(neighbor, cells):
+        return False
+    return cell_is_chasm_void(cell) != cell_is_chasm_void(neighbor)
+
+
+def map_side_points(
+    height: int,
+    x: int,
+    y: int,
+    side_index: int,
+    cell: dict[str, Any],
+    neighbor: dict[str, Any] | None,
+    cells: dict[tuple[int, int], dict[str, Any]],
+    geometry_cells: Collection[tuple[int, int]],
+) -> list[tuple[int, int]]:
+    """Return the shared visual boundary while preserving cardinal topology.
+
+    Solid walls retain the sparse cave contour. Ground-to-chasm portals gain a
+    shallow recess into the abyss, shared exactly by both sectors. The line
+    remains two-sided and nonblocking, and both Brogue cell centers remain
+    untouched; only the square floor silhouette is softened.
+    """
+    neighbor_position = None
+    if neighbor is not None:
+        neighbor_position = (int(neighbor["x"]), int(neighbor["y"]))
+    is_portal = neighbor_position in geometry_cells if neighbor_position is not None else False
+    if is_portal and is_chasm_portal(cell, neighbor, cells):
+        assert neighbor is not None
+        if not cell_is_chasm_void(cell):
+            return contoured_side_points(
+                height,
+                x,
+                y,
+                side_index,
+                contoured=True,
+                depth=CHASM_PORTAL_DEPTH,
+                shoulder=CHASM_PORTAL_SHOULDER,
+            )
+        opposite_side = (side_index + 2) % 4
+        points = contoured_side_points(
+            height,
+            int(neighbor["x"]),
+            int(neighbor["y"]),
+            opposite_side,
+            contoured=True,
+            depth=CHASM_PORTAL_DEPTH,
+            shoulder=CHASM_PORTAL_SHOULDER,
+        )
+        return list(reversed(points))
+    return contoured_side_points(
+        height,
+        x,
+        y,
+        side_index,
+        contoured=not is_portal and boundary_uses_contour(geometry_cells, x, y, side_index),
     )
 
 
@@ -863,7 +985,10 @@ def boundary_material(
     layout: dict[str, Any] | None = None,
 ) -> str:
     cells = cells or {(int(front_cell["x"]), int(front_cell["y"])): front_cell}
-    return wall_material(front_cell, seed, depth, cells, layout)
+    material = wall_material(front_cell, seed, depth, cells, layout)
+    if depth > 1:
+        return OPEN_VOID_WALL_TEXTURES.get(material, material)
+    return material
 
 
 def transition_material(
@@ -874,13 +999,34 @@ def transition_material(
     cells: dict[tuple[int, int], dict[str, Any]],
     layout: dict[str, Any],
 ) -> str:
-    lower_cell = front_cell if floor_height(front_cell) < floor_height(back_cell) else back_cell
+    front_floor = floor_height(front_cell)
+    back_floor = floor_height(back_cell)
+    lower_cell = front_cell if front_floor < back_floor else back_cell
+    higher_cell = front_cell if front_floor > back_floor else back_cell
     lower_position = (int(lower_cell["x"]), int(lower_cell["y"]))
     theme = str(layout["theme_by_position"].get(lower_position, terrain_theme(lower_cell, cells)))
-    fall = TERRAIN_THEME_REGISTRY["themes"][theme].get("fall")
-    if fall and floor_height(front_cell) != floor_height(back_cell):
+    # A height transition exposes the edge of its higher surface. Only an
+    # intrinsically liquid higher cell should flow down that edge. Do not use
+    # the region theme here: dry ground adjacent to water is classified as
+    # CAVE_WET for palette cohesion and would otherwise become a waterfall.
+    higher_theme = terrain_theme(higher_cell, cells, include_adjacency=False)
+    if theme == "CHASM" and front_floor != back_floor:
+        # A liquid beside the abyss still exposes a rock cliff. Composite
+        # textures carry animated liquid ribbons over that cliff instead of
+        # replacing the complete lower tier with an opaque waterfall panel.
+        if higher_theme == "WATER":
+            return "BRGWCLF"
+        if higher_theme == "SLUDGE":
+            return "BRGSCLF"
+    fall = TERRAIN_THEME_REGISTRY["themes"][higher_theme].get("fall")
+    if fall and front_floor != back_floor:
         return str(fall)
-    return wall_material(front_cell, seed, depth, cells, layout)
+
+    # Dry ground above a chasm exposes the dedicated cliff; every other dry
+    # transition exposes the higher cell's structural bank material.
+    if theme == "CHASM" and front_floor != back_floor:
+        return "BRGCLIFF"
+    return wall_material(higher_cell, seed, depth, cells, layout)
 
 
 def floor_height(cell: dict[str, Any]) -> int:
@@ -942,8 +1088,8 @@ def sector_ceiling(
     # upper sidedef, which reads as a freestanding rectangular wall around
     # bridges and pits. Depth 1 still chooses semantic rock/abyss materials;
     # lower depths use F_SKY1 for an open black void.
-    del cell, position, layout, depth
-    return OPEN_VOID_CEILING_Z
+    del cell, position, layout
+    return OPEN_VOID_CEILING_Z if depth > 1 else CAVE_CEILING_Z
 
 
 def sector_light(
@@ -964,7 +1110,10 @@ def sector_light(
     if theme == "LAVA":
         return 192
     if theme == "CHASM":
-        return 80
+        # BRGABYSS and BRGVOID provide the darkness. Keeping the sector itself
+        # at the minimum cave light prevents its structural perimeter walls
+        # from becoming featureless floor-to-ceiling silhouettes.
+        return CHASM_LIGHT_LEVEL
     if theme == "WATER":
         return max(base, 128)
     if any(terrain_theme(neighbor, cells) == "LAVA" for neighbor in adjacent_cells(cell, cells)):
@@ -1079,6 +1228,7 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
     sidedefs: list[dict[str, Any]] = []
     boundary_count = 0
     contoured_boundary_count = 0
+    chasm_portal_count = 0
 
     def vertex_index(position: tuple[int, int]) -> int:
         if position not in vertex_indices:
@@ -1118,10 +1268,22 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
             for side_index, neighbor_pos in enumerate(neighbors):
                 is_portal = neighbor_pos in geometry_cells
                 use_contour = not is_portal and boundary_uses_contour(geometry_cells, x, y, side_index)
+                use_chasm_portal = is_portal and is_chasm_portal(cell, cells.get(neighbor_pos), cells)
                 if not is_portal:
                     boundary_count += 1
                     contoured_boundary_count += int(use_contour)
-                points = contoured_side_points(height, x, y, side_index, contoured=use_contour)
+                elif use_chasm_portal and (x, y) < neighbor_pos:
+                    chasm_portal_count += 1
+                points = map_side_points(
+                    height,
+                    x,
+                    y,
+                    side_index,
+                    cell,
+                    cells.get(neighbor_pos),
+                    cells,
+                    geometry_cells,
+                )
                 running_offset = side_texture_offset(x, y, side_index)
                 for start, end in zip(points, points[1:]):
                     add_edge(start, end, cell, cells.get(neighbor_pos), running_offset)
@@ -1149,7 +1311,7 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
         if back is None:
             blocked = True
             front_side = len(sidedefs)
-            sidedefs.append({"sector": edge["front"], "offsetx": texture_offset, "texturemiddle": boundary_material(front_cell, edge["boundary"], game_seed, depth, cells, material_layout), "textureupper": "-", "texturelower": "-"})
+            sidedefs.append({"sector": edge["front"], "offsetx": texture_offset, "texturemiddle": boundary_material(front_cell, edge["boundary"], game_seed, depth, cells, material_layout), "texturetop": "-", "texturebottom": "-"})
             back_side = None
         else:
             blocked = False
@@ -1171,9 +1333,9 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
             else:
                 upper_texture = "-"
             front_side = len(sidedefs)
-            sidedefs.append({"sector": edge["front"], "offsetx": texture_offset, "texturemiddle": "-", "textureupper": upper_texture, "texturelower": lower_texture})
+            sidedefs.append({"sector": edge["front"], "offsetx": texture_offset, "texturemiddle": "-", "texturetop": upper_texture, "texturebottom": lower_texture})
             back_side = len(sidedefs)
-            sidedefs.append({"sector": back, "offsetx": texture_offset, "texturemiddle": "-", "textureupper": upper_texture, "texturelower": lower_texture})
+            sidedefs.append({"sector": back, "offsetx": texture_offset, "texturemiddle": "-", "texturetop": upper_texture, "texturebottom": lower_texture})
             two_sided = True
         if back is None:
             two_sided = False
@@ -1205,8 +1367,12 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
         parts.append("sidedef {\n")
         parts.append(f"  offsetx = {side['offsetx']}; offsety = 0;\n")
         parts.append(f"  texturemiddle = {text(side['texturemiddle'])};\n")
-        parts.append(f"  textureupper = {text(side['textureupper'])};\n")
-        parts.append(f"  texturelower = {text(side['texturelower'])};\n")
+        # UDMF names these tiers top and bottom. `textureupper`/`texturelower`
+        # are not aliases: GZDoom ignores them as unknown custom keys, leaving
+        # height transitions untextured and exposing renderer plane-bleed
+        # fallbacks instead of the intended cliff, bank, or structural wall.
+        parts.append(f"  texturetop = {text(side['texturetop'])};\n")
+        parts.append(f"  texturebottom = {text(side['texturebottom'])};\n")
         parts.append(f"  sector = {side['sector']};\n")
         parts.append("}\n")
 
@@ -1340,6 +1506,7 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
         "contourShoulder": CONTOUR_SHOULDER,
         "boundaryCount": boundary_count,
         "contouredBoundaryCount": contoured_boundary_count,
+        "chasmPortalCount": chasm_portal_count,
         "propCount": len(props),
         "propCounts": dict(sorted(prop_counts.items())),
         "lineCount": len(lines),

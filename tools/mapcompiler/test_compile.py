@@ -8,7 +8,12 @@ from pathlib import Path
 
 from .compile import (
     ANIMATED_FLAT_BASES,
+    AUTO_DESCENT,
     CHASM_FLOOR_Z,
+    CHASM_LIGHT_LEVEL,
+    CHASM_PORTAL_DEPTH,
+    CHASM_PORTAL_SHOULDER,
+    CAVE_CEILING_Z,
     CONTOUR_DEPTH,
     CONTOUR_MIN_RUN,
     CONTOUR_RUN_STRIDE,
@@ -34,15 +39,17 @@ from .compile import (
     edge_texture_offset,
     make_map_text,
     make_mapinfo,
+    map_side_points,
     prop_placement,
     sector_ceiling,
     sector_light,
     sector_tint,
     surface_tint,
     terrain_theme,
+    transition_material,
     wall_material,
 )
-from .verify import verify_map, verify_package
+from .verify import VerifyError, verify_map, verify_package
 
 
 def sample_model() -> dict:
@@ -151,12 +158,45 @@ class CompilerTests(unittest.TestCase):
         self.assertTrue(cell_is_chasm_void(void))
         self.assertFalse(cell_is_chasm_void(brink))
         self.assertEqual(floor_height(void), CHASM_FLOOR_Z)
+        self.assertEqual(CHASM_FLOOR_Z, -128)
         self.assertEqual(floor_height(brink), 0)
+        layout = build_material_layout(cells, cells)
+        self.assertEqual(
+            sector_light(void, (10, 10), 1, cells, layout),
+            CHASM_LIGHT_LEVEL,
+        )
+        self.assertEqual(
+            boundary_material(void, cells[(10, 9)], cells=cells, layout=layout),
+            "BRGCAVE",
+        )
 
         map_text, _, _ = make_map_text(level, 79, 29)
         self.assertIn(f"heightfloor = {CHASM_FLOOR_Z};", map_text)
         self.assertIn('texturefloor = "BRGABYSS";', map_text)
-        self.assertIn('texturelower = "BRGVOID";', map_text)
+        self.assertIn('texturebottom = "BRGCLIFF";', map_text)
+        self.assertNotIn("texturelower =", map_text)
+        self.assertNotIn("textureupper =", map_text)
+        chasm_sector = next(
+            block
+            for block in map_text.split("sector\n")
+            if "user_brogue_x = 10;" in block and "user_brogue_y = 10;" in block
+        )
+        self.assertIn(f"lightlevel = {CHASM_LIGHT_LEVEL};", chasm_sector)
+
+        ground_points = map_side_points(
+            29, 11, 10, 3, brink, void, cells, set(cells)
+        )
+        void_points = map_side_points(
+            29, 10, 10, 1, void, brink, cells, set(cells)
+        )
+        self.assertEqual(ground_points, list(reversed(void_points)))
+        self.assertEqual(len(ground_points), 4)
+        straight_x = 11 * 64
+        self.assertEqual(ground_points[0][0], straight_x)
+        self.assertEqual(ground_points[-1][0], straight_x)
+        self.assertEqual(ground_points[1][0], straight_x - CHASM_PORTAL_DEPTH)
+        self.assertEqual(ground_points[2][0], straight_x - CHASM_PORTAL_DEPTH)
+        self.assertEqual(abs(ground_points[1][1] - ground_points[0][1]), CHASM_PORTAL_SHOULDER)
 
     def test_chasm_bridge_shares_black_canopy_without_upper_wall_slab(self) -> None:
         model = sample_model()
@@ -188,6 +228,10 @@ class CompilerTests(unittest.TestCase):
         self.assertEqual(layout["ceiling_theme_by_position"][(20, 20)], "CAVE_NATURAL")
         self.assertEqual(sector_ceiling(void, (10, 10), layout), 224)
         self.assertEqual(sector_ceiling(bridge, (11, 10), layout), 224)
+        self.assertEqual(
+            map_side_points(29, 10, 10, 1, void, bridge, cells, set(cells)),
+            contoured_side_points(29, 10, 10, 1, contoured=False),
+        )
 
         map_text, _, stats = make_map_text(level, 79, 29)
         bridge_sector = next(
@@ -199,7 +243,7 @@ class CompilerTests(unittest.TestCase):
         self.assertIn("heightceiling = 224;", bridge_sector)
         self.assertIn('texturefloor = "BRGBRID";', bridge_sector)
         self.assertIn('textureceiling = "BRGCEIL";', bridge_sector)
-        self.assertEqual(map_text.count('textureupper = "-";'), stats["sidedefCount"])
+        self.assertEqual(map_text.count('texturetop = "-";'), stats["sidedefCount"])
 
     def test_depths_below_first_use_one_open_black_sky_ceiling(self) -> None:
         model = sample_model()
@@ -208,10 +252,10 @@ class CompilerTests(unittest.TestCase):
         first_floor_text, _, first_stats = make_map_text(level, 79, 29)
         self.assertNotIn(f'textureceiling = "{OPEN_VOID_SKY_FLAT}";', first_floor_text)
         self.assertEqual(
-            first_floor_text.count(f"heightceiling = {OPEN_VOID_CEILING_Z};"),
+            first_floor_text.count(f"heightceiling = {CAVE_CEILING_Z};"),
             first_stats["sectorCount"],
         )
-        self.assertEqual(first_floor_text.count('textureupper = "-";'), first_stats["sidedefCount"])
+        self.assertEqual(first_floor_text.count('texturetop = "-";'), first_stats["sidedefCount"])
 
         level["depth"] = 2
         lower_floor_text, _, lower_stats = make_map_text(level, 79, 29)
@@ -225,6 +269,8 @@ class CompilerTests(unittest.TestCase):
             lower_stats["sectorCount"],
         )
         self.assertNotIn('textureceiling = "BRGCEIL";', lower_floor_text)
+        self.assertIn('texturemiddle = "BRGCVUP";', lower_floor_text)
+        self.assertNotIn('texturemiddle = "BRGCVUP";', first_floor_text)
 
         mapinfo = make_mapinfo([("BRG01", 1), ("BRG02", 2)])
         first_map, second_map = mapinfo.split("map BRG02", 1)
@@ -251,6 +297,73 @@ class CompilerTests(unittest.TestCase):
         self.assertIn("twosided = false;", map_text)
         self.assertIn("sideback = ", map_text)
 
+    def test_dry_ground_above_liquid_uses_a_structural_bank(self) -> None:
+        model = sample_model()
+        cells = {(cell["x"], cell["y"]): cell for cell in model["levels"][0]["cells"]}
+        liquid = cells[(10, 10)]
+        ground = cells[(11, 10)]
+        for symbol in ("DEEP_WATER", "SHALLOW_WATER", "MUD", "LAVA"):
+            liquid["layers"]["liquid"] = {"id": 3, "symbol": symbol}
+            layout = build_material_layout(cells, cells)
+            material = transition_material(liquid, ground, "1", 1, cells, layout)
+            self.assertIn(material, {"BRGCAVE", "BRGWET", "BRGMASON"}, symbol)
+            self.assertNotIn(material, {"BRGWFALL", "BRGLFALL"}, symbol)
+
+    def test_higher_liquid_surface_flows_down_the_exposed_edge(self) -> None:
+        model = sample_model()
+        cells = {(cell["x"], cell["y"]): cell for cell in model["levels"][0]["cells"]}
+        higher = cells[(10, 10)]
+        lower = cells[(11, 10)]
+        for higher_symbol, lower_symbol, expected in (
+            ("SHALLOW_WATER", "DEEP_WATER", "BRGWFALL"),
+            ("MUD", "DEEP_WATER", "BRGSFALL"),
+            ("LAVA", "DEEP_WATER", "BRGLFALL"),
+        ):
+            higher["layers"]["liquid"] = {"id": 3, "symbol": higher_symbol}
+            lower["layers"]["liquid"] = {"id": 3, "symbol": lower_symbol}
+            layout = build_material_layout(cells, cells)
+            for front, back in ((higher, lower), (lower, higher)):
+                self.assertEqual(
+                    transition_material(front, back, "1", 1, cells, layout),
+                    expected,
+                    (higher_symbol, lower_symbol),
+                )
+
+    def test_liquid_over_chasm_keeps_an_animated_cliff_face(self) -> None:
+        model = sample_model()
+        cells = {(cell["x"], cell["y"]): cell for cell in model["levels"][0]["cells"]}
+        higher = cells[(10, 10)]
+        lower = cells[(11, 10)]
+        lower["layers"]["liquid"] = {"id": 89, "symbol": "CHASM"}
+        lower.setdefault("semantic", {})["isChasm"] = True
+        lower["terrainFlags"] |= AUTO_DESCENT
+        for higher_symbol, expected in (
+            ("SHALLOW_WATER", "BRGWCLF"),
+            ("MUD", "BRGSCLF"),
+        ):
+            higher["layers"]["liquid"] = {"id": 3, "symbol": higher_symbol}
+            layout = build_material_layout(cells, cells)
+            for front, back in ((higher, lower), (lower, higher)):
+                self.assertEqual(
+                    transition_material(front, back, "1", 1, cells, layout),
+                    expected,
+                    (higher_symbol, expected),
+                )
+
+    def test_lower_depth_boundaries_use_attached_upward_fade(self) -> None:
+        model = sample_model()
+        level = model["levels"][0]
+        level["depth"] = 2
+        cells = {(cell["x"], cell["y"]): cell for cell in level["cells"]}
+        layout = build_material_layout(cells, cells)
+        self.assertEqual(
+            boundary_material(cells[(10, 10)], cells[(10, 9)], "1", 2, cells, layout),
+            "BRGCVUP",
+        )
+        map_text, _, _ = make_map_text(level, 79, 29)
+        self.assertIn(f"heightceiling = {OPEN_VOID_CEILING_Z};", map_text)
+        self.assertIn('texturemiddle = "BRGCVUP";', map_text)
+
     def test_closed_doors_receive_centered_door_faces_and_visible_markers(self) -> None:
         model = sample_model()
         door = next(cell for cell in model["levels"][0]["cells"] if (cell["x"], cell["y"]) == (10, 10))
@@ -261,15 +374,15 @@ class CompilerTests(unittest.TestCase):
 
         # Door cells stay valid open volumes. A coordinate-addressable model
         # supplies the panel without creating black zero-height sectors.
-        self.assertIn(f"heightfloor = 0;\n  heightceiling = {OPEN_VOID_CEILING_Z};", map_text)
+        self.assertIn(f"heightfloor = 0;\n  heightceiling = {CAVE_CEILING_Z};", map_text)
         self.assertIn("id = 10800;", map_text)
         self.assertIn("user_brogue_door_sector = 1;", map_text)
         self.assertIn("type = 15020;", map_text)
         self.assertIn("arg0 = 10;\n  arg1 = 10;", map_text)
         self.assertIn("alpha = 1.000000;", map_text)
         self.assertNotIn('texturemiddle = "BRGDOOR";', map_text)
-        self.assertNotIn('textureupper = "BRGDOOR";', map_text)
-        self.assertNotIn('texturelower = "BRGDOOR";', map_text)
+        self.assertNotIn('texturetop = "BRGDOOR";', map_text)
+        self.assertNotIn('texturebottom = "BRGDOOR";', map_text)
         self.assertIn("type = 15002;", map_text)
         self.assertIn("type = 15003;", map_text)
         self.assertGreaterEqual(map_text.count("x = 96; y = 1760;"), 3)
@@ -292,7 +405,7 @@ class CompilerTests(unittest.TestCase):
         self.assertTrue(cell_door_is_closed(door))
 
         map_text, _, _ = make_map_text(model["levels"][0], 79, 29)
-        self.assertIn(f"heightfloor = 0;\n  heightceiling = {OPEN_VOID_CEILING_Z};", map_text)
+        self.assertIn(f"heightfloor = 0;\n  heightceiling = {CAVE_CEILING_Z};", map_text)
         self.assertIn("id = 10800;", map_text)
 
         door["layers"]["dungeon"] = {"id": 8, "symbol": "OPEN_DOOR"}
@@ -455,6 +568,13 @@ class CompilerTests(unittest.TestCase):
         model = sample_model()
         map_text, _, _ = make_map_text(model["levels"][0], 79, 29)
         verify_map(model["levels"][0], map_text, 79, 29)
+
+    def test_verifier_rejects_legacy_sidedef_texture_tier_names(self) -> None:
+        model = sample_model()
+        map_text, _, _ = make_map_text(model["levels"][0], 79, 29)
+        broken = map_text.replace("texturebottom =", "texturelower =", 1)
+        with self.assertRaisesRegex(VerifyError, "nonstandard UDMF texture tier name"):
+            verify_map(model["levels"][0], broken, 79, 29)
 
     def test_semantic_solidness_is_authoritative_when_present(self) -> None:
         model = sample_model()

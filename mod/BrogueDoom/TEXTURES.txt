@@ -65,6 +65,35 @@ Texture "BRGMASON", 1254, 1254
 	Patch "BRGSTONE", 0, 0
 }
 
+// Depths 2+ have no horizontal cave ceiling. These 512-world-unit boundary
+// textures retain normal rock below, then fade their upper 128 units into the
+// same near-black palette as BRGSKY. Because the fade is attached to each wall
+// rather than painted into the sky cylinder, it remains fixed while looking
+// and moving around the room.
+Texture "BRGCVUP", 256, 1024
+{
+	XScale 2.000000
+	YScale 2.000000
+	WorldPanning
+	Patch "PBRCVUP", 0, 0
+}
+
+Texture "BRGWTUP", 256, 1024
+{
+	XScale 2.000000
+	YScale 2.000000
+	WorldPanning
+	Patch "PBRCVUP", 0, 0
+}
+
+Texture "BRGMSUP", 256, 1024
+{
+	XScale 2.000000
+	YScale 2.000000
+	WorldPanning
+	Patch "PBRMSUP", 0, 0
+}
+
 // Crop the generated illustration to its actual stone frame and wooden panel.
 // Mapping the complete 1254px canvas compressed the surrounding black cavern
 // into the 64-unit door face, producing an apparent void slab from the side.
@@ -76,13 +105,46 @@ Texture "BRGDOOR", 574, 1180
 	Patch "BRGDOOR0", -340, -38
 }
 
-Texture "BRGWFALL", 1254, 1254
-{
-	XScale 9.796875
-	YScale 9.796875
-	WorldPanning
-	Patch "BRGWATER", 0, 0
-}
+// Purpose-built vertical water and sludge frames. At scale 2 each 256px tile
+// spans 128 world units; ANIMDEFS advances their highlights downward.
+Texture "BRGWFALL", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBWFL000", 0, 0 }
+Texture "BRGWF01", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBWFL001", 0, 0 }
+Texture "BRGWF02", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBWFL002", 0, 0 }
+Texture "BRGWF03", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBWFL003", 0, 0 }
+Texture "BRGWF04", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBWFL004", 0, 0 }
+Texture "BRGWF05", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBWFL005", 0, 0 }
+Texture "BRGWF06", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBWFL006", 0, 0 }
+Texture "BRGWF07", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBWFL007", 0, 0 }
+
+Texture "BRGSFALL", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL000", 0, 0 }
+Texture "BRGSF01", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL001", 0, 0 }
+Texture "BRGSF02", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL002", 0, 0 }
+Texture "BRGSF03", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL003", 0, 0 }
+Texture "BRGSF04", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL004", 0, 0 }
+Texture "BRGSF05", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL005", 0, 0 }
+Texture "BRGSF06", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL006", 0, 0 }
+Texture "BRGSF07", 256, 256 { XScale 2.0 YScale 2.0 WorldPanning Patch "PBSFL007", 0, 0 }
+
+// Liquid-to-chasm transitions remain rocky cliffs with animated streams.
+// Keeping these fully opaque avoids masked-wall sorting artifacts while the
+// generated pixels blend the liquid into the cliff and its abyss fringe.
+Texture "BRGWCLF", 64, 128 { WorldPanning Patch "PBWCF000", 0, 0 }
+Texture "BWCF01", 64, 128 { WorldPanning Patch "PBWCF001", 0, 0 }
+Texture "BWCF02", 64, 128 { WorldPanning Patch "PBWCF002", 0, 0 }
+Texture "BWCF03", 64, 128 { WorldPanning Patch "PBWCF003", 0, 0 }
+Texture "BWCF04", 64, 128 { WorldPanning Patch "PBWCF004", 0, 0 }
+Texture "BWCF05", 64, 128 { WorldPanning Patch "PBWCF005", 0, 0 }
+Texture "BWCF06", 64, 128 { WorldPanning Patch "PBWCF006", 0, 0 }
+Texture "BWCF07", 64, 128 { WorldPanning Patch "PBWCF007", 0, 0 }
+
+Texture "BRGSCLF", 64, 128 { WorldPanning Patch "PBSCF000", 0, 0 }
+Texture "BSCF01", 64, 128 { WorldPanning Patch "PBSCF001", 0, 0 }
+Texture "BSCF02", 64, 128 { WorldPanning Patch "PBSCF002", 0, 0 }
+Texture "BSCF03", 64, 128 { WorldPanning Patch "PBSCF003", 0, 0 }
+Texture "BSCF04", 64, 128 { WorldPanning Patch "PBSCF004", 0, 0 }
+Texture "BSCF05", 64, 128 { WorldPanning Patch "PBSCF005", 0, 0 }
+Texture "BSCF06", 64, 128 { WorldPanning Patch "PBSCF006", 0, 0 }
+Texture "BSCF07", 64, 128 { WorldPanning Patch "PBSCF007", 0, 0 }
 
 Texture "BRGLFALL", 1254, 1254
 {
@@ -103,19 +165,23 @@ Texture "BRGVOID", 64, 64
 	Patch "BRGPIT", 0, 0
 }
 
-// A deliberately featureless, near-black cylindrical sky for every dungeon
+// A full-height rocky cliff face for the 128-unit drop into a chasm. The rock
+// remains readable below the ledge, then dissolves through an irregular dark
+// fringe into the abyss instead of ending at a ruler-straight lower edge.
+Texture "BRGCLIFF", 64, 128
+{
+	XScale 1.000000
+	YScale 1.000000
+	WorldPanning
+	Patch "BRGCLIFF", 0, 0
+}
+
+// A deliberately featureless, true-black cylindrical sky for every dungeon
 // floor below depth 1. Sectors use F_SKY1 so this reads as open vertical void
 // instead of a dark horizontal ceiling plane.
 Texture "BRGSKY", 256, 128
 {
-	Patch "BRGPIT", 0, 0
-	Patch "BRGPIT", 64, 0
-	Patch "BRGPIT", 128, 0
-	Patch "BRGPIT", 192, 0
-	Patch "BRGPIT", 0, 64
-	Patch "BRGPIT", 64, 64
-	Patch "BRGPIT", 128, 64
-	Patch "BRGPIT", 192, 64
+	Patch "PBRSKYBL", 0, 0
 }
 
 Flat "BRGEARTH", 1254, 1254
@@ -200,7 +266,7 @@ Sprite "BRGGA0", 1536, 1024
 	Patch "BRGGRASS", 0, 0
 }
 
-Sprite "BRGFA0", 1536, 1024
+Sprite "BGFUA0", 1536, 1024
 {
 	XScale 32.000
 	YScale 32.000
@@ -224,12 +290,31 @@ Sprite "BRGVA0", 1536, 1024
 	Patch "BRGFOLIA", 0, 0
 }
 
-Sprite "BRGDA0", 1536, 1024
+Sprite "BGDVA0", 1536, 1024
 {
 	XScale 32.000
 	YScale 32.000
 	Offset 770, 1001
 	Patch "BRGGRASS", 0, 0
+}
+
+// Dedicated fallback frames for structural presentation models. GZDoom must
+// be able to resolve each actor state as a sprite before MODELDEF substitutes
+// the corresponding OBJ model.
+Sprite "BRGDA0", 574, 1180
+{
+	XScale 8.96875
+	YScale 9.21875
+	Offset 287, 1180
+	Patch "BRGDOOR0", -340, -38
+}
+
+Sprite "BRGBA0", 1254, 1254
+{
+	XScale 19.59375
+	YScale 14.928571
+	Offset 627, 1254
+	Patch "BRGBRIDGE", 0, 0
 }
 
 // Fallback states for presentation-only stair markers. MODELDEF replaces

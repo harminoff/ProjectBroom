@@ -3,7 +3,7 @@
 ## Implemented core
 
 The source-built GZDoom frontend now projects its game-facing interface from
-the live Brogue CE simulation. `BrogueBridgeState` API v12 is the only source
+the live Brogue CE simulation. `BrogueBridgeState` API v13 is the only source
 for player statistics, status flags, messages, visible entities, map knowledge,
 inventory order, equipment, item descriptions, and legal item actions.
 
@@ -46,7 +46,7 @@ frontend refreshes from the resulting authoritative snapshot.
 
 ## Bridge data contract
 
-API v12 adds copied values only; no Brogue pointers cross the DLL boundary:
+API v13 adds copied values only; no Brogue pointers cross the DLL boundary:
 
 - player armor, strength, nutrition, gold, stealth, and all four equipment IDs;
 - per-cell `discovered`, `currentlyVisible`, and `magicMapped` flags;

@@ -3,13 +3,17 @@
 
 from __future__ import annotations
 
+import math
 from pathlib import Path
 import struct
 import zlib
 
+from PIL import Image
+
 
 ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "mod" / "BrogueDoom" / "models" / "stairs"
+ABYSS_RGB = (0, 0, 0)
 
 
 class ObjBuilder:
@@ -115,6 +119,20 @@ def fall_shaft() -> ObjBuilder:
     return model
 
 
+def write_rgba_png(path: Path, width: int, height: int, rows: list[bytes]) -> None:
+    def chunk(kind: bytes, data: bytes) -> bytes:
+        return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data) & 0xFFFFFFFF)
+
+    payload = b"".join(rows)
+    png = (
+        b"\x89PNG\r\n\x1a\n"
+        + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 6, 0, 0, 0))
+        + chunk(b"IDAT", zlib.compress(payload, 9))
+        + chunk(b"IEND", b"")
+    )
+    path.write_bytes(png)
+
+
 def write_pit_texture(path: Path) -> None:
     """Write a tiny deterministic near-black RGBA PNG for the pit interior."""
     width = height = 64
@@ -129,18 +147,231 @@ def write_pit_texture(path: Path) -> None:
             base = int(2 + 8 * edge)
             row.extend((max(0, base + grain), max(0, base + grain), base + 3, 255))
         rows.append(bytes(row))
+    write_rgba_png(path, width, height, rows)
 
-    def chunk(kind: bytes, data: bytes) -> bytes:
-        return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data) & 0xFFFFFFFF)
 
-    payload = b"".join(rows)
-    png = (
-        b"\x89PNG\r\n\x1a\n"
-        + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 6, 0, 0, 0))
-        + chunk(b"IDAT", zlib.compress(payload, 9))
-        + chunk(b"IEND", b"")
+def write_chasm_cliff_texture(path: Path) -> None:
+    """Write a full-height rocky cliff that darkens toward the abyss."""
+    width, height = 64, 128
+    cell_width = 16
+    cell_height = 14
+
+    def cell_hash(gx: int, gy: int) -> int:
+        # X wraps so the generated cliff tiles without a vertical seam.
+        wrapped_x = gx % (width // cell_width)
+        value = (wrapped_x * 0x45D9F3B + gy * 0x119DE1F3 + 0xB0A6E) & 0xFFFFFFFF
+        value ^= value >> 16
+        value = (value * 0x45D9F3B) & 0xFFFFFFFF
+        return value ^ (value >> 16)
+
+    rows = []
+    for y in range(height):
+        row = bytearray([0])
+        for x in range(width):
+            grid_x = x // cell_width
+            grid_y = y // cell_height
+            nearest = 1 << 30
+            second = 1 << 30
+            winner = 0
+            for gy in range(grid_y - 1, grid_y + 2):
+                for gx in range(grid_x - 1, grid_x + 2):
+                    value = cell_hash(gx, gy)
+                    center_x = gx * cell_width + 4 + value % 9
+                    center_y = gy * cell_height + 3 + (value >> 8) % 9
+                    dx = x - center_x
+                    dy = y - center_y
+                    distance = dx * dx + (dy * dy * 5) // 4
+                    if distance < nearest:
+                        second = nearest
+                        nearest = distance
+                        winner = value
+                    elif distance < second:
+                        second = distance
+            grain = ((x * 17 + y * 31 + (winner & 31)) % 9) - 4
+            depth_falloff = (y * 48) // (height - 1)
+            stone = 126 - depth_falloff + ((winner >> 16) % 17) + grain
+            if second - nearest < 28:
+                stone -= 30
+            # Break up the top silhouette with a narrow, irregular shadow line
+            # while retaining visible rock immediately beneath the floor edge.
+            lip_depth = 4 + ((x * 11 + (x // 7) * 5) % 6)
+            if y == lip_depth:
+                stone -= 18
+            stone = max(42, min(142, stone))
+            # Warm gray-brown separates the cliff from both the cooler cave
+            # walls and the dirt floor while retaining a natural rock palette.
+            red = stone
+            green = max(34, stone - 22)
+            blue = max(30, stone - 34)
+
+            # Dissolve the last roughly quarter of the face into the abyss
+            # instead of exposing a ruler-straight wall/floor intersection.
+            # The varying start row creates a ragged, fog-like fringe, while
+            # retaining fully opaque pixels avoids masked-wall sorting seams.
+            fade_start = 86 + ((x * 7 + (x // 5) * 11) % 15)
+            if y >= fade_start:
+                remaining = (height - 1 - y) / (height - 1 - fade_start)
+                blend = remaining * remaining * (3.0 - 2.0 * remaining)
+                abyss = ABYSS_RGB
+                red = round(abyss[0] + (red - abyss[0]) * blend)
+                green = round(abyss[1] + (green - abyss[1]) * blend)
+                blue = round(abyss[2] + (blue - abyss[2]) * blend)
+
+            row.extend((red, green, blue, 255))
+        rows.append(bytes(row))
+    write_rgba_png(path, width, height, rows)
+
+
+def write_open_void_wall_texture(source: Path, path: Path) -> None:
+    """Write a 512-world-unit wall whose top dissolves into black sky."""
+    tile_size = 256
+    source_tile = Image.open(source).convert("RGB").resize(
+        (tile_size, tile_size),
+        Image.Resampling.LANCZOS,
     )
-    path.write_bytes(png)
+    source_pixels = source_tile.load()
+    fade_tile = Image.new("RGB", (tile_size, tile_size))
+    fade_pixels = fade_tile.load()
+    abyss = ABYSS_RGB
+    for y in range(tile_size):
+        for x in range(tile_size):
+            # Vary the dark boundary across short horizontal runs so the sky
+            # meets the rock as an eroded cave silhouette instead of a line.
+            fade_start = 12 + ((x * 7 + (x // 9) * 13) % 21)
+            amount = max(0.0, min(1.0, (y - fade_start) / (tile_size - 1 - fade_start)))
+            amount = amount * amount * (3.0 - 2.0 * amount)
+            source_color = source_pixels[x, y]
+            fade_pixels[x, y] = tuple(
+                round(abyss[channel] + (source_color[channel] - abyss[channel]) * amount)
+                for channel in range(3)
+            )
+
+    wall = Image.new("RGB", (tile_size, tile_size * 4))
+    wall.paste(fade_tile, (0, 0))
+    for tile_index in range(1, 4):
+        wall.paste(source_tile, (0, tile_index * tile_size))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    wall.save(path, format="PNG", optimize=False, compress_level=9)
+
+
+def write_black_sky_texture(path: Path) -> None:
+    """Write an exact-black opaque sky so the upper wall fade has no seam."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    Image.new("RGB", (256, 128), ABYSS_RGB).save(
+        path,
+        format="PNG",
+        optimize=False,
+        compress_level=9,
+    )
+
+
+def write_liquid_fall_frames(source: Path, output_dir: Path, prefix: str, sludge: bool = False) -> None:
+    """Generate an eight-frame, vertically streaked downward-flow animation."""
+    size = 256
+    source_image = Image.open(source).convert("RGB").resize(
+        (size, size),
+        Image.Resampling.LANCZOS,
+    )
+    column_palette = source_image.resize((size, 1), Image.Resampling.BOX)
+    global_color = source_image.resize((1, 1), Image.Resampling.BOX).getpixel((0, 0))
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    for frame in range(8):
+        image = Image.new("RGB", (size, size))
+        pixels = image.load()
+        for x in range(size):
+            column_color = column_palette.getpixel((x, 0))
+            base = tuple(round(global_color[channel] * 0.62 + column_color[channel] * 0.38) for channel in range(3))
+            if sludge:
+                # Keep mud visibly separate from blue water: dense brown with
+                # a restrained olive cast inherited from Brogue's sludge flat.
+                base = (
+                    round(base[0] * 0.82),
+                    round(base[1] * 0.90 + 3),
+                    round(base[2] * 0.58),
+                )
+
+            column_noise = (x * 37 + (x // 5) * 19 + (x // 17) * 53) & 255
+            stream = 0.18 + (column_noise / 255.0) * 0.32
+            if column_noise % 23 < 4:
+                stream += 0.18
+            phase_offset = (x * 13 + (x // 11) * 23) % 128
+            for y in range(size):
+                # Eight 16-pixel advances complete one 128-pixel cycle. The
+                # bright head and its long tail therefore move downward and
+                # loop without the omnidirectional swirl produced by warp.
+                phase = (y - frame * 16 - phase_offset) % 128
+                drop = (44 - phase) / 44.0 if phase < 44 else 0.0
+                # Keep even the troughs legible under Brogue's deliberately
+                # low cave light. Earlier frames averaged almost black, so a
+                # perfectly valid wall read as a camera-facing black quad.
+                factor = 0.88 + stream + drop * (0.76 if sludge else 1.28)
+                pixels[x, y] = tuple(min(255, round(channel * factor)) for channel in base)
+
+        image.save(
+            output_dir / f"{prefix}{frame:03d}.png",
+            format="PNG",
+            optimize=False,
+            compress_level=9,
+        )
+
+
+def write_liquid_cliff_frames(
+    cliff_source: Path,
+    fall_dir: Path,
+    fall_prefix: str,
+    output_prefix: str,
+    sludge: bool = False,
+) -> None:
+    """Layer directional liquid ribbons over rock for liquid-to-chasm edges.
+
+    A chasm transition must remain a cliff. Using the opaque waterfall sheet
+    as the entire 124-unit lower wall produced disconnected dark rectangles.
+    These frames retain the rocky bank, expose narrow moving streams, and let
+    both dissolve into the existing abyss fringe near the bottom.
+    """
+    cliff = Image.open(cliff_source).convert("RGB")
+    width, height = cliff.size
+    output_dir = cliff_source.parent
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    for frame in range(8):
+        fall = Image.open(fall_dir / f"{fall_prefix}{frame:03d}.png").convert("RGB").resize(
+            (width, height),
+            Image.Resampling.LANCZOS,
+        )
+        rock_pixels = cliff.load()
+        fall_pixels = fall.load()
+        image = Image.new("RGB", (width, height))
+        pixels = image.load()
+        for y in range(height):
+            # The stream disappears into the same abyss fringe as the cliff,
+            # avoiding a rectangular lower termination.
+            bottom_fade = max(0.0, min(1.0, (height - y) / 40.0))
+            for x in range(width):
+                # Several deterministic, irregular channels leave rock visible
+                # between them. The mask wraps at the texture edges so adjacent
+                # 64-unit Brogue faces do not expose hard vertical seams.
+                channel = (
+                    0.62
+                    + 0.28 * math.sin((x + 7) * math.tau / 23.0)
+                    + 0.18 * math.sin((x + 19) * math.tau / 11.0)
+                )
+                coverage = max(0.0, min(0.82, (channel - 0.36) * 1.65)) * bottom_fade
+                if sludge:
+                    coverage *= 0.78
+                rock = rock_pixels[x, y]
+                liquid = fall_pixels[x, y]
+                pixels[x, y] = tuple(
+                    round(rock[index] * (1.0 - coverage) + liquid[index] * coverage)
+                    for index in range(3)
+                )
+        image.save(
+            output_dir / f"{output_prefix}{frame:03d}.png",
+            format="PNG",
+            optimize=False,
+            compress_level=9,
+        )
 
 
 def main() -> int:
@@ -151,6 +382,15 @@ def main() -> int:
     down_void().write(OUTPUT / "down_void.obj")
     fall_shaft().write(OUTPUT / "fall_shaft.obj")
     write_pit_texture(ROOT / "mod" / "BrogueDoom" / "graphics" / "BRGPIT.png")
+    write_chasm_cliff_texture(ROOT / "mod" / "BrogueDoom" / "graphics" / "BRGCLIFF.png")
+    graphics = ROOT / "mod" / "BrogueDoom" / "graphics"
+    write_black_sky_texture(graphics / "PBRSKYBL.png")
+    write_open_void_wall_texture(graphics / "BRGROCK.png", graphics / "PBRCVUP.png")
+    write_open_void_wall_texture(graphics / "BRGSTONE.png", graphics / "PBRMSUP.png")
+    write_liquid_fall_frames(graphics / "BRGWATER.png", graphics, "PBWFL")
+    write_liquid_fall_frames(graphics / "BRGDIRT.png", graphics, "PBSFL", sludge=True)
+    write_liquid_cliff_frames(graphics / "BRGCLIFF.png", graphics, "PBWFL", "PBWCF")
+    write_liquid_cliff_frames(graphics / "BRGCLIFF.png", graphics, "PBSFL", "PBSCF", sludge=True)
     return 0
 
 

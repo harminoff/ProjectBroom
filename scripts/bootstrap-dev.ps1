@@ -26,6 +26,11 @@ if ($pythonVersion -notmatch '^Python 3\.11\.') {
 $dotnetMajor = [int]((& $dotnet --version 2>&1 | Out-String).Trim().Split('.')[0])
 if ($dotnetMajor -lt 8) { throw ".NET SDK 8 or newer is required." }
 
+Invoke-ProjectBroomCommand $python -Arguments @(
+    "-m", "pip", "install", "--disable-pip-version-check",
+    "-r", (Join-Path $root "tools\requirements-test.txt")
+)
+
 New-Item -ItemType Directory -Force -Path $deps, $build, $downloads | Out-Null
 
 if (-not (Test-Path -LiteralPath (Join-Path $gzdoom ".git") -PathType Container)) {

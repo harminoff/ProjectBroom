@@ -26,11 +26,12 @@ interpreted in world units and remain phase-continuous across each 64-unit map
 segment. The natural-rock source is also edge-matched in both axes; panning
 cannot hide a bad source-image boundary by itself.
 
-`BRGSKY` tiles the near-black chasm artwork into a valid sky texture. Generated
-maps use it through `F_SKY1` on every sector below depth 1, removing the visible
+`BRGSKY` uses a dedicated opaque RGB `(0, 0, 0)` source image. Generated maps
+use it through `F_SKY1` on every sector below depth 1, removing the visible
 ceiling plane while leaving the first floor's continuous cave roof intact.
-Every depth uses one 224-unit logical ceiling height so the
-cell grid never creates freestanding upper-sidedef slabs at material borders.
+Those lower depths raise the logical sky plane from 224 to 352 units and use
+attached wall textures that fade from rock to the same exact black over the
+upper 128 units, avoiding both a hard wall/sky seam and camera-relative bands.
 
 The generated UDMF marks open cell-to-cell portal lines `dontdraw`. They remain
 fully present for sector topology and runtime cell addressing, but the minimap

@@ -1,8 +1,14 @@
 from __future__ import annotations
 
+from collections import Counter
 import json
+import re
+import struct
 import unittest
+import zlib
 from pathlib import Path
+
+from PIL import Image, ImageChops, ImageStat
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -33,6 +39,73 @@ FRONTEND = ROOT / "src" / "gzdoom-bridge" / "brogue_bridge_frontend.cpp"
 
 
 class BrogueDoomResourceTests(unittest.TestCase):
+    def test_sprite_declarations_are_unique(self) -> None:
+        declarations = TEXTURES.read_text(encoding="utf-8")
+        sprite_names = re.findall(r'^Sprite\s+"([A-Z0-9]+)"', declarations, re.MULTILINE | re.IGNORECASE)
+        counts = Counter(name.upper() for name in sprite_names)
+        duplicates = sorted(name for name, count in counts.items() if count > 1)
+        self.assertEqual(duplicates, [])
+
+    def test_ground_props_do_not_reuse_structural_marker_frames(self) -> None:
+        declarations = TEXTURES.read_text(encoding="utf-8")
+        zscript = BROGUE_ZSCRIPT.read_text(encoding="utf-8")
+        self.assertIn('Sprite "BGFUA0", 1536, 1024', declarations)
+        self.assertIn('States { Spawn: BGFU A -1; Stop; }', zscript)
+        self.assertIn('Sprite "BGDVA0", 1536, 1024', declarations)
+        self.assertIn('States { Spawn: BGDV A -1; Stop; }', zscript)
+        self.assertIn('States { Spawn: BRGF A -1; Stop; }', zscript)
+        self.assertIn('States { Spawn: BRGD A -1; Stop; }', zscript)
+
+    def test_every_model_frame_has_a_declared_fallback_sprite(self) -> None:
+        declarations = TEXTURES.read_text(encoding="utf-8")
+        declared_sprites = {
+            name.upper()
+            for name in re.findall(
+                r'^Sprite\s+"([A-Z0-9]+)"',
+                declarations,
+                re.MULTILINE | re.IGNORECASE,
+            )
+        }
+        modeldef = MODELDEF.read_text(encoding="utf-8")
+        model_frames = re.findall(
+            r'^\s*FrameIndex\s+([A-Z0-9]{4})\s+([A-Z])\b',
+            modeldef,
+            re.MULTILINE | re.IGNORECASE,
+        )
+        missing = sorted(
+            f"{sprite.upper()}{frame.upper()}0"
+            for sprite, frame in model_frames
+            if f"{sprite.upper()}{frame.upper()}0" not in declared_sprites
+        )
+        self.assertEqual(missing, [])
+
+    def test_chasm_cliff_fades_opaquely_into_abyss(self) -> None:
+        data = (GRAPHICS / "BRGCLIFF.png").read_bytes()
+        self.assertEqual(data[:8], b"\x89PNG\r\n\x1a\n")
+        position = 8
+        compressed = bytearray()
+        width = height = None
+        while position < len(data):
+            length = struct.unpack(">I", data[position:position + 4])[0]
+            kind = data[position + 4:position + 8]
+            payload = data[position + 8:position + 8 + length]
+            position += 12 + length
+            if kind == b"IHDR":
+                width, height = struct.unpack(">II", payload[:8])
+            elif kind == b"IDAT":
+                compressed.extend(payload)
+            elif kind == b"IEND":
+                break
+        self.assertEqual((width, height), (64, 128))
+        raw = zlib.decompress(bytes(compressed))
+        stride = 1 + width * 4
+        rows = [raw[y * stride + 1:(y + 1) * stride] for y in range(height)]
+        self.assertTrue(all(rows[-1][x + 3] == 255 for x in range(0, width * 4, 4)))
+        self.assertTrue(all(tuple(rows[-1][x:x + 3]) == (0, 0, 0) for x in range(0, width * 4, 4)))
+        upper_average = sum(rows[64][x] for x in range(0, width * 4, 4)) / width
+        fringe_average = sum(rows[112][x] for x in range(0, width * 4, 4)) / width
+        self.assertGreater(upper_average, fringe_average * 3)
+
     def test_level_transition_detaches_frontend_actors_before_map_change(self) -> None:
         frontend = FRONTEND.read_text(encoding="utf-8")
         transition = frontend[frontend.index("bool SyncLevelEvent"):frontend.index("bool EnsureStarted")]
@@ -60,7 +133,32 @@ class BrogueDoomResourceTests(unittest.TestCase):
         ):
             self.assertGreater((GRAPHICS / name).stat().st_size, 1000, name)
         self.assertGreater((GRAPHICS / "BRGPIT.png").stat().st_size, 100, "BRGPIT.png")
+        self.assertGreater((GRAPHICS / "BRGCLIFF.png").stat().st_size, 100, "BRGCLIFF.png")
+        self.assertGreater((GRAPHICS / "PBRSKYBL.png").stat().st_size, 100, "PBRSKYBL.png")
+        self.assertGreater((GRAPHICS / "PBRCVUP.png").stat().st_size, 1000, "PBRCVUP.png")
+        self.assertGreater((GRAPHICS / "PBRMSUP.png").stat().st_size, 1000, "PBRMSUP.png")
         self.assertGreater((GRAPHICS / "BRGLAVA_BM.png").stat().st_size, 1000, "BRGLAVA_BM.png")
+        for prefix in ("PBWFL", "PBSFL"):
+            for frame in range(8):
+                name = f"{prefix}{frame:03d}.png"
+                self.assertGreater((GRAPHICS / name).stat().st_size, 1000, name)
+        for prefix in ("PBWCF", "PBSCF"):
+            for frame in range(8):
+                name = f"{prefix}{frame:03d}.png"
+                self.assertGreater((GRAPHICS / name).stat().st_size, 1000, name)
+
+    def test_open_void_walls_fade_upward_without_alpha_holes(self) -> None:
+        for name in ("PBRCVUP.png", "PBRMSUP.png"):
+            with Image.open(GRAPHICS / name) as image:
+                image = image.convert("RGB")
+                self.assertEqual(image.size, (256, 1024))
+                self.assertEqual(
+                    image.crop((0, 0, 256, 16)).getextrema(),
+                    ((0, 0), (0, 0), (0, 0)),
+                )
+                top = ImageStat.Stat(image.crop((0, 0, 256, 16))).mean
+                rock = ImageStat.Stat(image.crop((0, 300, 256, 500))).mean
+                self.assertLess(sum(top), sum(rock) * 0.15, name)
 
     def test_authoritative_visual_effects_are_wired(self) -> None:
         root_zscript = ROOT_ZSCRIPT.read_text(encoding="utf-8")
@@ -96,25 +194,68 @@ class BrogueDoomResourceTests(unittest.TestCase):
             if "fall" in theme:
                 self.assertIn(f'"{theme["fall"].upper()}"', declarations, f"{theme_name}: fall")
 
-    def test_liquids_use_original_warped_materials(self) -> None:
+    def test_liquid_floors_warp_and_falls_animate_directionally(self) -> None:
         animdefs = ANIMDEFS.read_text(encoding="utf-8").upper()
-        for name in ("BRGWATR", "BRGSLDG", "BRGMOLT", "BRGWFALL", "BRGLFALL"):
+        for name in ("BRGWATR", "BRGSLDG", "BRGMOLT", "BRGLFALL"):
             self.assertIn(name, animdefs)
+        self.assertNotIn("WARP TEXTURE BRGWFALL", animdefs)
+        for base, frame_prefix in (
+            ("BRGWFALL", "BRGWF"),
+            ("BRGSFALL", "BRGSF"),
+            ("BRGWCLF", "BWCF"),
+            ("BRGSCLF", "BSCF"),
+        ):
+            self.assertIn(f"TEXTURE {base}", animdefs)
+            self.assertIn(f"PIC {base} TICS", animdefs)
+            for frame in range(1, 8):
+                self.assertIn(f"PIC {frame_prefix}{frame:02d} TICS", animdefs)
+
+    def test_water_and_sludge_falls_have_distinct_downward_frames(self) -> None:
+        loaded: dict[str, list[Image.Image]] = {}
+        for prefix in ("PBWFL", "PBSFL"):
+            loaded[prefix] = [
+                Image.open(GRAPHICS / f"{prefix}{frame:03d}.png").convert("RGB")
+                for frame in range(8)
+            ]
+            self.assertTrue(all(image.size == (256, 256) for image in loaded[prefix]))
+            self.assertIsNotNone(ImageChops.difference(loaded[prefix][0], loaded[prefix][1]).getbbox())
+
+        water_mean = ImageStat.Stat(loaded["PBWFL"][0]).mean
+        sludge_mean = ImageStat.Stat(loaded["PBSFL"][0]).mean
+        self.assertGreater(water_mean[2], water_mean[0] * 10)
+        self.assertGreater(sludge_mean[0], sludge_mean[2] * 2)
+
+    def test_liquid_chasm_faces_retain_rock_and_animate(self) -> None:
+        cliff = Image.open(GRAPHICS / "BRGCLIFF.png").convert("RGB")
+        for prefix in ("PBWCF", "PBSCF"):
+            frames = [
+                Image.open(GRAPHICS / f"{prefix}{frame:03d}.png").convert("RGB")
+                for frame in range(8)
+            ]
+            self.assertTrue(all(image.size == (64, 128) for image in frames))
+            self.assertIsNotNone(ImageChops.difference(frames[0], frames[1]).getbbox())
+            difference = ImageChops.difference(cliff, frames[0])
+            changed = sum(1 for pixel in difference.getdata() if pixel != (0, 0, 0))
+            self.assertGreater(changed, 64 * 128 // 3)
+            self.assertLess(changed, 64 * 128 * 9 // 10)
 
     def test_scaled_wall_textures_use_world_panning(self) -> None:
         declarations = TEXTURES.read_text(encoding="utf-8")
-        for name in ("BRGCAVE", "BRGWET", "BRGMASON", "BRGWFALL", "BRGLFALL", "BRGVOID"):
+        for name in ("BRGCAVE", "BRGWET", "BRGMASON", "BRGCVUP", "BRGWTUP", "BRGMSUP", "BRGWFALL", "BRGSFALL", "BRGWCLF", "BRGSCLF", "BRGLFALL", "BRGVOID", "BRGCLIFF"):
             start = declarations.index(f'Texture "{name}"')
             end = declarations.index("}\n", start)
             self.assertIn("WorldPanning", declarations[start:end], name)
         self.assertIn('Flat "BRGABYSS", 64, 64', declarations)
+        self.assertIn('Texture "BRGCLIFF", 64, 128', declarations)
 
     def test_subterranean_void_sky_is_declared(self) -> None:
         declarations = TEXTURES.read_text(encoding="utf-8")
         start = declarations.index('Texture "BRGSKY", 256, 128')
         end = declarations.index("}\n", start)
         sky = declarations[start:end]
-        self.assertEqual(sky.count('Patch "BRGPIT"'), 8)
+        self.assertEqual(sky.count('Patch "PBRSKYBL"'), 1)
+        with Image.open(GRAPHICS / "PBRSKYBL.png") as image:
+            self.assertEqual(image.convert("RGB").getextrema(), ((0, 0), (0, 0), (0, 0)))
 
     def test_bridge_deck_has_a_dedicated_original_material(self) -> None:
         registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
@@ -283,7 +424,7 @@ class BrogueDoomResourceTests(unittest.TestCase):
     def test_complete_brogue_monster_roster_is_generated(self) -> None:
         catalog = json.loads(MONSTER_CATALOG.read_text(encoding="utf-8"))
         registry = json.loads(MONSTER_REGISTRY.read_text(encoding="utf-8"))
-        self.assertEqual(catalog["bridgeApiVersion"], 12)
+        self.assertEqual(catalog["bridgeApiVersion"], 13)
         self.assertEqual(catalog["count"], 68)
         self.assertEqual(registry["nonPlayerModelCount"], 67)
         self.assertEqual(registry["presentationModelCount"], 68)
