@@ -65,6 +65,35 @@ Texture "BRGMASON", 1254, 1254
 	Patch "BRGSTONE", 0, 0
 }
 
+// Depths 2+ have no horizontal cave ceiling. These 512-world-unit boundary
+// textures retain normal rock below, then fade their upper 128 units into the
+// same near-black palette as BRGSKY. Because the fade is attached to each wall
+// rather than painted into the sky cylinder, it remains fixed while looking
+// and moving around the room.
+Texture "BRGCVUP", 256, 1024
+{
+	XScale 2.000000
+	YScale 2.000000
+	WorldPanning
+	Patch "PBRCVUP", 0, 0
+}
+
+Texture "BRGWTUP", 256, 1024
+{
+	XScale 2.000000
+	YScale 2.000000
+	WorldPanning
+	Patch "PBRCVUP", 0, 0
+}
+
+Texture "BRGMSUP", 256, 1024
+{
+	XScale 2.000000
+	YScale 2.000000
+	WorldPanning
+	Patch "PBRMSUP", 0, 0
+}
+
 // Crop the generated illustration to its actual stone frame and wooden panel.
 // Mapping the complete 1254px canvas compressed the surrounding black cavern
 // into the 64-unit door face, producing an apparent void slab from the side.

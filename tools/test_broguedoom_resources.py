@@ -6,6 +6,8 @@ import unittest
 import zlib
 from pathlib import Path
 
+from PIL import Image, ImageStat
+
 
 ROOT = Path(__file__).resolve().parent.parent
 REGISTRY = ROOT / "assets" / "terrain" / "broguedoom_cave_registry.json"
@@ -90,7 +92,18 @@ class BrogueDoomResourceTests(unittest.TestCase):
             self.assertGreater((GRAPHICS / name).stat().st_size, 1000, name)
         self.assertGreater((GRAPHICS / "BRGPIT.png").stat().st_size, 100, "BRGPIT.png")
         self.assertGreater((GRAPHICS / "BRGCLIFF.png").stat().st_size, 100, "BRGCLIFF.png")
+        self.assertGreater((GRAPHICS / "PBRCVUP.png").stat().st_size, 1000, "PBRCVUP.png")
+        self.assertGreater((GRAPHICS / "PBRMSUP.png").stat().st_size, 1000, "PBRMSUP.png")
         self.assertGreater((GRAPHICS / "BRGLAVA_BM.png").stat().st_size, 1000, "BRGLAVA_BM.png")
+
+    def test_open_void_walls_fade_upward_without_alpha_holes(self) -> None:
+        for name in ("PBRCVUP.png", "PBRMSUP.png"):
+            with Image.open(GRAPHICS / name) as image:
+                image = image.convert("RGB")
+                self.assertEqual(image.size, (256, 1024))
+                top = ImageStat.Stat(image.crop((0, 0, 256, 16))).mean
+                rock = ImageStat.Stat(image.crop((0, 300, 256, 500))).mean
+                self.assertLess(sum(top), sum(rock) * 0.15, name)
 
     def test_authoritative_visual_effects_are_wired(self) -> None:
         root_zscript = ROOT_ZSCRIPT.read_text(encoding="utf-8")
@@ -133,7 +146,7 @@ class BrogueDoomResourceTests(unittest.TestCase):
 
     def test_scaled_wall_textures_use_world_panning(self) -> None:
         declarations = TEXTURES.read_text(encoding="utf-8")
-        for name in ("BRGCAVE", "BRGWET", "BRGMASON", "BRGWFALL", "BRGLFALL", "BRGVOID", "BRGCLIFF"):
+        for name in ("BRGCAVE", "BRGWET", "BRGMASON", "BRGCVUP", "BRGWTUP", "BRGMSUP", "BRGWFALL", "BRGLFALL", "BRGVOID", "BRGCLIFF"):
             start = declarations.index(f'Texture "{name}"')
             end = declarations.index("}\n", start)
             self.assertIn("WorldPanning", declarations[start:end], name)

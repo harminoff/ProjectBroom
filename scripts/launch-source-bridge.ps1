@@ -105,7 +105,7 @@ $needsPackage = -not (Test-Path -LiteralPath $generated -PathType Leaf) -or -not
 if (-not $needsPackage) {
     try {
         $manifest = Get-Content -Raw -LiteralPath $packageManifest | ConvertFrom-Json
-        $needsPackage = $manifest.inputSha256 -ne $inputHash -or $manifest.compilerVersion -ne "37" -or $manifest.resourcePack -ne "Project Broom Original Cave Textures"
+        $needsPackage = $manifest.inputSha256 -ne $inputHash -or $manifest.compilerVersion -ne "38" -or $manifest.resourcePack -ne "Project Broom Original Cave Textures"
     } catch {
         $needsPackage = $true
     }

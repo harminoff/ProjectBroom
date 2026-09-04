@@ -7,6 +7,8 @@ from pathlib import Path
 import struct
 import zlib
 
+from PIL import Image
+
 
 ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "mod" / "BrogueDoom" / "models" / "stairs"
@@ -218,6 +220,38 @@ def write_chasm_cliff_texture(path: Path) -> None:
     write_rgba_png(path, width, height, rows)
 
 
+def write_open_void_wall_texture(source: Path, path: Path) -> None:
+    """Write a 512-world-unit wall whose top dissolves into black sky."""
+    tile_size = 256
+    source_tile = Image.open(source).convert("RGB").resize(
+        (tile_size, tile_size),
+        Image.Resampling.LANCZOS,
+    )
+    source_pixels = source_tile.load()
+    fade_tile = Image.new("RGB", (tile_size, tile_size))
+    fade_pixels = fade_tile.load()
+    abyss = (3, 3, 6)
+    for y in range(tile_size):
+        for x in range(tile_size):
+            # Vary the dark boundary across short horizontal runs so the sky
+            # meets the rock as an eroded cave silhouette instead of a line.
+            fade_start = 12 + ((x * 7 + (x // 9) * 13) % 21)
+            amount = max(0.0, min(1.0, (y - fade_start) / (tile_size - 1 - fade_start)))
+            amount = amount * amount * (3.0 - 2.0 * amount)
+            source_color = source_pixels[x, y]
+            fade_pixels[x, y] = tuple(
+                round(abyss[channel] + (source_color[channel] - abyss[channel]) * amount)
+                for channel in range(3)
+            )
+
+    wall = Image.new("RGB", (tile_size, tile_size * 4))
+    wall.paste(fade_tile, (0, 0))
+    for tile_index in range(1, 4):
+        wall.paste(source_tile, (0, tile_index * tile_size))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    wall.save(path, format="PNG", optimize=False, compress_level=9)
+
+
 def main() -> int:
     OUTPUT.mkdir(parents=True, exist_ok=True)
     upstairs().write(OUTPUT / "upstairs.obj")
@@ -227,6 +261,9 @@ def main() -> int:
     fall_shaft().write(OUTPUT / "fall_shaft.obj")
     write_pit_texture(ROOT / "mod" / "BrogueDoom" / "graphics" / "BRGPIT.png")
     write_chasm_cliff_texture(ROOT / "mod" / "BrogueDoom" / "graphics" / "BRGCLIFF.png")
+    graphics = ROOT / "mod" / "BrogueDoom" / "graphics"
+    write_open_void_wall_texture(graphics / "BRGROCK.png", graphics / "PBRCVUP.png")
+    write_open_void_wall_texture(graphics / "BRGSTONE.png", graphics / "PBRMSUP.png")
     return 0
 
 

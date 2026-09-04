@@ -12,6 +12,7 @@ from .compile import (
     CHASM_LIGHT_LEVEL,
     CHASM_PORTAL_DEPTH,
     CHASM_PORTAL_SHOULDER,
+    CAVE_CEILING_Z,
     CONTOUR_DEPTH,
     CONTOUR_MIN_RUN,
     CONTOUR_RUN_STRIDE,
@@ -44,6 +45,7 @@ from .compile import (
     sector_tint,
     surface_tint,
     terrain_theme,
+    transition_material,
     wall_material,
 )
 from .verify import VerifyError, verify_map, verify_package
@@ -249,7 +251,7 @@ class CompilerTests(unittest.TestCase):
         first_floor_text, _, first_stats = make_map_text(level, 79, 29)
         self.assertNotIn(f'textureceiling = "{OPEN_VOID_SKY_FLAT}";', first_floor_text)
         self.assertEqual(
-            first_floor_text.count(f"heightceiling = {OPEN_VOID_CEILING_Z};"),
+            first_floor_text.count(f"heightceiling = {CAVE_CEILING_Z};"),
             first_stats["sectorCount"],
         )
         self.assertEqual(first_floor_text.count('texturetop = "-";'), first_stats["sidedefCount"])
@@ -266,6 +268,8 @@ class CompilerTests(unittest.TestCase):
             lower_stats["sectorCount"],
         )
         self.assertNotIn('textureceiling = "BRGCEIL";', lower_floor_text)
+        self.assertIn('texturemiddle = "BRGCVUP";', lower_floor_text)
+        self.assertNotIn('texturemiddle = "BRGCVUP";', first_floor_text)
 
         mapinfo = make_mapinfo([("BRG01", 1), ("BRG02", 2)])
         first_map, second_map = mapinfo.split("map BRG02", 1)
@@ -292,6 +296,32 @@ class CompilerTests(unittest.TestCase):
         self.assertIn("twosided = false;", map_text)
         self.assertIn("sideback = ", map_text)
 
+    def test_liquid_height_transitions_use_structural_banks(self) -> None:
+        model = sample_model()
+        cells = {(cell["x"], cell["y"]): cell for cell in model["levels"][0]["cells"]}
+        liquid = cells[(10, 10)]
+        ground = cells[(11, 10)]
+        for symbol in ("DEEP_WATER", "SHALLOW_WATER", "MUD", "LAVA"):
+            liquid["layers"]["liquid"] = {"id": 3, "symbol": symbol}
+            layout = build_material_layout(cells, cells)
+            material = transition_material(liquid, ground, "1", 1, cells, layout)
+            self.assertIn(material, {"BRGCAVE", "BRGWET", "BRGMASON"}, symbol)
+            self.assertNotIn(material, {"BRGWFALL", "BRGLFALL"}, symbol)
+
+    def test_lower_depth_boundaries_use_attached_upward_fade(self) -> None:
+        model = sample_model()
+        level = model["levels"][0]
+        level["depth"] = 2
+        cells = {(cell["x"], cell["y"]): cell for cell in level["cells"]}
+        layout = build_material_layout(cells, cells)
+        self.assertEqual(
+            boundary_material(cells[(10, 10)], cells[(10, 9)], "1", 2, cells, layout),
+            "BRGCVUP",
+        )
+        map_text, _, _ = make_map_text(level, 79, 29)
+        self.assertIn(f"heightceiling = {OPEN_VOID_CEILING_Z};", map_text)
+        self.assertIn('texturemiddle = "BRGCVUP";', map_text)
+
     def test_closed_doors_receive_centered_door_faces_and_visible_markers(self) -> None:
         model = sample_model()
         door = next(cell for cell in model["levels"][0]["cells"] if (cell["x"], cell["y"]) == (10, 10))
@@ -302,7 +332,7 @@ class CompilerTests(unittest.TestCase):
 
         # Door cells stay valid open volumes. A coordinate-addressable model
         # supplies the panel without creating black zero-height sectors.
-        self.assertIn(f"heightfloor = 0;\n  heightceiling = {OPEN_VOID_CEILING_Z};", map_text)
+        self.assertIn(f"heightfloor = 0;\n  heightceiling = {CAVE_CEILING_Z};", map_text)
         self.assertIn("id = 10800;", map_text)
         self.assertIn("user_brogue_door_sector = 1;", map_text)
         self.assertIn("type = 15020;", map_text)
@@ -333,7 +363,7 @@ class CompilerTests(unittest.TestCase):
         self.assertTrue(cell_door_is_closed(door))
 
         map_text, _, _ = make_map_text(model["levels"][0], 79, 29)
-        self.assertIn(f"heightfloor = 0;\n  heightceiling = {OPEN_VOID_CEILING_Z};", map_text)
+        self.assertIn(f"heightfloor = 0;\n  heightceiling = {CAVE_CEILING_Z};", map_text)
         self.assertIn("id = 10800;", map_text)
 
         door["layers"]["dungeon"] = {"id": 8, "symbol": "OPEN_DOOR"}

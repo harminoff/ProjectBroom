@@ -33,7 +33,8 @@ CHASM_FLOOR_Z = -128
 CHASM_LIGHT_LEVEL = 144
 CHASM_PORTAL_DEPTH = 10
 CHASM_PORTAL_SHOULDER = 14
-OPEN_VOID_CEILING_Z = 224
+CAVE_CEILING_Z = 224
+OPEN_VOID_CEILING_Z = 352
 OPEN_VOID_SKY_FLAT = "F_SKY1"
 OPEN_VOID_SKY_TEXTURE = "BRGSKY"
 EXPECTED_WIDTH = 79
@@ -44,7 +45,7 @@ CONTOUR_DEPTH = 8
 CONTOUR_SHOULDER = 12
 CONTOUR_MIN_RUN = 3
 CONTOUR_RUN_STRIDE = 4
-COMPILER_VERSION = "37"
+COMPILER_VERSION = "38"
 RENDER_MAPPING_PATH = Path(__file__).with_name("terrain_render_map.json")
 THEME_REGISTRY_PATH = PROJECT_ROOT / "assets" / "terrain" / "broguedoom_cave_registry.json"
 RESOURCE_GRAPHICS_DIR = PROJECT_ROOT / "mod" / "BrogueDoom" / "graphics"
@@ -63,6 +64,8 @@ RESOURCE_ASSET_FILES = (
     "BRGDSTA.png",
     "BRGPIT.png",
     "BRGCLIFF.png",
+    "PBRCVUP.png",
+    "PBRMSUP.png",
 )
 RESOURCE_PRESENTATION_FILES = (
     "MODELDEF",
@@ -76,8 +79,17 @@ RESOURCE_PRESENTATION_FILES = (
     "models/stairs/down_void.obj",
     "models/stairs/fall_shaft.obj",
 )
-CUSTOM_TEXTURES = {"BRGCAVE", "BRGWET", "BRGMASON", "BRGDOOR", "BRGWFALL", "BRGLFALL", "BRGVOID", "BRGCLIFF", "BRGSKY"}
+CUSTOM_TEXTURES = {"BRGCAVE", "BRGWET", "BRGMASON", "BRGCVUP", "BRGWTUP", "BRGMSUP", "BRGDOOR", "BRGWFALL", "BRGLFALL", "BRGVOID", "BRGCLIFF", "BRGSKY"}
 CUSTOM_FLATS = {"BRGEARTH", "BRGCEIL", "BRGMOSS", "BRGFLAG", "BRGBRID", "BRGWATR", "BRGSLDG", "BRGMOLT", "BRGCHASM", "BRGABYSS"}
+
+OPEN_VOID_WALL_TEXTURES = {
+    "BRGCAVE": "BRGCVUP",
+    "BRGWET": "BRGWTUP",
+    "BRGMASON": "BRGMSUP",
+    # One-sided walls reached from a chasm still need the upward fade. The
+    # ground-to-chasm lower tier keeps BRGCLIFF's separate downward fade.
+    "BRGCLIFF": "BRGCVUP",
+}
 
 PROP_RULES: dict[str, tuple[str, int, int]] = {
     # surface symbol: (presentation role, DoomEdNum, one placement per N cells)
@@ -940,7 +952,10 @@ def boundary_material(
     layout: dict[str, Any] | None = None,
 ) -> str:
     cells = cells or {(int(front_cell["x"]), int(front_cell["y"])): front_cell}
-    return wall_material(front_cell, seed, depth, cells, layout)
+    material = wall_material(front_cell, seed, depth, cells, layout)
+    if depth > 1:
+        return OPEN_VOID_WALL_TEXTURES.get(material, material)
+    return material
 
 
 def transition_material(
@@ -951,13 +966,21 @@ def transition_material(
     cells: dict[tuple[int, int], dict[str, Any]],
     layout: dict[str, Any],
 ) -> str:
-    lower_cell = front_cell if floor_height(front_cell) < floor_height(back_cell) else back_cell
+    front_floor = floor_height(front_cell)
+    back_floor = floor_height(back_cell)
+    lower_cell = front_cell if front_floor < back_floor else back_cell
     lower_position = (int(lower_cell["x"]), int(lower_cell["y"]))
     theme = str(layout["theme_by_position"].get(lower_position, terrain_theme(lower_cell, cells)))
-    fall = TERRAIN_THEME_REGISTRY["themes"][theme].get("fall")
-    if fall and floor_height(front_cell) != floor_height(back_cell):
-        return str(fall)
-    return wall_material(front_cell, seed, depth, cells, layout)
+    # The compiler's water/lava floor offsets are presentation depth, not
+    # evidence that Brogue contains a waterfall. Using the lower liquid's
+    # animated fall texture turned every island and shoreline into a vertical
+    # sheet of water. Chasms are the one real recessed void and retain their
+    # dedicated cliff face; all other height changes expose the higher cell's
+    # structural bank material.
+    if theme == "CHASM" and front_floor != back_floor:
+        return "BRGCLIFF"
+    higher_cell = front_cell if front_floor > back_floor else back_cell
+    return wall_material(higher_cell, seed, depth, cells, layout)
 
 
 def floor_height(cell: dict[str, Any]) -> int:
@@ -1019,8 +1042,8 @@ def sector_ceiling(
     # upper sidedef, which reads as a freestanding rectangular wall around
     # bridges and pits. Depth 1 still chooses semantic rock/abyss materials;
     # lower depths use F_SKY1 for an open black void.
-    del cell, position, layout, depth
-    return OPEN_VOID_CEILING_Z
+    del cell, position, layout
+    return OPEN_VOID_CEILING_Z if depth > 1 else CAVE_CEILING_Z
 
 
 def sector_light(

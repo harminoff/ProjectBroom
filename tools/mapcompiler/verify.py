@@ -14,6 +14,7 @@ from typing import Any, Iterable
 
 try:
     from .compile import (
+        CAVE_CEILING_Z,
         OPEN_VOID_CEILING_Z,
         OPEN_VOID_SKY_FLAT,
         PROP_RULES,
@@ -29,6 +30,7 @@ try:
     )
 except ImportError:
     from compile import (  # type: ignore[no-redef]
+        CAVE_CEILING_Z,
         OPEN_VOID_CEILING_Z,
         OPEN_VOID_SKY_FLAT,
         PROP_RULES,
@@ -165,7 +167,8 @@ def verify_map(level: dict[str, Any], textmap: str, width: int, height: int) -> 
             raise VerifyError(f"BRG{depth:02d}: sector {index} has incorrect door metadata")
         if expected_door and int_property(body, "id") != 10000 + y * width + x:
             raise VerifyError(f"BRG{depth:02d}: door sector {index} has an unstable runtime tag")
-        if int_property(body, "heightceiling") != OPEN_VOID_CEILING_Z:
+        expected_ceiling = OPEN_VOID_CEILING_Z if depth > 1 else CAVE_CEILING_Z
+        if int_property(body, "heightceiling") != expected_ceiling:
             raise VerifyError(f"BRG{depth:02d}: sector {index} does not share the unified ceiling height")
         if depth > 1:
             if string_property(body, "textureceiling") != OPEN_VOID_SKY_FLAT:
