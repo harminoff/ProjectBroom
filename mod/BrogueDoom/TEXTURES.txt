@@ -103,6 +103,17 @@ Texture "BRGVOID", 64, 64
 	Patch "BRGPIT", 0, 0
 }
 
+// A 128-unit chasm transition with a rough stone lip fading into the same
+// near-black shaft material. The irregular top edge keeps the floor-to-abyss
+// transition from reading as a painted rectangular ground slab.
+Texture "BRGCLIP", 64, 128
+{
+	XScale 1.000000
+	YScale 1.000000
+	WorldPanning
+	Patch "BRGCLIP", 0, 0
+}
+
 // A deliberately featureless, near-black cylindrical sky for every dungeon
 // floor below depth 1. Sectors use F_SKY1 so this reads as open vertical void
 // instead of a dark horizontal ceiling plane.

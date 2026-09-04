@@ -17,14 +17,13 @@ try:
         OPEN_VOID_CEILING_Z,
         OPEN_VOID_SKY_FLAT,
         PROP_RULES,
-        boundary_uses_contour,
         cell_center,
         cell_has_door_geometry,
         cell_door_is_closed,
         cell_has_geometry,
         cell_is_solid,
-        contoured_side_points,
         layer_symbol,
+        map_side_points,
         prop_placement,
         validate_model,
     )
@@ -33,14 +32,13 @@ except ImportError:
         OPEN_VOID_CEILING_Z,
         OPEN_VOID_SKY_FLAT,
         PROP_RULES,
-        boundary_uses_contour,
         cell_center,
         cell_has_door_geometry,
         cell_door_is_closed,
         cell_has_geometry,
         cell_is_solid,
-        contoured_side_points,
         layer_symbol,
+        map_side_points,
         prop_placement,
         validate_model,
     )
@@ -108,7 +106,8 @@ def wad_textmap(payload: bytes, map_name: str) -> str:
 def verify_map(level: dict[str, Any], textmap: str, width: int, height: int) -> dict[str, int]:
     depth = int(level["depth"])
     cells = {(int(cell["x"]), int(cell["y"])): cell for cell in level["cells"]}
-    geometry_cells = {position for position, cell in cells.items() if cell_has_geometry(cell)}
+    geometry_cell_map = {position: cell for position, cell in cells.items() if cell_has_geometry(cell)}
+    geometry_cells = set(geometry_cell_map)
     sector_blocks = blocks(textmap, "sector")
     vertex_blocks = blocks(textmap, "vertex")
     line_blocks = blocks(textmap, "linedef")
@@ -189,12 +188,15 @@ def verify_map(level: dict[str, Any], textmap: str, width: int, height: int) -> 
     for x, y in sorted(geometry_cells):
         for side_index, (dx, dy) in enumerate(neighbors):
             neighbor = (x + dx, y + dy)
-            points = contoured_side_points(
+            points = map_side_points(
                 height,
                 x,
                 y,
                 side_index,
-                contoured=neighbor not in geometry_cells and boundary_uses_contour(geometry_cells, x, y, side_index),
+                cells[(x, y)],
+                cells.get(neighbor),
+                cells,
+                geometry_cells,
             )
             for start, end in zip(points, points[1:]):
                 edge = tuple(sorted((start, end)))

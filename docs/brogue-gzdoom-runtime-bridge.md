@@ -13,6 +13,14 @@ view. Brogue still resolves the fall and level transition, so this visual depth
 does not affect gameplay. This also avoids treating Brogue's broader edge
 semantic as a hole.
 
+Ground-to-chasm portals use shared, nonblocking beveled edges recessed 10 units
+into the abyss. Both sectors reference the same angled shoulders, so their
+polygons remain closed while the 64-unit square silhouette is softened. A
+purpose-built `BRGCLIP` lower texture supplies a rough stone upper lip that
+fades into `BRGVOID`. Bridge edges remain straight so the deck width and Brogue
+cardinal topology stay visually unambiguous. Player and creature projections
+still land on the unchanged Brogue cell centers.
+
 Every sector on every depth shares one 224-unit logical ceiling height. Depth 1
 uses one continuous cave ceiling material, while depths 2–40 instead use
 GZDoom's `F_SKY1` ceiling with the dedicated near-black `BRGSKY` texture.

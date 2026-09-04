@@ -115,6 +115,20 @@ def fall_shaft() -> ObjBuilder:
     return model
 
 
+def write_rgba_png(path: Path, width: int, height: int, rows: list[bytes]) -> None:
+    def chunk(kind: bytes, data: bytes) -> bytes:
+        return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data) & 0xFFFFFFFF)
+
+    payload = b"".join(rows)
+    png = (
+        b"\x89PNG\r\n\x1a\n"
+        + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 6, 0, 0, 0))
+        + chunk(b"IDAT", zlib.compress(payload, 9))
+        + chunk(b"IEND", b"")
+    )
+    path.write_bytes(png)
+
+
 def write_pit_texture(path: Path) -> None:
     """Write a tiny deterministic near-black RGBA PNG for the pit interior."""
     width = height = 64
@@ -129,18 +143,31 @@ def write_pit_texture(path: Path) -> None:
             base = int(2 + 8 * edge)
             row.extend((max(0, base + grain), max(0, base + grain), base + 3, 255))
         rows.append(bytes(row))
+    write_rgba_png(path, width, height, rows)
 
-    def chunk(kind: bytes, data: bytes) -> bytes:
-        return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data) & 0xFFFFFFFF)
 
-    payload = b"".join(rows)
-    png = (
-        b"\x89PNG\r\n\x1a\n"
-        + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 6, 0, 0, 0))
-        + chunk(b"IDAT", zlib.compress(payload, 9))
-        + chunk(b"IEND", b"")
-    )
-    path.write_bytes(png)
+def write_chasm_lip_texture(path: Path) -> None:
+    """Write a rough stone lip that falls away into the near-black abyss."""
+    width, height = 64, 128
+    rows = []
+    for y in range(height):
+        row = bytearray([0])
+        for x in range(width):
+            lip_depth = 20 + ((x * 11 + (x // 7) * 5) % 9)
+            if y < lip_depth:
+                stone = 30 + ((x // 6) * 13 + (y // 5) * 17 + x * 3) % 25
+                mortar = ((x + (y // 6) * 9) % 19) < 2 or y in (7, 15)
+                if mortar:
+                    stone = max(18, stone - 14)
+                if y >= lip_depth - 3:
+                    stone = max(12, stone - 18)
+                row.extend((stone, max(16, stone - 3), max(18, stone - 1), 255))
+            else:
+                grain = ((x * 17 + y * 31) % 5) - 2
+                base = 4 + min(7, (y - lip_depth) // 12)
+                row.extend((max(0, base + grain), max(0, base + grain), base + 3, 255))
+        rows.append(bytes(row))
+    write_rgba_png(path, width, height, rows)
 
 
 def main() -> int:
@@ -151,6 +178,7 @@ def main() -> int:
     down_void().write(OUTPUT / "down_void.obj")
     fall_shaft().write(OUTPUT / "fall_shaft.obj")
     write_pit_texture(ROOT / "mod" / "BrogueDoom" / "graphics" / "BRGPIT.png")
+    write_chasm_lip_texture(ROOT / "mod" / "BrogueDoom" / "graphics" / "BRGCLIP.png")
     return 0
 
 

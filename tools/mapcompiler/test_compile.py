@@ -10,6 +10,8 @@ from .compile import (
     ANIMATED_FLAT_BASES,
     CHASM_FLOOR_Z,
     CHASM_LIGHT_LEVEL,
+    CHASM_PORTAL_DEPTH,
+    CHASM_PORTAL_SHOULDER,
     CONTOUR_DEPTH,
     CONTOUR_MIN_RUN,
     CONTOUR_RUN_STRIDE,
@@ -35,6 +37,7 @@ from .compile import (
     edge_texture_offset,
     make_map_text,
     make_mapinfo,
+    map_side_points,
     prop_placement,
     sector_ceiling,
     sector_light,
@@ -167,13 +170,28 @@ class CompilerTests(unittest.TestCase):
         map_text, _, _ = make_map_text(level, 79, 29)
         self.assertIn(f"heightfloor = {CHASM_FLOOR_Z};", map_text)
         self.assertIn('texturefloor = "BRGABYSS";', map_text)
-        self.assertIn('texturelower = "BRGVOID";', map_text)
+        self.assertIn('texturelower = "BRGCLIP";', map_text)
         chasm_sector = next(
             block
             for block in map_text.split("sector\n")
             if "user_brogue_x = 10;" in block and "user_brogue_y = 10;" in block
         )
         self.assertIn(f"lightlevel = {CHASM_LIGHT_LEVEL};", chasm_sector)
+
+        ground_points = map_side_points(
+            29, 11, 10, 3, brink, void, cells, set(cells)
+        )
+        void_points = map_side_points(
+            29, 10, 10, 1, void, brink, cells, set(cells)
+        )
+        self.assertEqual(ground_points, list(reversed(void_points)))
+        self.assertEqual(len(ground_points), 4)
+        straight_x = 11 * 64
+        self.assertEqual(ground_points[0][0], straight_x)
+        self.assertEqual(ground_points[-1][0], straight_x)
+        self.assertEqual(ground_points[1][0], straight_x - CHASM_PORTAL_DEPTH)
+        self.assertEqual(ground_points[2][0], straight_x - CHASM_PORTAL_DEPTH)
+        self.assertEqual(abs(ground_points[1][1] - ground_points[0][1]), CHASM_PORTAL_SHOULDER)
 
     def test_chasm_bridge_shares_black_canopy_without_upper_wall_slab(self) -> None:
         model = sample_model()
@@ -205,6 +223,10 @@ class CompilerTests(unittest.TestCase):
         self.assertEqual(layout["ceiling_theme_by_position"][(20, 20)], "CAVE_NATURAL")
         self.assertEqual(sector_ceiling(void, (10, 10), layout), 224)
         self.assertEqual(sector_ceiling(bridge, (11, 10), layout), 224)
+        self.assertEqual(
+            map_side_points(29, 10, 10, 1, void, bridge, cells, set(cells)),
+            contoured_side_points(29, 10, 10, 1, contoured=False),
+        )
 
         map_text, _, stats = make_map_text(level, 79, 29)
         bridge_sector = next(

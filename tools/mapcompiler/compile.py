@@ -31,6 +31,8 @@ CELL_SIZE = 64
 # bounded cave opening beneath the unchanged cell portal.
 CHASM_FLOOR_Z = -128
 CHASM_LIGHT_LEVEL = 112
+CHASM_PORTAL_DEPTH = 10
+CHASM_PORTAL_SHOULDER = 14
 OPEN_VOID_CEILING_Z = 224
 OPEN_VOID_SKY_FLAT = "F_SKY1"
 OPEN_VOID_SKY_TEXTURE = "BRGSKY"
@@ -42,7 +44,7 @@ CONTOUR_DEPTH = 8
 CONTOUR_SHOULDER = 12
 CONTOUR_MIN_RUN = 3
 CONTOUR_RUN_STRIDE = 4
-COMPILER_VERSION = "32"
+COMPILER_VERSION = "33"
 RENDER_MAPPING_PATH = Path(__file__).with_name("terrain_render_map.json")
 THEME_REGISTRY_PATH = PROJECT_ROOT / "assets" / "terrain" / "broguedoom_cave_registry.json"
 RESOURCE_GRAPHICS_DIR = PROJECT_ROOT / "mod" / "BrogueDoom" / "graphics"
@@ -60,6 +62,7 @@ RESOURCE_ASSET_FILES = (
     "BRGUSTA.png",
     "BRGDSTA.png",
     "BRGPIT.png",
+    "BRGCLIP.png",
 )
 RESOURCE_PRESENTATION_FILES = (
     "MODELDEF",
@@ -73,7 +76,7 @@ RESOURCE_PRESENTATION_FILES = (
     "models/stairs/down_void.obj",
     "models/stairs/fall_shaft.obj",
 )
-CUSTOM_TEXTURES = {"BRGCAVE", "BRGWET", "BRGMASON", "BRGDOOR", "BRGWFALL", "BRGLFALL", "BRGVOID", "BRGSKY"}
+CUSTOM_TEXTURES = {"BRGCAVE", "BRGWET", "BRGMASON", "BRGDOOR", "BRGWFALL", "BRGLFALL", "BRGVOID", "BRGCLIP", "BRGSKY"}
 CUSTOM_FLATS = {"BRGEARTH", "BRGCEIL", "BRGMOSS", "BRGFLAG", "BRGBRID", "BRGWATR", "BRGSLDG", "BRGMOLT", "BRGCHASM", "BRGABYSS"}
 
 PROP_RULES: dict[str, tuple[str, int, int]] = {
@@ -396,6 +399,8 @@ def contoured_side_points(
     side_index: int,
     *,
     contoured: bool,
+    depth: int = CONTOUR_DEPTH,
+    shoulder: int = CONTOUR_SHOULDER,
 ) -> list[tuple[int, int]]:
     """Return an exact portal edge or a topology-safe wall recess.
 
@@ -407,14 +412,14 @@ def contoured_side_points(
     start, end = cell_side_coordinates(height, x, y)[side_index]
     if not contoured:
         return [start, end]
-    outward = ((0, CONTOUR_DEPTH), (CONTOUR_DEPTH, 0), (0, -CONTOUR_DEPTH), (-CONTOUR_DEPTH, 0))[side_index]
+    outward = ((0, depth), (depth, 0), (0, -depth), (-depth, 0))[side_index]
     dx = (end[0] - start[0]) // CELL_SIZE
     dy = (end[1] - start[1]) // CELL_SIZE
     first = (
-        start[0] + dx * CONTOUR_SHOULDER + outward[0],
-        start[1] + dy * CONTOUR_SHOULDER + outward[1],
+        start[0] + dx * shoulder + outward[0],
+        start[1] + dy * shoulder + outward[1],
     )
-    second_distance = CELL_SIZE - CONTOUR_SHOULDER
+    second_distance = CELL_SIZE - shoulder
     second = (
         start[0] + dx * second_distance + outward[0],
         start[1] + dy * second_distance + outward[1],
@@ -456,6 +461,72 @@ def boundary_uses_contour(
         run_length >= CONTOUR_MIN_RUN
         and 0 < run_index < run_length - 1
         and (run_index - 1) % CONTOUR_RUN_STRIDE == 0
+    )
+
+
+def is_chasm_portal(
+    cell: dict[str, Any],
+    neighbor: dict[str, Any] | None,
+    cells: dict[tuple[int, int], dict[str, Any]],
+) -> bool:
+    """Return true for a ground-to-abyss portal that may receive a visual lip."""
+    if neighbor is None:
+        return False
+    if cell_is_chasm_bridge(cell, cells) or cell_is_chasm_bridge(neighbor, cells):
+        return False
+    return cell_is_chasm_void(cell) != cell_is_chasm_void(neighbor)
+
+
+def map_side_points(
+    height: int,
+    x: int,
+    y: int,
+    side_index: int,
+    cell: dict[str, Any],
+    neighbor: dict[str, Any] | None,
+    cells: dict[tuple[int, int], dict[str, Any]],
+    geometry_cells: Collection[tuple[int, int]],
+) -> list[tuple[int, int]]:
+    """Return the shared visual boundary while preserving cardinal topology.
+
+    Solid walls retain the sparse cave contour. Ground-to-chasm portals gain a
+    shallow recess into the abyss, shared exactly by both sectors. The line
+    remains two-sided and nonblocking, and both Brogue cell centers remain
+    untouched; only the square floor silhouette is softened.
+    """
+    neighbor_position = None
+    if neighbor is not None:
+        neighbor_position = (int(neighbor["x"]), int(neighbor["y"]))
+    is_portal = neighbor_position in geometry_cells if neighbor_position is not None else False
+    if is_portal and is_chasm_portal(cell, neighbor, cells):
+        assert neighbor is not None
+        if not cell_is_chasm_void(cell):
+            return contoured_side_points(
+                height,
+                x,
+                y,
+                side_index,
+                contoured=True,
+                depth=CHASM_PORTAL_DEPTH,
+                shoulder=CHASM_PORTAL_SHOULDER,
+            )
+        opposite_side = (side_index + 2) % 4
+        points = contoured_side_points(
+            height,
+            int(neighbor["x"]),
+            int(neighbor["y"]),
+            opposite_side,
+            contoured=True,
+            depth=CHASM_PORTAL_DEPTH,
+            shoulder=CHASM_PORTAL_SHOULDER,
+        )
+        return list(reversed(points))
+    return contoured_side_points(
+        height,
+        x,
+        y,
+        side_index,
+        contoured=not is_portal and boundary_uses_contour(geometry_cells, x, y, side_index),
     )
 
 
@@ -1088,6 +1159,7 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
     sidedefs: list[dict[str, Any]] = []
     boundary_count = 0
     contoured_boundary_count = 0
+    chasm_portal_count = 0
 
     def vertex_index(position: tuple[int, int]) -> int:
         if position not in vertex_indices:
@@ -1127,10 +1199,22 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
             for side_index, neighbor_pos in enumerate(neighbors):
                 is_portal = neighbor_pos in geometry_cells
                 use_contour = not is_portal and boundary_uses_contour(geometry_cells, x, y, side_index)
+                use_chasm_portal = is_portal and is_chasm_portal(cell, cells.get(neighbor_pos), cells)
                 if not is_portal:
                     boundary_count += 1
                     contoured_boundary_count += int(use_contour)
-                points = contoured_side_points(height, x, y, side_index, contoured=use_contour)
+                elif use_chasm_portal and (x, y) < neighbor_pos:
+                    chasm_portal_count += 1
+                points = map_side_points(
+                    height,
+                    x,
+                    y,
+                    side_index,
+                    cell,
+                    cells.get(neighbor_pos),
+                    cells,
+                    geometry_cells,
+                )
                 running_offset = side_texture_offset(x, y, side_index)
                 for start, end in zip(points, points[1:]):
                     add_edge(start, end, cell, cells.get(neighbor_pos), running_offset)
@@ -1349,6 +1433,7 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
         "contourShoulder": CONTOUR_SHOULDER,
         "boundaryCount": boundary_count,
         "contouredBoundaryCount": contoured_boundary_count,
+        "chasmPortalCount": chasm_portal_count,
         "propCount": len(props),
         "propCounts": dict(sorted(prop_counts.items())),
         "lineCount": len(lines),
