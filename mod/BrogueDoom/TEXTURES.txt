@@ -298,6 +298,25 @@ Sprite "BGDVA0", 1536, 1024
 	Patch "BRGGRASS", 0, 0
 }
 
+// Dedicated fallback frames for structural presentation models. GZDoom must
+// be able to resolve each actor state as a sprite before MODELDEF substitutes
+// the corresponding OBJ model.
+Sprite "BRGDA0", 574, 1180
+{
+	XScale 8.96875
+	YScale 9.21875
+	Offset 287, 1180
+	Patch "BRGDOOR0", -340, -38
+}
+
+Sprite "BRGBA0", 1254, 1254
+{
+	XScale 19.59375
+	YScale 14.928571
+	Offset 627, 1254
+	Patch "BRGBRIDGE", 0, 0
+}
+
 // Fallback states for presentation-only stair markers. MODELDEF replaces
 // these sprites with static OBJ models at the logical Brogue cell centers.
 Sprite "BRGUA0", 1190, 1322

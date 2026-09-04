@@ -56,6 +56,29 @@ class BrogueDoomResourceTests(unittest.TestCase):
         self.assertIn('States { Spawn: BRGF A -1; Stop; }', zscript)
         self.assertIn('States { Spawn: BRGD A -1; Stop; }', zscript)
 
+    def test_every_model_frame_has_a_declared_fallback_sprite(self) -> None:
+        declarations = TEXTURES.read_text(encoding="utf-8")
+        declared_sprites = {
+            name.upper()
+            for name in re.findall(
+                r'^Sprite\s+"([A-Z0-9]+)"',
+                declarations,
+                re.MULTILINE | re.IGNORECASE,
+            )
+        }
+        modeldef = MODELDEF.read_text(encoding="utf-8")
+        model_frames = re.findall(
+            r'^\s*FrameIndex\s+([A-Z0-9]{4})\s+([A-Z])\b',
+            modeldef,
+            re.MULTILINE | re.IGNORECASE,
+        )
+        missing = sorted(
+            f"{sprite.upper()}{frame.upper()}0"
+            for sprite, frame in model_frames
+            if f"{sprite.upper()}{frame.upper()}0" not in declared_sprites
+        )
+        self.assertEqual(missing, [])
+
     def test_chasm_cliff_fades_opaquely_into_abyss(self) -> None:
         data = (GRAPHICS / "BRGCLIFF.png").read_bytes()
         self.assertEqual(data[:8], b"\x89PNG\r\n\x1a\n")
