@@ -41,6 +41,13 @@ jobs:
         run: |
           $version = if ('${{ github.event_name }}' -eq 'workflow_dispatch') { '${{ inputs.version }}' } else { '${{ github.ref_name }}'.TrimStart('v') }
           "value=$version" >> $env:GITHUB_OUTPUT
+      - name: Enforce public engine security baseline
+        shell: powershell
+        run: |
+          $lock = Get-Content -Raw dependencies.lock.json | ConvertFrom-Json
+          if ('${{ github.event.repository.visibility }}' -eq 'public' -and $lock.components.gzdoom.tag -eq 'g4.14.2') {
+            throw 'Public binaries are blocked: GZDoom 4.14.2 is affected by CVE-2025-54065. Migrate and verify the bridge on UZDoom 4.14.3 or a later patched baseline first.'
+          }
       - name: Audit, build, test, and package
         shell: powershell
         run: .\scripts\package-release.ps1 -Version '${{ steps.version.outputs.value }}'

@@ -1,5 +1,15 @@
 # Security policy
 
+## Current binary-release status
+
+Public binary releases are intentionally blocked while Project Broom remains
+based on GZDoom 4.14.2. That version is affected by CVE-2025-54065. The source
+repository may be reviewed and developed privately or publicly, but do not
+publish runtime archives until the bridge has migrated to and passed its full
+test matrix on UZDoom 4.14.3 or a later patched engine baseline.
+
+The release workflow enforces this rule from `dependencies.lock.json`.
+
 ## Supported versions
 
 Project Broom is pre-alpha. Security fixes are applied only to the newest

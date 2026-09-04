@@ -4,6 +4,11 @@ Project Broom releases are produced only from a clean tagged `main` commit.
 The initial public format is a Windows x64 portable ZIP plus complete
 corresponding source.
 
+> **Security gate:** the current GZDoom 4.14.2 development baseline is affected
+> by CVE-2025-54065. Local/private test packages are permitted, but the release
+> workflow blocks public binaries until the engine bridge is migrated to and
+> verified on UZDoom 4.14.3 or a later patched baseline.
+
 ## Required assets
 
 - `ProjectBroom-Windows-x64-<version>.zip`
