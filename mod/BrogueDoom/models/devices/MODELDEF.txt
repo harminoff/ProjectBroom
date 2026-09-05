@@ -1,0 +1,34 @@
+Model BrogueViewStaff
+{
+Path "models/devices"
+Model 0 "staff.md3"
+Skin 0 "graphics/BRGHANDS.png"
+Scale 1 1 1
+ScaleWeaponFOV
+FrameIndex BDST A 0 0
+FrameIndex BDST B 0 1
+FrameIndex BDST C 0 2
+FrameIndex BDST D 0 3
+FrameIndex BDST E 0 4
+FrameIndex BDST F 0 5
+FrameIndex BDST G 0 6
+FrameIndex BDST H 0 7
+FrameIndex BDST I 0 8
+}
+Model BrogueViewWand
+{
+Path "models/devices"
+Model 0 "wand.md3"
+Skin 0 "graphics/BRGHANDS.png"
+Scale 1 1 1
+ScaleWeaponFOV
+FrameIndex BDWA A 0 0
+FrameIndex BDWA B 0 1
+FrameIndex BDWA C 0 2
+FrameIndex BDWA D 0 3
+FrameIndex BDWA E 0 4
+FrameIndex BDWA F 0 5
+FrameIndex BDWA G 0 6
+FrameIndex BDWA H 0 7
+FrameIndex BDWA I 0 8
+}

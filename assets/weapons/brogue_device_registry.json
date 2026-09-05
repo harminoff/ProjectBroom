@@ -1,0 +1,18 @@
+[
+  {
+    "name": "Staff",
+    "class": "BrogueViewStaff",
+    "model": "staff.md3",
+    "frames": 9,
+    "source": "tools/weapon_models/devices.py",
+    "license": "CC-BY-SA-4.0"
+  },
+  {
+    "name": "Wand",
+    "class": "BrogueViewWand",
+    "model": "wand.md3",
+    "frames": 9,
+    "source": "tools/weapon_models/devices.py",
+    "license": "CC-BY-SA-4.0"
+  }
+]

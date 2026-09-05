@@ -51,7 +51,7 @@ Implemented today:
   messages, chasms, warnings, and level transitions;
 - copied player, creature, item, terrain, message, inventory, and game-result
   state with stable runtime IDs;
-- equipping/removing, dropping, throwing, food, potions, scrolls, charms, and
+- equipping/removing, dropping, throwing, targeted staffs and wands, food, potions, scrolls, charms, and
   Brogue-owned confirmation/item-selection prompts;
 - bridge-backed look mode, inventory, weapon presentation, ASCII minimap,
   game-over state, and side-by-side comparison tooling;
@@ -61,7 +61,7 @@ Implemented today:
 
 Important parity work still remaining:
 
-- targeted staff and wand use and a generalized targeting contract;
+- a generalized targeting contract;
 - search, auto-rest, auto-explore, travel, and run-until-disturbed commands;
 - authoritative save/load and Brogue recording playback;
 - complete dynamic terrain synchronization, visibility behavior, status

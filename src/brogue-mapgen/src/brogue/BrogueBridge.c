@@ -778,6 +778,8 @@ static BrogueBridgeResult appendItem(BrogueBridgeState *state,
         : rogue.ringLeft == theItem ? 3
         : rogue.ringRight == theItem ? 4 : 0;
     outItem->actionFlags = carried ? (BROGUE_ITEM_ACTION_DROP | BROGUE_ITEM_ACTION_THROW) : 0;
+    if (carried && theItem->category == STAFF) outItem->actionFlags |= BROGUE_ITEM_ACTION_TARGET_STAFF;
+    if (carried && theItem->category == WAND) outItem->actionFlags |= BROGUE_ITEM_ACTION_TARGET_WAND;
     if (carried && (theItem->category & (FOOD | POTION | SCROLL | CHARM))) {
         outItem->actionFlags |= BROGUE_ITEM_ACTION_APPLY;
     }
@@ -1564,6 +1566,15 @@ BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *comm
             outResult->errorCode = BROGUE_BRIDGE_INVALID_ACTION;
             return outResult->errorCode;
         }
+        if (command->type == BROGUE_COMMAND_USE_STAFF || command->type == BROGUE_COMMAND_USE_WAND) {
+            if (commandItem->category != (command->type == BROGUE_COMMAND_USE_STAFF ? STAFF : WAND)) {
+                return outResult->errorCode = BROGUE_BRIDGE_INVALID_ACTION;
+            }
+            if (!coordinatesAreInMap(command->targetX, command->targetY)
+                || (command->targetX == player.loc.x && command->targetY == player.loc.y)) {
+                return outResult->errorCode = BROGUE_BRIDGE_OUT_OF_RANGE;
+            }
+        }
         if (command->type == BROGUE_COMMAND_THROW_ITEM
             && itemRequiresThrowConfirmation(commandItem)
             && !command->confirmed) {
@@ -1658,6 +1669,11 @@ BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *comm
             break;
         case BROGUE_COMMAND_APPLY_ITEM:
             applyItemWithSelection(commandItem, secondaryItem);
+            accepted = rogue.absoluteTurnNumber != oldAbsoluteTurn;
+            break;
+        case BROGUE_COMMAND_USE_STAFF:
+        case BROGUE_COMMAND_USE_WAND:
+            applyDeviceAtTarget(commandItem, (pos){ (short) command->targetX, (short) command->targetY });
             accepted = rogue.absoluteTurnNumber != oldAbsoluteTurn;
             break;
         default:
@@ -1843,6 +1859,54 @@ BrogueBridgeResult brogue_bridge_preview_throw(uint64_t itemId,
     return BROGUE_BRIDGE_OK;
 }
 
+static BrogueBridgeResult previewDevice(uint64_t itemId, int32_t targetX,
+                                        int32_t targetY, BrogueBridgeStaffPreview *outPreview,
+                                        enum itemCategory category) {
+    item *theItem;
+    pos path[MAX_BOLT_LENGTH], nextTarget;
+    short count, maxDistance;
+    int i;
+    BrogueBridgeThrowPreview *aim;
+    if (outPreview == NULL) return BROGUE_BRIDGE_INVALID_STATE;
+    memset(outPreview, 0, sizeof(*outPreview));
+    aim = &outPreview->aim;
+    aim->apiVersion = BROGUE_BRIDGE_API_VERSION;
+    aim->revision = bridgeRevision;
+    aim->itemId = itemId;
+    aim->targetX = targetX;
+    aim->targetY = targetY;
+    if (!bridgeInitialized) return aim->errorCode = BROGUE_BRIDGE_NOT_INITIALIZED;
+    if (!bridgeGameStarted) return aim->errorCode = BROGUE_BRIDGE_GAME_NOT_STARTED;
+    if (rogue.gameHasEnded) return aim->errorCode = BROGUE_BRIDGE_GAME_ENDED;
+    theItem = itemForIdentity(itemId);
+    if (theItem == NULL || !itemIsCarried(theItem)) return aim->errorCode = BROGUE_BRIDGE_ITEM_NOT_FOUND;
+    if (theItem->category != category) return aim->errorCode = BROGUE_BRIDGE_INVALID_ACTION;
+    if (!coordinatesAreInMap(targetX, targetY)) return aim->errorCode = BROGUE_BRIDGE_OUT_OF_RANGE;
+    count = previewDeviceTarget(theItem, (pos){ (short) targetX, (short) targetY }, path, &maxDistance, &nextTarget);
+    aim->maxDistance = maxDistance;
+    aim->valid = targetX != player.loc.x || targetY != player.loc.y;
+    aim->pathCount = min(count, (int) BROGUE_BRIDGE_MAX_PROJECTILE_PATH);
+    for (i = 0; i < (int) aim->pathCount; ++i) {
+        aim->path[i].x = path[i].x;
+        aim->path[i].y = path[i].y;
+    }
+    outPreview->hasNextTarget = isPosInMap(nextTarget);
+    outPreview->nextTarget.x = nextTarget.x;
+    outPreview->nextTarget.y = nextTarget.y;
+    copyText(aim->message, sizeof(aim->message), aim->valid ? "Select a target." : "Choose a different cell.");
+    return BROGUE_BRIDGE_OK;
+}
+
+BrogueBridgeResult brogue_bridge_preview_staff(uint64_t itemId, int32_t targetX,
+                                                int32_t targetY, BrogueBridgeStaffPreview *outPreview) {
+    return previewDevice(itemId, targetX, targetY, outPreview, STAFF);
+}
+
+BrogueBridgeResult brogue_bridge_preview_wand(uint64_t itemId, int32_t targetX,
+                                               int32_t targetY, BrogueBridgeWandPreview *outPreview) {
+    return previewDevice(itemId, targetX, targetY, outPreview, WAND);
+}
+
 void brogue_bridge_shutdown(void) {
     if (bridgeGameStarted) {
         freeEverything();
@@ -1912,7 +1976,7 @@ const char *brogue_bridge_event_name(BrogueBridgeEventType type) {
 
 const char *brogue_bridge_command_name(BrogueBridgeCommandType type) {
     static const char *names[BROGUE_COMMAND_COUNT] = {
-        "ACTION", "EQUIP_ITEM", "UNEQUIP_ITEM", "THROW_ITEM", "DROP_ITEM", "APPLY_ITEM"
+        "ACTION", "EQUIP_ITEM", "UNEQUIP_ITEM", "THROW_ITEM", "DROP_ITEM", "APPLY_ITEM", "USE_STAFF", "USE_WAND"
     };
     if (type < 0 || type >= BROGUE_COMMAND_COUNT) return "INVALID_COMMAND";
     return names[type];

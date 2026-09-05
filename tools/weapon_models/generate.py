@@ -126,6 +126,8 @@ def main() -> None:
     else:
         existing = existing.rstrip() + "\n\n" + "\n".join(declarations) + "\n"
     TEXTURES.write_text(existing, encoding="utf-8")
+    from tools.weapon_models.devices import generate
+    generate(ROOT)
     print(json.dumps({"weapons": len(records), "registry": str(REGISTRY)}))
 
 

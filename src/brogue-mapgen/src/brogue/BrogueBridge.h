@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-#define BROGUE_BRIDGE_API_VERSION 13u
+#define BROGUE_BRIDGE_API_VERSION 15u
 #define BROGUE_BRIDGE_MAX_CELLS 2291u
 #define BROGUE_BRIDGE_MAX_CREATURES 1024u
 #define BROGUE_BRIDGE_MAX_ITEMS 1024u
@@ -73,6 +73,8 @@ typedef enum BrogueBridgeCommandType {
     BROGUE_COMMAND_THROW_ITEM,
     BROGUE_COMMAND_DROP_ITEM,
     BROGUE_COMMAND_APPLY_ITEM,
+    BROGUE_COMMAND_USE_STAFF,
+    BROGUE_COMMAND_USE_WAND,
     BROGUE_COMMAND_COUNT
 } BrogueBridgeCommandType;
 
@@ -82,7 +84,9 @@ typedef enum BrogueBridgeItemActionFlags {
     BROGUE_ITEM_ACTION_UNEQUIP = 1u << 1,
     BROGUE_ITEM_ACTION_DROP = 1u << 2,
     BROGUE_ITEM_ACTION_THROW = 1u << 3,
-    BROGUE_ITEM_ACTION_APPLY = 1u << 4
+    BROGUE_ITEM_ACTION_APPLY = 1u << 4,
+    BROGUE_ITEM_ACTION_TARGET_STAFF = 1u << 5,
+    BROGUE_ITEM_ACTION_TARGET_WAND = 1u << 6
 } BrogueBridgeItemActionFlags;
 
 typedef enum BrogueBridgeSelectionType {
@@ -290,6 +294,17 @@ typedef struct BrogueBridgeThrowPreview {
     BrogueBridgeResult errorCode;
 } BrogueBridgeThrowPreview;
 
+/* A knowledge-limited aiming guide, not a prediction of bolt outcomes or
+ * reflections. Confirmations are returned by perform_command, before use. */
+typedef struct BrogueBridgeStaffPreview {
+    BrogueBridgeThrowPreview aim;
+    uint8_t hasNextTarget;
+    BrogueBridgePoint nextTarget;
+} BrogueBridgeStaffPreview;
+
+/* Wands share the device aiming layout; their range remains Brogue-owned. */
+typedef BrogueBridgeStaffPreview BrogueBridgeWandPreview;
+
 typedef enum BrogueBridgeLookKind {
     BROGUE_LOOK_UNEXPLORED = 0,
     BROGUE_LOOK_TERRAIN,
@@ -456,6 +471,10 @@ BrogueBridgeResult brogue_bridge_preview_throw(uint64_t itemId,
 BrogueBridgeResult brogue_bridge_inspect_cell(int32_t x,
                                                int32_t y,
                                                BrogueBridgeLookResult *outResult);
+BrogueBridgeResult brogue_bridge_preview_staff(uint64_t itemId, int32_t targetX,
+                                                int32_t targetY, BrogueBridgeStaffPreview *outPreview);
+BrogueBridgeResult brogue_bridge_preview_wand(uint64_t itemId, int32_t targetX,
+                                               int32_t targetY, BrogueBridgeWandPreview *outPreview);
 void brogue_bridge_shutdown(void);
 
 const char *brogue_bridge_result_name(BrogueBridgeResult result);

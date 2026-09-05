@@ -1,6 +1,6 @@
 # Brogue CE → GZDoom runtime bridge
 
-Status: bridge API v13, native GZDoom monster presentation, authoritative weapon and consumable commands, generalized Brogue confirmation forwarding, an authoritative loss screen, fall-source/landing events, and visual-only first-person weapon models are implemented and built from the official GZDoom 4.14.2 source checkout.
+Status: bridge API v15, native GZDoom monster presentation, authoritative weapon, consumable, and targeted staff/wand commands, generalized Brogue confirmation forwarding, an authoritative loss screen, fall-source/landing events, and visual-only first-person weapon models are implemented and built from the official GZDoom 4.14.2 source checkout.
 
 ## Chasms and fall shafts
 
@@ -418,6 +418,24 @@ not restore the authoritative Brogue simulation.
 
 ## Known limitations
 
+API v14 adds `USE_STAFF`, a staff action flag, and a copied staff aiming guide.
+The command calls `applyDeviceAtTarget()` -> `useStaffOrWand()` -> `zap()` and
+the existing `playerTurnEnded()` path. Standalone `apply()` still selects its
+target interactively and uses that same implementation. Brogue owns charge
+use, unknown empty-staff fizzles, identification, reflection, blinking warnings,
+and turn consumption. The preview reuses Brogue's trajectory-highlighting and
+target-selection rules; it does not predict hidden effects or reflected paths.
+See [targeted staff use](targeted-staff-use.md) for verification and limitations.
+
+API v15 adds `USE_WAND`, a wand action flag, and `brogue_bridge_preview_wand()`.
+Staff and wand previews share one internal device adapter and copied layout;
+each public entry point validates its own item category. The frontend uses the
+same inventory/cursor flow and dispatches the matching semantic command.
+Brogue's existing wand code decrements charges and increments its discharge
+counter only for a charged use. No-charge outcomes and identification remain
+unchanged. See [targeted wand use](targeted-wand-use.md) for the differential
+tests against Brogue's normal `apply()`/`chooseTarget()` path.
+
 - The native source build currently uses a Windows DLL loaded beside `gzdoom.exe`; it is in-process but not yet a statically linked GZDoom target.
 - The API v13 GUI snapshot exposes copied Brogue-owned player statistics,
   equipment slots, inventory order and letters, item descriptions and action
@@ -444,7 +462,7 @@ not restore the authoritative Brogue simulation.
   executes them. Food, potions, scrolls, and charms route through Brogue's
   existing item action functions. The bridge returns confirmation prompts
   before mutation and returns stable-ID choices for identify/enchant scrolls.
-  Targeted staff/wand use, discovery/help screens, death/victory screens, and
+  Discovery/help screens, death/victory screens, and
   save/replay frontends remain deferred.
 - Brogue prompts reached by movement, combat, and item commands are forwarded
   through the generalized confirmation broker. Prompts reached outside a live

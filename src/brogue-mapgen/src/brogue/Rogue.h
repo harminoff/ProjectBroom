@@ -3388,6 +3388,8 @@ extern "C" {
     void swapLastEquipment(void);
     void apply(item *theItem);
     void applyItemWithSelection(item *theItem, item *selectedItem);
+    void applyDeviceAtTarget(item *theItem, pos targetLoc);
+    short previewDeviceTarget(item *theItem, pos targetLoc, pos *path, short *maxDistance, pos *nextTarget);
     boolean itemApplyConfirmationPrompt(item *theItem, char *buffer, size_t bufferSize);
     boolean eat(item *theItem, boolean recordCommands);
     boolean itemCanBeCalled(item *theItem);

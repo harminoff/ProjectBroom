@@ -57,6 +57,7 @@ using BridgeGetMonsterCatalog = BrogueBridgeResult (*)(BrogueBridgeMonsterCatalo
 using BridgePerformAction = BrogueBridgeResult (*)(BrogueBridgeAction, BrogueBridgeTurnResult *);
 using BridgePerformCommand = BrogueBridgeResult (*)(const BrogueBridgeCommand *, BrogueBridgeTurnResult *);
 using BridgePreviewThrow = BrogueBridgeResult (*)(uint64_t, int32_t, int32_t, BrogueBridgeThrowPreview *);
+using BridgePreviewStaff = BrogueBridgeResult (*)(uint64_t, int32_t, int32_t, BrogueBridgeStaffPreview *);
 using BridgeInspectCell = BrogueBridgeResult (*)(int32_t, int32_t, BrogueBridgeLookResult *);
 using BridgeShutdown = void (*)();
 using BridgeResultName = const char *(*)(BrogueBridgeResult);
@@ -73,6 +74,8 @@ struct BridgeApi
 	BridgePerformAction performAction = nullptr;
 	BridgePerformCommand performCommand = nullptr;
 	BridgePreviewThrow previewThrow = nullptr;
+	BridgePreviewStaff previewStaff = nullptr;
+	BridgePreviewStaff previewWand = nullptr;
 	BridgeInspectCell inspectCell = nullptr;
 	BridgeShutdown shutdown = nullptr;
 	BridgeResultName resultName = nullptr;
@@ -84,6 +87,11 @@ BrogueBridgeMonsterCatalog MonsterCatalog{};
 bool Loaded = false;
 bool Started = false;
 bool PendingWait = false;
+int StaffSmokePhase = 0;
+int StaffSmokeNextTic = 0;
+uint64_t StaffSmokeRevision = 0;
+uint64_t StaffSmokeTurn = 0;
+bool StaffSmokeWand = false;
 std::vector<BrogueBridgeAction> PendingActions;
 size_t PendingActionIndex = 0;
 FFont *BrogueUiFont = nullptr;
@@ -174,7 +182,7 @@ int LastLoggedDirectMonsterCount = -1;
 BrogueBridgeAction BufferedAction = BROGUE_ACTION_WAIT;
 bool HasBufferedAction = false;
 
-enum class WeaponUiMode { None, Equip, ThrowSelect, ThrowTarget, Look };
+enum class WeaponUiMode { None, Equip, ThrowSelect, ThrowTarget, StaffTarget, WandTarget, Look };
 WeaponUiMode WeaponUi = WeaponUiMode::None;
 int WeaponSelection = 0;
 uint64_t ThrowItemId = 0;
@@ -196,6 +204,10 @@ uint64_t LastVisualWeaponId = 0;
 int LastVisualWeaponKind = -1;
 int VisualThrowKind = -1;
 int VisualThrowUntilTic = 0;
+// Presentation slots 15/16 are category views, never Brogue weapon kinds.
+int VisualDeviceKind = -1;
+int VisualDeviceUntilTic = 0;
+uint64_t VisualDeviceId = 0;
 
 bool InventoryOpen = false;
 int InventorySelection = 0;
@@ -301,6 +313,8 @@ bool LoadBridge()
 	Api.performAction = GetBridgeProc<BridgePerformAction>(Api.module, "brogue_bridge_perform_action");
 	Api.performCommand = GetBridgeProc<BridgePerformCommand>(Api.module, "brogue_bridge_perform_command");
 	Api.previewThrow = GetBridgeProc<BridgePreviewThrow>(Api.module, "brogue_bridge_preview_throw");
+	Api.previewStaff = GetBridgeProc<BridgePreviewStaff>(Api.module, "brogue_bridge_preview_staff");
+	Api.previewWand = GetBridgeProc<BridgePreviewStaff>(Api.module, "brogue_bridge_preview_wand");
 	Api.inspectCell = GetBridgeProc<BridgeInspectCell>(Api.module, "brogue_bridge_inspect_cell");
 	Api.shutdown = GetBridgeProc<BridgeShutdown>(Api.module, "brogue_bridge_shutdown");
 	Api.resultName = GetBridgeProc<BridgeResultName>(Api.module, "brogue_bridge_result_name");
@@ -311,7 +325,7 @@ bool LoadBridge()
 
 	if (Api.initialize == nullptr || Api.startGame == nullptr || Api.getState == nullptr
 		|| Api.getMonsterCatalog == nullptr
-		|| Api.performAction == nullptr || Api.performCommand == nullptr || Api.previewThrow == nullptr
+		|| Api.performAction == nullptr || Api.performCommand == nullptr || Api.previewThrow == nullptr || Api.previewStaff == nullptr || Api.previewWand == nullptr
 		|| Api.inspectCell == nullptr
 		|| Api.shutdown == nullptr || Api.resultName == nullptr)
 	{
@@ -398,8 +412,21 @@ void SyncWeaponView()
 	// This temporary view selection never equips an item or delays a command.
 	const bool throwing = VisualThrowKind >= 0 && primaryLevel->maptime < VisualThrowUntilTic;
 	const bool equipped = weapon != nullptr && weapon->category == 2 && weapon->kind >= 0 && weapon->kind < 15;
-	const int visualKind = throwing ? VisualThrowKind : (equipped ? weapon->kind : -1);
-	const uint64_t visualId = equipped ? weapon->id : 0;
+	int deviceKind = WeaponUi == WeaponUiMode::StaffTarget ? 15 : WeaponUi == WeaponUiMode::WandTarget ? 16 : -1;
+	uint64_t deviceId = ThrowItemId;
+	if (CommandConfirmationOpen && (CommandConfirmationCommand.type == BROGUE_COMMAND_USE_STAFF
+		|| CommandConfirmationCommand.type == BROGUE_COMMAND_USE_WAND))
+	{
+		deviceKind = CommandConfirmationCommand.type == BROGUE_COMMAND_USE_STAFF ? 15 : 16;
+		deviceId = CommandConfirmationCommand.itemId;
+	}
+	if (deviceKind < 0 && primaryLevel->maptime < VisualDeviceUntilTic)
+	{
+		deviceKind = VisualDeviceKind;
+		deviceId = VisualDeviceId;
+	}
+	const int visualKind = deviceKind >= 0 ? deviceKind : throwing ? VisualThrowKind : (equipped ? weapon->kind : -1);
+	const uint64_t visualId = deviceKind >= 0 ? deviceId : equipped ? weapon->id : 0;
 	if (visualKind < 0)
 	{
 		static uint64_t lastMissingId = UINT64_MAX;
@@ -420,6 +447,8 @@ void SyncWeaponView()
 
 	FString className;
 	className.Format("BrogueViewWeaponK%02d", visualKind);
+	if (visualKind == 15) className = "BrogueViewStaff";
+	else if (visualKind == 16) className = "BrogueViewWand";
 	PClassActor *type = PClass::FindActor(className.GetChars());
 	if (type == nullptr)
 	{
@@ -1194,6 +1223,9 @@ void DetachLevelPresentation()
 	LastVisualWeaponKind = -1;
 	VisualThrowKind = -1;
 	VisualThrowUntilTic = 0;
+	VisualDeviceKind = -1;
+	VisualDeviceUntilTic = 0;
+	VisualDeviceId = 0;
 	InventoryOpen = false;
 	ApplyUi = ApplyUiMode::None;
 	ApplyItemId = 0;
@@ -1381,7 +1413,18 @@ BrogueBridgeResult PerformCommandResult(BrogueBridgeCommand command, const char 
 	SyncPlayer();
 	SyncItems();
 	SyncMonsters(&result);
+	if (result.actionAccepted) VisualDeviceUntilTic = 0;
 	ProcessWeaponEvents(result);
+	if (result.actionAccepted && result.consumedTurn
+		&& (command.type == BROGUE_COMMAND_USE_STAFF || command.type == BROGUE_COMMAND_USE_WAND))
+	{
+		VisualDeviceKind = command.type == BROGUE_COMMAND_USE_STAFF ? 15 : 16;
+		VisualDeviceId = command.itemId;
+		VisualDeviceUntilTic = primaryLevel->maptime + 20;
+		VisualThrowKind = -1;
+		SyncWeaponView();
+		PlayWeaponState(FName("BridgeUse"));
+	}
 	return BROGUE_BRIDGE_OK;
 }
 
@@ -1585,7 +1628,16 @@ bool HandleInventoryInput(const event_t *event)
 	}
 	InventorySelection = (InventorySelection % int(inventory.size()) + int(inventory.size())) % int(inventory.size());
 	const BrogueBridgeItemState &item = State.items[inventory[InventorySelection]];
-	if ((key == KEY_ENTER || key == 0x16) && (item.actionFlags & BROGUE_ITEM_ACTION_APPLY)) // Enter or U: use
+	if ((key == KEY_ENTER || key == 0x16) && (item.actionFlags & (BROGUE_ITEM_ACTION_TARGET_STAFF | BROGUE_ITEM_ACTION_TARGET_WAND)))
+	{
+		const uint64_t id = item.id;
+		const bool wand = (item.actionFlags & BROGUE_ITEM_ACTION_TARGET_WAND) != 0;
+		CloseInventory();
+		BeginTargeting(id);
+		WeaponUi = wand ? WeaponUiMode::WandTarget : WeaponUiMode::StaffTarget;
+		RefreshTargeting();
+	}
+	else if ((key == KEY_ENTER || key == 0x16) && (item.actionFlags & BROGUE_ITEM_ACTION_APPLY)) // Enter or U: use
 		SubmitApply(item.id, 0, false);
 	else if (key == KEY_ENTER || key == 0x12) // Enter or E: equip/remove
 	{
@@ -1831,11 +1883,27 @@ void BeginTargeting(uint64_t itemId)
 	TargetY = (std::clamp)(State.player.y + dy[facing] * 5, 0, State.height - 1);
 }
 
+bool IsDeviceTargeting()
+{
+	return WeaponUi == WeaponUiMode::StaffTarget || WeaponUi == WeaponUiMode::WandTarget;
+}
+
+BrogueBridgeResult PreviewTargetedDevice(BrogueBridgeStaffPreview &preview)
+{
+	return (WeaponUi == WeaponUiMode::WandTarget ? Api.previewWand : Api.previewStaff)
+		(ThrowItemId, TargetX, TargetY, &preview);
+}
+
 void RefreshTargeting()
 {
-	if (WeaponUi != WeaponUiMode::ThrowTarget || Api.previewThrow == nullptr) return;
+	const bool staff = IsDeviceTargeting();
+	if ((!staff && WeaponUi != WeaponUiMode::ThrowTarget) || Api.previewThrow == nullptr) return;
 	BrogueBridgeThrowPreview preview{};
-	const BrogueBridgeResult result = Api.previewThrow(ThrowItemId, TargetX, TargetY, &preview);
+	BrogueBridgeStaffPreview staffPreview{};
+	const BrogueBridgeResult result = staff
+		? PreviewTargetedDevice(staffPreview)
+		: Api.previewThrow(ThrowItemId, TargetX, TargetY, &preview);
+	if (staff) preview = staffPreview.aim;
 	ClearTargetMarkers();
 	if (primaryLevel != nullptr)
 	{
@@ -1853,9 +1921,9 @@ void RefreshTargeting()
 	}
 	const BrogueBridgeItemState *item = FindItem(ThrowItemId);
 	FString text;
-	text.Format("THROW %s -> %d,%d\n%s\nMove cursor, Tab target, click/Enter throw, Esc cancel",
-		item != nullptr ? item->displayName : "item", TargetX, TargetY,
-		result == BROGUE_BRIDGE_OK && preview.valid ? "Valid trajectory" : preview.message);
+	text.Format("%s %s -> %d,%d\n%s\nMove cursor, Tab target, click/Enter confirm, Esc cancel",
+		staff ? "USE" : "THROW", item != nullptr ? item->displayName : "item", TargetX, TargetY,
+		staff ? preview.message : (result == BROGUE_BRIDGE_OK && preview.valid ? "Valid trajectory" : preview.message));
 	C_MidPrint(nullptr, text.GetChars());
 }
 
@@ -1959,7 +2027,7 @@ bool HandleWeaponUiInput(const event_t *event)
 		return true;
 	}
 	if (event->type != EV_KeyDown) return WeaponUi != WeaponUiMode::None;
-	if (key == KEY_ESCAPE && WeaponUi != WeaponUiMode::None) { CloseWeaponUi(); return true; }
+	if ((key == KEY_ESCAPE || key == KEY_MOUSE2) && WeaponUi != WeaponUiMode::None) { CloseWeaponUi(); return true; }
 	if (key == 0x14) // T: toggle throw selection
 	{
 		if (WeaponUi == WeaponUiMode::ThrowSelect) CloseWeaponUi();
@@ -2041,15 +2109,40 @@ bool HandleWeaponUiInput(const event_t *event)
 		return true;
 	}
 
-	if (WeaponUi == WeaponUiMode::ThrowTarget)
+	if (WeaponUi == WeaponUiMode::ThrowTarget || IsDeviceTargeting())
 	{
-		if (key == KEY_TAB) CycleVisibleTarget();
+		const bool staff = IsDeviceTargeting();
+		const bool wand = WeaponUi == WeaponUiMode::WandTarget;
+		if (key == KEY_TAB)
+		{
+			if (staff)
+			{
+				BrogueBridgeStaffPreview preview{};
+				if (PreviewTargetedDevice(preview) == BROGUE_BRIDGE_OK && preview.hasNextTarget)
+				{
+					TargetX = preview.nextTarget.x;
+					TargetY = preview.nextTarget.y;
+				}
+			}
+			else CycleVisibleTarget();
+		}
 		else if (key == KEY_ENTER || key == KEY_MOUSE1)
 		{
 			const uint64_t item = ThrowItemId;
 			const int x = TargetX, y = TargetY;
 			CloseWeaponUi();
-			PerformItemCommand(BROGUE_COMMAND_THROW_ITEM, item, x, y);
+			if (staff)
+			{
+				BrogueBridgeCommand command{};
+				command.apiVersion = BROGUE_BRIDGE_API_VERSION;
+				command.type = wand ? BROGUE_COMMAND_USE_WAND : BROGUE_COMMAND_USE_STAFF;
+				command.expectedRevision = State.revision;
+				command.itemId = item;
+				command.targetX = x;
+				command.targetY = y;
+				SubmitConfirmableCommand(command, wand ? "wand-ui" : "staff-ui");
+			}
+			else PerformItemCommand(BROGUE_COMMAND_THROW_ITEM, item, x, y);
 			return true;
 		}
 		else
@@ -2065,6 +2158,88 @@ bool HandleWeaponUiInput(const event_t *event)
 		return true;
 	}
 	return false;
+}
+
+// Development-only UI regression, using an existing carried device. It never
+// creates equipment, changes terrain, or bypasses Brogue's command path.
+void TickStaffSmoke()
+{
+	if (!StaffSmokePhase || primaryLevel == nullptr || !PendingActions.empty()
+		|| MonsterAnimationsActive() || Projectile.actor != nullptr
+		|| primaryLevel->maptime < StaffSmokeNextTic) return;
+	StaffSmokeNextTic = primaryLevel->maptime + 12;
+	const char *label = StaffSmokeWand ? "WAND_UI" : "STAFF_UI";
+	event_t event{};
+	event.type = EV_KeyDown;
+	event.data1 = KEY_ENTER;
+	if (StaffSmokePhase == 1 || StaffSmokePhase == 6)
+	{
+		const auto inventory = CarriedInventoryIndices();
+		auto found = std::find_if(inventory.begin(), inventory.end(), [](uint32_t index)
+			{ return (State.items[index].actionFlags & (StaffSmokeWand ? BROGUE_ITEM_ACTION_TARGET_WAND : BROGUE_ITEM_ACTION_TARGET_STAFF)) != 0; });
+		if (found == inventory.end())
+		{
+			Printf("%s FAIL: no carried device.\n", label);
+			StaffSmokePhase = 0;
+			return;
+		}
+		InventoryOpen = true;
+		InventorySelection = int(found - inventory.begin());
+		if (StaffSmokePhase == 1)
+		{
+			StaffSmokeRevision = State.revision;
+			StaffSmokeTurn = State.absoluteTurn;
+		}
+		else HandleInventoryInput(&event);
+	}
+	else if (StaffSmokePhase == 2 || StaffSmokePhase == 4 || StaffSmokePhase == 8 || StaffSmokePhase == 10)
+	{
+		if (StaffSmokePhase == 4 || StaffSmokePhase == 8)
+		{
+			if (LastVisualWeaponKind != (StaffSmokeWand ? 16 : 15))
+			{
+				Printf("%s FAIL: device model missing.\n", label);
+				StaffSmokePhase = 0;
+				return;
+			}
+		}
+		if (StaffSmokePhase == 10 && LastVisualWeaponKind >= 15)
+		{
+			Printf("%s FAIL: device model did not restore.\n", label);
+			StaffSmokePhase = 0;
+			return;
+		}
+		Printf("%s capture phase=%d revision=%llu turn=%llu\n", label, StaffSmokePhase,
+			(unsigned long long) State.revision, (unsigned long long) State.absoluteTurn);
+		C_DoCommand("screenshot");
+	}
+	else if (StaffSmokePhase == 3) HandleInventoryInput(&event);
+	else if (StaffSmokePhase == 5)
+	{
+		event.data1 = KEY_MOUSE2;
+		HandleWeaponUiInput(&event);
+		SyncWeaponView();
+		static BrogueBridgeState current;
+		Api.getState(&current);
+		if (WeaponUi != WeaponUiMode::None || LastVisualWeaponKind >= 15
+			|| current.revision != StaffSmokeRevision || current.absoluteTurn != StaffSmokeTurn)
+		{
+			Printf("%s FAIL: cancellation mutated state.\n", label);
+			StaffSmokePhase = 0;
+			return;
+		}
+		Printf("%s cancel unchanged=true\n", label);
+	}
+	else if (StaffSmokePhase == 7)
+	{
+		TargetX = (std::min)(State.player.x + 1, State.width - 1);
+		TargetY = State.player.y;
+		HandleWeaponUiInput(&event);
+		Printf("%s %s revision=%llu turn=%llu\n", label,
+			State.revision == StaffSmokeRevision + 1 && State.absoluteTurn > StaffSmokeTurn ? "PASS" : "FAIL",
+			(unsigned long long) State.revision, (unsigned long long) State.absoluteTurn);
+	}
+	if (++StaffSmokePhase > 10) StaffSmokePhase = 0;
 }
 
 double HudScale()
@@ -2438,7 +2613,7 @@ void DrawInventory()
 	FString actions = "Arrows/Wheel Select";
 	if (selected.actionFlags & BROGUE_ITEM_ACTION_EQUIP) actions += "  |  Enter/E Equip";
 	if (selected.actionFlags & BROGUE_ITEM_ACTION_UNEQUIP) actions += "  |  Enter/E Remove";
-	if (selected.actionFlags & BROGUE_ITEM_ACTION_APPLY) actions += "  |  Enter/U Use";
+	if (selected.actionFlags & (BROGUE_ITEM_ACTION_APPLY | BROGUE_ITEM_ACTION_TARGET_STAFF | BROGUE_ITEM_ACTION_TARGET_WAND)) actions += "  |  Enter/U Use";
 	if (selected.actionFlags & BROGUE_ITEM_ACTION_DROP) actions += "  |  D Drop";
 	if (selected.actionFlags & BROGUE_ITEM_ACTION_THROW) actions += "  |  T Throw";
 	actions += "  |  I/Esc Close";
@@ -2749,6 +2924,20 @@ CCMD(brg_inventory)
 	InventorySelection = 0;
 }
 
+CCMD(brg_staff_smoke)
+{
+	StaffSmokeWand = false;
+	StaffSmokePhase = 1;
+	StaffSmokeNextTic = 0;
+}
+
+CCMD(brg_wand_smoke)
+{
+	StaffSmokeWand = true;
+	StaffSmokePhase = 1;
+	StaffSmokeNextTic = 0;
+}
+
 void BrogueBridge_DrawHud(void)
 {
 	if (!IsBrogueMap() || !EnsureStarted() || twod == nullptr || SmallFont == nullptr) return;
@@ -2904,6 +3093,8 @@ void BrogueBridge_PrepareTiccmd(ticcmd_t *cmd)
 			PendingActionIndex = 0;
 		}
 	}
+
+	TickStaffSmoke();
 
 	// View angle/pitch remain GZDoom presentation controls. Prevent every
 	// gameplay-affecting Doom command and all translational movement.

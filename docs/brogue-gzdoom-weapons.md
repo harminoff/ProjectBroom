@@ -8,7 +8,7 @@ monster responses, and RNG. GZDoom owns only input translation and presentation.
 The generated first-person weapons contain no Doom hitscan, projectile, ammo, or
 damage actions.
 
-The public bridge contract is API version 13. `BrogueBridgeCommand` carries an
+The public bridge contract is API version 15. `BrogueBridgeCommand` carries an
 expected state revision and supports semantic action, equip, unequip, and throw
 commands. Equipment is addressed by stable bridge item ID. A throw carries an
 item ID and Brogue map coordinate; `brogue_bridge_preview_throw()` returns the
@@ -16,8 +16,11 @@ same line and maximum range used by the authoritative throw operation.
 
 `BrogueBridgeItemState` includes copied presentation-safe names, quantity,
 damage bounds, strength requirement, enchantment, knowledge flags, and equipped
-state. `BrogueBridgePlayerState.equippedWeaponId` is the sole source used to
-choose the visible weapon.
+state. `BrogueBridgePlayerState.equippedWeaponId` chooses the default visible
+weapon. Targeting a staff or wand temporarily shows that device; an accepted,
+turn-consuming use plays a cosmetic gesture before restoring the weapon.
+Cancellation restores it immediately. Throws also temporarily show the thrown
+weapon. These presentation overrides never change Brogue equipment.
 
 ## Controls
 

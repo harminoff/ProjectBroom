@@ -28,7 +28,7 @@ try {
 if (-not $SkipTests) {
     Push-Location $projectRoot
     try {
-        & $python -m unittest tools.test_brogue_bridge tools.test_broguedoom_resources
+        & $python -m unittest tools.test_brogue_bridge tools.test_broguedoom_resources tools.weapon_models.test_devices
         if ($LASTEXITCODE -ne 0) { throw "Bridge/resource tests failed with exit code $LASTEXITCODE." }
     } finally {
         Pop-Location
@@ -51,5 +51,14 @@ $engine = if (Test-Path -LiteralPath $releaseEngine -PathType Leaf) {
 }
 if (-not (Test-Path -LiteralPath $engine -PathType Leaf)) {
     throw "Expected source-built engine was not produced: $engine"
+}
+$engineDir = Split-Path -Parent $engine
+$runtimeDir = Join-Path $projectRoot ".deps\gzdoom-runtime-4.14.2"
+foreach ($runtimeDll in @("openal32.dll", "sndfile.dll", "zmusic.dll")) {
+    $runtimeSource = Join-Path $runtimeDir $runtimeDll
+    if (-not (Test-Path -LiteralPath $runtimeSource -PathType Leaf)) {
+        throw "Expected pinned GZDoom runtime dependency is missing: $runtimeSource"
+    }
+    Copy-Item -LiteralPath $runtimeSource -Destination $engineDir -Force
 }
 Write-Output $engine
