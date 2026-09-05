@@ -8,6 +8,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   source-and-python:
     runs-on: windows-latest
@@ -25,7 +29,7 @@ jobs:
         shell: powershell
         run: .\scripts\audit-public-tree.ps1
       - name: Resource and map compiler tests
-        run: python -m unittest tools.test_engine_source tools.test_broguedoom_resources tools.weapon_models.test_devices tools.mapcompiler.test_compile
+        run: python -m unittest tools.test_engine_source tools.test_broguedoom_resources tools.monster_models.test_rat tools.monster_models.test_rat_animation tools.monster_models.test_creatures tools.weapon_models.test_viewmodel tools.weapon_models.test_devices tools.pickup_models.test_detailed tools.mapcompiler.test_compile
       - name: Compile launcher
         run: dotnet build tools\BrogueDoomLauncher\BrogueDoomLauncher.csproj -c Release --nologo
 

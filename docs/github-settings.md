@@ -18,7 +18,8 @@ be selected:
 
 - require a pull request;
 - require `source-and-python` and `native-bridge`;
-- require `build-engine` when that path-filtered workflow runs;
+- require `build-engine` (it reports success without compiling for changes
+  outside native engine inputs);
 - require conversations to be resolved;
 - block force pushes and branch deletion;
 - allow the maintainer to merge without an external approval while the project
@@ -66,8 +67,9 @@ Use the clean `ProjectBroom` GitHub clone for commits and pull requests:
 7. Push the topic branch, open a pull request targeting `main`, and complete the
    repository pull-request template with exact tests, hashes, runtime evidence,
    asset provenance, and known limitations.
-8. Wait for `source-and-python`, `native-bridge`, and the path-filtered
-   `build-engine` check when it applies. Fix failures on the same branch and
+8. Wait for `source-and-python`, `native-bridge`, and `build-engine`.
+   The engine check decides whether native compilation is needed.
+   Fix failures on the same branch and
    squash-merge only after every required check passes.
 
 Operational safeguards proven by the repository workflow:
@@ -95,3 +97,37 @@ Operational safeguards proven by the repository workflow:
 Do not develop or commit directly on `main`. The GitHub merge commit is the
 authoritative update to `main`; after merging, fast-forward the clean clone's
 local `main` and leave the development/evidence workspace intact.
+
+## Keep routine PRs fast
+
+PR #9 took about 38 minutes on the hosted runner: about 3 minutes bootstrapping
+dependencies and roughly 34 minutes compiling the complete UZDoom engine.
+The source/Python and native Brogue checks each took about a minute. The merge
+operation itself was quick. These are observations from the migration run,
+not timing guarantees for subsequent runs.
+
+Every PR runs source/asset/map tests, launcher compilation, and deterministic
+Brogue bridge tests. The `build-engine` check also runs on every PR, but compiles
+only when native frontend files, Brogue headers, the engine patch/pin, engine
+build scripts, or engine validation code change. Assets, ZScript, maps, docs,
+and Brogue C implementation changes do not require recompiling UZDoom: Brogue
+is built independently as a DLL by `native-bridge`. Runtime smoke tests still
+apply when behavior or presentation changes; compilation does not test ZScript.
+
+The engine workflow enumerates all changed PR files, including previous names
+for renames. API failures fail the check; exceptionally large diffs default to
+building. Filtering occurs inside the job, so an irrelevant change does not
+leave a required workflow check pending.
+
+Engine CI uses `-SkipTests` because the two fast CI jobs run the full suite.
+It runs before merge and on manual dispatch, without repeating the same cold
+engine build on every squash merge. Fast CI still verifies `main` after merge;
+release packaging retains its full build and acceptance gates. New PR commits
+cancel superseded CI runs. Cold engine builds can still take 30–40 minutes.
+
+Use verification proportional to the change: asset work needs relevant tests
+and a local runtime check; a native integration change needs the engine build
+too. Reuse the existing local `.deps` and `.build` directories. A fresh public
+export is for source curation, not a reason to bootstrap a fresh engine for
+every PR. Repeat clean builds for engine/toolchain migrations, release
+verification, or a demonstrated reproducibility problem.
