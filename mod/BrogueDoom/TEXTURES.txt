@@ -354,7 +354,187 @@ Sprite "BW00A0", 96, 96
     Patch "BRGITEMS", 0, 0
 }
 
+Sprite "BW00B0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW00C0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW00D0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW00E0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW00F0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW00G0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW00H0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW00I0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW00J0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW00K0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW00L0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW00M0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW00N0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW00O0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW00P0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
 Sprite "BW01A0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW01B0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW01C0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW01D0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW01E0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW01F0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW01G0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW01H0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW01I0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW01J0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW01K0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW01L0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW01M0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW01N0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW01O0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW01P0", 96, 96
 {
     Offset 48, 88
     Patch "BRGITEMS", 0, 0
@@ -366,7 +546,187 @@ Sprite "BW02A0", 96, 96
     Patch "BRGITEMS", 0, 0
 }
 
+Sprite "BW02B0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW02C0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW02D0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW02E0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW02F0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW02G0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW02H0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW02I0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW02J0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW02K0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW02L0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW02M0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW02N0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW02O0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW02P0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
 Sprite "BW03A0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW03B0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW03C0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW03D0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW03E0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW03F0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW03G0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW03H0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW03I0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW03J0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW03K0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW03L0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW03M0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW03N0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW03O0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW03P0", 96, 96
 {
     Offset 48, 88
     Patch "BRGITEMS", 0, 0
@@ -378,7 +738,187 @@ Sprite "BW04A0", 96, 96
     Patch "BRGITEMS", 0, 0
 }
 
+Sprite "BW04B0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW04C0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW04D0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW04E0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW04F0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW04G0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW04H0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW04I0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW04J0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW04K0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW04L0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW04M0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW04N0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW04O0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW04P0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
 Sprite "BW05A0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW05B0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW05C0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW05D0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW05E0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW05F0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW05G0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW05H0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW05I0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW05J0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW05K0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW05L0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW05M0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW05N0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW05O0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW05P0", 96, 96
 {
     Offset 48, 88
     Patch "BRGITEMS", 0, 0
@@ -390,7 +930,187 @@ Sprite "BW06A0", 96, 96
     Patch "BRGITEMS", 0, 0
 }
 
+Sprite "BW06B0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW06C0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW06D0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW06E0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW06F0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW06G0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW06H0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW06I0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW06J0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW06K0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW06L0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW06M0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW06N0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW06O0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW06P0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
 Sprite "BW07A0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW07B0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW07C0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW07D0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW07E0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW07F0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW07G0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW07H0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW07I0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW07J0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW07K0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW07L0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW07M0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW07N0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW07O0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW07P0", 96, 96
 {
     Offset 48, 88
     Patch "BRGITEMS", 0, 0
@@ -402,7 +1122,187 @@ Sprite "BW08A0", 96, 96
     Patch "BRGITEMS", 0, 0
 }
 
+Sprite "BW08B0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW08C0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW08D0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW08E0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW08F0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW08G0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW08H0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW08I0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW08J0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW08K0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW08L0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW08M0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW08N0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW08O0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW08P0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
 Sprite "BW09A0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW09B0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW09C0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW09D0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW09E0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW09F0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW09G0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW09H0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW09I0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW09J0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW09K0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW09L0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW09M0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW09N0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW09O0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW09P0", 96, 96
 {
     Offset 48, 88
     Patch "BRGITEMS", 0, 0
@@ -414,7 +1314,187 @@ Sprite "BW10A0", 96, 96
     Patch "BRGITEMS", 0, 0
 }
 
+Sprite "BW10B0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW10C0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW10D0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW10E0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW10F0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW10G0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW10H0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW10I0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW10J0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW10K0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW10L0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW10M0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW10N0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW10O0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW10P0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
 Sprite "BW11A0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW11B0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW11C0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW11D0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW11E0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW11F0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW11G0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW11H0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW11I0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW11J0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW11K0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW11L0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW11M0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW11N0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW11O0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW11P0", 96, 96
 {
     Offset 48, 88
     Patch "BRGITEMS", 0, 0
@@ -426,13 +1506,283 @@ Sprite "BW12A0", 96, 96
     Patch "BRGITEMS", 0, 0
 }
 
+Sprite "BW12B0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW12C0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW12D0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW12E0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW12F0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW12G0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW12H0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW12I0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW12J0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW12K0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW12L0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW12M0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW12N0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW12O0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW12P0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
 Sprite "BW13A0", 96, 96
 {
     Offset 48, 88
     Patch "BRGITEMS", 0, 0
 }
 
+Sprite "BW13B0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW13C0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW13D0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW13E0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW13F0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW13G0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW13H0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW13I0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW13J0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW13K0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW13L0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW13M0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW13N0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW13O0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW13P0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
 Sprite "BW14A0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW14B0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW14C0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW14D0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW14E0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW14F0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW14G0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW14H0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW14I0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW14J0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW14K0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW14L0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW14M0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW14N0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW14O0", 96, 96
+{
+    Offset 48, 88
+    Patch "BRGITEMS", 0, 0
+}
+
+Sprite "BW14P0", 96, 96
 {
     Offset 48, 88
     Patch "BRGITEMS", 0, 0

@@ -8,7 +8,7 @@ monster responses, and RNG. GZDoom owns only input translation and presentation.
 The generated first-person weapons contain no Doom hitscan, projectile, ammo, or
 damage actions.
 
-The public bridge contract is API version 4. `BrogueBridgeCommand` carries an
+The public bridge contract is API version 13. `BrogueBridgeCommand` carries an
 expected state revision and supports semantic action, equip, unequip, and throw
 commands. Equipment is addressed by stable bridge item ID. A throw carries an
 item ID and Brogue map coordinate; `brogue_bridge_preview_throw()` returns the
@@ -38,15 +38,16 @@ normal Doom movement and clears Doom action buttons every tic.
 
 ## Presentation
 
-`tools/weapon_models/generate.py` deterministically produces one OBJ hands-and-
-weapon viewmodel for each of Brogue's 15 weapon kinds, plus target/path markers,
+`tools/weapon_models/generate.py` deterministically produces one animated MD3
+hands-and-weapon viewmodel and an OBJ ready-pose reference for each of Brogue's
+15 weapon kinds, plus target/path markers,
 ZScript declarations, MODELDEF entries, and
 `assets/weapons/brogue_weapon_registry.json`. The source build script regenerates
 these resources before tests and compilation.
 
 Attack presentation is event-driven. An authoritative player
 `ATTACK_ATTEMPTED` event starts the weapon's thrust, slash, heavy, sweep, lash,
-or flail overlay sequence. `PROJECTILE_MOVED` events create an ordered visual
+or flail vertex-pose sequence. `PROJECTILE_MOVED` events create an ordered visual
 flight path using the corresponding pickup model. The simulation has already
 resolved the throw before animation begins; presentation cannot change its
 result.
@@ -68,7 +69,8 @@ separate gate because model loading and ZScript parsing occur only in GZDoom.
 ## Current limitations
 
 - The compact selector is a development mid-screen overlay, not the final HUD.
-- Weapon meshes and motions are intentionally low-poly placeholders.
+- Original animated held-weapon models now replace the placeholders. See
+  [hero-weapon-models.md](hero-weapon-models.md) for source, proof, and limits.
 - Throw selection currently exposes carried weapons; the bridge command itself
   accepts other throwable carried items for later inventory UI work.
 - Attack events preserve special weapon flags, but bespoke penetrate/sweep/

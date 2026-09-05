@@ -3,181 +3,406 @@
 Model BrogueViewWeaponK00
 {
     Path "models/weapons"
-    Model 0 "weapon_00.obj"
-    Skin 0 "graphics/BRGITEMS.png"
+    Model 0 "weapon_00.md3"
+    Skin 0 "graphics/BRGHANDS.png"
     Scale 1.0 1.0 1.0
     PitchOffset 0
     ZOffset 0
     ScaleWeaponFOV
     FrameIndex BW00 A 0 0
+    FrameIndex BW00 B 0 1
+    FrameIndex BW00 C 0 2
+    FrameIndex BW00 D 0 3
+    FrameIndex BW00 E 0 4
+    FrameIndex BW00 F 0 5
+    FrameIndex BW00 G 0 6
+    FrameIndex BW00 H 0 7
+    FrameIndex BW00 I 0 8
+    FrameIndex BW00 J 0 9
+    FrameIndex BW00 K 0 10
+    FrameIndex BW00 L 0 11
+    FrameIndex BW00 M 0 12
+    FrameIndex BW00 N 0 13
+    FrameIndex BW00 O 0 14
+    FrameIndex BW00 P 0 15
 }
 
 Model BrogueViewWeaponK01
 {
     Path "models/weapons"
-    Model 0 "weapon_01.obj"
-    Skin 0 "graphics/BRGITEMS.png"
+    Model 0 "weapon_01.md3"
+    Skin 0 "graphics/BRGHANDS.png"
     Scale 1.0 1.0 1.0
     PitchOffset 0
     ZOffset 0
     ScaleWeaponFOV
     FrameIndex BW01 A 0 0
+    FrameIndex BW01 B 0 1
+    FrameIndex BW01 C 0 2
+    FrameIndex BW01 D 0 3
+    FrameIndex BW01 E 0 4
+    FrameIndex BW01 F 0 5
+    FrameIndex BW01 G 0 6
+    FrameIndex BW01 H 0 7
+    FrameIndex BW01 I 0 8
+    FrameIndex BW01 J 0 9
+    FrameIndex BW01 K 0 10
+    FrameIndex BW01 L 0 11
+    FrameIndex BW01 M 0 12
+    FrameIndex BW01 N 0 13
+    FrameIndex BW01 O 0 14
+    FrameIndex BW01 P 0 15
 }
 
 Model BrogueViewWeaponK02
 {
     Path "models/weapons"
-    Model 0 "weapon_02.obj"
-    Skin 0 "graphics/BRGITEMS.png"
+    Model 0 "weapon_02.md3"
+    Skin 0 "graphics/BRGHANDS.png"
     Scale 1.0 1.0 1.0
     PitchOffset 0
     ZOffset 0
     ScaleWeaponFOV
     FrameIndex BW02 A 0 0
+    FrameIndex BW02 B 0 1
+    FrameIndex BW02 C 0 2
+    FrameIndex BW02 D 0 3
+    FrameIndex BW02 E 0 4
+    FrameIndex BW02 F 0 5
+    FrameIndex BW02 G 0 6
+    FrameIndex BW02 H 0 7
+    FrameIndex BW02 I 0 8
+    FrameIndex BW02 J 0 9
+    FrameIndex BW02 K 0 10
+    FrameIndex BW02 L 0 11
+    FrameIndex BW02 M 0 12
+    FrameIndex BW02 N 0 13
+    FrameIndex BW02 O 0 14
+    FrameIndex BW02 P 0 15
 }
 
 Model BrogueViewWeaponK03
 {
     Path "models/weapons"
-    Model 0 "weapon_03.obj"
-    Skin 0 "graphics/BRGITEMS.png"
+    Model 0 "weapon_03.md3"
+    Skin 0 "graphics/BRGHANDS.png"
     Scale 1.0 1.0 1.0
     PitchOffset 0
     ZOffset 0
     ScaleWeaponFOV
     FrameIndex BW03 A 0 0
+    FrameIndex BW03 B 0 1
+    FrameIndex BW03 C 0 2
+    FrameIndex BW03 D 0 3
+    FrameIndex BW03 E 0 4
+    FrameIndex BW03 F 0 5
+    FrameIndex BW03 G 0 6
+    FrameIndex BW03 H 0 7
+    FrameIndex BW03 I 0 8
+    FrameIndex BW03 J 0 9
+    FrameIndex BW03 K 0 10
+    FrameIndex BW03 L 0 11
+    FrameIndex BW03 M 0 12
+    FrameIndex BW03 N 0 13
+    FrameIndex BW03 O 0 14
+    FrameIndex BW03 P 0 15
 }
 
 Model BrogueViewWeaponK04
 {
     Path "models/weapons"
-    Model 0 "weapon_04.obj"
-    Skin 0 "graphics/BRGITEMS.png"
+    Model 0 "weapon_04.md3"
+    Skin 0 "graphics/BRGHANDS.png"
     Scale 1.0 1.0 1.0
     PitchOffset 0
     ZOffset 0
     ScaleWeaponFOV
     FrameIndex BW04 A 0 0
+    FrameIndex BW04 B 0 1
+    FrameIndex BW04 C 0 2
+    FrameIndex BW04 D 0 3
+    FrameIndex BW04 E 0 4
+    FrameIndex BW04 F 0 5
+    FrameIndex BW04 G 0 6
+    FrameIndex BW04 H 0 7
+    FrameIndex BW04 I 0 8
+    FrameIndex BW04 J 0 9
+    FrameIndex BW04 K 0 10
+    FrameIndex BW04 L 0 11
+    FrameIndex BW04 M 0 12
+    FrameIndex BW04 N 0 13
+    FrameIndex BW04 O 0 14
+    FrameIndex BW04 P 0 15
 }
 
 Model BrogueViewWeaponK05
 {
     Path "models/weapons"
-    Model 0 "weapon_05.obj"
-    Skin 0 "graphics/BRGITEMS.png"
+    Model 0 "weapon_05.md3"
+    Skin 0 "graphics/BRGHANDS.png"
     Scale 1.0 1.0 1.0
     PitchOffset 0
     ZOffset 0
     ScaleWeaponFOV
     FrameIndex BW05 A 0 0
+    FrameIndex BW05 B 0 1
+    FrameIndex BW05 C 0 2
+    FrameIndex BW05 D 0 3
+    FrameIndex BW05 E 0 4
+    FrameIndex BW05 F 0 5
+    FrameIndex BW05 G 0 6
+    FrameIndex BW05 H 0 7
+    FrameIndex BW05 I 0 8
+    FrameIndex BW05 J 0 9
+    FrameIndex BW05 K 0 10
+    FrameIndex BW05 L 0 11
+    FrameIndex BW05 M 0 12
+    FrameIndex BW05 N 0 13
+    FrameIndex BW05 O 0 14
+    FrameIndex BW05 P 0 15
 }
 
 Model BrogueViewWeaponK06
 {
     Path "models/weapons"
-    Model 0 "weapon_06.obj"
-    Skin 0 "graphics/BRGITEMS.png"
+    Model 0 "weapon_06.md3"
+    Skin 0 "graphics/BRGHANDS.png"
     Scale 1.0 1.0 1.0
     PitchOffset 0
     ZOffset 0
     ScaleWeaponFOV
     FrameIndex BW06 A 0 0
+    FrameIndex BW06 B 0 1
+    FrameIndex BW06 C 0 2
+    FrameIndex BW06 D 0 3
+    FrameIndex BW06 E 0 4
+    FrameIndex BW06 F 0 5
+    FrameIndex BW06 G 0 6
+    FrameIndex BW06 H 0 7
+    FrameIndex BW06 I 0 8
+    FrameIndex BW06 J 0 9
+    FrameIndex BW06 K 0 10
+    FrameIndex BW06 L 0 11
+    FrameIndex BW06 M 0 12
+    FrameIndex BW06 N 0 13
+    FrameIndex BW06 O 0 14
+    FrameIndex BW06 P 0 15
 }
 
 Model BrogueViewWeaponK07
 {
     Path "models/weapons"
-    Model 0 "weapon_07.obj"
-    Skin 0 "graphics/BRGITEMS.png"
+    Model 0 "weapon_07.md3"
+    Skin 0 "graphics/BRGHANDS.png"
     Scale 1.0 1.0 1.0
     PitchOffset 0
     ZOffset 0
     ScaleWeaponFOV
     FrameIndex BW07 A 0 0
+    FrameIndex BW07 B 0 1
+    FrameIndex BW07 C 0 2
+    FrameIndex BW07 D 0 3
+    FrameIndex BW07 E 0 4
+    FrameIndex BW07 F 0 5
+    FrameIndex BW07 G 0 6
+    FrameIndex BW07 H 0 7
+    FrameIndex BW07 I 0 8
+    FrameIndex BW07 J 0 9
+    FrameIndex BW07 K 0 10
+    FrameIndex BW07 L 0 11
+    FrameIndex BW07 M 0 12
+    FrameIndex BW07 N 0 13
+    FrameIndex BW07 O 0 14
+    FrameIndex BW07 P 0 15
 }
 
 Model BrogueViewWeaponK08
 {
     Path "models/weapons"
-    Model 0 "weapon_08.obj"
-    Skin 0 "graphics/BRGITEMS.png"
+    Model 0 "weapon_08.md3"
+    Skin 0 "graphics/BRGHANDS.png"
     Scale 1.0 1.0 1.0
     PitchOffset 0
     ZOffset 0
     ScaleWeaponFOV
     FrameIndex BW08 A 0 0
+    FrameIndex BW08 B 0 1
+    FrameIndex BW08 C 0 2
+    FrameIndex BW08 D 0 3
+    FrameIndex BW08 E 0 4
+    FrameIndex BW08 F 0 5
+    FrameIndex BW08 G 0 6
+    FrameIndex BW08 H 0 7
+    FrameIndex BW08 I 0 8
+    FrameIndex BW08 J 0 9
+    FrameIndex BW08 K 0 10
+    FrameIndex BW08 L 0 11
+    FrameIndex BW08 M 0 12
+    FrameIndex BW08 N 0 13
+    FrameIndex BW08 O 0 14
+    FrameIndex BW08 P 0 15
 }
 
 Model BrogueViewWeaponK09
 {
     Path "models/weapons"
-    Model 0 "weapon_09.obj"
-    Skin 0 "graphics/BRGITEMS.png"
+    Model 0 "weapon_09.md3"
+    Skin 0 "graphics/BRGHANDS.png"
     Scale 1.0 1.0 1.0
     PitchOffset 0
     ZOffset 0
     ScaleWeaponFOV
     FrameIndex BW09 A 0 0
+    FrameIndex BW09 B 0 1
+    FrameIndex BW09 C 0 2
+    FrameIndex BW09 D 0 3
+    FrameIndex BW09 E 0 4
+    FrameIndex BW09 F 0 5
+    FrameIndex BW09 G 0 6
+    FrameIndex BW09 H 0 7
+    FrameIndex BW09 I 0 8
+    FrameIndex BW09 J 0 9
+    FrameIndex BW09 K 0 10
+    FrameIndex BW09 L 0 11
+    FrameIndex BW09 M 0 12
+    FrameIndex BW09 N 0 13
+    FrameIndex BW09 O 0 14
+    FrameIndex BW09 P 0 15
 }
 
 Model BrogueViewWeaponK10
 {
     Path "models/weapons"
-    Model 0 "weapon_10.obj"
-    Skin 0 "graphics/BRGITEMS.png"
+    Model 0 "weapon_10.md3"
+    Skin 0 "graphics/BRGHANDS.png"
     Scale 1.0 1.0 1.0
     PitchOffset 0
     ZOffset 0
     ScaleWeaponFOV
     FrameIndex BW10 A 0 0
+    FrameIndex BW10 B 0 1
+    FrameIndex BW10 C 0 2
+    FrameIndex BW10 D 0 3
+    FrameIndex BW10 E 0 4
+    FrameIndex BW10 F 0 5
+    FrameIndex BW10 G 0 6
+    FrameIndex BW10 H 0 7
+    FrameIndex BW10 I 0 8
+    FrameIndex BW10 J 0 9
+    FrameIndex BW10 K 0 10
+    FrameIndex BW10 L 0 11
+    FrameIndex BW10 M 0 12
+    FrameIndex BW10 N 0 13
+    FrameIndex BW10 O 0 14
+    FrameIndex BW10 P 0 15
 }
 
 Model BrogueViewWeaponK11
 {
     Path "models/weapons"
-    Model 0 "weapon_11.obj"
-    Skin 0 "graphics/BRGITEMS.png"
+    Model 0 "weapon_11.md3"
+    Skin 0 "graphics/BRGHANDS.png"
     Scale 1.0 1.0 1.0
     PitchOffset 0
     ZOffset 0
     ScaleWeaponFOV
     FrameIndex BW11 A 0 0
+    FrameIndex BW11 B 0 1
+    FrameIndex BW11 C 0 2
+    FrameIndex BW11 D 0 3
+    FrameIndex BW11 E 0 4
+    FrameIndex BW11 F 0 5
+    FrameIndex BW11 G 0 6
+    FrameIndex BW11 H 0 7
+    FrameIndex BW11 I 0 8
+    FrameIndex BW11 J 0 9
+    FrameIndex BW11 K 0 10
+    FrameIndex BW11 L 0 11
+    FrameIndex BW11 M 0 12
+    FrameIndex BW11 N 0 13
+    FrameIndex BW11 O 0 14
+    FrameIndex BW11 P 0 15
 }
 
 Model BrogueViewWeaponK12
 {
     Path "models/weapons"
-    Model 0 "weapon_12.obj"
-    Skin 0 "graphics/BRGITEMS.png"
+    Model 0 "weapon_12.md3"
+    Skin 0 "graphics/BRGHANDS.png"
     Scale 1.0 1.0 1.0
     PitchOffset 0
     ZOffset 0
     ScaleWeaponFOV
     FrameIndex BW12 A 0 0
+    FrameIndex BW12 B 0 1
+    FrameIndex BW12 C 0 2
+    FrameIndex BW12 D 0 3
+    FrameIndex BW12 E 0 4
+    FrameIndex BW12 F 0 5
+    FrameIndex BW12 G 0 6
+    FrameIndex BW12 H 0 7
+    FrameIndex BW12 I 0 8
+    FrameIndex BW12 J 0 9
+    FrameIndex BW12 K 0 10
+    FrameIndex BW12 L 0 11
+    FrameIndex BW12 M 0 12
+    FrameIndex BW12 N 0 13
+    FrameIndex BW12 O 0 14
+    FrameIndex BW12 P 0 15
 }
 
 Model BrogueViewWeaponK13
 {
     Path "models/weapons"
-    Model 0 "weapon_13.obj"
-    Skin 0 "graphics/BRGITEMS.png"
+    Model 0 "weapon_13.md3"
+    Skin 0 "graphics/BRGHANDS.png"
     Scale 1.0 1.0 1.0
     PitchOffset 0
     ZOffset 0
     ScaleWeaponFOV
     FrameIndex BW13 A 0 0
+    FrameIndex BW13 B 0 1
+    FrameIndex BW13 C 0 2
+    FrameIndex BW13 D 0 3
+    FrameIndex BW13 E 0 4
+    FrameIndex BW13 F 0 5
+    FrameIndex BW13 G 0 6
+    FrameIndex BW13 H 0 7
+    FrameIndex BW13 I 0 8
+    FrameIndex BW13 J 0 9
+    FrameIndex BW13 K 0 10
+    FrameIndex BW13 L 0 11
+    FrameIndex BW13 M 0 12
+    FrameIndex BW13 N 0 13
+    FrameIndex BW13 O 0 14
+    FrameIndex BW13 P 0 15
 }
 
 Model BrogueViewWeaponK14
 {
     Path "models/weapons"
-    Model 0 "weapon_14.obj"
-    Skin 0 "graphics/BRGITEMS.png"
+    Model 0 "weapon_14.md3"
+    Skin 0 "graphics/BRGHANDS.png"
     Scale 1.0 1.0 1.0
     PitchOffset 0
     ZOffset 0
     ScaleWeaponFOV
     FrameIndex BW14 A 0 0
+    FrameIndex BW14 B 0 1
+    FrameIndex BW14 C 0 2
+    FrameIndex BW14 D 0 3
+    FrameIndex BW14 E 0 4
+    FrameIndex BW14 F 0 5
+    FrameIndex BW14 G 0 6
+    FrameIndex BW14 H 0 7
+    FrameIndex BW14 I 0 8
+    FrameIndex BW14 J 0 9
+    FrameIndex BW14 K 0 10
+    FrameIndex BW14 L 0 11
+    FrameIndex BW14 M 0 12
+    FrameIndex BW14 N 0 13
+    FrameIndex BW14 O 0 14
+    FrameIndex BW14 P 0 15
 }
 
 Model BrogueWeaponTargetMarker

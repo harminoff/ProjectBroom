@@ -1,0 +1,60 @@
+# Hero hands and held weapons
+
+Original Project Broom art, **CC-BY-SA-4.0** under
+[`ASSETS-LICENSE.md`](../../ASSETS-LICENSE.md). Attribution: Project Broom
+contributors. No third-party mesh, texture, animation, or reference WAD was
+imported. Brogue's existing weapon names identify the represented items.
+
+Open [`hero-weapons.blend`](hero-weapons.blend) in Blender 5.2 or later. Its scene
+selector contains all 15 weapons. Each has named gloves, fingers, wrists,
+sleeves, weapon hardware, a packed diffuse atlas, and editable shape-key poses.
+Timeline markers identify ready, anticipation, contact, recovery, and throwing.
+The timeline reviews the poses; runtime durations are defined in ZScript.
+
+The character wears brown leather gloves and dark woven sleeves. Fingers and
+opposing thumbs surround the handles. Broadsword, spear, war pike, and war axe
+use a second grip. Other weapons retain a low off hand. Sleeve roots stay below
+the camera while wrists follow the grip. This is not a third-person body rig.
+
+## Rebuild
+
+```powershell
+python -m tools.weapon_models.generate
+python -m unittest tools.weapon_models.test_viewmodel
+```
+
+`tools/weapon_models/viewmodel.py` is the canonical deterministic procedural
+source: mesh, UV atlas, and 16 vertex poses. `generate.py` writes runtime MD3s,
+ready-pose OBJ references, MODELDEF, ZScript, PSprite bounds, and the catalog.
+The existing source build calls it automatically.
+
+Recreate the Blender handoff through the live Blender MCP:
+
+```python
+import runpy
+result = runpy.run_path(r'tools\weapon_models\blender_source.py')['result']
+```
+
+This requires Blender's Python, preserves unrelated open scenes, and saves only
+the new scenes through an isolated background Blender. No exporter add-on is
+needed. **Hand edits to the `.blend` do not feed back into the generator.** Save
+edited copies and reconcile them with `viewmodel.py`, or introduce and validate
+a Blender-to-MD3 export path before regenerating.
+
+## Runtime resources
+
+- `models/weapons/weapon_00.md3` through `weapon_14.md3`: animated runtime models,
+  MD3 v15, one surface per named part.
+- Matching `.obj` files: static ready-pose references, not animation sources.
+- `graphics/BRGHANDS.png`: original 512-square atlas with eight padded regions:
+  metal, edge, brass, wood, grip, glove, cloth, stitching.
+- `brogue_weapon_registry.json`: preserves the 15 existing kind/class mappings;
+  schema 2 adds animated resource, provenance, frame, grip, and triangle metadata.
+
+GZDoom's HUD lateral convention differs from world models. The generator applies
+a final Y/winding mirror for a screen-right weapon. Do not apply the rat's world
+OBJ transform directly to these MD3s. Blender's studio camera and the HUD are not
+identical; in-game captures are the framing authority.
+
+See [`hero-weapon-models.md`](../../docs/hero-weapon-models.md) for integration,
+verification, authority boundaries, and remaining limits.

@@ -11,7 +11,11 @@ class BrogueMonsterProxyBase : Actor
 }
 
 class BrogueMonsterK00 : BrogueMonsterProxyBase {}
-class BrogueMonsterK01 : BrogueMonsterProxyBase {}
+class BrogueMonsterK01 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
 class BrogueMonsterK02 : BrogueMonsterProxyBase {}
 class BrogueMonsterK03 : BrogueMonsterProxyBase {}
 class BrogueMonsterK04 : BrogueMonsterProxyBase {}
