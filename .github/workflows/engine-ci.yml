@@ -37,7 +37,7 @@ jobs:
             core.setOutput('build', String(build));
             core.notice(build ? 'Native engine inputs changed: compiling UZDoom.' :
               'No native engine inputs changed; source and bridge CI cover this PR.');
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         if: steps.scope.outputs.build == 'true'
       - uses: actions/setup-python@v5
         if: steps.scope.outputs.build == 'true'
