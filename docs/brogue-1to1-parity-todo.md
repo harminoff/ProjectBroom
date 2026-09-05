@@ -23,8 +23,10 @@ not include changes that would reproduce Brogue rules in GZDoom.
 
 ## P0: Complete the gameplay command surface
 
-- [ ] Add targeted staff use through Brogue's existing device and bolt logic.
-- [ ] Add targeted wand use through Brogue's existing device and bolt logic.
+- [x] Add targeted staff use through Brogue's existing device and bolt logic.
+  See [implementation and verification](targeted-staff-use.md).
+- [x] Add targeted wand use through Brogue's existing device and bolt logic.
+  See [implementation and verification](targeted-wand-use.md).
 - [ ] Add a generalized target preview containing Brogue-valid targets,
   trajectory, range, obstruction, and confirmation requirements.
 - [ ] Add single-turn search.

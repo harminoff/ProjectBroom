@@ -52,3 +52,4 @@ Model BrogueBarricadeMarker
 #include "models/pickups/MODELDEF.txt"
 #include "models/monsters/MODELDEF.txt"
 #include "models/weapons/MODELDEF.txt"
+#include "models/devices/MODELDEF.txt"

@@ -424,7 +424,7 @@ class BrogueDoomResourceTests(unittest.TestCase):
     def test_complete_brogue_monster_roster_is_generated(self) -> None:
         catalog = json.loads(MONSTER_CATALOG.read_text(encoding="utf-8"))
         registry = json.loads(MONSTER_REGISTRY.read_text(encoding="utf-8"))
-        self.assertEqual(catalog["bridgeApiVersion"], 13)
+        self.assertEqual(catalog["bridgeApiVersion"], 15)
         self.assertEqual(catalog["count"], 68)
         self.assertEqual(registry["nonPlayerModelCount"], 67)
         self.assertEqual(registry["presentationModelCount"], 68)

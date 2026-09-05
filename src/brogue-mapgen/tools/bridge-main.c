@@ -16,6 +16,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "bridge-staff-smoke.h"
+#include "bridge-wand-smoke.h"
+
 static void printEvents(const BrogueBridgeTurnResult *result);
 
 /* MainMenu.c references the normal platform parser.  The bridge driver owns
@@ -38,6 +41,7 @@ boolean tryParseUint64(char *text, uint64_t *outValue) {
 static void printUsage(void) {
     puts("Usage: brogue-bridge --seed SEED [--actions ACTIONS] [--long-run COUNT] [--weapon-smoke] [--consumable-smoke] [--warning-smoke] [--look-smoke] [--verbose]");
     puts("       brogue-bridge --dump-monster-catalog OUTPUT.json");
+    puts("       brogue-bridge --seed SEED [--staff-smoke | --wand-smoke]");
     puts("Actions: N, NE, E, SE, S, SW, W, NW, WAIT (or numpad 8,9,6,3,2,1,4,7,5)");
 }
 
@@ -530,6 +534,8 @@ int main(int argc, char **argv) {
     boolean verbose = false;
     boolean weaponSmoke = false;
     boolean consumableSmoke = false;
+    boolean staffSmoke = false;
+    boolean wandSmoke = false;
     boolean warningSmoke = false;
     boolean lookSmoke = false;
     const char *catalogOutput = NULL;
@@ -575,6 +581,10 @@ int main(int argc, char **argv) {
             weaponSmoke = true;
         } else if (strcmp(argv[i], "--consumable-smoke") == 0) {
             consumableSmoke = true;
+        } else if (strcmp(argv[i], "--staff-smoke") == 0) {
+            staffSmoke = true;
+        } else if (strcmp(argv[i], "--wand-smoke") == 0) {
+            wandSmoke = true;
         } else if (strcmp(argv[i], "--warning-smoke") == 0) {
             warningSmoke = true;
         } else if (strcmp(argv[i], "--look-smoke") == 0) {
@@ -633,6 +643,16 @@ int main(int argc, char **argv) {
     }
     if (consumableSmoke) {
         exitCode = runConsumableSmoke(&state, verbose);
+        brogue_bridge_shutdown();
+        return exitCode;
+    }
+    if (staffSmoke) {
+        exitCode = runStaffSmoke(&state);
+        brogue_bridge_shutdown();
+        return exitCode;
+    }
+    if (wandSmoke) {
+        exitCode = runWandSmoke(&state);
         brogue_bridge_shutdown();
         return exitCode;
     }

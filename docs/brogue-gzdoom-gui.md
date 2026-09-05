@@ -3,7 +3,7 @@
 ## Implemented core
 
 The source-built GZDoom frontend now projects its game-facing interface from
-the live Brogue CE simulation. `BrogueBridgeState` API v13 is the only source
+the live Brogue CE simulation. `BrogueBridgeState` API v15 is the only source
 for player statistics, status flags, messages, visible entities, map knowledge,
 inventory order, equipment, item descriptions, and legal item actions.
 
@@ -70,8 +70,12 @@ bridge headers so an ABI edit cannot leave stale CLI/DLL objects.
 ## Deferred GUI work
 
 Food, potions, scrolls, and charms now use Brogue's existing `apply`, `eat`,
-`drinkPotion`, `readScroll`, and `useCharm` paths. Staves and wands remain
-deferred until their Brogue-targeted device flow is represented by the bridge.
+`drinkPotion`, `readScroll`, and `useCharm` paths. Selecting a staff or wand and pressing
+Enter/U opens its targeting cursor; Tab cycles Brogue's eligible targets,
+Enter/click uses the selected device, and Esc/right-click cancels without a command.
+Brogue's existing device/bolt path resolves charges, effects, and blinking
+warnings. Wands retain Brogue's depletion and discharge-count behavior. See
+[staff verification](targeted-staff-use.md) and [wand verification](targeted-wand-use.md).
 Discovery/help, death/victory, save, and replay screens are also deferred.
 Standard GZDoom video/audio/input settings may remain engine-native.
 

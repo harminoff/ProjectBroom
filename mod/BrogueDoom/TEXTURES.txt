@@ -1789,3 +1789,78 @@ Sprite "BW14P0", 96, 96
 }
 
 // END GENERATED BROGUE WEAPON PSPRITES
+
+// BEGIN GENERATED DEVICE PSPRITES
+Sprite "BDSTA0", 96, 96
+{ Offset 48, 88
+ Patch "BRGITEMS", 0, 0
+}
+Sprite "BDSTB0", 96, 96
+{ Offset 48, 88
+ Patch "BRGITEMS", 0, 0
+}
+Sprite "BDSTC0", 96, 96
+{ Offset 48, 88
+ Patch "BRGITEMS", 0, 0
+}
+Sprite "BDSTD0", 96, 96
+{ Offset 48, 88
+ Patch "BRGITEMS", 0, 0
+}
+Sprite "BDSTE0", 96, 96
+{ Offset 48, 88
+ Patch "BRGITEMS", 0, 0
+}
+Sprite "BDSTF0", 96, 96
+{ Offset 48, 88
+ Patch "BRGITEMS", 0, 0
+}
+Sprite "BDSTG0", 96, 96
+{ Offset 48, 88
+ Patch "BRGITEMS", 0, 0
+}
+Sprite "BDSTH0", 96, 96
+{ Offset 48, 88
+ Patch "BRGITEMS", 0, 0
+}
+Sprite "BDSTI0", 96, 96
+{ Offset 48, 88
+ Patch "BRGITEMS", 0, 0
+}
+Sprite "BDWAA0", 96, 96
+{ Offset 48, 88
+ Patch "BRGITEMS", 0, 0
+}
+Sprite "BDWAB0", 96, 96
+{ Offset 48, 88
+ Patch "BRGITEMS", 0, 0
+}
+Sprite "BDWAC0", 96, 96
+{ Offset 48, 88
+ Patch "BRGITEMS", 0, 0
+}
+Sprite "BDWAD0", 96, 96
+{ Offset 48, 88
+ Patch "BRGITEMS", 0, 0
+}
+Sprite "BDWAE0", 96, 96
+{ Offset 48, 88
+ Patch "BRGITEMS", 0, 0
+}
+Sprite "BDWAF0", 96, 96
+{ Offset 48, 88
+ Patch "BRGITEMS", 0, 0
+}
+Sprite "BDWAG0", 96, 96
+{ Offset 48, 88
+ Patch "BRGITEMS", 0, 0
+}
+Sprite "BDWAH0", 96, 96
+{ Offset 48, 88
+ Patch "BRGITEMS", 0, 0
+}
+Sprite "BDWAI0", 96, 96
+{ Offset 48, 88
+ Patch "BRGITEMS", 0, 0
+}
+// END GENERATED DEVICE PSPRITES

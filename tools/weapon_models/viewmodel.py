@@ -266,9 +266,9 @@ def pose_transform(kind,frame):
     return offset,angles
 
 
-def build_parts(kind,frame=0):
-    offset,angles=pose_transform(kind,frame)
-    p=weapon_parts(kind,frame)
+def build_parts(kind,frame=0, *, held_parts=None, pose=None):
+    offset,angles=pose if pose is not None else pose_transform(kind,frame)
+    p=held_parts if held_parts is not None else weapon_parts(kind,frame)
     # In release/follow-through poses the held object leaves the hand below
     # the view; the separate event-driven world projectile owns its flight.
     release=frame in (12,13,14)

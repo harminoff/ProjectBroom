@@ -37,7 +37,7 @@ STATE_RE = re.compile(
 def run_bridge(*, seed: int, actions: str | None = None, long_run: int | None = None,
                weapon_smoke: bool = False, consumable_smoke: bool = False,
                warning_smoke: bool = False, look_smoke: bool = False,
-               verbose: bool = False) -> str:
+               verbose: bool = False, staff_smoke: bool = False, wand_smoke: bool = False) -> str:
     if not BRIDGE_EXE.is_file():
         raise AssertionError(
             f"missing {BRIDGE_EXE}; run scripts/build-bridge.ps1 before these tests"
@@ -51,6 +51,10 @@ def run_bridge(*, seed: int, actions: str | None = None, long_run: int | None = 
         args += ["--weapon-smoke"]
     if consumable_smoke:
         args += ["--consumable-smoke"]
+    if staff_smoke:
+        args += ["--staff-smoke"]
+    if wand_smoke:
+        args += ["--wand-smoke"]
     if warning_smoke:
         args += ["--warning-smoke"]
     if look_smoke:
@@ -74,6 +78,24 @@ def lines_matching(output: str, pattern: re.Pattern[str]) -> list[re.Match[str]]
 
 
 class BrogueBridgeTests(unittest.TestCase):
+    def test_wands_match_standalone_apply_and_targeting(self) -> None:
+        for seed in (1, 2, 42, 12345, 99999):
+            with self.subTest(seed=seed):
+                first = run_bridge(seed=seed, wand_smoke=True)
+                self.assertEqual(first, run_bridge(seed=seed, wand_smoke=True))
+                self.assertEqual(first.count("parity=true"), 14)
+                self.assertIn("WAND case=known-empty parity=true consumedTurn=false charges=0", first)
+                self.assertIn("WAND case=unknown-empty parity=true consumedTurn=true charges=0", first)
+
+    def test_targeted_staff_use_preserves_brogue_rules(self) -> None:
+        for seed in (1, 2, 42, 12345, 99999):
+            with self.subTest(seed=seed):
+                first = run_bridge(seed=seed, staff_smoke=True)
+                self.assertEqual(first, run_bridge(seed=seed, staff_smoke=True))
+                for case in ("fire", "blocked", "reflected", "unknown-empty", "blink-warning"):
+                    self.assertIn(f"STAFF case={case} accepted=true consumedTurn=true", first)
+                self.assertIn("STAFF case=known-empty accepted=false consumedTurn=false charges=0", first)
+
     def test_monster_catalog_is_exported_from_brogue(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "catalog.json"
@@ -82,7 +104,7 @@ class BrogueBridgeTests(unittest.TestCase):
                 cwd=BRIDGE_DIR, check=True, capture_output=True, text=True,
             )
             catalog = __import__("json").loads(output.read_text(encoding="utf-8"))
-        self.assertEqual(catalog["bridgeApiVersion"], 13)
+        self.assertEqual(catalog["bridgeApiVersion"], 15)
         self.assertEqual(catalog["count"], 68)
         self.assertEqual(catalog["kinds"][0]["symbol"], "MK_YOU")
         self.assertEqual(catalog["kinds"][1]["symbol"], "MK_RAT")

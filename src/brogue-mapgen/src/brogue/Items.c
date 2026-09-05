@@ -5346,7 +5346,7 @@ static short hiliteTrajectory(const pos coordinateList[DCOLS], short numCells, b
         y = coordinateList[i].y;
         if (eraseHiliting) {
             refreshDungeonCell((pos){ x, y });
-        } else {
+        } else if (hiliteColor != NULL) {
             hiliteCell(x, y, hiliteColor, 20, true);
         }
 
@@ -6634,7 +6634,32 @@ boolean itemApplyConfirmationPrompt(item *theItem, char *buffer, size_t bufferSi
     return true;
 }
 
-static boolean useStaffOrWand(item *theItem) {
+static short deviceTargetMaxDistance(item *theItem) {
+    if (theItem->category == STAFF && theItem->kind == STAFF_BLINKING
+        && (theItem->flags & (ITEM_IDENTIFIED | ITEM_MAX_CHARGES_KNOWN))) {
+        return staffBlinkDistance(netEnchant(theItem));
+    }
+    return -1;
+}
+
+short previewDeviceTarget(item *theItem, pos targetLoc, pos *path, short *maxDistance, pos *nextTarget) {
+    bolt previewBolt = boltCatalog[BOLT_NONE];
+    short count;
+    if (tableForItemCategory(theItem->category)[theItem->kind].identified) {
+        previewBolt = boltCatalog[boltForItem(theItem)];
+    }
+    *maxDistance = deviceTargetMaxDistance(theItem);
+    *nextTarget = INVALID_POS;
+    nextTargetAfter(theItem, nextTarget, targetLoc, AUTOTARGET_MODE_USE_STAFF_OR_WAND, false);
+    if (posEq(player.loc, targetLoc)) return 0;
+    count = getLineCoordinates(path, player.loc, targetLoc, &previewBolt);
+    if (*maxDistance > 0) count = min(count, *maxDistance);
+    // Reuse the terminal targeting guide's knowledge and obstruction rules,
+    // with rendering disabled. No zap, confirmation, or RNG is evaluated.
+    return hiliteTrajectory(path, count, false, &previewBolt, NULL);
+}
+
+static boolean useStaffOrWand(item *theItem, const pos *suppliedTarget) {
     char buf[COLS], buf2[COLS], buf3[COLS];
     short maxDistance;
     boolean autoID, confirmedTarget;
@@ -6656,18 +6681,17 @@ static boolean useStaffOrWand(item *theItem) {
         theBolt.magnitude = theItem->enchant1;
     }
 
-    if ((theItem->category & STAFF) && theItem->kind == STAFF_BLINKING
-        && theItem->flags & (ITEM_IDENTIFIED | ITEM_MAX_CHARGES_KNOWN)) {
-
-        maxDistance = staffBlinkDistance(netEnchant(theItem));
-    } else {
-        maxDistance = -1;
-    }
+    maxDistance = deviceTargetMaxDistance(theItem);
 
     boolean boltKnown = tableForItemCategory(theItem->category)[theItem->kind].identified;
     pos originLoc = player.loc;
     pos zapTarget;
-    confirmedTarget = chooseTarget(&zapTarget, maxDistance, AUTOTARGET_MODE_USE_STAFF_OR_WAND, theItem);
+    if (suppliedTarget != NULL) {
+        zapTarget = *suppliedTarget;
+        confirmedTarget = coordinatesAreInMap(zapTarget.x, zapTarget.y) && !posEq(originLoc, zapTarget);
+    } else {
+        confirmedTarget = chooseTarget(&zapTarget, maxDistance, AUTOTARGET_MODE_USE_STAFF_OR_WAND, theItem);
+    }
     if (confirmedTarget
         && boltKnown
         && theBolt.boltEffect == BE_BLINKING
@@ -6677,6 +6701,11 @@ static boolean useStaffOrWand(item *theItem) {
     }
 
     if (confirmedTarget) {
+
+        if (suppliedTarget != NULL) {
+            creature *target = monsterAtLoc(zapTarget);
+            if (target && target != &player && canSeeMonster(target)) rogue.lastTarget = target;
+        }
 
         recordApplyItemCommand(theItem);
         recordMouseClick(mapToWindowX(zapTarget.x), mapToWindowY(zapTarget.y), true, false);
@@ -6914,7 +6943,7 @@ void apply(item *theItem) {
             return;
         case STAFF:
         case WAND:
-            if (useStaffOrWand(theItem)) {
+            if (useStaffOrWand(theItem, NULL)) {
                 break;
             }
             return;
@@ -6939,6 +6968,12 @@ void applyItemWithSelection(item *theItem, item *selectedItem) {
     apply(theItem);
     bridgeApplySelectedItem = NULL;
     bridgeApplySelectionActive = false;
+}
+
+void applyDeviceAtTarget(item *theItem, pos targetLoc) {
+    if (theItem == NULL || !(theItem->category & (STAFF | WAND))) return;
+    confirmMessages();
+    if (useStaffOrWand(theItem, &targetLoc)) playerTurnEnded();
 }
 
 void identify(item *theItem) {
