@@ -2,6 +2,12 @@
 #define BROGUE_BRIDGE_INTERNAL_H
 
 #include "Rogue.h"
+#include "BrogueBridge.h"
+    boolean itemThrowConfirmationPrompt(const item *theItem, char *buffer, size_t size);
+    short collectTargetCreatures(const item *theItem, boolean throwing, creature **targets, short capacity, boolean *truncated);
+    short previewItemTarget(item *theItem, boolean throwing, pos targetLoc, pos *path, short *maxDistance, BrogueBridgeGuideTermination *reason, int *hazard);
+    const char *targetHazardWarning(int hazard);
+
 
 /* Internal observation hooks. They never resolve gameplay; they only record
  * events while a bridge action is active. Normal Brogue builds link the same

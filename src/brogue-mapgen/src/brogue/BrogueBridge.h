@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-#define BROGUE_BRIDGE_API_VERSION 15u
+#define BROGUE_BRIDGE_API_VERSION 16u
 #define BROGUE_BRIDGE_MAX_CELLS 2291u
 #define BROGUE_BRIDGE_MAX_CREATURES 1024u
 #define BROGUE_BRIDGE_MAX_ITEMS 1024u
@@ -294,8 +294,8 @@ typedef struct BrogueBridgeThrowPreview {
     BrogueBridgeResult errorCode;
 } BrogueBridgeThrowPreview;
 
-/* A knowledge-limited aiming guide, not a prediction of bolt outcomes or
- * reflections. Confirmations are returned by perform_command, before use. */
+/* Deprecated device layout. Use BrogueBridgeTargetPreview for new code.
+ * Confirmations still require an explicit perform_command retry. */
 typedef struct BrogueBridgeStaffPreview {
     BrogueBridgeThrowPreview aim;
     uint8_t hasNextTarget;
@@ -304,6 +304,54 @@ typedef struct BrogueBridgeStaffPreview {
 
 /* Wands share the device aiming layout; their range remains Brogue-owned. */
 typedef BrogueBridgeStaffPreview BrogueBridgeWandPreview;
+
+typedef enum BrogueBridgeGuideTermination {
+    BROGUE_GUIDE_SELECTED_TARGET = 0,
+    BROGUE_GUIDE_RANGE,
+    BROGUE_GUIDE_MAP_EDGE,
+    BROGUE_GUIDE_UNEXPLORED,
+    BROGUE_GUIDE_TERRAIN,
+    BROGUE_GUIDE_CREATURE
+} BrogueBridgeGuideTermination;
+
+typedef struct BrogueBridgeTargetRequest {
+    uint32_t apiVersion;
+    BrogueBridgeCommandType type;
+    uint64_t expectedRevision;
+    uint64_t itemId;
+    int32_t targetX, targetY;
+} BrogueBridgeTargetRequest;
+
+typedef struct BrogueBridgeTargetCandidate {
+    uint64_t id;
+    BrogueBridgePoint location;
+} BrogueBridgeTargetCandidate;
+
+/* Read-only, knowledge-limited guide. valid is structural aim validity, not
+ * automatic eligibility, trajectory reach, or a prediction of acceptance. */
+typedef struct BrogueBridgeTargetPreview {
+    BrogueBridgeThrowPreview aim;
+    BrogueBridgeCommandType type;
+    int32_t depth;
+    BrogueBridgePoint origin;
+    uint8_t reachesTarget;
+    uint8_t hasRange;
+    uint8_t pathTruncated;
+    uint8_t targetsTruncated;
+    uint8_t hasNextTarget;
+    uint8_t certainDeath;
+    BrogueBridgeGuideTermination termination;
+    uint32_t targetCount;
+    BrogueBridgeTargetCandidate targets[BROGUE_BRIDGE_MAX_CREATURES];
+    BrogueBridgeTargetCandidate nextTarget;
+} BrogueBridgeTargetPreview;
+
+/* Same fixed-width ABI on the DLL and native consumer (also C99). */
+typedef char BrogueTargetRequestSizeCheck[sizeof(BrogueBridgeTargetRequest) == 32 ? 1 : -1];
+typedef char BrogueTargetPreviewSizeCheck[sizeof(BrogueBridgeTargetPreview) == 17760 ? 1 : -1];
+
+BrogueBridgeResult brogue_bridge_preview_target(const BrogueBridgeTargetRequest *request,
+                                               BrogueBridgeTargetPreview *outPreview);
 
 typedef enum BrogueBridgeLookKind {
     BROGUE_LOOK_UNEXPLORED = 0,

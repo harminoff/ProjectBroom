@@ -29,6 +29,8 @@ not include changes that would reproduce Brogue rules in GZDoom.
   See [implementation and verification](targeted-wand-use.md).
 - [ ] Add a generalized target preview containing Brogue-valid targets,
   trajectory, range, obstruction, and confirmation requirements.
+  API v16 implementation and automated gates are delivered; physical-input and
+  standalone visual acceptance remain open. See [evidence](generalized-targeting-preview.md).
 - [ ] Add single-turn search.
 - [ ] Add repeated search until interrupted or complete.
 - [ ] Add auto-rest.

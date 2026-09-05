@@ -1,5 +1,8 @@
 # Targeted staff use
 
+Current preview contract: [generalized targeting, API v16](generalized-targeting-preview.md).
+The implementation notes below describe the original v14/v15 delivery.
+
 Contribution category: bridge parity. Gameplay declaration: no new rules;
 Brogue CE remains authoritative. No new assets or licenses are introduced.
 

@@ -7,6 +7,7 @@ EXPORTS
     brogue_bridge_perform_command
     brogue_bridge_preview_throw
     brogue_bridge_preview_staff
+    brogue_bridge_preview_target
     brogue_bridge_preview_wand
     brogue_bridge_inspect_cell
     brogue_bridge_shutdown

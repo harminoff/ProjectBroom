@@ -78,6 +78,15 @@ def lines_matching(output: str, pattern: re.Pattern[str]) -> list[re.Match[str]]
 
 
 class BrogueBridgeTests(unittest.TestCase):
+    def test_general_target_preview_is_read_only(self) -> None:
+        for seed in (1, 2, 42, 12345, 99999):
+            with self.subTest(seed=seed):
+                args = [str(BRIDGE_EXE), "--seed", str(seed), "--target-smoke"]
+                first = subprocess.check_output(args, cwd=BRIDGE_DIR, text=True, timeout=60)
+                self.assertEqual(first, subprocess.check_output(args, cwd=BRIDGE_DIR, text=True, timeout=60))
+                self.assertEqual(first.count("TARGET case="), 21)
+                self.assertEqual(first.count("TARGET_ACTION "), 8)
+
     def test_wands_match_standalone_apply_and_targeting(self) -> None:
         for seed in (1, 2, 42, 12345, 99999):
             with self.subTest(seed=seed):
@@ -104,7 +113,7 @@ class BrogueBridgeTests(unittest.TestCase):
                 cwd=BRIDGE_DIR, check=True, capture_output=True, text=True,
             )
             catalog = __import__("json").loads(output.read_text(encoding="utf-8"))
-        self.assertEqual(catalog["bridgeApiVersion"], 15)
+        self.assertEqual(catalog["bridgeApiVersion"], 16)
         self.assertEqual(catalog["count"], 68)
         self.assertEqual(catalog["kinds"][0]["symbol"], "MK_YOU")
         self.assertEqual(catalog["kinds"][1]["symbol"], "MK_RAT")

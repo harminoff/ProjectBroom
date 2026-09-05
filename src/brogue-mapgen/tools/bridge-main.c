@@ -9,6 +9,7 @@
 #include "Globals.h"
 #include "platform.h"
 #include "BrogueBridge.h"
+#include "BrogueBridgeInternal.h"
 
 #include <ctype.h>
 #include <errno.h>
@@ -18,6 +19,7 @@
 
 #include "bridge-staff-smoke.h"
 #include "bridge-wand-smoke.h"
+#include "bridge-target-smoke.h"
 
 static void printEvents(const BrogueBridgeTurnResult *result);
 
@@ -536,6 +538,7 @@ int main(int argc, char **argv) {
     boolean consumableSmoke = false;
     boolean staffSmoke = false;
     boolean wandSmoke = false;
+    boolean targetSmoke = false;
     boolean warningSmoke = false;
     boolean lookSmoke = false;
     const char *catalogOutput = NULL;
@@ -583,6 +586,8 @@ int main(int argc, char **argv) {
             consumableSmoke = true;
         } else if (strcmp(argv[i], "--staff-smoke") == 0) {
             staffSmoke = true;
+        } else if (strcmp(argv[i], "--target-smoke") == 0) {
+            targetSmoke = true;
         } else if (strcmp(argv[i], "--wand-smoke") == 0) {
             wandSmoke = true;
         } else if (strcmp(argv[i], "--warning-smoke") == 0) {
@@ -648,6 +653,12 @@ int main(int argc, char **argv) {
     }
     if (staffSmoke) {
         exitCode = runStaffSmoke(&state);
+        brogue_bridge_shutdown();
+        return exitCode;
+    }
+    if (targetSmoke) {
+        exitCode = runTargetSmoke(&state);
+        if (!exitCode) exitCode = runTargetActionSmoke(&state);
         brogue_bridge_shutdown();
         return exitCode;
     }

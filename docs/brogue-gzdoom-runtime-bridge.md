@@ -1,6 +1,6 @@
 # Brogue CE → UZDoom runtime bridge
 
-Status: bridge API v15, native UZDoom monster presentation, authoritative weapon, consumable, and targeted staff/wand commands, generalized Brogue confirmation forwarding, an authoritative loss screen, fall-source/landing events, and visual-only first-person weapon models are implemented and built from the official UZDoom 5.0.0 source checkout.
+Status: bridge API v16, native UZDoom monster presentation, authoritative weapon, consumable, and targeted staff/wand commands, generalized Brogue confirmation forwarding, an authoritative loss screen, fall-source/landing events, and visual-only first-person weapon models are implemented and built from the official UZDoom 5.0.0 source checkout.
 
 ## Chasms and fall shafts
 
@@ -419,6 +419,11 @@ does not ship Doom demo or credit pages to rotate into.
 Load/save is intentionally absent from the title menu until Brogue bridge state
 serialization is implemented. Loading only UZDoom's presentation state would
 not restore the authoritative Brogue simulation.
+
+## Generalized targeting preview
+
+API v16 unifies throw, staff, and wand previews through a read-only, revision-bound
+request and copied result. See [contract, evidence, and acceptance gaps](generalized-targeting-preview.md).
 
 ## Known limitations
 

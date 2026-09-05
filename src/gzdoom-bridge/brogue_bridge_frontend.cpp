@@ -58,6 +58,7 @@ using BridgeGetState = BrogueBridgeResult (*)(BrogueBridgeState *);
 using BridgeGetMonsterCatalog = BrogueBridgeResult (*)(BrogueBridgeMonsterCatalog *);
 using BridgePerformAction = BrogueBridgeResult (*)(BrogueBridgeAction, BrogueBridgeTurnResult *);
 using BridgePerformCommand = BrogueBridgeResult (*)(const BrogueBridgeCommand *, BrogueBridgeTurnResult *);
+using BridgePreviewTarget = BrogueBridgeResult (*)(const BrogueBridgeTargetRequest *, BrogueBridgeTargetPreview *);
 using BridgePreviewThrow = BrogueBridgeResult (*)(uint64_t, int32_t, int32_t, BrogueBridgeThrowPreview *);
 using BridgePreviewStaff = BrogueBridgeResult (*)(uint64_t, int32_t, int32_t, BrogueBridgeStaffPreview *);
 using BridgeInspectCell = BrogueBridgeResult (*)(int32_t, int32_t, BrogueBridgeLookResult *);
@@ -75,6 +76,7 @@ struct BridgeApi
 	BridgeGetMonsterCatalog getMonsterCatalog = nullptr;
 	BridgePerformAction performAction = nullptr;
 	BridgePerformCommand performCommand = nullptr;
+	BridgePreviewTarget previewTarget = nullptr;
 	BridgePreviewThrow previewThrow = nullptr;
 	BridgePreviewStaff previewStaff = nullptr;
 	BridgePreviewStaff previewWand = nullptr;
@@ -188,6 +190,8 @@ enum class WeaponUiMode { None, Equip, ThrowSelect, ThrowTarget, StaffTarget, Wa
 WeaponUiMode WeaponUi = WeaponUiMode::None;
 int WeaponSelection = 0;
 uint64_t ThrowItemId = 0;
+uint64_t TargetPreviewRevision = 0;
+int TargetPreviewDepth = 0;
 int TargetX = 0;
 int TargetY = 0;
 AActor *TargetMarker = nullptr;
@@ -314,6 +318,7 @@ bool LoadBridge()
 	Api.getMonsterCatalog = GetBridgeProc<BridgeGetMonsterCatalog>(Api.module, "brogue_bridge_get_monster_catalog");
 	Api.performAction = GetBridgeProc<BridgePerformAction>(Api.module, "brogue_bridge_perform_action");
 	Api.performCommand = GetBridgeProc<BridgePerformCommand>(Api.module, "brogue_bridge_perform_command");
+	Api.previewTarget = GetBridgeProc<BridgePreviewTarget>(Api.module, "brogue_bridge_preview_target");
 	Api.previewThrow = GetBridgeProc<BridgePreviewThrow>(Api.module, "brogue_bridge_preview_throw");
 	Api.previewStaff = GetBridgeProc<BridgePreviewStaff>(Api.module, "brogue_bridge_preview_staff");
 	Api.previewWand = GetBridgeProc<BridgePreviewStaff>(Api.module, "brogue_bridge_preview_wand");
@@ -327,7 +332,7 @@ bool LoadBridge()
 
 	if (Api.initialize == nullptr || Api.startGame == nullptr || Api.getState == nullptr
 		|| Api.getMonsterCatalog == nullptr
-		|| Api.performAction == nullptr || Api.performCommand == nullptr || Api.previewThrow == nullptr || Api.previewStaff == nullptr || Api.previewWand == nullptr
+		|| Api.performAction == nullptr || Api.performCommand == nullptr || Api.previewTarget == nullptr || Api.previewThrow == nullptr || Api.previewStaff == nullptr || Api.previewWand == nullptr
 		|| Api.inspectCell == nullptr
 		|| Api.shutdown == nullptr || Api.resultName == nullptr)
 	{
@@ -1857,6 +1862,7 @@ void CloseWeaponUi()
 	ThrowItemId = 0;
 	LookResult = {};
 	LastVisualWeaponId = 0;
+	ClearCommandConfirmation();
 	ClearTargetMarkers();
 	C_MidPrint(nullptr, nullptr);
 }
@@ -1877,6 +1883,8 @@ void ShowWeaponSelector(bool throwing)
 void BeginTargeting(uint64_t itemId)
 {
 	ThrowItemId = itemId;
+	TargetPreviewRevision = State.revision;
+	TargetPreviewDepth = State.depth;
 	WeaponUi = WeaponUiMode::ThrowTarget;
 	const int facing = FacingOctant() < 0 ? 0 : FacingOctant();
 	static const int dx[8] = {1, 1, 0, -1, -1, -1, 0, 1};
@@ -1890,43 +1898,67 @@ bool IsDeviceTargeting()
 	return WeaponUi == WeaponUiMode::StaffTarget || WeaponUi == WeaponUiMode::WandTarget;
 }
 
-BrogueBridgeResult PreviewTargetedDevice(BrogueBridgeStaffPreview &preview)
+BrogueBridgeResult PreviewTarget(BrogueBridgeTargetPreview &preview)
 {
-	return (WeaponUi == WeaponUiMode::WandTarget ? Api.previewWand : Api.previewStaff)
-		(ThrowItemId, TargetX, TargetY, &preview);
+    BrogueBridgeTargetRequest request{};
+    request.apiVersion = BROGUE_BRIDGE_API_VERSION;
+    request.expectedRevision = State.revision;
+    request.itemId = ThrowItemId;
+    request.type = WeaponUi == WeaponUiMode::WandTarget ? BROGUE_COMMAND_USE_WAND :
+        WeaponUi == WeaponUiMode::StaffTarget ? BROGUE_COMMAND_USE_STAFF : BROGUE_COMMAND_THROW_ITEM;
+    request.targetX = TargetX;
+    request.targetY = TargetY;
+    const auto result = Api.previewTarget(&request, &preview);
+    if (result != BROGUE_BRIDGE_OK) return result;
+    if (preview.aim.apiVersion != request.apiVersion || preview.aim.revision != request.expectedRevision
+        || preview.type != request.type || preview.aim.itemId != request.itemId
+        || preview.aim.targetX != request.targetX || preview.aim.targetY != request.targetY
+        || preview.depth != State.depth) return BROGUE_BRIDGE_STALE_REVISION;
+    return BROGUE_BRIDGE_OK;
 }
 
 void RefreshTargeting()
 {
-	const bool staff = IsDeviceTargeting();
-	if ((!staff && WeaponUi != WeaponUiMode::ThrowTarget) || Api.previewThrow == nullptr) return;
-	BrogueBridgeThrowPreview preview{};
-	BrogueBridgeStaffPreview staffPreview{};
-	const BrogueBridgeResult result = staff
-		? PreviewTargetedDevice(staffPreview)
-		: Api.previewThrow(ThrowItemId, TargetX, TargetY, &preview);
-	if (staff) preview = staffPreview.aim;
-	ClearTargetMarkers();
-	if (primaryLevel != nullptr)
-	{
-		TargetMarker = Spawn(primaryLevel, "BrogueWeaponTargetMarker",
-			BrogueCellToWorld(TargetX, TargetY) + DVector3(0, 0, 4), NO_REPLACE);
-		if (result == BROGUE_BRIDGE_OK)
-		{
-			for (uint32_t index = 0; index < preview.pathCount; ++index)
-			{
-				AActor *marker = Spawn(primaryLevel, "BrogueWeaponPathMarker",
-					BrogueCellToWorld(preview.path[index].x, preview.path[index].y) + DVector3(0, 0, 3), NO_REPLACE);
-				if (marker != nullptr) PathMarkers.push_back(marker);
-			}
-		}
-	}
-	const BrogueBridgeItemState *item = FindItem(ThrowItemId);
-	FString text;
-	text.Format("%s %s -> %d,%d\n%s\nMove cursor, Tab target, click/Enter confirm, Esc cancel",
-		staff ? "USE" : "THROW", item != nullptr ? item->displayName : "item", TargetX, TargetY,
-		staff ? preview.message : (result == BROGUE_BRIDGE_OK && preview.valid ? "Valid trajectory" : preview.message));
-	C_MidPrint(nullptr, text.GetChars());
+    const bool device = IsDeviceTargeting();
+    if ((!device && WeaponUi != WeaponUiMode::ThrowTarget) || Api.previewTarget == nullptr) return;
+    BrogueBridgeTargetPreview preview{};
+    const auto result = PreviewTarget(preview);
+    ClearTargetMarkers();
+    if (result != BROGUE_BRIDGE_OK) { CloseWeaponUi(); ClearCommandConfirmation(); return; }
+    TargetPreviewRevision = preview.aim.revision;
+    const auto &aim = preview.aim;
+    if (primaryLevel != nullptr)
+    {
+        TargetMarker = Spawn(primaryLevel, "BrogueWeaponTargetMarker",
+            BrogueCellToWorld(TargetX, TargetY) + DVector3(0, 0, 4), NO_REPLACE);
+        if (TargetMarker) {
+            TargetMarker->RenderStyle = STYLE_Translucent;
+            TargetMarker->Alpha = preview.reachesTarget ? 1.0 : 0.35;
+        }
+        for (uint32_t index = 0; index < aim.pathCount; ++index)
+        {
+            AActor *marker = Spawn(primaryLevel, "BrogueWeaponPathMarker",
+                BrogueCellToWorld(aim.path[index].x, aim.path[index].y) + DVector3(0, 0, 3), NO_REPLACE);
+            if (marker != nullptr) PathMarkers.push_back(marker);
+        }
+    }
+    const char *end = "Guide reaches selected cell";
+    switch (preview.termination) {
+    case BROGUE_GUIDE_RANGE: end = "Guide ends at range limit"; break;
+    case BROGUE_GUIDE_MAP_EDGE: end = "Guide ends at map edge"; break;
+    case BROGUE_GUIDE_UNEXPLORED: end = "Guide continues into unexplored area"; break;
+    case BROGUE_GUIDE_TERRAIN: end = "Guide stops at terrain"; break;
+    case BROGUE_GUIDE_CREATURE: end = "Guide stops at creature"; break;
+    default: break;
+    }
+    const BrogueBridgeItemState *item = FindItem(ThrowItemId);
+    FString range, text;
+    if (preview.hasRange) range.Format("Range %d", aim.maxDistance);
+    else range = "No range supplied";
+    text.Format("%s %s -> %d,%d\n%s | %s\n%s%sMove cursor, Tab target, click/Enter confirm, Esc cancel",
+        device ? "USE" : "THROW", item ? item->displayName : "item", TargetX, TargetY,
+        range.GetChars(), aim.valid ? end : "Choose a different cell", aim.message, aim.message[0] ? "\n" : "");
+    C_MidPrint(nullptr, text.GetChars());
 }
 
 void CycleVisibleTarget()
@@ -2117,36 +2149,30 @@ bool HandleWeaponUiInput(const event_t *event)
 		const bool wand = WeaponUi == WeaponUiMode::WandTarget;
 		if (key == KEY_TAB)
 		{
-			if (staff)
-			{
-				BrogueBridgeStaffPreview preview{};
-				if (PreviewTargetedDevice(preview) == BROGUE_BRIDGE_OK && preview.hasNextTarget)
-				{
-					TargetX = preview.nextTarget.x;
-					TargetY = preview.nextTarget.y;
-				}
-			}
-			else CycleVisibleTarget();
-		}
-		else if (key == KEY_ENTER || key == KEY_MOUSE1)
-		{
-			const uint64_t item = ThrowItemId;
-			const int x = TargetX, y = TargetY;
-			CloseWeaponUi();
-			if (staff)
-			{
-				BrogueBridgeCommand command{};
-				command.apiVersion = BROGUE_BRIDGE_API_VERSION;
-				command.type = wand ? BROGUE_COMMAND_USE_WAND : BROGUE_COMMAND_USE_STAFF;
-				command.expectedRevision = State.revision;
-				command.itemId = item;
-				command.targetX = x;
-				command.targetY = y;
-				SubmitConfirmableCommand(command, wand ? "wand-ui" : "staff-ui");
-			}
-			else PerformItemCommand(BROGUE_COMMAND_THROW_ITEM, item, x, y);
-			return true;
-		}
+            BrogueBridgeTargetPreview preview{};
+            if (PreviewTarget(preview) == BROGUE_BRIDGE_OK && preview.hasNextTarget)
+            {
+                TargetX = preview.nextTarget.location.x;
+                TargetY = preview.nextTarget.location.y;
+            }
+        }
+        else if (key == KEY_ENTER || key == KEY_MOUSE1)
+        {
+            BrogueBridgeTargetPreview preview{};
+            if (PreviewTarget(preview) != BROGUE_BRIDGE_OK) { CloseWeaponUi(); return true; }
+            if (!preview.aim.valid) { RefreshTargeting(); return true; }
+            BrogueBridgeCommand command{};
+            command.apiVersion = BROGUE_BRIDGE_API_VERSION;
+            command.type = preview.type;
+            command.expectedRevision = preview.aim.revision;
+            command.itemId = preview.aim.itemId;
+            command.targetX = preview.aim.targetX;
+            command.targetY = preview.aim.targetY;
+            command.confirmed = 0;
+            CloseWeaponUi();
+            SubmitConfirmableCommand(command, wand ? "wand-ui" : staff ? "staff-ui" : "throw-ui");
+            return true;
+        }
 		else
 		{
 			BrogueBridgeAction action;
@@ -2242,6 +2268,40 @@ void TickStaffSmoke()
 			(unsigned long long) State.revision, (unsigned long long) State.absoluteTurn);
 	}
 	if (++StaffSmokePhase > 10) StaffSmokePhase = 0;
+}
+
+// Uses the naturally carried starting dagger, including its real Brogue warning.
+int ThrowSmokePhase = 0, ThrowSmokeNextTic = 0;
+uint64_t ThrowSmokeRevision = 0, ThrowSmokeTurn = 0;
+void TickThrowSmoke()
+{
+    if (!ThrowSmokePhase || primaryLevel == nullptr || !PendingActions.empty()
+        || MonsterAnimationsActive() || Projectile.actor != nullptr || primaryLevel->maptime < ThrowSmokeNextTic) return;
+    ThrowSmokeNextTic = primaryLevel->maptime + 18;
+    event_t event{}; event.type = EV_KeyDown; event.data1 = KEY_ENTER;
+    if (ThrowSmokePhase == 1 || ThrowSmokePhase == 6) {
+        if (!State.player.equippedWeaponId) { Printf("THROW_UI FAIL: no equipped weapon.\n"); ThrowSmokePhase = 0; return; }
+        if (ThrowSmokePhase == 1) { ThrowSmokeRevision = State.revision; ThrowSmokeTurn = State.absoluteTurn; }
+        BeginTargeting(State.player.equippedWeaponId); RefreshTargeting();
+    } else if (ThrowSmokePhase == 3 || ThrowSmokePhase == 7) {
+        HandleWeaponUiInput(&event);
+        if (!CommandConfirmationOpen || State.revision != ThrowSmokeRevision || !PathMarkers.empty() || TargetMarker) {
+            Printf("THROW_UI FAIL: approval/cleanup.\n"); ThrowSmokePhase = 0; return;
+        }
+    } else if (ThrowSmokePhase == 5) {
+        ClearCommandConfirmation(); CloseWeaponUi(); SyncWeaponView();
+        Printf("THROW_UI cancel unchanged=%s\n", State.revision == ThrowSmokeRevision && State.absoluteTurn == ThrowSmokeTurn ? "true" : "false");
+    } else if (ThrowSmokePhase == 9) {
+        BrogueBridgeCommand command = CommandConfirmationCommand;
+        ClearCommandConfirmation(); ++command.confirmed;
+        SubmitConfirmableCommand(command, "throw-ui-smoke");
+        Printf("THROW_UI %s\n", State.revision == ThrowSmokeRevision+1 && State.absoluteTurn > ThrowSmokeTurn ? "PASS" : "FAIL");
+    } else {
+        Printf("THROW_UI capture phase=%d revision=%llu turn=%llu\n", ThrowSmokePhase,
+            (unsigned long long)State.revision, (unsigned long long)State.absoluteTurn);
+        C_DoCommand("screenshot");
+    }
+    if (++ThrowSmokePhase > 10) ThrowSmokePhase = 0;
 }
 
 double HudScale()
@@ -2926,6 +2986,12 @@ CCMD(brg_inventory)
 	InventorySelection = 0;
 }
 
+CCMD(brg_throw_smoke)
+{
+    ThrowSmokePhase = 1;
+    ThrowSmokeNextTic = 0;
+}
+
 CCMD(brg_staff_smoke)
 {
 	StaffSmokeWand = false;
@@ -3003,7 +3069,11 @@ bool HandleGameOverInput(const event_t *event)
 
 bool HandleCommandConfirmationInput(const event_t *event)
 {
-	if (!CommandConfirmationOpen) return false;
+    if (!CommandConfirmationOpen) return false;
+    const auto &pending = CommandConfirmationCommand;
+    const auto *pendingItem = pending.itemId ? FindItem(pending.itemId) : nullptr;
+    if (pending.expectedRevision != State.revision || (pending.itemId && (!pendingItem || !pendingItem->carried)))
+    { ClearCommandConfirmation(); CloseWeaponUi(); return true; }
 	if (event->type == EV_KeyUp) return true;
 	if (event->type != EV_KeyDown) return true;
 	if (event->data1 == KEY_ENTER || event->data2 == 'y' || event->data2 == 'Y')
@@ -3079,6 +3149,16 @@ void BrogueBridge_PrepareTiccmd(usercmd_t *cmd)
 		I_Error("Project Broom could not attach its Brogue bridge. See the engine log and rebuild matching components.");
 		return;
 	}
+    if (WeaponUi == WeaponUiMode::ThrowTarget || IsDeviceTargeting()) {
+        const auto *item = FindItem(ThrowItemId);
+        if (!item || !item->carried || TargetPreviewDepth != State.depth || State.player.gameHasEnded) CloseWeaponUi();
+        else if (TargetPreviewRevision != State.revision) RefreshTargeting();
+    }
+    if (CommandConfirmationOpen) {
+        const auto &pending = CommandConfirmationCommand;
+        const auto *item = pending.itemId ? FindItem(pending.itemId) : nullptr;
+        if (pending.expectedRevision != State.revision || (pending.itemId && (!item || !item->carried))) ClearCommandConfirmation();
+    }
 	if (!InventoryOpen && WeaponUi == WeaponUiMode::None && !CommandConfirmationOpen) PollComparisonInput();
 	// A Brogue-driven map change is applied by GZDoom after the action returns.
 	// Project the authoritative landing coordinate as soon as that map is live.
@@ -3128,6 +3208,7 @@ void BrogueBridge_PrepareTiccmd(usercmd_t *cmd)
 	}
 
 	TickStaffSmoke();
+	TickThrowSmoke();
 
 	// View angle/pitch remain GZDoom presentation controls. Prevent every
 	// gameplay-affecting Doom command and all translational movement.
