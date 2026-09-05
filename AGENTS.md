@@ -7,17 +7,17 @@ must not weaken the authority and parity rules in this file.
 
 ## What Project Broom is
 
-Project Broom runs Brogue CE as the game and uses GZDoom as its 3D
+Project Broom runs Brogue CE as the game and uses UZDoom as its 3D
 presentation and input frontend.
 
 ```text
 player input
-    -> GZDoom translates intent
+    -> UZDoom translates intent
     -> stable Brogue bridge command
     -> Brogue CE validates and resolves it
     -> Brogue advances its authoritative simulation
     -> copied state and events cross the bridge
-    -> GZDoom updates presentation
+    -> UZDoom updates presentation
 ```
 
 Brogue CE owns all gameplay truth:
@@ -30,7 +30,7 @@ Brogue CE owns all gameplay truth:
 - terrain promotion, traps, doors, liquids, fire, gas, and machines;
 - visibility, discovery, messages, stairs, saving, and recordings.
 
-GZDoom owns only presentation and input translation:
+UZDoom owns only presentation and input translation:
 
 - 3D geometry and rendering;
 - camera control and visual interpolation;
@@ -40,16 +40,16 @@ GZDoom owns only presentation and input translation:
 
 The governing rule is:
 
-> GZDoom asks Brogue what happens. GZDoom never decides what happens.
+> UZDoom asks Brogue what happens. UZDoom never decides what happens.
 
 The project is not a Brogue-inspired Doom mod and is not a reimplementation of
-Brogue rules in GZDoom.
+Brogue rules in UZDoom.
 
 ## Product and technical names
 
 - The player-facing product name is **Project Broom**.
 - **Brogue CE** names the authoritative upstream game and simulation.
-- **GZDoom** names the frontend engine.
+- **UZDoom** names the frontend engine.
 - Some internal paths, APIs, classes, CVars, and test modules retain historical
   `BrogueDoom`, `Brogue`, or `brg_` names. Do not mass-rename these. Change an
   internal identifier only when the PR is specifically scoped to a safe,
@@ -83,7 +83,7 @@ Examples:
 - exporting additional copied state needed to present existing Brogue behavior;
 - forwarding Brogue prompts, targeting, save/load, recordings, or messages;
 - fixing stable-ID, event, revision, determinism, or synchronization defects;
-- making GZDoom mirror an existing Brogue terrain or entity transition;
+- making UZDoom mirror an existing Brogue terrain or entity transition;
 - differential, deterministic, long-run, and comparison-mode tests.
 
 Bridge work must call Brogue's existing action and turn-processing paths. If
@@ -126,8 +126,8 @@ before implementing it.
 ## Authority-preserving engineering rules
 
 1. Inputs crossing the bridge represent player intent, never raw keyboard scan
-   codes or a position that GZDoom has already chosen.
-2. GZDoom must not move the authoritative player first. It submits an action,
+   codes or a position that UZDoom has already chosen.
+2. UZDoom must not move the authoritative player first. It submits an action,
    waits for Brogue, and projects the returned coordinates.
 3. Brogue decides acceptance and whether time was consumed. A requested action
    is not automatically an accepted action or a consumed turn.
@@ -160,7 +160,7 @@ Start with these locations:
 - `src/brogue-mapgen/src/brogue/BrogueBridge.h` — public copied-data contract.
 - `src/brogue-mapgen/src/brogue/BrogueBridge.c` — Brogue-facing adapter,
   state extraction, stable identities, events, commands, and hashing.
-- `src/gzdoom-bridge/brogue_bridge_frontend.cpp` — native GZDoom bridge
+- `src/gzdoom-bridge/brogue_bridge_frontend.cpp` — native UZDoom bridge
   service, input interception, state synchronization, HUD, and frontend actors.
 - `mod/BrogueDoom/` — static runtime resources, ZScript, models, textures,
   effects, menus, and definitions. This historical internal path remains valid
@@ -225,7 +225,7 @@ Treat these as separate gates:
 2. unit/regression tests;
 3. deterministic bridge or map verification;
 4. packaging;
-5. an actual GZDoom launch;
+5. an actual UZDoom launch;
 6. interactive or captured runtime evidence for visual changes;
 7. standalone/side-by-side comparison when gameplay parity is involved.
 
@@ -261,7 +261,7 @@ Run a long bridge simulation:
 powershell -ExecutionPolicy Bypass -File .\scripts\run-bridge-test.ps1 -Seed 1 -LongRun 300 -VerboseOutput
 ```
 
-Build the complete source bridge and modified GZDoom frontend:
+Build the complete source bridge and modified UZDoom frontend:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\build-source-bridge.ps1
@@ -296,7 +296,7 @@ replace the build system in an unrelated PR.
 
 - Run `tools.test_broguedoom_resources` and relevant generator tests.
 - Verify generated assets are deterministic when a generator is involved.
-- Launch at least one fixed seed and inspect the result in GZDoom.
+- Launch at least one fixed seed and inspect the result in UZDoom.
 - Provide before/after captures for visible changes.
 - Confirm that the effect has no collision, damage, AI, turn, or gameplay-RNG
   behavior.
@@ -312,7 +312,7 @@ replace the build system in an unrelated PR.
   creatures.
 - Prove that repeated `seed + action sequence` runs produce identical normalized
   state hashes.
-- Exercise the feature through GZDoom, not only the bridge executable.
+- Exercise the feature through UZDoom, not only the bridge executable.
 - Compare against standalone Brogue or its recording path when practical.
 - Document the exact Brogue functions called and why they preserve parity.
 
@@ -374,7 +374,7 @@ ABI work, map-compiler changes, and broad refactors without a demonstrated need.
 
 A maintainer or reviewing agent should request changes if any answer is “yes”:
 
-- Does GZDoom decide whether a gameplay action succeeds?
+- Does UZDoom decide whether a gameplay action succeeds?
 - Does the PR duplicate a Brogue rule?
 - Does it add content or alter balance rather than expose existing Brogue CE
   behavior?
@@ -392,5 +392,5 @@ A maintainer or reviewing agent should request changes if any answer is “yes�
 
 A good Project Broom contribution makes Brogue CE easier to see, hear,
 control, verify, or faithfully expose. It leaves the answer to “what happened?”
-entirely with Brogue and improves only how faithfully GZDoom communicates that
+entirely with Brogue and improves only how faithfully UZDoom communicates that
 answer to the player.

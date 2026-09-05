@@ -1,22 +1,22 @@
 # Project Broom
 
-> Brogue CE is the game. GZDoom is the 3D frontend.
+> Brogue CE is the game. UZDoom is the 3D frontend.
 
 [![License: AGPL v3+](https://img.shields.io/badge/code-AGPL--3.0%2B-blue.svg)](LICENSE)
 [![Assets: CC BY-SA 4.0](https://img.shields.io/badge/assets-CC%20BY--SA%204.0-green.svg)](ASSETS-LICENSE.md)
 
 Project Broom runs a live, authoritative Brogue CE simulation and presents it
-through a modified GZDoom frontend. GZDoom translates input into semantic
-actions, Brogue resolves those actions and advances the turn, and GZDoom then
+through a modified UZDoom frontend. UZDoom translates input into semantic
+actions, Brogue resolves those actions and advances the turn, and UZDoom then
 renders the copied result.
 
 ```text
-player input -> GZDoom -> bridge action -> Brogue CE
+player input -> UZDoom -> bridge action -> Brogue CE
                                             |
                        presentation <- copied state and events
 ```
 
-The governing rule is simple: **GZDoom asks Brogue what happens; it never
+The governing rule is simple: **UZDoom asks Brogue what happens; it never
 decides what happens.**
 
 Project Broom is pre-alpha. It is already playable, but it is not yet a
@@ -26,8 +26,8 @@ complete 1:1 presentation of every Brogue command and screen.
 
 - A 3D frontend for Brogue CE's real dungeon generation, RNG, movement,
   monsters, combat, items, terrain, statuses, messages, and turn system.
-- A narrow copied-data bridge between Brogue C code and GZDoom C++.
-- A deterministic Brogue-cell to GZDoom-map projection.
+- A narrow copied-data bridge between Brogue C code and UZDoom C++.
+- A deterministic Brogue-cell to UZDoom-map projection.
 - A presentation project where models, textures, particles, lighting, sound,
   HUD, menus, and accessibility can improve without changing gameplay.
 
@@ -79,10 +79,10 @@ The first supported release platform is **Windows x64**.
 3. Run `ProjectBroom.exe`.
 4. Choose **New Game**. Project Broom chooses a positive random Brogue seed,
    generates its authoritative dungeon, verifies the 3D campaign, and starts
-   GZDoom.
+   UZDoom.
 
 The portable release includes the required Brogue CE simulation, modified
-GZDoom runtime, Freedoom Phase 2 IWAD, Project Broom presentation package, and
+UZDoom runtime, Freedoom Phase 2 IWAD, Project Broom presentation package, and
 map compiler. You do not need to install any of those separately.
 
 New seeds take longer on their first launch. Generated campaigns, settings,
@@ -106,7 +106,7 @@ the download against the release's `SHA256SUMS.txt` before running it.
 | `T` | Throw using Brogue targeting |
 | Escape | Pause/menu or cancel the current frontend interaction |
 
-Input bindings and video/presentation settings can be changed in GZDoom's
+Input bindings and video/presentation settings can be changed in UZDoom's
 options. Changing presentation settings does not change the Brogue simulation.
 
 ## Build from source
@@ -132,7 +132,7 @@ troubleshooting, comparison mode, and package creation.
 ## Architecture and source map
 
 - `src/brogue-mapgen/` contains the pinned Brogue CE snapshot and bridge.
-- `src/gzdoom-bridge/` contains the Project Broom GZDoom integration.
+- `src/gzdoom-bridge/` contains the Project Broom UZDoom integration.
 - `mod/BrogueDoom/` contains runtime presentation resources. The historical
   internal name remains intentionally stable.
 - `tools/mapcompiler/` projects authoritative Brogue cells into UDMF/PK3.
@@ -172,9 +172,9 @@ Security issues should follow [SECURITY.md](SECURITY.md), not a public issue.
 ## Licensing and acknowledgements
 
 Project Broom original code is AGPL-3.0-or-later. Original Project Broom assets
-are CC BY-SA 4.0. Brogue CE, GZDoom, Freedoom, UltimateClassicMinimap, and
+are CC BY-SA 4.0. Brogue CE, UZDoom, Freedoom, UltimateClassicMinimap, and
 other third-party components retain their own licenses and copyright notices.
 See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-Project Broom is unofficial and is not endorsed by the Brogue CE, GZDoom,
+Project Broom is unofficial and is not endorsed by the Brogue CE, UZDoom,
 Doom, or Freedoom authors.

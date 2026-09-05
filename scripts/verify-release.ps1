@@ -36,15 +36,19 @@ try {
         if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Manifest file missing: $($file.path)" }
         if ((Get-ProjectBroomSha256 $path) -ne $file.sha256) { throw "Manifest hash mismatch: $($file.path)" }
     }
-    foreach ($required in @("ProjectBroom.exe", "runtime\engine\gzdoom.exe", "runtime\engine\brogue-bridge.dll", "runtime\engine\openal32.dll", "runtime\engine\sndfile.dll", "runtime\engine\zmusic.dll", "runtime\brogue\brogue.exe", "runtime\compiler\ProjectBroomMapCompiler.exe", "runtime\iwad\freedoom2.wad", "game\ProjectBroom.pk3")) {
+    foreach ($required in @("ProjectBroom.exe", "runtime\engine\uzdoom.exe", "runtime\engine\brogue-bridge.dll", "runtime\engine\soft_oal.dll", "runtime\engine\sndfile.dll", "runtime\brogue\brogue.exe", "runtime\compiler\ProjectBroomMapCompiler.exe", "runtime\iwad\freedoom2.wad", "game\ProjectBroom.pk3")) {
         if (-not (Test-Path -LiteralPath (Join-Path $packageRoot $required) -PathType Leaf)) { throw "Release component missing: $required" }
+    }
+    if ($manifest.paths.engine -ne "runtime/engine/uzdoom.exe" -or $manifest.components.uzdoom.commit -ne "292cf4203ebd3ced951cb67f6819180f588c1d44") { throw "Release engine identity is not the pinned UZDoom build." }
+    foreach ($old in @("gzdoom.exe", "gzdoom.pk3", "zmusic.dll", "updater.exe")) {
+        if (Test-Path (Join-Path $packageRoot "runtime/engine/$old")) { throw "Unexpected engine artifact: $old" }
     }
     $forbidden = Get-ChildItem $tempRoot -Recurse -Force | Where-Object { $_.FullName -match '(reference-wads|cchest4\.wad|sunlust\.wad|CrashReport|\\generated\\|\\artifacts\\)' }
     if ($forbidden) { throw "Forbidden development/reference content was packaged: $($forbidden[0].FullName)" }
     $sourceRoot = Get-ChildItem (Join-Path $tempRoot "source") -Filter "README.md" -Recurse | Where-Object { $_.FullName -notmatch 'third_party_source' } | Select-Object -First 1
     if (-not $sourceRoot) { throw "Corresponding source README is missing." }
     if (-not (Get-ChildItem (Join-Path $tempRoot "source") -Filter "g_game.cpp" -Recurse | Where-Object { $_.FullName -match 'third_party_source' })) {
-        throw "Patched GZDoom corresponding source is missing."
+        throw "Patched UZDoom corresponding source is missing."
     }
 } finally {
     $resolvedTemp = [IO.Path]::GetFullPath($tempRoot)

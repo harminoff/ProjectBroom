@@ -14,6 +14,6 @@ if($Phase -eq 'normal') {
 $ratArgs+="$ratEvidence\$Phase"
 $ratMapName=if($Phase -eq 'normal') {'BRG01'} else {'ART01'}
 $ratArgs+=@('-exec',"$ratEvidence\$Phase.cfg",'+logfile',"$ratEvidence\$Phase.log",'+map',$ratMapName)
-$ratProcess=Start-Process "$ratRoot\.build\gzdoom\Release\gzdoom.exe" -ArgumentList $ratArgs -WorkingDirectory $ratRoot -WindowStyle Hidden -PassThru
+$ratProcess=Start-Process "$ratRoot\.build\uzdoom\Release\uzdoom.exe" -ArgumentList $ratArgs -WorkingDirectory $ratRoot -WindowStyle Hidden -PassThru
 Write-Output "Rat review PID $($ratProcess.Id)"
 if($ratProcess.WaitForExit(45000)) { Write-Output "Exit $($ratProcess.ExitCode)" } else { Write-Output 'Review continues; the capture script exits automatically.' }

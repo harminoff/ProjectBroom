@@ -27,8 +27,8 @@ powershell -ExecutionPolicy Bypass -File .\scripts\test.ps1
 ```
 
 Bootstrap creates ignored `.deps` and `.build` directories, checks out the
-exact GZDoom revision from `dependencies.lock.json`, applies the Project Broom
-integration patch, verifies the official GZDoom Windows runtime dependencies,
+exact UZDoom revision from `dependencies.lock.json`, applies the Project Broom
+integration patch, verifies the official UZDoom Windows runtime dependencies,
 checks out their corresponding audio-library sources, and verifies Freedoom
 before use.
 
@@ -50,7 +50,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\launch-comparison.ps1 -Seed 1
 long-run tests. Use `-Quick` while iterating and the default complete suite
 before opening a pull request.
 
-Presentation changes additionally require a fixed-seed GZDoom launch and
+Presentation changes additionally require a fixed-seed UZDoom launch and
 before/after evidence. Bridge changes require deterministic hashes, rejected
 and cancelled action coverage where relevant, and a several-hundred-action
 run. See `AGENTS.md` for the full matrix.
@@ -77,5 +77,26 @@ want to clear generated campaigns, settings, logs, and future save data.
 ## Dependency updates
 
 Dependency changes require a focused pull request updating
-`dependencies.lock.json`, licenses, the GZDoom integration patch if needed,
+`dependencies.lock.json`, licenses, the UZDoom integration patch if needed,
 and all build/runtime tests. Never silently follow an upstream branch or tag.
+
+## UZDoom integration
+
+The canonical engine is UZDoom 5.0.0 in `.deps/uzdoom-source`, built in
+`.build/uzdoom`. Bootstrap verifies the complete five-file patch and refuses
+unexpected source edits. `PROJECT_BROOM_ROOT` explicitly locates the external
+frontend. Release builds disable the updater and enable Vulkan; ZMusic is
+built from bundled source. The build receipt binds the frontend inputs and
+runtime outputs, and packaging rejects a stale or modified engine.
+
+Development and packaged launchers use `config/uzdoom.ini`. An existing
+Project Broom `config/gzdoom.ini` is copied only when the new file is absent.
+Keep the original configuration for rollback; review controller bindings after
+migration. Historical `src/gzdoom-bridge` and API names are retained.
+
+For corresponding-source archives, the already patched engine is under
+`third_party_source/uzdoom-5.0.0`. Configure it directly with CMake and
+`-DPROJECT_BROOM_ROOT=<extracted Project Broom source directory>`,
+`-DUSE_UPDATER=OFF`, and `-DHAVE_VULKAN=ON`; build Release with VS2022 x64.
+The normal bootstrap workflow also remains available when network access is
+available. See [migration acceptance](uzdoom-migration-handoff.md).

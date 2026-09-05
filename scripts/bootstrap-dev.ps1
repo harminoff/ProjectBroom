@@ -6,11 +6,11 @@ $root = Get-ProjectBroomRoot
 $lock = Get-ProjectBroomLock
 $deps = Join-Path $root ".deps"
 $build = Join-Path $root ".build"
-$gzdoom = Join-Path $deps "gzdoom-source"
-$gzdoomRuntime = Join-Path $deps "gzdoom-runtime-4.14.2"
+$uzdoom = Join-Path $deps "uzdoom-source"
+$uzdoomRuntime = Join-Path $deps "uzdoom-runtime-5.0.0"
 $freedoom = Join-Path $deps "freedoom-0.13.0"
 $downloads = Join-Path $deps "downloads"
-$patch = Join-Path $root $lock.components.gzdoom.patch
+$patch = Join-Path $root $lock.components.uzdoom.patch
 
 $git = Resolve-ProjectBroomCommand "git.exe" "Install Git for Windows."
 $cmake = Resolve-ProjectBroomCommand "cmake.exe" "Install CMake and add it to PATH."
@@ -33,52 +33,41 @@ Invoke-ProjectBroomCommand $python -Arguments @(
 
 New-Item -ItemType Directory -Force -Path $deps, $build, $downloads | Out-Null
 
-if (-not (Test-Path -LiteralPath (Join-Path $gzdoom ".git") -PathType Container)) {
-    if (Test-Path -LiteralPath $gzdoom) {
-        throw "Dependency path exists but is not a Git checkout: $gzdoom"
+if (-not (Test-Path -LiteralPath (Join-Path $uzdoom ".git") -PathType Container)) {
+    if (Test-Path -LiteralPath $uzdoom) {
+        throw "Dependency path exists but is not a Git checkout: $uzdoom"
     }
-    Invoke-ProjectBroomCommand $git -Arguments @("clone", "--no-checkout", $lock.components.gzdoom.source, $gzdoom)
-    Invoke-ProjectBroomCommand $git -Arguments @("-C", $gzdoom, "checkout", "--detach", $lock.components.gzdoom.commit)
+    Invoke-ProjectBroomCommand $git -Arguments @("clone", "--no-checkout", $lock.components.uzdoom.source, $uzdoom)
+    Invoke-ProjectBroomCommand $git -Arguments @("-C", $uzdoom, "checkout", "--detach", $lock.components.uzdoom.commit)
 }
 
-$actualCommit = (& $git -C $gzdoom rev-parse HEAD).Trim()
-if ($actualCommit -ne $lock.components.gzdoom.commit) {
-    throw "GZDoom checkout is $actualCommit; expected $($lock.components.gzdoom.commit). Remove .deps\gzdoom-source after preserving any work, then bootstrap again."
+$actualCommit = (& $git -C $uzdoom rev-parse HEAD).Trim()
+if ($actualCommit -ne $lock.components.uzdoom.commit) {
+    throw "UZDoom checkout is $actualCommit; expected $($lock.components.uzdoom.commit). Remove .deps\uzdoom-source after preserving any work, then bootstrap again."
 }
 
-$patchMarker = Select-String -LiteralPath (Join-Path $gzdoom "src\g_game.cpp") -SimpleMatch "BrogueBridge_HandleInput" -Quiet
-if (-not $patchMarker) {
-    $dirty = (& $git -C $gzdoom status --porcelain | Out-String).Trim()
-    if ($dirty) { throw "GZDoom dependency has unexpected local changes. Preserve them before applying the Project Broom patch." }
-    Invoke-ProjectBroomCommand $git -Arguments @("-C", $gzdoom, "apply", "--check", $patch)
-    Invoke-ProjectBroomCommand $git -Arguments @("-C", $gzdoom, "apply", $patch)
-}
+Invoke-ProjectBroomCommand $python -Arguments @((Join-Path $root "tools\engine_source.py"), "--root", $root, "--apply")
 
-$gzdoomRuntimeArchive = Join-Path $downloads "gzdoom-4-14-2-Windows.zip"
-if (-not (Test-Path -LiteralPath $gzdoomRuntimeArchive -PathType Leaf) -or
-    (Get-ProjectBroomSha256 $gzdoomRuntimeArchive) -ne $lock.components.gzdoom.windowsRuntime.archiveSha256) {
-    Invoke-WebRequest -Uri $lock.components.gzdoom.windowsRuntime.source -OutFile $gzdoomRuntimeArchive
+$uzdoomRuntimeArchive = Join-Path $downloads "uzdoom-5.0.0-Windows.zip"
+if (-not (Test-Path -LiteralPath $uzdoomRuntimeArchive -PathType Leaf) -or
+    (Get-ProjectBroomSha256 $uzdoomRuntimeArchive) -ne $lock.components.uzdoom.windowsRuntime.archiveSha256) {
+    Invoke-WebRequest -Uri $lock.components.uzdoom.windowsRuntime.source -OutFile $uzdoomRuntimeArchive
 }
-if ((Get-ProjectBroomSha256 $gzdoomRuntimeArchive) -ne $lock.components.gzdoom.windowsRuntime.archiveSha256) {
-    throw "GZDoom Windows runtime archive hash mismatch."
+if ((Get-ProjectBroomSha256 $uzdoomRuntimeArchive) -ne $lock.components.uzdoom.windowsRuntime.archiveSha256) {
+    throw "UZDoom Windows runtime archive hash mismatch."
 }
-if (-not (Test-Path -LiteralPath (Join-Path $gzdoomRuntime "zmusic.dll") -PathType Leaf)) {
-    Expand-Archive -LiteralPath $gzdoomRuntimeArchive -DestinationPath $gzdoomRuntime -Force
+if (-not (Test-Path -LiteralPath (Join-Path $uzdoomRuntime "soft_oal.dll") -PathType Leaf)) {
+    Expand-Archive -LiteralPath $uzdoomRuntimeArchive -DestinationPath $uzdoomRuntime -Force
 }
-foreach ($runtimeFile in @(
-    @{ Name = "openal32.dll"; Hash = $lock.components.gzdoom.windowsRuntime.openal32Sha256 },
-    @{ Name = "sndfile.dll"; Hash = $lock.components.gzdoom.windowsRuntime.sndfileSha256 },
-    @{ Name = "zmusic.dll"; Hash = $lock.components.gzdoom.windowsRuntime.zmusicSha256 }
-)) {
-    $runtimePath = Join-Path $gzdoomRuntime $runtimeFile.Name
+foreach ($runtimeFile in $lock.components.uzdoom.windowsRuntime.files) {
+    $runtimePath = Join-Path $uzdoomRuntime $runtimeFile.path
     if (-not (Test-Path -LiteralPath $runtimePath -PathType Leaf) -or
-        (Get-ProjectBroomSha256 $runtimePath) -ne $runtimeFile.Hash) {
-        throw "GZDoom runtime dependency hash mismatch: $($runtimeFile.Name)"
+        (Get-ProjectBroomSha256 $runtimePath) -ne $runtimeFile.sha256) {
+        throw "UZDoom runtime dependency hash mismatch: $($runtimeFile.path)"
     }
 }
 
 $correspondingSources = @(
-    @{ Name = "zmusic-source"; Component = $lock.components.zmusic },
     @{ Name = "libsndfile-source"; Component = $lock.components.libsndfile },
     @{ Name = "openal-soft-source"; Component = $lock.components.openalSoft }
 )
@@ -112,11 +101,11 @@ if ((Get-ProjectBroomSha256 $freedoomWad) -ne $lock.components.freedoom.freedoom
 }
 
 if (-not $SkipConfigure) {
-    $engineBuild = Join-Path $build "gzdoom"
-    Invoke-ProjectBroomCommand $cmake -Arguments @("-S", $gzdoom, "-B", $engineBuild, "-G", "Visual Studio 17 2022", "-A", "x64")
+    $engineBuild = Join-Path $build "uzdoom"
+    Invoke-ProjectBroomCommand $cmake -Arguments @("-S", $uzdoom, "-B", $engineBuild, "-G", "Visual Studio 17 2022", "-A", "x64", "-DPROJECT_BROOM_ROOT=$($root.Replace('\', '/'))", "-DUSE_UPDATER=OFF", "-DHAVE_VULKAN=ON")
 }
 
 Write-Output "Project Broom dependencies are ready."
-Write-Output "GZDoom: $gzdoom ($actualCommit)"
-Write-Output "GZDoom runtime dependencies: $gzdoomRuntime"
+Write-Output "UZDoom: $uzdoom ($actualCommit)"
+Write-Output "UZDoom runtime dependencies: $uzdoomRuntime"
 Write-Output "Freedoom: $freedoomWad"

@@ -22,6 +22,6 @@ if ($CreatePrivateRemote) {
     if ($status) {
         throw "Create and review the initial commit in $destinationPath before creating the remote."
     }
-    Invoke-ProjectBroomCommand $gh -Arguments @("repo", "create", $RepositoryName, "--private", "--source", $destinationPath, "--remote", "origin", "--push", "--description", "Brogue CE as the authoritative game simulation, presented through a 3D GZDoom frontend.")
+    Invoke-ProjectBroomCommand $gh -Arguments @("repo", "create", $RepositoryName, "--private", "--source", $destinationPath, "--remote", "origin", "--push", "--description", "Brogue CE as the authoritative game simulation, presented through a 3D UZDoom frontend.")
     Invoke-ProjectBroomCommand $gh -Arguments @("repo", "edit", $RepositoryName, "--enable-issues", "--enable-discussions", "--enable-wiki=false", "--delete-branch-on-merge", "--enable-merge-commit=false", "--enable-rebase-merge=false", "--enable-squash-merge")
 }

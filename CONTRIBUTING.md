@@ -36,7 +36,7 @@ WADs.
 Use the repository pull-request template. State the contribution category,
 authority analysis, gameplay declaration, verification commands, fixed seeds,
 runtime evidence, and asset provenance. Visual changes need before/after
-captures; parity changes need deterministic headless tests and a GZDoom smoke
+captures; parity changes need deterministic headless tests and a UZDoom smoke
 test.
 
 By contributing code you agree to license your contribution under

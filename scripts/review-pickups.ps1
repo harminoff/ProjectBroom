@@ -12,6 +12,6 @@ if($Phase.StartsWith('normal')) {
  $pickupMap='BRG01'
 } else { $pickupArgs+="$pickupOut\gallery" }
 $pickupArgs+=@('-exec',"$pickupOut\$Phase.cfg",'+logfile',"$pickupOut\$Phase.log",'+map',$pickupMap)
-$pickupProcess=Start-Process "$pickupRoot\.build\gzdoom\Release\gzdoom.exe" -ArgumentList $pickupArgs -WorkingDirectory $pickupRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput "$pickupOut\$Phase-stdout.log" -RedirectStandardError "$pickupOut\$Phase-stderr.log"
+$pickupProcess=Start-Process "$pickupRoot\.build\uzdoom\Release\uzdoom.exe" -ArgumentList $pickupArgs -WorkingDirectory $pickupRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput "$pickupOut\$Phase-stdout.log" -RedirectStandardError "$pickupOut\$Phase-stderr.log"
 Write-Output "Pickup gallery PID $($pickupProcess.Id)"
 if($pickupProcess.WaitForExit(45000)) { Write-Output "Exit $($pickupProcess.ExitCode)" } else { Write-Output 'Gallery is continuing; its capture script quits automatically.' }

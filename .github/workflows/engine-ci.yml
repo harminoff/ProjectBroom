@@ -10,6 +10,9 @@ on:
       - 'assets/**'
       - 'scripts/**'
       - 'tools/mapcompiler/**'
+      - 'tools/engine_source.py'
+      - 'tools/test_engine_source.py'
+      - 'dependencies.lock.json'
       - '.github/workflows/engine-ci.yml'
   push:
     branches: [main]
@@ -21,6 +24,9 @@ on:
       - 'assets/**'
       - 'scripts/**'
       - 'tools/mapcompiler/**'
+      - 'tools/engine_source.py'
+      - 'tools/test_engine_source.py'
+      - 'dependencies.lock.json'
 
 permissions:
   contents: read
@@ -52,5 +58,5 @@ jobs:
       - name: Verify engine executable
         shell: powershell
         run: |
-          $engine = @('.build\gzdoom\gzdoom.exe', '.build\gzdoom\Release\gzdoom.exe') | Where-Object { Test-Path $_ } | Select-Object -First 1
-          if (-not $engine) { throw 'Custom GZDoom executable was not produced.' }
+          $engine = @('.build\uzdoom\uzdoom.exe', '.build\uzdoom\Release\uzdoom.exe') | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $engine) { throw 'Custom UZDoom executable was not produced.' }
