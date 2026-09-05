@@ -72,6 +72,26 @@ Use the clean `ProjectBroom` GitHub clone for commits and pull requests:
    Fix failures on the same branch and
    squash-merge only after every required check passes.
 
+Use the publishing guard from a reviewed checkout (not an unreviewed PR's code):
+
+```powershell
+python tools/merge_pr.py 11 --head <full-reviewed-head-sha> --merge
+```
+
+Omit `--merge` for read-only verification; use `--timeout 0` to check once.
+The guard waits up to an hour, requires successful checks from both expected
+workflows on the reviewed head, rechecks before submission, and squash-merges
+with `--match-head-commit`. Missing checks wait; failures, API errors, conflicts,
+drafts, wrong base branches, and changed heads stop without merging.
+
+Do not use `gh pr merge --auto` as a substitute for this guard. On this private
+repository's current plan, GitHub reports that branch protection and rulesets
+require Pro or public visibility. PR #10 consequently merged immediately when
+auto-merge was requested, before CI completed. The script enforces our process
+locally without changing the plan or visibility. It cannot stop someone using
+GitHub's merge button directly, and GitHub does not atomically enforce CI status
+for us; the server-side SHA match protects against a changed PR head.
+
 Operational safeguards proven by the repository workflow:
 
 - Record user-excluded files before exporting and check those exact paths again

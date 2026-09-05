@@ -30,6 +30,8 @@ jobs:
         run: .\scripts\audit-public-tree.ps1
       - name: Resource and map compiler tests
         run: python -m unittest tools.test_engine_source tools.test_broguedoom_resources tools.monster_models.test_rat tools.monster_models.test_rat_animation tools.monster_models.test_creatures tools.weapon_models.test_viewmodel tools.weapon_models.test_devices tools.pickup_models.test_detailed tools.mapcompiler.test_compile
+      - name: Merge safeguard tests
+        run: python -m unittest tools.test_merge_pr
       - name: Compile launcher
         run: dotnet build tools\BrogueDoomLauncher\BrogueDoomLauncher.csproj -c Release --nologo
 
