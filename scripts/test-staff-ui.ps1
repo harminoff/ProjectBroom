@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([switch]$Wand, [string]$ResourcePackage,
+param([switch]$Wand, [switch]$Throw, [string]$ResourcePackage,
       [string]$EngineDirectory, [string]$IwadPath,
       [ValidateSet('Vulkan', 'OpenGL')][string]$Renderer = 'Vulkan',
       [ValidateRange(1, 3)][int]$HudScale = 1)
@@ -10,19 +10,19 @@ $projectRoot = Split-Path -Parent $PSScriptRoot
 if ($EngineDirectory) { $engineDir = (Resolve-Path -LiteralPath $EngineDirectory).Path }
 else { $engineDir = Get-ProjectBroomEngineDirectory; Copy-ProjectBroomEngineRuntime }
 if (-not $IwadPath) { $IwadPath = Join-Path $projectRoot '.deps/freedoom-0.13.0/freedoom2.wad' }
-$device = if ($Wand) { 'wand' } else { 'staff' }
-$seed = if ($Wand) { 19 } else { 14 }
+$device = if ($Throw) { 'throw' } elseif ($Wand) { 'wand' } else { 'staff' }
+$seed = if ($Throw) { 1 } elseif ($Wand) { 19 } else { 14 }
 $label = $device.ToUpperInvariant() + '_UI'
-$actions = if ($Wand) {
+$actions = if ($Throw) { '' } elseif ($Wand) {
     'N N N N NE N NE NE E E E E E E E E N N N E E E E E E E E E E E N N N N E E E E E E E SE SE SE SE SE SE'
 } else {
     'N N N N N NE NE NE E E N N N N N N N E E NE NE NE NE E E E E E E E E E E E E E E E E E NE E'
 }
-$evidence = Join-Path $projectRoot "artifacts/$device-ui"
+$evidence = Join-Path $projectRoot "artifacts/$device-ui-$Renderer-$HudScale"
 $resources = Join-Path $projectRoot 'mod/BrogueDoom'
 if ($ResourcePackage) {
     $resources = (Resolve-Path -LiteralPath $ResourcePackage -ErrorAction Stop).Path
-    $evidence = Join-Path $projectRoot "artifacts/$device-ui-packaged"
+    $evidence = Join-Path $projectRoot "artifacts/$device-ui-packaged-$Renderer-$HudScale"
 }
 $campaign = Join-Path $projectRoot "generated/seed-$seed/ProjectBroom-seed-$seed.pk3"
 if (-not (Test-Path -LiteralPath $campaign)) {
@@ -41,7 +41,7 @@ $arguments = @(
     '+set', 'vid_activeinbackground', 'true', '+set', 'i_pauseinbackground', 'false',
     '+set', 'screenshot_dir', $evidence, '+set', 'brg_rat_walk_tics', '5',
     '+set', 'brg_monster_anim_tics', '5', '+map', 'BRG01', "+brg_${device}_smoke", '+brg_actions'
-) + $actions.Split(' ')
+) + @($actions.Split(' ') | Where-Object { $_ })
 # Quote paths for Start-Process's Windows argument-string boundary.
 $quotedArguments = $arguments | ForEach-Object { '"' + $_ + '"' }
 $process = Start-Process -FilePath (Join-Path $engineDir 'uzdoom.exe') -WorkingDirectory $engineDir `

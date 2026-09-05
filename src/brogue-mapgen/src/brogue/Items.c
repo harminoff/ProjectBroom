@@ -5332,9 +5332,12 @@ boolean nextTargetAfter(const item *theItem,
     return false;
 }
 
-// Returns how far it went before hitting something.
-static short hiliteTrajectory(const pos coordinateList[DCOLS], short numCells, boolean eraseHiliting, const bolt *theBolt, const color *hiliteColor) {
+/* Pure guide calculation. The unexplored stopping cell is not part of the
+ * returned reachable guide, matching the terminal cursor emphasis. */
+static short calculateTrajectory(const pos coordinateList[DCOLS], short numCells,
+                                 const bolt *theBolt, BrogueBridgeGuideTermination *reason) {
     short x, y, i;
+    *reason = BROGUE_GUIDE_MAP_EDGE;
     creature *monst;
 
     boolean isFiery = theBolt && (theBolt->flags & BF_FIERY);
@@ -5344,16 +5347,11 @@ static short hiliteTrajectory(const pos coordinateList[DCOLS], short numCells, b
     for (i=0; i<numCells; i++) {
         x = coordinateList[i].x;
         y = coordinateList[i].y;
-        if (eraseHiliting) {
-            refreshDungeonCell((pos){ x, y });
-        } else if (hiliteColor != NULL) {
-            hiliteCell(x, y, hiliteColor, 20, true);
-        }
-
         if (!(pmap[x][y].flags & DISCOVERED)) {
             if (isTunneling) {
                 continue;
             } else {
+                *reason = BROGUE_GUIDE_UNEXPLORED;
                 break;
             }
         } else if (!passThroughMonsters && pmap[x][y].flags & (HAS_MONSTER)
@@ -5362,6 +5360,7 @@ static short hiliteTrajectory(const pos coordinateList[DCOLS], short numCells, b
             if (!(monst->bookkeepingFlags & MB_SUBMERGED)
                 && !monsterIsHidden(monst, &player)) {
 
+                *reason = BROGUE_GUIDE_CREATURE;
                 i++;
                 break;
             }
@@ -5369,11 +5368,23 @@ static short hiliteTrajectory(const pos coordinateList[DCOLS], short numCells, b
             continue;
         } else if (isTunneling && cellHasTerrainFlag((pos){ x, y }, T_OBSTRUCTS_PASSABILITY) && (pmap[x][y].flags & IMPREGNABLE)
                 || !isTunneling && cellHasTerrainFlag((pos){ x, y }, (T_OBSTRUCTS_VISION | T_OBSTRUCTS_PASSABILITY))) {
+            *reason = BROGUE_GUIDE_TERRAIN;
             i++;
             break;
         }
     }
     return i;
+}
+
+static short hiliteTrajectory(const pos coordinateList[DCOLS], short numCells, boolean eraseHiliting, const bolt *theBolt, const color *hiliteColor) {
+    BrogueBridgeGuideTermination reason;
+    short count = calculateTrajectory(coordinateList, numCells, theBolt, &reason);
+    short drawn = count + (reason == BROGUE_GUIDE_UNEXPLORED && count < numCells);
+    for (short i = 0; i < drawn; ++i) {
+        if (eraseHiliting) refreshDungeonCell(coordinateList[i]);
+        else if (hiliteColor) hiliteCell(coordinateList[i].x, coordinateList[i].y, hiliteColor, 20, true);
+    }
+    return count;
 }
 
 // Event is optional. Returns true if the event should be executed by the parent function.
@@ -5624,7 +5635,7 @@ boolean chooseTarget(pos *returnLoc,
     short oldRNG;
     boolean stopAtTarget = (targetMode == AUTOTARGET_MODE_THROW);
     color trajColor;
-    bolt theBolt;
+    bolt theBolt = boltCatalog[BOLT_NONE];
 
     // choose the bolt and color to use for highlighting the path to the target
     if (theItem && (targetMode == AUTOTARGET_MODE_USE_STAFF_OR_WAND)
@@ -6306,6 +6317,17 @@ boolean itemRequiresThrowConfirmation(const item *theItem) {
         && theItem->quantity <= 1;
 }
 
+boolean itemThrowConfirmationPrompt(const item *theItem, char *buffer, size_t size) {
+    buffer[0] = '\0';
+    if (!itemRequiresThrowConfirmation(theItem)) return false;
+    item copy = *theItem;
+    char name[COLS];
+    copy.quantity = 1;
+    itemName(&copy, name, false, false, NULL);
+    snprintf(buffer, size, "Are you sure you want to throw your %s?", name);
+    return true;
+}
+
 boolean throwItemAtTarget(item *theItem, pos zapTarget, boolean recordInput) {
     item *thrownItem;
     char buf[COLS], theName[COLS];
@@ -6398,7 +6420,7 @@ void throwCommand(item *theItem, boolean autoThrow) {
     if (((theItem->flags & ITEM_EQUIPPED) || theItem->timesEnchanted > 0)
         && theItem->quantity <= 1) {
 
-        sprintf(buf, "Are you sure you want to throw your %s?", theName);
+        itemThrowConfirmationPrompt(theItem, buf, sizeof(buf));
         if (!confirm(buf, false)) {
             return;
         }
@@ -6514,7 +6536,7 @@ void swapLastEquipment() {
 // If the blink trajectory lands in lava based on the player's knowledge, abort.
 // If the blink trajectory might land in lava based on the player's knowledge,
 // prompt for confirmation.
-static boolean playerCancelsBlinking(const pos originLoc, const pos targetLoc, const short maxDistance) {
+static int blinkingHazard(const pos originLoc, const pos targetLoc, const short maxDistance) {
     short numCells, i, x, y;
     boolean certainDeath = false;
     boolean possibleDeath = false;
@@ -6564,15 +6586,20 @@ static boolean playerCancelsBlinking(const pos originLoc, const pos targetLoc, c
             }
         }
     }
-    if (possibleDeath && certainDeath) {
-        message("that would be certain death!", 0);
-        return true;
-    }
-    if (possibleDeath
-        && !confirm("Blink across lava with unknown range?", false)) {
-        return true;
-    }
-    return false;
+    return possibleDeath ? (certainDeath ? 2 : 1) : 0;
+}
+
+static const char *blinkingWarning(int hazard) {
+    return hazard == 2 ? "that would be certain death!" :
+           hazard == 1 ? "Blink across lava with unknown range?" : "";
+}
+
+static boolean playerCancelsBlinking(const pos originLoc, const pos targetLoc, const short maxDistance) {
+    int hazard = blinkingHazard(originLoc, targetLoc, maxDistance);
+    if (hazard == 2) { message(blinkingWarning(hazard), 0); return true; }
+    char prompt[COLS];
+    snprintf(prompt, sizeof(prompt), "%s", blinkingWarning(hazard));
+    return hazard == 1 && !confirm(prompt, false);
 }
 
 /// @brief Records the keystroke sequence when a player applies an item
@@ -6642,21 +6669,69 @@ static short deviceTargetMaxDistance(item *theItem) {
     return -1;
 }
 
-short previewDeviceTarget(item *theItem, pos targetLoc, pos *path, short *maxDistance, pos *nextTarget) {
-    bolt previewBolt = boltCatalog[BOLT_NONE];
-    short count;
-    if (tableForItemCategory(theItem->category)[theItem->kind].identified) {
-        previewBolt = boltCatalog[boltForItem(theItem)];
+/* Rendering-free, unbounded by terminal rows. Coordinate scanning guarantees
+ * deduplication; insertion order is direct vision, squared distance, x, y. */
+short collectTargetCreatures(const item *theItem, boolean throwing, creature **targets, short capacity, boolean *truncated) {
+    short count = 0;
+    *truncated = false;
+    for (short x = 0; x < DCOLS; ++x) for (short y = 0; y < DROWS; ++y) {
+        creature *candidate = monsterAtLoc((pos){x, y});
+        if (candidate == &player || !canAutoTargetMonster(candidate, theItem, throwing ? AUTOTARGET_MODE_THROW : AUTOTARGET_MODE_USE_STAFF_OR_WAND)) continue;
+        short index = 0;
+        int distance = (x-player.loc.x)*(x-player.loc.x)+(y-player.loc.y)*(y-player.loc.y);
+        boolean direct = canDirectlySeeMonster(candidate);
+        for (; index < count; ++index) {
+            creature *other = targets[index];
+            boolean otherDirect = canDirectlySeeMonster(other);
+            int otherDistance = (other->loc.x-player.loc.x)*(other->loc.x-player.loc.x)+(other->loc.y-player.loc.y)*(other->loc.y-player.loc.y);
+            if (direct > otherDirect || (direct == otherDirect && distance < otherDistance)) break;
+        }
+        if (count == capacity) *truncated = true;
+        if (index >= capacity) continue;
+        if (count < capacity) ++count;
+        for (short j = count-1; j > index; --j) targets[j] = targets[j-1];
+        targets[index] = candidate;
     }
-    *maxDistance = deviceTargetMaxDistance(theItem);
-    *nextTarget = INVALID_POS;
-    nextTargetAfter(theItem, nextTarget, targetLoc, AUTOTARGET_MODE_USE_STAFF_OR_WAND, false);
+    return count;
+}
+
+short previewItemTarget(item *theItem, boolean throwing, pos targetLoc, pos *path,
+                        short *maxDistance, BrogueBridgeGuideTermination *reason, int *hazard) {
+    bolt previewBolt = boltCatalog[BOLT_NONE];
+    short count, limit;
+    boolean known = !throwing && tableForItemCategory(theItem->category)[theItem->kind].identified;
+    if (known) previewBolt = boltCatalog[boltForItem(theItem)];
+    *maxDistance = throwing ? playerThrowMaxDistance() : deviceTargetMaxDistance(theItem);
+    *hazard = 0;
+    *reason = BROGUE_GUIDE_SELECTED_TARGET;
     if (posEq(player.loc, targetLoc)) return 0;
     count = getLineCoordinates(path, player.loc, targetLoc, &previewBolt);
-    if (*maxDistance > 0) count = min(count, *maxDistance);
-    // Reuse the terminal targeting guide's knowledge and obstruction rules,
-    // with rendering disabled. No zap, confirmation, or RNG is evaluated.
-    return hiliteTrajectory(path, count, false, &previewBolt, NULL);
+    limit = count;
+    if (*maxDistance > 0) limit = min(limit, *maxDistance);
+    if (throwing) limit = min(limit, distanceBetween(player.loc, targetLoc));
+    short reached = calculateTrajectory(path, limit, &previewBolt, reason);
+    if (*reason == BROGUE_GUIDE_MAP_EDGE) {
+        if (throwing && limit == distanceBetween(player.loc, targetLoc)) *reason = BROGUE_GUIDE_SELECTED_TARGET;
+        else if (*maxDistance > 0 && limit == *maxDistance) *reason = BROGUE_GUIDE_RANGE;
+    }
+    if (known && previewBolt.boltEffect == BE_BLINKING) *hazard = blinkingHazard(player.loc, targetLoc, *maxDistance);
+    return reached;
+}
+
+const char *targetHazardWarning(int hazard) { return blinkingWarning(hazard); }
+
+short previewDeviceTarget(item *theItem, pos targetLoc, pos *path, short *maxDistance, pos *nextTarget) {
+    BrogueBridgeGuideTermination reason;
+    int hazard;
+    creature *targets[DCOLS * DROWS];
+    boolean truncated;
+    short count = collectTargetCreatures(theItem, false, targets, DCOLS * DROWS, &truncated);
+    *nextTarget = INVALID_POS;
+    for (short i = 0; i < count; ++i) {
+        if (posEq(targets[i]->loc, targetLoc)) { if (count > 1) *nextTarget = targets[(i+1)%count]->loc; break; }
+        *nextTarget = targets[0]->loc;
+    }
+    return previewItemTarget(theItem, false, targetLoc, path, maxDistance, &reason, &hazard);
 }
 
 static boolean useStaffOrWand(item *theItem, const pos *suppliedTarget) {

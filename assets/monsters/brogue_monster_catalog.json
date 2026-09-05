@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "bridgeApiVersion": 15,
+  "bridgeApiVersion": 16,
   "count": 68,
   "kinds": [
     {"kind": 0, "symbol": "MK_YOU", "name": "you", "displayGlyph": 152, "color": {"red": 100, "green": 90, "blue": 30, "redRand": 0, "greenRand": 0, "blueRand": 0, "rand": 0, "dances": false}, "maxHp": 30, "intrinsicLightType": 0, "isLarge": false, "behaviorFlags": "100663296", "abilityFlags": "0"},

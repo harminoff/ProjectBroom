@@ -1578,6 +1578,7 @@ BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *comm
         if (command->type == BROGUE_COMMAND_THROW_ITEM
             && itemRequiresThrowConfirmation(commandItem)
             && !command->confirmed) {
+            itemThrowConfirmationPrompt(commandItem, outResult->prompt, sizeof(outResult->prompt));
             outResult->errorCode = BROGUE_BRIDGE_CONFIRMATION_REQUIRED;
             return outResult->errorCode;
         }
@@ -1803,108 +1804,104 @@ BrogueBridgeResult brogue_bridge_inspect_cell(int32_t x,
     return BROGUE_BRIDGE_OK;
 }
 
-BrogueBridgeResult brogue_bridge_preview_throw(uint64_t itemId,
-                                                int32_t targetX,
-                                                int32_t targetY,
-                                                BrogueBridgeThrowPreview *outPreview) {
+BrogueBridgeResult brogue_bridge_preview_target(const BrogueBridgeTargetRequest *request,
+                                               BrogueBridgeTargetPreview *outPreview) {
     item *theItem;
-    pos coordinates[MAX_BOLT_LENGTH];
-    pos target;
-    int count;
-    int distance;
-    int i;
-    char itemNameBuffer[COLS * 3];
-
-    if (outPreview == NULL) return BROGUE_BRIDGE_INVALID_STATE;
-    memset(outPreview, 0, sizeof(*outPreview));
-    outPreview->apiVersion = BROGUE_BRIDGE_API_VERSION;
-    outPreview->revision = bridgeRevision;
-    outPreview->itemId = itemId;
-    outPreview->targetX = targetX;
-    outPreview->targetY = targetY;
-    outPreview->errorCode = BROGUE_BRIDGE_OK;
-    if (!bridgeInitialized) return outPreview->errorCode = BROGUE_BRIDGE_NOT_INITIALIZED;
-    if (!bridgeGameStarted) return outPreview->errorCode = BROGUE_BRIDGE_GAME_NOT_STARTED;
-
-    theItem = itemForIdentity(itemId);
-    if (theItem == NULL || !itemIsCarried(theItem)) {
-        return outPreview->errorCode = BROGUE_BRIDGE_ITEM_NOT_FOUND;
-    }
-    outPreview->maxDistance = playerThrowMaxDistance();
-    outPreview->requiresConfirmation = itemRequiresThrowConfirmation(theItem);
-    itemName(theItem, itemNameBuffer, false, false, NULL);
-    if (outPreview->requiresConfirmation) {
-        char prompt[COLS * 3];
-        sprintf(prompt, "Throw your %s?", itemNameBuffer);
-        copyPlainText(outPreview->message, sizeof(outPreview->message), prompt);
-    }
-    if (!coordinatesAreInMap(targetX, targetY)) {
-        return outPreview->errorCode = BROGUE_BRIDGE_OUT_OF_RANGE;
-    }
-    target = (pos){ (short) targetX, (short) targetY };
-    distance = distanceBetween(player.loc, target);
-    if (distance <= 0 || distance > outPreview->maxDistance) {
-        return outPreview->errorCode = BROGUE_BRIDGE_OUT_OF_RANGE;
-    }
-    count = getLineCoordinates(coordinates, player.loc, target, &boltCatalog[BOLT_NONE]);
-    count = min(count, distance);
-    count = min(count, outPreview->maxDistance);
-    count = min(count, (int) BROGUE_BRIDGE_MAX_PROJECTILE_PATH);
-    for (i = 0; i < count; i++) {
-        outPreview->path[i].x = coordinates[i].x;
-        outPreview->path[i].y = coordinates[i].y;
-    }
-    outPreview->pathCount = count;
-    outPreview->valid = count > 0;
-    return BROGUE_BRIDGE_OK;
-}
-
-static BrogueBridgeResult previewDevice(uint64_t itemId, int32_t targetX,
-                                        int32_t targetY, BrogueBridgeStaffPreview *outPreview,
-                                        enum itemCategory category) {
-    item *theItem;
-    pos path[MAX_BOLT_LENGTH], nextTarget;
+    pos path[MAX_BOLT_LENGTH];
+    creature *targets[BROGUE_BRIDGE_MAX_CREATURES];
     short count, maxDistance;
-    int i;
+    boolean truncated;
+    int hazard;
     BrogueBridgeThrowPreview *aim;
-    if (outPreview == NULL) return BROGUE_BRIDGE_INVALID_STATE;
+    if (!outPreview) return BROGUE_BRIDGE_INVALID_STATE;
     memset(outPreview, 0, sizeof(*outPreview));
     aim = &outPreview->aim;
     aim->apiVersion = BROGUE_BRIDGE_API_VERSION;
     aim->revision = bridgeRevision;
-    aim->itemId = itemId;
-    aim->targetX = targetX;
-    aim->targetY = targetY;
+    if (!request) return aim->errorCode = BROGUE_BRIDGE_INVALID_STATE;
+    aim->itemId = request->itemId;
+    aim->targetX = request->targetX;
+    aim->targetY = request->targetY;
+    outPreview->type = request->type;
     if (!bridgeInitialized) return aim->errorCode = BROGUE_BRIDGE_NOT_INITIALIZED;
     if (!bridgeGameStarted) return aim->errorCode = BROGUE_BRIDGE_GAME_NOT_STARTED;
     if (rogue.gameHasEnded) return aim->errorCode = BROGUE_BRIDGE_GAME_ENDED;
-    theItem = itemForIdentity(itemId);
-    if (theItem == NULL || !itemIsCarried(theItem)) return aim->errorCode = BROGUE_BRIDGE_ITEM_NOT_FOUND;
-    if (theItem->category != category) return aim->errorCode = BROGUE_BRIDGE_INVALID_ACTION;
-    if (!coordinatesAreInMap(targetX, targetY)) return aim->errorCode = BROGUE_BRIDGE_OUT_OF_RANGE;
-    count = previewDeviceTarget(theItem, (pos){ (short) targetX, (short) targetY }, path, &maxDistance, &nextTarget);
+    if (request->apiVersion != BROGUE_BRIDGE_API_VERSION
+        || (request->type != BROGUE_COMMAND_THROW_ITEM && request->type != BROGUE_COMMAND_USE_STAFF
+            && request->type != BROGUE_COMMAND_USE_WAND)) return aim->errorCode = BROGUE_BRIDGE_INVALID_ACTION;
+    if (request->expectedRevision && request->expectedRevision != bridgeRevision) return aim->errorCode = BROGUE_BRIDGE_STALE_REVISION;
+    theItem = itemForIdentity(request->itemId);
+    if (!theItem || !itemIsCarried(theItem)) return aim->errorCode = BROGUE_BRIDGE_ITEM_NOT_FOUND;
+    boolean throwing = request->type == BROGUE_COMMAND_THROW_ITEM;
+    if (!throwing && theItem->category != (request->type == BROGUE_COMMAND_USE_STAFF ? STAFF : WAND))
+        return aim->errorCode = BROGUE_BRIDGE_INVALID_ACTION;
+    outPreview->depth = rogue.depthLevel;
+    outPreview->origin = (BrogueBridgePoint){player.loc.x, player.loc.y};
+    if (!coordinatesAreInMap(request->targetX, request->targetY)) return aim->errorCode = BROGUE_BRIDGE_OUT_OF_RANGE;
+    pos target = {(short)request->targetX, (short)request->targetY};
+    aim->valid = !posEq(player.loc, target);
+    count = previewItemTarget(theItem, throwing, target, path, &maxDistance, &outPreview->termination, &hazard);
     aim->maxDistance = maxDistance;
-    aim->valid = targetX != player.loc.x || targetY != player.loc.y;
-    aim->pathCount = min(count, (int) BROGUE_BRIDGE_MAX_PROJECTILE_PATH);
-    for (i = 0; i < (int) aim->pathCount; ++i) {
-        aim->path[i].x = path[i].x;
-        aim->path[i].y = path[i].y;
+    outPreview->hasRange = maxDistance > 0;
+    aim->pathCount = min(count, BROGUE_BRIDGE_MAX_PROJECTILE_PATH);
+    outPreview->pathTruncated = count > BROGUE_BRIDGE_MAX_PROJECTILE_PATH;
+    for (uint32_t i = 0; i < aim->pathCount; ++i) {
+        aim->path[i] = (BrogueBridgePoint){path[i].x, path[i].y};
+        if (posEq(path[i], target)) outPreview->reachesTarget = true;
     }
-    outPreview->hasNextTarget = isPosInMap(nextTarget);
-    outPreview->nextTarget.x = nextTarget.x;
-    outPreview->nextTarget.y = nextTarget.y;
-    copyText(aim->message, sizeof(aim->message), aim->valid ? "Select a target." : "Choose a different cell.");
+    if (throwing) itemThrowConfirmationPrompt(theItem, aim->message, sizeof(aim->message));
+    else copyText(aim->message, sizeof(aim->message), targetHazardWarning(hazard));
+    aim->requiresConfirmation = throwing ? itemRequiresThrowConfirmation(theItem) : hazard == 1;
+    outPreview->certainDeath = hazard == 2;
+    count = collectTargetCreatures(theItem, throwing, targets, BROGUE_BRIDGE_MAX_CREATURES, &truncated);
+    outPreview->targetsTruncated = truncated;
+    for (short i = 0; i < count; ++i) {
+        uint64_t id = 0;
+        // Lookup only: preview must never allocate an identity or mark it seen.
+        for (uint32_t j = 0; j < creatureIdentityCount; ++j)
+            if (creatureIdentities[j].pointer == targets[i]) { id = creatureIdentities[j].id; break; }
+        if (!id) { outPreview->targetsTruncated = true; continue; }
+        BrogueBridgeTargetCandidate *entry = &outPreview->targets[outPreview->targetCount++];
+        entry->id = id;
+        entry->location = (BrogueBridgePoint){targets[i]->loc.x, targets[i]->loc.y};
+    }
+    if (outPreview->targetCount) {
+        uint32_t next = 0;
+        for (uint32_t i = 0; i < outPreview->targetCount; ++i)
+            if (outPreview->targets[i].location.x == target.x && outPreview->targets[i].location.y == target.y)
+                { next = (i + 1) % outPreview->targetCount; break; }
+        outPreview->nextTarget = outPreview->targets[next];
+        outPreview->hasNextTarget = outPreview->nextTarget.location.x != target.x || outPreview->nextTarget.location.y != target.y;
+    }
     return BROGUE_BRIDGE_OK;
 }
 
-BrogueBridgeResult brogue_bridge_preview_staff(uint64_t itemId, int32_t targetX,
-                                                int32_t targetY, BrogueBridgeStaffPreview *outPreview) {
-    return previewDevice(itemId, targetX, targetY, outPreview, STAFF);
+/* Deprecated compatibility layouts; validation/calculation lives above. */
+BrogueBridgeResult brogue_bridge_preview_throw(uint64_t itemId, int32_t x, int32_t y, BrogueBridgeThrowPreview *out) {
+    BrogueBridgeTargetRequest request = {BROGUE_BRIDGE_API_VERSION, BROGUE_COMMAND_THROW_ITEM, 0, itemId, x, y};
+    BrogueBridgeTargetPreview preview;
+    if (!out) return BROGUE_BRIDGE_INVALID_STATE;
+    BrogueBridgeResult result = brogue_bridge_preview_target(&request, &preview);
+    *out = preview.aim;
+    return result;
 }
-
-BrogueBridgeResult brogue_bridge_preview_wand(uint64_t itemId, int32_t targetX,
-                                               int32_t targetY, BrogueBridgeWandPreview *outPreview) {
-    return previewDevice(itemId, targetX, targetY, outPreview, WAND);
+static BrogueBridgeResult previewLegacyDevice(uint64_t itemId, int32_t x, int32_t y,
+                                             BrogueBridgeStaffPreview *out, BrogueBridgeCommandType type) {
+    BrogueBridgeTargetRequest request = {BROGUE_BRIDGE_API_VERSION, type, 0, itemId, x, y};
+    BrogueBridgeTargetPreview preview;
+    if (!out) return BROGUE_BRIDGE_INVALID_STATE;
+    memset(out, 0, sizeof(*out));
+    BrogueBridgeResult result = brogue_bridge_preview_target(&request, &preview);
+    out->aim = preview.aim;
+    out->hasNextTarget = preview.hasNextTarget;
+    out->nextTarget = preview.nextTarget.location;
+    return result;
+}
+BrogueBridgeResult brogue_bridge_preview_staff(uint64_t itemId, int32_t x, int32_t y, BrogueBridgeStaffPreview *out) {
+    return previewLegacyDevice(itemId, x, y, out, BROGUE_COMMAND_USE_STAFF);
+}
+BrogueBridgeResult brogue_bridge_preview_wand(uint64_t itemId, int32_t x, int32_t y, BrogueBridgeWandPreview *out) {
+    return previewLegacyDevice(itemId, x, y, out, BROGUE_COMMAND_USE_WAND);
 }
 
 void brogue_bridge_shutdown(void) {

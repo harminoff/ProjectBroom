@@ -75,7 +75,7 @@ objects += $(sources:.c=.o)
 # its own CLI main instead of linking the normal interactive main.c.  Keeping
 # this list separate avoids ever linking two main functions.
 bridge_sources :=
-tools/bridge-main.o tools/bridge-main.dll.o: tools/bridge-staff-smoke.h tools/bridge-wand-smoke.h
+tools/bridge-main.o tools/bridge-main.dll.o: tools/bridge-staff-smoke.h tools/bridge-wand-smoke.h tools/bridge-target-smoke.h
 
 bridge_objects :=
 bridge_dll_sources :=
