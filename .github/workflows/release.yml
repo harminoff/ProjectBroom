@@ -59,7 +59,7 @@ jobs:
           if-no-files-found: error
       - name: Attest runtime archive
         if: github.event.repository.visibility == 'public'
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: artifacts/release/${{ steps.version.outputs.value }}/ProjectBroom-Windows-x64-${{ steps.version.outputs.value }}.zip
       - name: Publish GitHub prerelease
