@@ -30,6 +30,10 @@
 #include <vector>
 #include <string>
 
+// Pinned GZDoom 4.14.2 presentation API, implemented in p_actionfunctions.cpp.
+// This is an engine-private adapter, never part of BrogueBridge.h.
+void SetAnimationInternal(AActor *, FName, double, int, int, int, int, int, double);
+
 #ifdef _WIN32
 #include <windows.h>
 #undef DrawText
@@ -37,6 +41,7 @@
 
 CVAR(Int, brg_seed, 1, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Int, brg_monster_anim_tics, 5, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+CVAR(Int, brg_rat_walk_tics, 28, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Bool, brg_monster_omniscience, false, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Int, brg_compare_pid, 0, 0)
 CVAR(Float, brg_hud_scale, 1.0, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
@@ -155,6 +160,11 @@ struct MonsterProxy
 	int moveTotal = 0;
 	int pulseTics = 0;
 	int deathTics = 0;
+	int ratClip = -1;
+	int ratPoseTics = 0; // cosmetic only; never used by command gating
+	int ratDeathTics = 0; // retain a non-interacting visual after Brogue removal
+	double ratScurryRate = 40.0;
+	int ratTravelStartTic = -1;
 };
 
 std::unordered_map<uint64_t, MonsterProxy> MonsterProxies;
@@ -183,6 +193,9 @@ struct ProjectileAnimation
 };
 ProjectileAnimation Projectile;
 uint64_t LastVisualWeaponId = 0;
+int LastVisualWeaponKind = -1;
+int VisualThrowKind = -1;
+int VisualThrowUntilTic = 0;
 
 bool InventoryOpen = false;
 int InventorySelection = 0;
@@ -381,7 +394,13 @@ void SyncWeaponView()
 	if (!Started || players[consoleplayer].mo == nullptr) return;
 	player_t *player = &players[consoleplayer];
 	const BrogueBridgeItemState *weapon = FindItem(State.player.equippedWeaponId);
-	if (weapon == nullptr || weapon->category != 2 || weapon->kind < 0 || weapon->kind >= 15)
+	// A resolved throw can use a different carried item than the equipped one.
+	// This temporary view selection never equips an item or delays a command.
+	const bool throwing = VisualThrowKind >= 0 && primaryLevel->maptime < VisualThrowUntilTic;
+	const bool equipped = weapon != nullptr && weapon->category == 2 && weapon->kind >= 0 && weapon->kind < 15;
+	const int visualKind = throwing ? VisualThrowKind : (equipped ? weapon->kind : -1);
+	const uint64_t visualId = equipped ? weapon->id : 0;
+	if (visualKind < 0)
 	{
 		static uint64_t lastMissingId = UINT64_MAX;
 		if (lastMissingId != State.player.equippedWeaponId)
@@ -395,11 +414,12 @@ void SyncWeaponView()
 		player->PendingWeapon = static_cast<AActor *>(WP_NOCHANGE);
 		P_SetPsprite(player, PSP_WEAPON, nullptr);
 		LastVisualWeaponId = 0;
+		LastVisualWeaponKind = -1;
 		return;
 	}
 
 	FString className;
-	className.Format("BrogueViewWeaponK%02d", weapon->kind);
+	className.Format("BrogueViewWeaponK%02d", visualKind);
 	PClassActor *type = PClass::FindActor(className.GetChars());
 	if (type == nullptr)
 	{
@@ -413,14 +433,15 @@ void SyncWeaponView()
 		Printf("Brogue weapon: GiveInventoryType rejected %s.\n", className.GetChars());
 		return;
 	}
-	if (LastVisualWeaponId == weapon->id) return;
+	if (LastVisualWeaponId == visualId && LastVisualWeaponKind == visualKind) return;
 	player->ReadyWeapon = visual;
 	player->PendingWeapon = static_cast<AActor *>(WP_NOCHANGE);
 	P_SetupPsprites(player, true);
-	LastVisualWeaponId = weapon->id;
+	LastVisualWeaponId = visualId;
+	LastVisualWeaponKind = visualKind;
 	if (brg_debug)
 		Printf("Brogue weapon: presenting id=%llu kind=%d class=%s.\n",
-			(unsigned long long)weapon->id, weapon->kind, className.GetChars());
+			(unsigned long long)visualId, visualKind, className.GetChars());
 }
 
 void PlayWeaponState(FName stateName)
@@ -520,6 +541,28 @@ AActor *SpawnMonsterProxy(const BrogueBridgeCreatureState &creature)
 	return actor;
 }
 
+enum RatClip { RatIdle, RatScurry, RatBite, RatScratch, RatRecoil, RatDeath };
+
+bool IsSkeletalRat(const MonsterProxy &proxy)
+{
+	return proxy.actor != nullptr && proxy.actor->GetClass()->TypeName == FName("BrogueMonsterK01")
+		&& (proxy.actor->flags9 & MF9_DECOUPLEDANIMATIONS);
+}
+
+void PlayRatClip(MonsterProxy &proxy, RatClip clip, int duration = 0, double rate = -1)
+{
+	if (!IsSkeletalRat(proxy) || (proxy.ratDeathTics > 0 && clip != RatDeath)) return;
+	static const char *names[] = {"idle", "scurry", "bite", "scratch", "recoil", "death"};
+	proxy.ratClip = clip;
+	proxy.ratPoseTics = duration;
+	// SAF_LOOP=2. IQM interpolation affects the mesh, never authoritative XY.
+	SetAnimationInternal(proxy.actor, FName(names[clip]), rate, -1, -1, -1, 2,
+		clip <= RatScurry ? 2 : 0, 1);
+	if (brg_debug && clip != RatIdle)
+		Printf("Brogue rat animation: id=%llu clip=%s tics=%d rate=%.2f\n",
+			(unsigned long long)proxy.id, names[clip], duration, rate);
+}
+
 void BeginMonsterEventAnimations(const BrogueBridgeTurnResult *result)
 {
 	if (result == nullptr) return;
@@ -529,17 +572,52 @@ void BeginMonsterEventAnimations(const BrogueBridgeTurnResult *result)
 		if (event.type == BROGUE_EVENT_ATTACK_ATTEMPTED)
 		{
 			auto found = MonsterProxies.find(event.sourceEntityId);
-			if (found != MonsterProxies.end()) found->second.pulseTics = 4;
+			if (found != MonsterProxies.end())
+			{
+				MonsterProxy &proxy = found->second;
+				proxy.pulseTics = 4;
+				if (IsSkeletalRat(proxy))
+				{
+					const double dx = event.toX - event.fromX, dy = event.fromY - event.toY;
+					if (dx != 0 || dy != 0) proxy.actor->Angles.Yaw = DAngle::fromDeg(std::atan2(dy, dx) * 57.29577951308232);
+					// No attack-verb field exists in the copied event. Both clips are
+					// cosmetic variants; do not parse messages or roll Brogue RNG.
+					const bool scratch = (event.sequence & 1) != 0;
+					PlayRatClip(proxy, scratch ? RatScratch : RatBite, scratch ? 18 : 16);
+				}
+			}
 		}
 		else if (event.type == BROGUE_EVENT_ENTITY_DAMAGED)
 		{
 			auto found = MonsterProxies.find(event.targetEntityId);
-			if (found != MonsterProxies.end()) found->second.pulseTics = 5;
+			if (found != MonsterProxies.end())
+			{
+				found->second.pulseTics = 5;
+				PlayRatClip(found->second, RatRecoil, 12);
+			}
 		}
 		else if (event.type == BROGUE_EVENT_ENTITY_DIED)
 		{
 			auto found = MonsterProxies.find(event.targetEntityId);
-			if (found != MonsterProxies.end()) found->second.deathTics = 7;
+			if (found != MonsterProxies.end())
+			{
+				found->second.deathTics = 7; // preserve existing input pacing
+				if (IsSkeletalRat(found->second))
+				{
+					if (event.eventFlags & BROGUE_EVENT_FLAG_ADMINISTRATIVE)
+					{
+						// Brogue administrative removal is not a physical death.
+						// Keep the old seven-tic gate, but retain no extra collapse.
+						found->second.ratDeathTics = found->second.ratPoseTics = 0;
+						found->second.actor->Alpha = 0;
+					}
+					else
+					{
+						PlayRatClip(found->second, RatDeath, 26);
+						found->second.ratDeathTics = 26;
+					}
+				}
+			}
 		}
 	}
 }
@@ -572,6 +650,8 @@ void SyncMonsters(const BrogueBridgeTurnResult *result = nullptr)
 		{
 			if (!(proxy.actor->ObjectFlags & OF_EuthanizeMe)) proxy.actor->Destroy();
 			proxy.actor = nullptr;
+			proxy.ratClip = -1;
+			proxy.ratPoseTics = proxy.ratDeathTics = 0;
 		}
 		if (proxy.actor == nullptr) proxy.actor = SpawnMonsterProxy(creature);
 		if (!inserted.second && proxy.actor != nullptr && (proxy.x != creature.x || proxy.y != creature.y))
@@ -581,6 +661,29 @@ void SyncMonsters(const BrogueBridgeTurnResult *result = nullptr)
 			proxy.moveTotal = proxy.moveTics = (std::max)(1, int(brg_monster_anim_tics));
 			const double dx = proxy.moveTo.X - proxy.moveFrom.X;
 			const double dy = proxy.moveTo.Y - proxy.moveFrom.Y;
+			const double distance = std::hypot(dx, dy);
+			// Only a visible, ordinary rat step gets the longer presentation.
+			// Unseen creatures retain existing pacing; do not animate a teleport
+			// as a long walk. Brogue's destination and turn count are untouched.
+			const bool ratWalk = IsSkeletalRat(proxy)
+				&& (creature.visibility != BROGUE_VISIBILITY_HIDDEN || brg_monster_omniscience)
+				&& distance > 0 && distance <= 64.0 * std::sqrt(2.0) + .01;
+			if (ratWalk)
+			{
+				const int tileTics = (std::clamp)(int(brg_rat_walk_tics), 5, 70);
+				proxy.moveTotal = proxy.moveTics = (std::max)(proxy.moveTotal,
+					int(std::ceil(tileTics * distance / 64.0)));
+			}
+			proxy.ratTravelStartTic = ratWalk ? primaryLevel->time : -1;
+			// Two cycles per cardinal tile, with the same cadence diagonally.
+			proxy.ratScurryRate = 16.0 * 35 / proxy.moveTotal * (ratWalk ? 2.0 * distance / 64.0 : 1.0);
+			// A new authoritative step supersedes any leftover cosmetic recoil
+			// or attack pose, so the feet move from the start of the crossing.
+			if (ratWalk || proxy.ratPoseTics == 0 || proxy.ratClip == RatScurry)
+				PlayRatClip(proxy, RatScurry, proxy.moveTotal, proxy.ratScurryRate);
+			if (ratWalk && brg_debug)
+				Printf("Brogue rat travel: id=%llu distance=%.2f tics=%d rate=%.2f\n",
+					(unsigned long long)proxy.id, distance, proxy.moveTotal, proxy.ratScurryRate);
 			if (dx != 0.0 || dy != 0.0)
 				proxy.actor->Angles.Yaw = DAngle::fromDeg(std::atan2(dy, dx) * 57.29577951308232);
 		}
@@ -599,7 +702,7 @@ void SyncMonsters(const BrogueBridgeTurnResult *result = nullptr)
 	for (auto iterator = MonsterProxies.begin(); iterator != MonsterProxies.end();)
 	{
 		const bool alive = std::find(liveIds.begin(), liveIds.end(), iterator->first) != liveIds.end();
-		if (!alive && iterator->second.deathTics == 0)
+		if (!alive && iterator->second.deathTics == 0 && iterator->second.ratDeathTics == 0)
 		{
 			AActor *actor = iterator->second.actor;
 			if (actor != nullptr && !(actor->ObjectFlags & OF_EuthanizeMe)) actor->Destroy();
@@ -633,27 +736,48 @@ bool TickMonsterAnimations()
 			const double fraction = 1.0 - double(proxy.moveTics) / proxy.moveTotal;
 			const DVector3 position = proxy.moveFrom + (proxy.moveTo - proxy.moveFrom) * fraction;
 			proxy.actor->SetOrigin(position, false);
+			if (proxy.moveTics == 0 && proxy.ratTravelStartTic >= 0 && brg_debug)
+				Printf("Brogue rat arrived: id=%llu elapsed=%d expected=%d\n",
+					(unsigned long long)proxy.id, primaryLevel->time - proxy.ratTravelStartTic, proxy.moveTotal);
 			active = active || proxy.moveTics > 0;
 		}
 		if (proxy.pulseTics > 0)
 		{
 			--proxy.pulseTics;
 			const double scale = 1.0 + (proxy.pulseTics % 2 ? .12 : 0.0);
-			proxy.actor->Scale.X = proxy.actor->Scale.Y = scale;
+			if (!IsSkeletalRat(proxy)) proxy.actor->Scale.X = proxy.actor->Scale.Y = scale;
 			active = active || proxy.pulseTics > 0;
 		}
 		else proxy.actor->Scale.X = proxy.actor->Scale.Y = 1.0;
 		if (proxy.deathTics > 0)
 		{
 			--proxy.deathTics;
-			proxy.actor->Scale.Y = (std::max)(.08, proxy.deathTics / 7.0);
+			if (!IsSkeletalRat(proxy)) proxy.actor->Scale.Y = (std::max)(.08, proxy.deathTics / 7.0);
 			active = true;
-			if (proxy.deathTics == 0)
+			if (proxy.deathTics == 0 && proxy.ratDeathTics == 0)
 			{
 				proxy.actor->Destroy();
 				iterator = MonsterProxies.erase(iterator);
 				continue;
 			}
+		}
+		if (proxy.ratDeathTics > 0)
+		{
+			// The retained collapse visual never contributes to 'active'. Brogue
+			// has already removed it; buffered commands retain their old timing.
+			if (--proxy.ratDeathTics == 0)
+			{
+				proxy.actor->Destroy();
+				iterator = MonsterProxies.erase(iterator);
+				continue;
+			}
+		}
+		if (proxy.ratPoseTics > 0) --proxy.ratPoseTics;
+		if (IsSkeletalRat(proxy) && proxy.ratPoseTics == 0 && proxy.ratDeathTics == 0)
+		{
+			if (proxy.moveTics > 0 && proxy.ratClip != RatScurry)
+				PlayRatClip(proxy, RatScurry, proxy.moveTics, proxy.ratScurryRate);
+			else if (proxy.moveTics == 0 && proxy.ratClip != RatIdle) PlayRatClip(proxy, RatIdle);
 		}
 		++iterator;
 	}
@@ -1067,6 +1191,9 @@ void DetachLevelPresentation()
 	ThrowItemId = 0;
 	LookResult = {};
 	LastVisualWeaponId = 0;
+	LastVisualWeaponKind = -1;
+	VisualThrowKind = -1;
+	VisualThrowUntilTic = 0;
 	InventoryOpen = false;
 	ApplyUi = ApplyUiMode::None;
 	ApplyItemId = 0;
@@ -1103,7 +1230,13 @@ void BeginProjectileAnimation(const BrogueBridgeTurnResult &result)
 	Projectile.points = std::move(points);
 	Projectile.point = 1;
 	Projectile.tics = 2;
-	PlayWeaponState(FName("BridgeThrow"));
+	if (first->itemCategory == 2 && first->itemKind >= 0 && first->itemKind < 15)
+	{
+		VisualThrowKind = first->itemKind;
+		VisualThrowUntilTic = primaryLevel->maptime + 14;
+		SyncWeaponView();
+		PlayWeaponState(FName("BridgeThrow"));
+	}
 }
 
 bool TickProjectile()
@@ -1132,7 +1265,11 @@ void ProcessWeaponEvents(const BrogueBridgeTurnResult &result)
 	{
 		const BrogueBridgeEvent &event = result.events[index];
 		if (event.type == BROGUE_EVENT_ATTACK_ATTEMPTED && event.sourceEntityId == 1)
+		{
+			VisualThrowKind = -1;
+			SyncWeaponView();
 			PlayWeaponState(FName("BridgeAttack"));
+		}
 	}
 	BeginProjectileAnimation(result);
 	SyncWeaponView();

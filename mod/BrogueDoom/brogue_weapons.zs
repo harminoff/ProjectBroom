@@ -6,6 +6,8 @@ class BrogueVisualWeaponBase : Weapon
     {
         Inventory.PickupMessage "";
         Weapon.SelectionOrder -100;
+        Weapon.BobRangeX 0;
+        Weapon.BobRangeY 0;
         +INVENTORY.UNDROPPABLE;
         +INVENTORY.ALWAYSPICKUP;
         +WEAPON.NOAUTOSWITCHTO;
@@ -35,17 +37,28 @@ class BrogueViewWeaponK00 : BrogueVisualWeaponBase
         BW00 A 1 A_WeaponReady(WRF_NOFIRE | WRF_NOSWITCH);
         Loop;
     Fire:
-        TNT1 A 1;
+        BW00 A 1;
         Goto Ready;
     BridgeAttack:
-        BW00 A 1 A_OverlayOffset(PSP_WEAPON, 0, 38);
-        BW00 A 2 A_OverlayOffset(PSP_WEAPON, 0, 22);
-        BW00 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW00 A 1;
+        BW00 B 2;
+        BW00 C 2;
+        BW00 D 1;
+        BW00 E 1;
+        BW00 F 2;
+        BW00 G 2;
+        BW00 H 2;
+        BW00 I 1;
         Goto Ready;
     BridgeThrow:
-        BW00 A 2 A_OverlayOffset(PSP_WEAPON, 18, 40);
-        BW00 A 2 A_OverlayOffset(PSP_WEAPON, -24, 20);
-        BW00 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW00 A 1;
+        BW00 J 2;
+        BW00 K 2;
+        BW00 L 1;
+        BW00 M 1;
+        BW00 N 2;
+        BW00 O 2;
+        BW00 P 2;
         Goto Ready;
     }
 }
@@ -67,18 +80,28 @@ class BrogueViewWeaponK01 : BrogueVisualWeaponBase
         BW01 A 1 A_WeaponReady(WRF_NOFIRE | WRF_NOSWITCH);
         Loop;
     Fire:
-        TNT1 A 1;
+        BW01 A 1;
         Goto Ready;
     BridgeAttack:
-        BW01 A 1 A_OverlayRotate(PSP_WEAPON, -18);
-        BW01 A 1 A_OverlayRotate(PSP_WEAPON, 18);
-        BW01 A 1 A_OverlayRotate(PSP_WEAPON, 28);
-        BW01 A 1 A_OverlayRotate(PSP_WEAPON, 0);
+        BW01 A 1;
+        BW01 B 2;
+        BW01 C 2;
+        BW01 D 1;
+        BW01 E 1;
+        BW01 F 2;
+        BW01 G 2;
+        BW01 H 2;
+        BW01 I 1;
         Goto Ready;
     BridgeThrow:
-        BW01 A 2 A_OverlayOffset(PSP_WEAPON, 18, 40);
-        BW01 A 2 A_OverlayOffset(PSP_WEAPON, -24, 20);
-        BW01 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW01 A 1;
+        BW01 J 2;
+        BW01 K 2;
+        BW01 L 1;
+        BW01 M 1;
+        BW01 N 2;
+        BW01 O 2;
+        BW01 P 2;
         Goto Ready;
     }
 }
@@ -100,17 +123,28 @@ class BrogueViewWeaponK02 : BrogueVisualWeaponBase
         BW02 A 1 A_WeaponReady(WRF_NOFIRE | WRF_NOSWITCH);
         Loop;
     Fire:
-        TNT1 A 1;
+        BW02 A 1;
         Goto Ready;
     BridgeAttack:
-        BW02 A 2 A_OverlayRotate(PSP_WEAPON, -24);
-        BW02 A 2 A_OverlayRotate(PSP_WEAPON, 35);
-        BW02 A 2 A_OverlayRotate(PSP_WEAPON, 0);
+        BW02 A 1;
+        BW02 B 2;
+        BW02 C 3;
+        BW02 D 2;
+        BW02 E 2;
+        BW02 F 3;
+        BW02 G 3;
+        BW02 H 2;
+        BW02 I 1;
         Goto Ready;
     BridgeThrow:
-        BW02 A 2 A_OverlayOffset(PSP_WEAPON, 18, 40);
-        BW02 A 2 A_OverlayOffset(PSP_WEAPON, -24, 20);
-        BW02 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW02 A 1;
+        BW02 J 2;
+        BW02 K 2;
+        BW02 L 1;
+        BW02 M 1;
+        BW02 N 2;
+        BW02 O 2;
+        BW02 P 2;
         Goto Ready;
     }
 }
@@ -132,18 +166,28 @@ class BrogueViewWeaponK03 : BrogueVisualWeaponBase
         BW03 A 1 A_WeaponReady(WRF_NOFIRE | WRF_NOSWITCH);
         Loop;
     Fire:
-        TNT1 A 1;
+        BW03 A 1;
         Goto Ready;
     BridgeAttack:
-        BW03 A 1 A_OverlayRotate(PSP_WEAPON, -18);
-        BW03 A 1 A_OverlayRotate(PSP_WEAPON, 18);
-        BW03 A 1 A_OverlayRotate(PSP_WEAPON, 28);
-        BW03 A 1 A_OverlayRotate(PSP_WEAPON, 0);
+        BW03 A 1;
+        BW03 B 2;
+        BW03 C 2;
+        BW03 D 1;
+        BW03 E 1;
+        BW03 F 2;
+        BW03 G 2;
+        BW03 H 2;
+        BW03 I 1;
         Goto Ready;
     BridgeThrow:
-        BW03 A 2 A_OverlayOffset(PSP_WEAPON, 18, 40);
-        BW03 A 2 A_OverlayOffset(PSP_WEAPON, -24, 20);
-        BW03 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW03 A 1;
+        BW03 J 2;
+        BW03 K 2;
+        BW03 L 1;
+        BW03 M 1;
+        BW03 N 2;
+        BW03 O 2;
+        BW03 P 2;
         Goto Ready;
     }
 }
@@ -165,17 +209,28 @@ class BrogueViewWeaponK04 : BrogueVisualWeaponBase
         BW04 A 1 A_WeaponReady(WRF_NOFIRE | WRF_NOSWITCH);
         Loop;
     Fire:
-        TNT1 A 1;
+        BW04 A 1;
         Goto Ready;
     BridgeAttack:
-        BW04 A 1 A_OverlayOffset(PSP_WEAPON, 0, 38);
-        BW04 A 2 A_OverlayOffset(PSP_WEAPON, 0, 22);
-        BW04 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW04 A 1;
+        BW04 B 2;
+        BW04 C 2;
+        BW04 D 1;
+        BW04 E 1;
+        BW04 F 2;
+        BW04 G 2;
+        BW04 H 2;
+        BW04 I 1;
         Goto Ready;
     BridgeThrow:
-        BW04 A 2 A_OverlayOffset(PSP_WEAPON, 18, 40);
-        BW04 A 2 A_OverlayOffset(PSP_WEAPON, -24, 20);
-        BW04 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW04 A 1;
+        BW04 J 2;
+        BW04 K 2;
+        BW04 L 1;
+        BW04 M 1;
+        BW04 N 2;
+        BW04 O 2;
+        BW04 P 2;
         Goto Ready;
     }
 }
@@ -197,18 +252,28 @@ class BrogueViewWeaponK05 : BrogueVisualWeaponBase
         BW05 A 1 A_WeaponReady(WRF_NOFIRE | WRF_NOSWITCH);
         Loop;
     Fire:
-        TNT1 A 1;
+        BW05 A 1;
         Goto Ready;
     BridgeAttack:
-        BW05 A 1 A_OverlayRotate(PSP_WEAPON, -18);
-        BW05 A 1 A_OverlayRotate(PSP_WEAPON, 18);
-        BW05 A 1 A_OverlayRotate(PSP_WEAPON, 28);
-        BW05 A 1 A_OverlayRotate(PSP_WEAPON, 0);
+        BW05 A 1;
+        BW05 B 2;
+        BW05 C 2;
+        BW05 D 1;
+        BW05 E 1;
+        BW05 F 2;
+        BW05 G 2;
+        BW05 H 2;
+        BW05 I 1;
         Goto Ready;
     BridgeThrow:
-        BW05 A 2 A_OverlayOffset(PSP_WEAPON, 18, 40);
-        BW05 A 2 A_OverlayOffset(PSP_WEAPON, -24, 20);
-        BW05 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW05 A 1;
+        BW05 J 2;
+        BW05 K 2;
+        BW05 L 1;
+        BW05 M 1;
+        BW05 N 2;
+        BW05 O 2;
+        BW05 P 2;
         Goto Ready;
     }
 }
@@ -230,17 +295,28 @@ class BrogueViewWeaponK06 : BrogueVisualWeaponBase
         BW06 A 1 A_WeaponReady(WRF_NOFIRE | WRF_NOSWITCH);
         Loop;
     Fire:
-        TNT1 A 1;
+        BW06 A 1;
         Goto Ready;
     BridgeAttack:
-        BW06 A 2 A_OverlayRotate(PSP_WEAPON, -24);
-        BW06 A 2 A_OverlayRotate(PSP_WEAPON, 35);
-        BW06 A 2 A_OverlayRotate(PSP_WEAPON, 0);
+        BW06 A 1;
+        BW06 B 2;
+        BW06 C 3;
+        BW06 D 2;
+        BW06 E 2;
+        BW06 F 3;
+        BW06 G 3;
+        BW06 H 2;
+        BW06 I 1;
         Goto Ready;
     BridgeThrow:
-        BW06 A 2 A_OverlayOffset(PSP_WEAPON, 18, 40);
-        BW06 A 2 A_OverlayOffset(PSP_WEAPON, -24, 20);
-        BW06 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW06 A 1;
+        BW06 J 2;
+        BW06 K 2;
+        BW06 L 1;
+        BW06 M 1;
+        BW06 N 2;
+        BW06 O 2;
+        BW06 P 2;
         Goto Ready;
     }
 }
@@ -262,17 +338,28 @@ class BrogueViewWeaponK07 : BrogueVisualWeaponBase
         BW07 A 1 A_WeaponReady(WRF_NOFIRE | WRF_NOSWITCH);
         Loop;
     Fire:
-        TNT1 A 1;
+        BW07 A 1;
         Goto Ready;
     BridgeAttack:
-        BW07 A 2 A_OverlayRotate(PSP_WEAPON, -24);
-        BW07 A 2 A_OverlayRotate(PSP_WEAPON, 35);
-        BW07 A 2 A_OverlayRotate(PSP_WEAPON, 0);
+        BW07 A 1;
+        BW07 B 2;
+        BW07 C 3;
+        BW07 D 2;
+        BW07 E 2;
+        BW07 F 3;
+        BW07 G 3;
+        BW07 H 2;
+        BW07 I 1;
         Goto Ready;
     BridgeThrow:
-        BW07 A 2 A_OverlayOffset(PSP_WEAPON, 18, 40);
-        BW07 A 2 A_OverlayOffset(PSP_WEAPON, -24, 20);
-        BW07 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW07 A 1;
+        BW07 J 2;
+        BW07 K 2;
+        BW07 L 1;
+        BW07 M 1;
+        BW07 N 2;
+        BW07 O 2;
+        BW07 P 2;
         Goto Ready;
     }
 }
@@ -294,17 +381,28 @@ class BrogueViewWeaponK08 : BrogueVisualWeaponBase
         BW08 A 1 A_WeaponReady(WRF_NOFIRE | WRF_NOSWITCH);
         Loop;
     Fire:
-        TNT1 A 1;
+        BW08 A 1;
         Goto Ready;
     BridgeAttack:
-        BW08 A 1 A_OverlayOffset(PSP_WEAPON, 0, 38);
-        BW08 A 2 A_OverlayOffset(PSP_WEAPON, 0, 22);
-        BW08 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW08 A 1;
+        BW08 B 2;
+        BW08 C 2;
+        BW08 D 1;
+        BW08 E 1;
+        BW08 F 2;
+        BW08 G 2;
+        BW08 H 2;
+        BW08 I 1;
         Goto Ready;
     BridgeThrow:
-        BW08 A 2 A_OverlayOffset(PSP_WEAPON, 18, 40);
-        BW08 A 2 A_OverlayOffset(PSP_WEAPON, -24, 20);
-        BW08 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW08 A 1;
+        BW08 J 2;
+        BW08 K 2;
+        BW08 L 1;
+        BW08 M 1;
+        BW08 N 2;
+        BW08 O 2;
+        BW08 P 2;
         Goto Ready;
     }
 }
@@ -326,17 +424,28 @@ class BrogueViewWeaponK09 : BrogueVisualWeaponBase
         BW09 A 1 A_WeaponReady(WRF_NOFIRE | WRF_NOSWITCH);
         Loop;
     Fire:
-        TNT1 A 1;
+        BW09 A 1;
         Goto Ready;
     BridgeAttack:
-        BW09 A 1 A_OverlayOffset(PSP_WEAPON, 0, 38);
-        BW09 A 2 A_OverlayOffset(PSP_WEAPON, 0, 22);
-        BW09 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW09 A 1;
+        BW09 B 2;
+        BW09 C 2;
+        BW09 D 1;
+        BW09 E 1;
+        BW09 F 2;
+        BW09 G 2;
+        BW09 H 2;
+        BW09 I 1;
         Goto Ready;
     BridgeThrow:
-        BW09 A 2 A_OverlayOffset(PSP_WEAPON, 18, 40);
-        BW09 A 2 A_OverlayOffset(PSP_WEAPON, -24, 20);
-        BW09 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW09 A 1;
+        BW09 J 2;
+        BW09 K 2;
+        BW09 L 1;
+        BW09 M 1;
+        BW09 N 2;
+        BW09 O 2;
+        BW09 P 2;
         Goto Ready;
     }
 }
@@ -358,18 +467,28 @@ class BrogueViewWeaponK10 : BrogueVisualWeaponBase
         BW10 A 1 A_WeaponReady(WRF_NOFIRE | WRF_NOSWITCH);
         Loop;
     Fire:
-        TNT1 A 1;
+        BW10 A 1;
         Goto Ready;
     BridgeAttack:
-        BW10 A 1 A_OverlayRotate(PSP_WEAPON, -18);
-        BW10 A 1 A_OverlayRotate(PSP_WEAPON, 18);
-        BW10 A 1 A_OverlayRotate(PSP_WEAPON, 38);
-        BW10 A 1 A_OverlayRotate(PSP_WEAPON, 0);
+        BW10 A 1;
+        BW10 B 2;
+        BW10 C 3;
+        BW10 D 2;
+        BW10 E 2;
+        BW10 F 3;
+        BW10 G 3;
+        BW10 H 2;
+        BW10 I 1;
         Goto Ready;
     BridgeThrow:
-        BW10 A 2 A_OverlayOffset(PSP_WEAPON, 18, 40);
-        BW10 A 2 A_OverlayOffset(PSP_WEAPON, -24, 20);
-        BW10 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW10 A 1;
+        BW10 J 2;
+        BW10 K 2;
+        BW10 L 1;
+        BW10 M 1;
+        BW10 N 2;
+        BW10 O 2;
+        BW10 P 2;
         Goto Ready;
     }
 }
@@ -391,18 +510,28 @@ class BrogueViewWeaponK11 : BrogueVisualWeaponBase
         BW11 A 1 A_WeaponReady(WRF_NOFIRE | WRF_NOSWITCH);
         Loop;
     Fire:
-        TNT1 A 1;
+        BW11 A 1;
         Goto Ready;
     BridgeAttack:
-        BW11 A 1 A_OverlayRotate(PSP_WEAPON, -18);
-        BW11 A 1 A_OverlayRotate(PSP_WEAPON, 18);
-        BW11 A 1 A_OverlayRotate(PSP_WEAPON, 38);
-        BW11 A 1 A_OverlayRotate(PSP_WEAPON, 0);
+        BW11 A 1;
+        BW11 B 2;
+        BW11 C 3;
+        BW11 D 2;
+        BW11 E 2;
+        BW11 F 3;
+        BW11 G 3;
+        BW11 H 2;
+        BW11 I 1;
         Goto Ready;
     BridgeThrow:
-        BW11 A 2 A_OverlayOffset(PSP_WEAPON, 18, 40);
-        BW11 A 2 A_OverlayOffset(PSP_WEAPON, -24, 20);
-        BW11 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW11 A 1;
+        BW11 J 2;
+        BW11 K 2;
+        BW11 L 1;
+        BW11 M 1;
+        BW11 N 2;
+        BW11 O 2;
+        BW11 P 2;
         Goto Ready;
     }
 }
@@ -424,17 +553,28 @@ class BrogueViewWeaponK12 : BrogueVisualWeaponBase
         BW12 A 1 A_WeaponReady(WRF_NOFIRE | WRF_NOSWITCH);
         Loop;
     Fire:
-        TNT1 A 1;
+        BW12 A 1;
         Goto Ready;
     BridgeAttack:
-        BW12 A 1 A_OverlayOffset(PSP_WEAPON, 0, 38);
-        BW12 A 2 A_OverlayOffset(PSP_WEAPON, 0, 22);
-        BW12 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW12 A 1;
+        BW12 B 2;
+        BW12 C 2;
+        BW12 D 1;
+        BW12 E 1;
+        BW12 F 2;
+        BW12 G 2;
+        BW12 H 2;
+        BW12 I 1;
         Goto Ready;
     BridgeThrow:
-        BW12 A 2 A_OverlayOffset(PSP_WEAPON, 18, 40);
-        BW12 A 2 A_OverlayOffset(PSP_WEAPON, -24, 20);
-        BW12 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW12 A 1;
+        BW12 J 2;
+        BW12 K 2;
+        BW12 L 1;
+        BW12 M 1;
+        BW12 N 2;
+        BW12 O 2;
+        BW12 P 2;
         Goto Ready;
     }
 }
@@ -456,17 +596,28 @@ class BrogueViewWeaponK13 : BrogueVisualWeaponBase
         BW13 A 1 A_WeaponReady(WRF_NOFIRE | WRF_NOSWITCH);
         Loop;
     Fire:
-        TNT1 A 1;
+        BW13 A 1;
         Goto Ready;
     BridgeAttack:
-        BW13 A 1 A_OverlayOffset(PSP_WEAPON, 0, 38);
-        BW13 A 2 A_OverlayOffset(PSP_WEAPON, 0, 22);
-        BW13 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW13 A 1;
+        BW13 B 2;
+        BW13 C 2;
+        BW13 D 1;
+        BW13 E 1;
+        BW13 F 2;
+        BW13 G 2;
+        BW13 H 2;
+        BW13 I 1;
         Goto Ready;
     BridgeThrow:
-        BW13 A 2 A_OverlayOffset(PSP_WEAPON, 18, 40);
-        BW13 A 2 A_OverlayOffset(PSP_WEAPON, -24, 20);
-        BW13 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW13 A 1;
+        BW13 J 2;
+        BW13 K 2;
+        BW13 L 1;
+        BW13 M 1;
+        BW13 N 2;
+        BW13 O 2;
+        BW13 P 2;
         Goto Ready;
     }
 }
@@ -488,17 +639,28 @@ class BrogueViewWeaponK14 : BrogueVisualWeaponBase
         BW14 A 1 A_WeaponReady(WRF_NOFIRE | WRF_NOSWITCH);
         Loop;
     Fire:
-        TNT1 A 1;
+        BW14 A 1;
         Goto Ready;
     BridgeAttack:
-        BW14 A 1 A_OverlayOffset(PSP_WEAPON, 0, 38);
-        BW14 A 2 A_OverlayOffset(PSP_WEAPON, 0, 22);
-        BW14 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW14 A 1;
+        BW14 B 2;
+        BW14 C 2;
+        BW14 D 1;
+        BW14 E 1;
+        BW14 F 2;
+        BW14 G 2;
+        BW14 H 2;
+        BW14 I 1;
         Goto Ready;
     BridgeThrow:
-        BW14 A 2 A_OverlayOffset(PSP_WEAPON, 18, 40);
-        BW14 A 2 A_OverlayOffset(PSP_WEAPON, -24, 20);
-        BW14 A 1 A_OverlayOffset(PSP_WEAPON, 0, 32);
+        BW14 A 1;
+        BW14 J 2;
+        BW14 K 2;
+        BW14 L 1;
+        BW14 M 1;
+        BW14 N 2;
+        BW14 O 2;
+        BW14 P 2;
         Goto Ready;
     }
 }

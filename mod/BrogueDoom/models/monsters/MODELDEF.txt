@@ -12,17 +12,18 @@ Model BrogueMonsterK00
 Model BrogueMonsterK01
 {
     Path "models/monsters"
-    Model 0 "01_rat.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Model 0 "01_rat.iqm"
+    Skin 0 "graphics/BRGRAT.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
+    BaseFrame
 }
 
 Model BrogueMonsterK02
 {
     Path "models/monsters"
     Model 0 "02_kobold.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM02.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -31,7 +32,7 @@ Model BrogueMonsterK03
 {
     Path "models/monsters"
     Model 0 "03_jackal.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM03.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -40,7 +41,7 @@ Model BrogueMonsterK04
 {
     Path "models/monsters"
     Model 0 "04_eel.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM04.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -49,7 +50,7 @@ Model BrogueMonsterK05
 {
     Path "models/monsters"
     Model 0 "05_monkey.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM05.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -58,7 +59,7 @@ Model BrogueMonsterK06
 {
     Path "models/monsters"
     Model 0 "06_bloat.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM06.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -67,7 +68,7 @@ Model BrogueMonsterK07
 {
     Path "models/monsters"
     Model 0 "07_pit_bloat.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM07.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -76,7 +77,7 @@ Model BrogueMonsterK08
 {
     Path "models/monsters"
     Model 0 "08_goblin.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM08.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -85,7 +86,7 @@ Model BrogueMonsterK09
 {
     Path "models/monsters"
     Model 0 "09_goblin_conjurer.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM09.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -94,7 +95,7 @@ Model BrogueMonsterK10
 {
     Path "models/monsters"
     Model 0 "10_goblin_mystic.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM10.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -103,7 +104,7 @@ Model BrogueMonsterK11
 {
     Path "models/monsters"
     Model 0 "11_goblin_totem.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM11.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -112,7 +113,7 @@ Model BrogueMonsterK12
 {
     Path "models/monsters"
     Model 0 "12_pink_jelly.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM12.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -121,7 +122,7 @@ Model BrogueMonsterK13
 {
     Path "models/monsters"
     Model 0 "13_toad.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM13.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -130,7 +131,7 @@ Model BrogueMonsterK14
 {
     Path "models/monsters"
     Model 0 "14_vampire_bat.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM14.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -139,7 +140,7 @@ Model BrogueMonsterK15
 {
     Path "models/monsters"
     Model 0 "15_arrow_turret.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM15.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -148,7 +149,7 @@ Model BrogueMonsterK16
 {
     Path "models/monsters"
     Model 0 "16_acid_mound.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM16.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -157,7 +158,7 @@ Model BrogueMonsterK17
 {
     Path "models/monsters"
     Model 0 "17_centipede.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM17.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -166,7 +167,7 @@ Model BrogueMonsterK18
 {
     Path "models/monsters"
     Model 0 "18_ogre.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM18.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -175,7 +176,7 @@ Model BrogueMonsterK19
 {
     Path "models/monsters"
     Model 0 "19_bog_monster.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM19.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -184,7 +185,7 @@ Model BrogueMonsterK20
 {
     Path "models/monsters"
     Model 0 "20_ogre_totem.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM20.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -193,7 +194,7 @@ Model BrogueMonsterK21
 {
     Path "models/monsters"
     Model 0 "21_spider.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM21.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -202,7 +203,7 @@ Model BrogueMonsterK22
 {
     Path "models/monsters"
     Model 0 "22_spark_turret.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM22.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -211,7 +212,7 @@ Model BrogueMonsterK23
 {
     Path "models/monsters"
     Model 0 "23_will_o_the_wisp.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM23.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -220,7 +221,7 @@ Model BrogueMonsterK24
 {
     Path "models/monsters"
     Model 0 "24_wraith.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM24.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -229,7 +230,7 @@ Model BrogueMonsterK25
 {
     Path "models/monsters"
     Model 0 "25_zombie.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM25.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -238,7 +239,7 @@ Model BrogueMonsterK26
 {
     Path "models/monsters"
     Model 0 "26_troll.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM26.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -247,7 +248,7 @@ Model BrogueMonsterK27
 {
     Path "models/monsters"
     Model 0 "27_ogre_shaman.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM27.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -256,7 +257,7 @@ Model BrogueMonsterK28
 {
     Path "models/monsters"
     Model 0 "28_naga.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM28.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -265,7 +266,7 @@ Model BrogueMonsterK29
 {
     Path "models/monsters"
     Model 0 "29_salamander.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM29.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -274,7 +275,7 @@ Model BrogueMonsterK30
 {
     Path "models/monsters"
     Model 0 "30_explosive_bloat.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM30.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -283,7 +284,7 @@ Model BrogueMonsterK31
 {
     Path "models/monsters"
     Model 0 "31_dar_blademaster.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM31.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -292,7 +293,7 @@ Model BrogueMonsterK32
 {
     Path "models/monsters"
     Model 0 "32_dar_priestess.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM32.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -301,7 +302,7 @@ Model BrogueMonsterK33
 {
     Path "models/monsters"
     Model 0 "33_dar_battlemage.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM33.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -310,7 +311,7 @@ Model BrogueMonsterK34
 {
     Path "models/monsters"
     Model 0 "34_acid_jelly.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM34.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -319,7 +320,7 @@ Model BrogueMonsterK35
 {
     Path "models/monsters"
     Model 0 "35_centaur.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM35.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -328,7 +329,7 @@ Model BrogueMonsterK36
 {
     Path "models/monsters"
     Model 0 "36_underworm.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM36.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -337,7 +338,7 @@ Model BrogueMonsterK37
 {
     Path "models/monsters"
     Model 0 "37_sentinel.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM37.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -346,7 +347,7 @@ Model BrogueMonsterK38
 {
     Path "models/monsters"
     Model 0 "38_dart_turret.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM38.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -355,7 +356,7 @@ Model BrogueMonsterK39
 {
     Path "models/monsters"
     Model 0 "39_kraken.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM39.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -364,7 +365,7 @@ Model BrogueMonsterK40
 {
     Path "models/monsters"
     Model 0 "40_lich.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM40.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -373,7 +374,7 @@ Model BrogueMonsterK41
 {
     Path "models/monsters"
     Model 0 "41_phylactery.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM41.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -382,7 +383,7 @@ Model BrogueMonsterK42
 {
     Path "models/monsters"
     Model 0 "42_pixie.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM42.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -391,7 +392,7 @@ Model BrogueMonsterK43
 {
     Path "models/monsters"
     Model 0 "43_phantom.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM43.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -400,7 +401,7 @@ Model BrogueMonsterK44
 {
     Path "models/monsters"
     Model 0 "44_flame_turret.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM44.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -409,7 +410,7 @@ Model BrogueMonsterK45
 {
     Path "models/monsters"
     Model 0 "45_imp.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM45.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -418,7 +419,7 @@ Model BrogueMonsterK46
 {
     Path "models/monsters"
     Model 0 "46_fury.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM46.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -427,7 +428,7 @@ Model BrogueMonsterK47
 {
     Path "models/monsters"
     Model 0 "47_revenant.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM47.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -436,7 +437,7 @@ Model BrogueMonsterK48
 {
     Path "models/monsters"
     Model 0 "48_tentacle_horror.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM48.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -445,7 +446,7 @@ Model BrogueMonsterK49
 {
     Path "models/monsters"
     Model 0 "49_golem.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM49.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -454,7 +455,7 @@ Model BrogueMonsterK50
 {
     Path "models/monsters"
     Model 0 "50_dragon.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM50.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -463,7 +464,7 @@ Model BrogueMonsterK51
 {
     Path "models/monsters"
     Model 0 "51_goblin_chieftan.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM51.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -472,7 +473,7 @@ Model BrogueMonsterK52
 {
     Path "models/monsters"
     Model 0 "52_black_jelly.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM52.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -481,7 +482,7 @@ Model BrogueMonsterK53
 {
     Path "models/monsters"
     Model 0 "53_vampire.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM53.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -490,7 +491,7 @@ Model BrogueMonsterK54
 {
     Path "models/monsters"
     Model 0 "54_flamedancer.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM54.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -499,7 +500,7 @@ Model BrogueMonsterK55
 {
     Path "models/monsters"
     Model 0 "55_spectral_blade.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM55.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -508,7 +509,7 @@ Model BrogueMonsterK56
 {
     Path "models/monsters"
     Model 0 "56_spectral_image.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM56.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -517,7 +518,7 @@ Model BrogueMonsterK57
 {
     Path "models/monsters"
     Model 0 "57_guardian.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM57.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -526,7 +527,7 @@ Model BrogueMonsterK58
 {
     Path "models/monsters"
     Model 0 "58_winged_guardian.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM58.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -535,7 +536,7 @@ Model BrogueMonsterK59
 {
     Path "models/monsters"
     Model 0 "59_charm_guardian.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM59.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -544,7 +545,7 @@ Model BrogueMonsterK60
 {
     Path "models/monsters"
     Model 0 "60_warden_of_yendor.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM60.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -553,7 +554,7 @@ Model BrogueMonsterK61
 {
     Path "models/monsters"
     Model 0 "61_eldritch_totem.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM61.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -562,7 +563,7 @@ Model BrogueMonsterK62
 {
     Path "models/monsters"
     Model 0 "62_mirrored_totem.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM62.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -571,7 +572,7 @@ Model BrogueMonsterK63
 {
     Path "models/monsters"
     Model 0 "63_unicorn.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM63.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -580,7 +581,7 @@ Model BrogueMonsterK64
 {
     Path "models/monsters"
     Model 0 "64_ifrit.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM64.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -589,7 +590,7 @@ Model BrogueMonsterK65
 {
     Path "models/monsters"
     Model 0 "65_phoenix.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM65.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -598,7 +599,7 @@ Model BrogueMonsterK66
 {
     Path "models/monsters"
     Model 0 "66_phoenix_egg.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM66.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }
@@ -607,7 +608,7 @@ Model BrogueMonsterK67
 {
     Path "models/monsters"
     Model 0 "67_ancient_spirit.obj"
-    Skin 0 "graphics/BRGMON.png"
+    Skin 0 "graphics/BRGM67.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
 }

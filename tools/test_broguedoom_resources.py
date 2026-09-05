@@ -433,9 +433,18 @@ class BrogueDoomResourceTests(unittest.TestCase):
         self.assertEqual(len({entry["class"] for entry in registry["monsters"]}), 68)
         self.assertEqual(len({entry["model"] for entry in registry["monsters"]}), 68)
         for monster in registry["monsters"]:
-            obj = (MONSTER_MODELS / monster["model"]).read_text(encoding="ascii")
-            self.assertGreaterEqual(obj.count("\nv "), 8, monster["symbol"])
-            self.assertGreaterEqual(obj.count("\nf "), 6, monster["symbol"])
+            path=MONSTER_MODELS / monster["model"]
+            if path.suffix=='.iqm':
+                from tools.monster_models.iqm import inspect
+                model=inspect(path.read_bytes())
+                self.assertGreaterEqual(len(model['vertices']),8,monster['symbol'])
+                self.assertGreaterEqual(len(model['triangles']),6,monster['symbol'])
+                self.assertGreater(len(model['bones']),1)
+                self.assertGreater(len(model['animations']),0)
+            else:
+                obj = path.read_text(encoding="ascii")
+                self.assertGreaterEqual(obj.count("\nv "), 8, monster["symbol"])
+                self.assertGreaterEqual(obj.count("\nf "), 6, monster["symbol"])
 
     def test_monster_runtime_resources_are_wired(self) -> None:
         self.assertGreater((GRAPHICS / "BRGMON.png").stat().st_size, 1000)
@@ -443,7 +452,7 @@ class BrogueDoomResourceTests(unittest.TestCase):
         self.assertIn('#include "models/monsters/MODELDEF.txt"', MODELDEF.read_text(encoding="utf-8"))
         zscript = MONSTER_ZSCRIPT.read_text(encoding="utf-8")
         self.assertIn("class BrogueMonsterProxyBase : Actor", zscript)
-        self.assertEqual(zscript.count(" : BrogueMonsterProxyBase {}"), 68)
+        self.assertEqual(zscript.count(" : BrogueMonsterProxyBase"), 68)
         self.assertNotIn("+ISMONSTER", zscript)
         frontend = FRONTEND.read_text(encoding="utf-8")
         self.assertIn("std::unordered_map<uint64_t, MonsterProxy>", frontend)

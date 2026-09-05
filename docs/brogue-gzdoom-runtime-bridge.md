@@ -131,7 +131,20 @@ The revision starts at 1 for the initial snapshot and increments once for every 
 (the player entry plus 67 non-player kinds) without exposing `creatureType`.
 `tools/monster_models/generate.py` uses that export to generate the checked-in
 catalog, registry, ZScript classes, texture atlas, MODELDEF bindings, and one
-deterministic low-poly OBJ silhouette for every kind.
+deterministic model binding for every catalog kind. `MK_RAT` now uses a weighted
+IQM from `tools/monster_models/rat_animation.py`, with a 28-bone source at
+`assets/monsters/rat/rat-animated.blend` and six presentation clips. The original
+static reference and its dedicated skin remain preserved. The other 66 non-player kinds use individual
+authored static OBJ/PNG replacements from `tools/monster_models/creatures.py`,
+with one editable Blender file per kind in `assets/monsters/sources/`. Roster
+regeneration preserves all these authored assets. The player/hallucination
+reference alone retains its old placeholder.
+The [indexed creature roster](creature-model-index.md) supplies stable work IDs,
+exact Brogue descriptions and encounter-table references, explicit inferred
+dimensions, source links and per-kind verification status. Numeric sizes are
+presentation decisions, not physical measurements supplied by Brogue.
+See [model authoring and export](gzdoom-model-authoring.md) for the pinned
+GZDoom/Blender format, axes, material, packaging, and verification contract.
 
 ## Headless command and tests
 
@@ -286,6 +299,13 @@ plus generic potion, scroll, staff, wand, and ring models for unknown
 identities. Models and classes are bound through the static mod's `MODELDEF`
 and ZScript includes.
 
+The [pickup refresh](pickup-model-refresh.md) replaces all 105 runtime meshes
+with grounded, detailed family-specific models and a dedicated `BRGPICKS.png`
+diffuse atlas. The [pickup index](pickup-model-index.md) records dimensions,
+source descriptions and stable work IDs. `assets/items/pickups.blend` contains
+one editable scene per model. This does not change class selection or pickup
+behavior; `BRGITEMS.png` remains available for held-weapon UI markers.
+
 Brogue remains authoritative for placement and pickup. The frontend addresses
 an item by its bridge-stable ID, projects its Brogue cell through the same
 64-unit coordinate transform as the player, and keeps the existing actor while
@@ -310,6 +330,25 @@ actor across movement, faces it toward the authoritative destination, and uses
 short transform animations for movement, attacks, damage, and death. Input is
 gated while those animations run and buffers at most one next action, so frame
 rate and held input cannot create extra Brogue turns.
+
+The rat instead uses IQM idle/scurry/bite/scratch/recoil/death clips through
+GZDoom's decoupled animation API. The pose durations do not enter the existing
+command-gating predicate. A 26-tic non-interacting collapse visual may outlive
+the original 7-tic death gate, but Brogue has already removed the creature.
+The adapter chooses by current presentation class, so hallucinated shapes do
+not reveal the underlying kind. Attack facing comes only from copied event
+coordinates. Bite versus scratch is a deterministic cosmetic variation, not a
+claim about which Brogue text verb was chosen. See [rat verification](rat-animation-work.md).
+
+Visible skeletal rats use `brg_rat_walk_tics` (default 28, or 0.8 seconds per
+64-unit cardinal tile) for ordinary tile-to-tile movement. Diagonal travel
+scales duration by distance, and scurry plays two cycles per cardinal tile.
+The existing movement gate buffers the next command until arrival; this changes
+wall-clock presentation pacing, not Brogue movement speed, action order or turns.
+Hidden rats and displacements longer than one diagonal keep the generic timing.
+The rat setting is clamped to 5–70 tics; a slower `brg_monster_anim_tics` setting
+still wins. New travel interrupts leftover cosmetic attack/recoil poses so the
+feet start moving immediately.
 
 Visibility is entirely Brogue-owned. Hidden actors stay allocated but use zero
 alpha; sensed creatures use a translucent proxy; directly visible creatures

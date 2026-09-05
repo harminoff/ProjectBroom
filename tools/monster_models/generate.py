@@ -7,17 +7,52 @@ import math
 import re
 import struct
 import subprocess
+import sys
 import zlib
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path: sys.path.insert(0,str(ROOT))
 BRIDGE = ROOT / "src" / "brogue-mapgen" / "bin" / "brogue-bridge.exe"
 CATALOG = ROOT / "assets" / "monsters" / "brogue_monster_catalog.json"
 REGISTRY = ROOT / "assets" / "monsters" / "brogue_monster_registry.json"
 MODEL_DIR = ROOT / "mod" / "BrogueDoom" / "models" / "monsters"
 GRAPHICS = ROOT / "mod" / "BrogueDoom" / "graphics"
 ZSCRIPT = ROOT / "mod" / "BrogueDoom" / "brogue_monsters.zs"
+
+# Authored assets are rebuilt by their own tool, never by the placeholder mesh
+# generator. Keep bindings here so regenerating the catalog preserves the art.
+CUSTOM_MODELS = {
+    "MK_RAT": {
+        "runtimeFilename": "01_rat.iqm",
+        "skin": "graphics/BRGRAT.png",
+        "authoringSource": "assets/monsters/rat/rat-animated.blend",
+        "generator": "tools/monster_models/rat_animation.py",
+        "rebuildCommand": "python -m tools.monster_models.rat_animation",
+        "animationManifest": "assets/monsters/rat/animation.json",
+    },
+}
+
+# Every non-player kind now has an explicit authored recipe and work card.
+# Catalog regeneration binds these files but never overwrites authored meshes.
+from tools.monster_models.bestiary import profiles
+_profiles = profiles()
+_catalog = json.loads(CATALOG.read_text(encoding='utf-8'))['kinds']
+_ids = {k['symbol']:k['kind'] for k in _catalog}
+for _symbol in _profiles:
+    _slug = _symbol.removeprefix('MK_').lower()
+    # Resolve IDs from the source-backed catalog; never from dictionary order.
+    _kind = _ids[_symbol]
+    CUSTOM_MODELS[_symbol] = {
+        'skin': f'graphics/BRGM{_kind:02d}.png',
+        'authoringSource': f'assets/monsters/sources/{_kind:02d}_{_slug}.blend',
+        'generator': 'tools/monster_models/creatures.py',
+        'rebuildCommand': f'python -m tools.monster_models.creatures --kind {_kind}',
+        'workIndex': f'BRG-M{_kind:02d}',
+        'family': _profiles[_symbol]['recipe'],
+        'authoredDimensions': _profiles[_symbol]['dimensions'],
+    }
 
 
 class Mesh:
@@ -170,12 +205,27 @@ def main() -> None:
         model = f"{index:02d}_{slug(kind['symbol'])}.obj"
         class_name = f"BrogueMonsterK{index:02d}"
         uv = (((index % columns) + .5) / columns, 1 - ((index // columns) + .5) / rows)
-        make_mesh(kind).write(MODEL_DIR / model, class_name, uv)
-        entries.append({**kind, "family": family(kind["symbol"]), "class": class_name, "model": model})
+        custom = CUSTOM_MODELS.get(kind["symbol"])
+        if custom: model=custom.get('runtimeFilename',model)
+        if custom:
+            if not (MODEL_DIR / model).is_file() or not (GRAPHICS / Path(custom["skin"]).name).is_file():
+                raise FileNotFoundError(
+                    f"Missing authored asset for {kind['symbol']}; run {custom.get('rebuildCommand', 'python '+custom['generator'])} first."
+                )
+        else:
+            make_mesh(kind).write(MODEL_DIR / model, class_name, uv)
+        entries.append({**kind, "family": family(kind["symbol"]), "class": class_name, "model": model,
+                        **(custom or {})})
+        skin = custom["skin"] if custom else "graphics/BRGMON.png"
         modeldef.extend((f"Model {class_name}", "{", '    Path "models/monsters"',
-                         f'    Model 0 "{model}"', '    Skin 0 "graphics/BRGMON.png"',
-                         "    Scale 1.0 1.0 1.0", "    FrameIndex BRM0 A 0 0", "}", ""))
-        zscript.append(f"class {class_name} : BrogueMonsterProxyBase {{}}")
+                         f'    Model 0 "{model}"', f'    Skin 0 "{skin}"',
+                         "    Scale 1.0 1.0 1.0", "    FrameIndex BRM0 A 0 0",
+                         *(('    BaseFrame',) if index==1 else ()), "}", ""))
+        if index==1:
+            zscript.extend([f"class {class_name} : BrogueMonsterProxyBase", "{",
+                "    Default { +DECOUPLEDANIMATIONS; }",
+                '    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }', "}"])
+        else: zscript.append(f"class {class_name} : BrogueMonsterProxyBase {{}}")
     registry = {"schemaVersion": 1, "bridgeApiVersion": source["bridgeApiVersion"],
                 "catalogCount": len(kinds), "nonPlayerModelCount": len(kinds) - 1,
                 "presentationModelCount": len(kinds), "monsters": entries}

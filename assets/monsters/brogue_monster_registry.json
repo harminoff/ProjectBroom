@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "bridgeApiVersion": 12,
+  "bridgeApiVersion": 13,
   "catalogCount": 68,
   "nonPlayerModelCount": 67,
   "presentationModelCount": 68,
@@ -51,7 +51,13 @@
       "abilityFlags": "0",
       "family": "beast",
       "class": "BrogueMonsterK01",
-      "model": "01_rat.obj"
+      "model": "01_rat.iqm",
+      "runtimeFilename": "01_rat.iqm",
+      "skin": "graphics/BRGRAT.png",
+      "authoringSource": "assets/monsters/rat/rat-animated.blend",
+      "generator": "tools/monster_models/rat_animation.py",
+      "rebuildCommand": "python -m tools.monster_models.rat_animation",
+      "animationManifest": "assets/monsters/rat/animation.json"
     },
     {
       "kind": 2,
@@ -75,7 +81,17 @@
       "abilityFlags": "0",
       "family": "humanoid",
       "class": "BrogueMonsterK02",
-      "model": "02_kobold.obj"
+      "model": "02_kobold.obj",
+      "skin": "graphics/BRGM02.png",
+      "authoringSource": "assets/monsters/sources/02_kobold.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 2",
+      "workIndex": "BRG-M02",
+      "authoredDimensions": [
+        28.0,
+        24.0,
+        38.0
+      ]
     },
     {
       "kind": 3,
@@ -97,9 +113,19 @@
       "isLarge": false,
       "behaviorFlags": "0",
       "abilityFlags": "0",
-      "family": "beast",
+      "family": "quadruped",
       "class": "BrogueMonsterK03",
-      "model": "03_jackal.obj"
+      "model": "03_jackal.obj",
+      "skin": "graphics/BRGM03.png",
+      "authoringSource": "assets/monsters/sources/03_jackal.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 3",
+      "workIndex": "BRG-M03",
+      "authoredDimensions": [
+        52.0,
+        22.0,
+        32.0
+      ]
     },
     {
       "kind": 4,
@@ -121,9 +147,19 @@
       "isLarge": false,
       "behaviorFlags": "3737600",
       "abilityFlags": "0",
-      "family": "serpentine",
+      "family": "serpent",
       "class": "BrogueMonsterK04",
-      "model": "04_eel.obj"
+      "model": "04_eel.obj",
+      "skin": "graphics/BRGM04.png",
+      "authoringSource": "assets/monsters/sources/04_eel.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 4",
+      "workIndex": "BRG-M04",
+      "authoredDimensions": [
+        54.0,
+        22.0,
+        9.0
+      ]
     },
     {
       "kind": 5,
@@ -145,9 +181,19 @@
       "isLarge": false,
       "behaviorFlags": "0",
       "abilityFlags": "2",
-      "family": "beast",
+      "family": "humanoid",
       "class": "BrogueMonsterK05",
-      "model": "05_monkey.obj"
+      "model": "05_monkey.obj",
+      "skin": "graphics/BRGM05.png",
+      "authoringSource": "assets/monsters/sources/05_monkey.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 5",
+      "workIndex": "BRG-M05",
+      "authoredDimensions": [
+        40.0,
+        27.0,
+        32.0
+      ]
     },
     {
       "kind": 6,
@@ -169,9 +215,19 @@
       "isLarge": false,
       "behaviorFlags": "3072",
       "abilityFlags": "1280",
-      "family": "flying",
+      "family": "bloat",
       "class": "BrogueMonsterK06",
-      "model": "06_bloat.obj"
+      "model": "06_bloat.obj",
+      "skin": "graphics/BRGM06.png",
+      "authoringSource": "assets/monsters/sources/06_bloat.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 6",
+      "workIndex": "BRG-M06",
+      "authoredDimensions": [
+        28.0,
+        28.0,
+        32.0
+      ]
     },
     {
       "kind": 7,
@@ -193,9 +249,19 @@
       "isLarge": false,
       "behaviorFlags": "3072",
       "abilityFlags": "1280",
-      "family": "flying",
+      "family": "bloat",
       "class": "BrogueMonsterK07",
-      "model": "07_pit_bloat.obj"
+      "model": "07_pit_bloat.obj",
+      "skin": "graphics/BRGM07.png",
+      "authoringSource": "assets/monsters/sources/07_pit_bloat.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 7",
+      "workIndex": "BRG-M07",
+      "authoredDimensions": [
+        28.0,
+        28.0,
+        32.0
+      ]
     },
     {
       "kind": 8,
@@ -219,7 +285,17 @@
       "abilityFlags": "139264",
       "family": "humanoid",
       "class": "BrogueMonsterK08",
-      "model": "08_goblin.obj"
+      "model": "08_goblin.obj",
+      "skin": "graphics/BRGM08.png",
+      "authoringSource": "assets/monsters/sources/08_goblin.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 8",
+      "workIndex": "BRG-M08",
+      "authoredDimensions": [
+        34.0,
+        29.0,
+        40.0
+      ]
     },
     {
       "kind": 9,
@@ -243,7 +319,17 @@
       "abilityFlags": "131104",
       "family": "humanoid",
       "class": "BrogueMonsterK09",
-      "model": "09_goblin_conjurer.obj"
+      "model": "09_goblin_conjurer.obj",
+      "skin": "graphics/BRGM09.png",
+      "authoringSource": "assets/monsters/sources/09_goblin_conjurer.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 9",
+      "workIndex": "BRG-M09",
+      "authoredDimensions": [
+        24.0,
+        32.0,
+        40.0
+      ]
     },
     {
       "kind": 10,
@@ -267,7 +353,17 @@
       "abilityFlags": "131072",
       "family": "humanoid",
       "class": "BrogueMonsterK10",
-      "model": "10_goblin_mystic.obj"
+      "model": "10_goblin_mystic.obj",
+      "skin": "graphics/BRGM10.png",
+      "authoringSource": "assets/monsters/sources/10_goblin_mystic.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 10",
+      "workIndex": "BRG-M10",
+      "authoredDimensions": [
+        24.0,
+        32.0,
+        40.0
+      ]
     },
     {
       "kind": 11,
@@ -289,9 +385,19 @@
       "isLarge": false,
       "behaviorFlags": "8470534",
       "abilityFlags": "0",
-      "family": "construct",
+      "family": "totem",
       "class": "BrogueMonsterK11",
-      "model": "11_goblin_totem.obj"
+      "model": "11_goblin_totem.obj",
+      "skin": "graphics/BRGM11.png",
+      "authoringSource": "assets/monsters/sources/11_goblin_totem.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 11",
+      "workIndex": "BRG-M11",
+      "authoredDimensions": [
+        24.0,
+        26.0,
+        46.0
+      ]
     },
     {
       "kind": 12,
@@ -313,9 +419,19 @@
       "isLarge": true,
       "behaviorFlags": "65536",
       "abilityFlags": "512",
-      "family": "amorphous",
+      "family": "slime",
       "class": "BrogueMonsterK12",
-      "model": "12_pink_jelly.obj"
+      "model": "12_pink_jelly.obj",
+      "skin": "graphics/BRGM12.png",
+      "authoringSource": "assets/monsters/sources/12_pink_jelly.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 12",
+      "workIndex": "BRG-M12",
+      "authoredDimensions": [
+        50.0,
+        46.0,
+        30.0
+      ]
     },
     {
       "kind": 13,
@@ -337,9 +453,19 @@
       "isLarge": false,
       "behaviorFlags": "0",
       "abilityFlags": "1",
-      "family": "beast",
+      "family": "toad",
       "class": "BrogueMonsterK13",
-      "model": "13_toad.obj"
+      "model": "13_toad.obj",
+      "skin": "graphics/BRGM13.png",
+      "authoringSource": "assets/monsters/sources/13_toad.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 13",
+      "workIndex": "BRG-M13",
+      "authoredDimensions": [
+        38.0,
+        35.0,
+        25.0
+      ]
     },
     {
       "kind": 14,
@@ -361,9 +487,19 @@
       "isLarge": false,
       "behaviorFlags": "3072",
       "abilityFlags": "2048",
-      "family": "flying",
+      "family": "winged",
       "class": "BrogueMonsterK14",
-      "model": "14_vampire_bat.obj"
+      "model": "14_vampire_bat.obj",
+      "skin": "graphics/BRGM14.png",
+      "authoringSource": "assets/monsters/sources/14_vampire_bat.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 14",
+      "workIndex": "BRG-M14",
+      "authoredDimensions": [
+        24.0,
+        58.0,
+        28.0
+      ]
     },
     {
       "kind": 15,
@@ -385,9 +521,19 @@
       "isLarge": false,
       "behaviorFlags": "8470662",
       "abilityFlags": "0",
-      "family": "construct",
+      "family": "turret",
       "class": "BrogueMonsterK15",
-      "model": "15_arrow_turret.obj"
+      "model": "15_arrow_turret.obj",
+      "skin": "graphics/BRGM15.png",
+      "authoringSource": "assets/monsters/sources/15_arrow_turret.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 15",
+      "workIndex": "BRG-M15",
+      "authoredDimensions": [
+        30.0,
+        32.0,
+        38.0
+      ]
     },
     {
       "kind": 16,
@@ -409,9 +555,19 @@
       "isLarge": false,
       "behaviorFlags": "256",
       "abilityFlags": "16",
-      "family": "amorphous",
+      "family": "slime",
       "class": "BrogueMonsterK16",
-      "model": "16_acid_mound.obj"
+      "model": "16_acid_mound.obj",
+      "skin": "graphics/BRGM16.png",
+      "authoringSource": "assets/monsters/sources/16_acid_mound.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 16",
+      "workIndex": "BRG-M16",
+      "authoredDimensions": [
+        34.0,
+        32.0,
+        20.0
+      ]
     },
     {
       "kind": 17,
@@ -433,9 +589,19 @@
       "isLarge": false,
       "behaviorFlags": "0",
       "abilityFlags": "4096",
-      "family": "arthropod",
+      "family": "centipede",
       "class": "BrogueMonsterK17",
-      "model": "17_centipede.obj"
+      "model": "17_centipede.obj",
+      "skin": "graphics/BRGM17.png",
+      "authoringSource": "assets/monsters/sources/17_centipede.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 17",
+      "workIndex": "BRG-M17",
+      "authoredDimensions": [
+        56.0,
+        35.0,
+        13.0
+      ]
     },
     {
       "kind": 18,
@@ -459,7 +625,17 @@
       "abilityFlags": "196608",
       "family": "humanoid",
       "class": "BrogueMonsterK18",
-      "model": "18_ogre.obj"
+      "model": "18_ogre.obj",
+      "skin": "graphics/BRGM18.png",
+      "authoringSource": "assets/monsters/sources/18_ogre.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 18",
+      "workIndex": "BRG-M18",
+      "authoredDimensions": [
+        44.0,
+        46.0,
+        82.0
+      ]
     },
     {
       "kind": 19,
@@ -481,9 +657,19 @@
       "isLarge": true,
       "behaviorFlags": "3147840",
       "abilityFlags": "64",
-      "family": "humanoid",
+      "family": "tentacles",
       "class": "BrogueMonsterK19",
-      "model": "19_bog_monster.obj"
+      "model": "19_bog_monster.obj",
+      "skin": "graphics/BRGM19.png",
+      "authoringSource": "assets/monsters/sources/19_bog_monster.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 19",
+      "workIndex": "BRG-M19",
+      "authoredDimensions": [
+        58.0,
+        58.0,
+        42.0
+      ]
     },
     {
       "kind": 20,
@@ -505,9 +691,19 @@
       "isLarge": false,
       "behaviorFlags": "8470534",
       "abilityFlags": "0",
-      "family": "construct",
+      "family": "totem",
       "class": "BrogueMonsterK20",
-      "model": "20_ogre_totem.obj"
+      "model": "20_ogre_totem.obj",
+      "skin": "graphics/BRGM20.png",
+      "authoringSource": "assets/monsters/sources/20_ogre_totem.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 20",
+      "workIndex": "BRG-M20",
+      "authoredDimensions": [
+        32.0,
+        32.0,
+        60.0
+      ]
     },
     {
       "kind": 21,
@@ -529,9 +725,19 @@
       "isLarge": false,
       "behaviorFlags": "536895488",
       "abilityFlags": "128",
-      "family": "arthropod",
+      "family": "spider",
       "class": "BrogueMonsterK21",
-      "model": "21_spider.obj"
+      "model": "21_spider.obj",
+      "skin": "graphics/BRGM21.png",
+      "authoringSource": "assets/monsters/sources/21_spider.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 21",
+      "workIndex": "BRG-M21",
+      "authoredDimensions": [
+        52.0,
+        58.0,
+        24.0
+      ]
     },
     {
       "kind": 22,
@@ -553,9 +759,19 @@
       "isLarge": false,
       "behaviorFlags": "8470662",
       "abilityFlags": "0",
-      "family": "construct",
+      "family": "turret",
       "class": "BrogueMonsterK22",
-      "model": "22_spark_turret.obj"
+      "model": "22_spark_turret.obj",
+      "skin": "graphics/BRGM22.png",
+      "authoringSource": "assets/monsters/sources/22_spark_turret.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 22",
+      "workIndex": "BRG-M22",
+      "authoredDimensions": [
+        30.0,
+        32.0,
+        42.0
+      ]
     },
     {
       "kind": 23,
@@ -577,9 +793,19 @@
       "isLarge": false,
       "behaviorFlags": "16980992",
       "abilityFlags": "4",
-      "family": "flying",
+      "family": "flame",
       "class": "BrogueMonsterK23",
-      "model": "23_will_o_the_wisp.obj"
+      "model": "23_will_o_the_wisp.obj",
+      "skin": "graphics/BRGM23.png",
+      "authoringSource": "assets/monsters/sources/23_will_o_the_wisp.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 23",
+      "workIndex": "BRG-M23",
+      "authoredDimensions": [
+        20.0,
+        20.0,
+        30.0
+      ]
     },
     {
       "kind": 24,
@@ -603,7 +829,17 @@
       "abilityFlags": "0",
       "family": "humanoid",
       "class": "BrogueMonsterK24",
-      "model": "24_wraith.obj"
+      "model": "24_wraith.obj",
+      "skin": "graphics/BRGM24.png",
+      "authoringSource": "assets/monsters/sources/24_wraith.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 24",
+      "workIndex": "BRG-M24",
+      "authoredDimensions": [
+        30.0,
+        32.0,
+        65.0
+      ]
     },
     {
       "kind": 25,
@@ -627,7 +863,17 @@
       "abilityFlags": "0",
       "family": "humanoid",
       "class": "BrogueMonsterK25",
-      "model": "25_zombie.obj"
+      "model": "25_zombie.obj",
+      "skin": "graphics/BRGM25.png",
+      "authoringSource": "assets/monsters/sources/25_zombie.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 25",
+      "workIndex": "BRG-M25",
+      "authoredDimensions": [
+        32.0,
+        36.0,
+        62.0
+      ]
     },
     {
       "kind": 26,
@@ -651,7 +897,17 @@
       "abilityFlags": "0",
       "family": "humanoid",
       "class": "BrogueMonsterK26",
-      "model": "26_troll.obj"
+      "model": "26_troll.obj",
+      "skin": "graphics/BRGM26.png",
+      "authoringSource": "assets/monsters/sources/26_troll.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 26",
+      "workIndex": "BRG-M26",
+      "authoredDimensions": [
+        46.0,
+        50.0,
+        86.0
+      ]
     },
     {
       "kind": 27,
@@ -675,7 +931,17 @@
       "abilityFlags": "131104",
       "family": "humanoid",
       "class": "BrogueMonsterK27",
-      "model": "27_ogre_shaman.obj"
+      "model": "27_ogre_shaman.obj",
+      "skin": "graphics/BRGM27.png",
+      "authoringSource": "assets/monsters/sources/27_ogre_shaman.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 27",
+      "workIndex": "BRG-M27",
+      "authoredDimensions": [
+        42.0,
+        44.0,
+        70.0
+      ]
     },
     {
       "kind": 28,
@@ -697,9 +963,19 @@
       "isLarge": true,
       "behaviorFlags": "69795840",
       "abilityFlags": "16384",
-      "family": "serpentine",
+      "family": "serpent",
       "class": "BrogueMonsterK28",
-      "model": "28_naga.obj"
+      "model": "28_naga.obj",
+      "skin": "graphics/BRGM28.png",
+      "authoringSource": "assets/monsters/sources/28_naga.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 28",
+      "workIndex": "BRG-M28",
+      "authoredDimensions": [
+        50.0,
+        48.0,
+        68.0
+      ]
     },
     {
       "kind": 29,
@@ -721,9 +997,19 @@
       "isLarge": true,
       "behaviorFlags": "35852288",
       "abilityFlags": "32768",
-      "family": "serpentine",
+      "family": "serpent",
       "class": "BrogueMonsterK29",
-      "model": "29_salamander.obj"
+      "model": "29_salamander.obj",
+      "skin": "graphics/BRGM29.png",
+      "authoringSource": "assets/monsters/sources/29_salamander.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 29",
+      "workIndex": "BRG-M29",
+      "authoredDimensions": [
+        54.0,
+        50.0,
+        70.0
+      ]
     },
     {
       "kind": 30,
@@ -745,9 +1031,19 @@
       "isLarge": false,
       "behaviorFlags": "3072",
       "abilityFlags": "1280",
-      "family": "flying",
+      "family": "bloat",
       "class": "BrogueMonsterK30",
-      "model": "30_explosive_bloat.obj"
+      "model": "30_explosive_bloat.obj",
+      "skin": "graphics/BRGM30.png",
+      "authoringSource": "assets/monsters/sources/30_explosive_bloat.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 30",
+      "workIndex": "BRG-M30",
+      "authoredDimensions": [
+        30.0,
+        30.0,
+        34.0
+      ]
     },
     {
       "kind": 31,
@@ -769,9 +1065,19 @@
       "isLarge": false,
       "behaviorFlags": "100663312",
       "abilityFlags": "131072",
-      "family": "flying",
+      "family": "humanoid",
       "class": "BrogueMonsterK31",
-      "model": "31_dar_blademaster.obj"
+      "model": "31_dar_blademaster.obj",
+      "skin": "graphics/BRGM31.png",
+      "authoringSource": "assets/monsters/sources/31_dar_blademaster.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 31",
+      "workIndex": "BRG-M31",
+      "authoredDimensions": [
+        36.0,
+        34.0,
+        57.0
+      ]
     },
     {
       "kind": 32,
@@ -793,9 +1099,19 @@
       "isLarge": false,
       "behaviorFlags": "71303184",
       "abilityFlags": "131072",
-      "family": "flying",
+      "family": "humanoid",
       "class": "BrogueMonsterK32",
-      "model": "32_dar_priestess.obj"
+      "model": "32_dar_priestess.obj",
+      "skin": "graphics/BRGM32.png",
+      "authoringSource": "assets/monsters/sources/32_dar_priestess.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 32",
+      "workIndex": "BRG-M32",
+      "authoredDimensions": [
+        28.0,
+        32.0,
+        57.0
+      ]
     },
     {
       "kind": 33,
@@ -817,9 +1133,19 @@
       "isLarge": false,
       "behaviorFlags": "104857616",
       "abilityFlags": "131072",
-      "family": "flying",
+      "family": "humanoid",
       "class": "BrogueMonsterK33",
-      "model": "33_dar_battlemage.obj"
+      "model": "33_dar_battlemage.obj",
+      "skin": "graphics/BRGM33.png",
+      "authoringSource": "assets/monsters/sources/33_dar_battlemage.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 33",
+      "workIndex": "BRG-M33",
+      "authoredDimensions": [
+        28.0,
+        34.0,
+        57.0
+      ]
     },
     {
       "kind": 34,
@@ -841,9 +1167,19 @@
       "isLarge": true,
       "behaviorFlags": "256",
       "abilityFlags": "528",
-      "family": "amorphous",
+      "family": "slime",
       "class": "BrogueMonsterK34",
-      "model": "34_acid_jelly.obj"
+      "model": "34_acid_jelly.obj",
+      "skin": "graphics/BRGM34.png",
+      "authoringSource": "assets/monsters/sources/34_acid_jelly.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 34",
+      "workIndex": "BRG-M34",
+      "authoredDimensions": [
+        52.0,
+        48.0,
+        32.0
+      ]
     },
     {
       "kind": 35,
@@ -865,9 +1201,19 @@
       "isLarge": true,
       "behaviorFlags": "37748736",
       "abilityFlags": "0",
-      "family": "humanoid",
+      "family": "centaur",
       "class": "BrogueMonsterK35",
-      "model": "35_centaur.obj"
+      "model": "35_centaur.obj",
+      "skin": "graphics/BRGM35.png",
+      "authoringSource": "assets/monsters/sources/35_centaur.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 35",
+      "workIndex": "BRG-M35",
+      "authoredDimensions": [
+        58.0,
+        42.0,
+        78.0
+      ]
     },
     {
       "kind": 36,
@@ -889,9 +1235,19 @@
       "isLarge": true,
       "behaviorFlags": "65536",
       "abilityFlags": "0",
-      "family": "serpentine",
+      "family": "worm",
       "class": "BrogueMonsterK36",
-      "model": "36_underworm.obj"
+      "model": "36_underworm.obj",
+      "skin": "graphics/BRGM36.png",
+      "authoringSource": "assets/monsters/sources/36_underworm.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 36",
+      "workIndex": "BRG-M36",
+      "authoredDimensions": [
+        60.0,
+        58.0,
+        94.0
+      ]
     },
     {
       "kind": 37,
@@ -913,9 +1269,19 @@
       "isLarge": false,
       "behaviorFlags": "25256070",
       "abilityFlags": "0",
-      "family": "construct",
+      "family": "humanoid",
       "class": "BrogueMonsterK37",
-      "model": "37_sentinel.obj"
+      "model": "37_sentinel.obj",
+      "skin": "graphics/BRGM37.png",
+      "authoringSource": "assets/monsters/sources/37_sentinel.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 37",
+      "workIndex": "BRG-M37",
+      "authoredDimensions": [
+        32.0,
+        32.0,
+        58.0
+      ]
     },
     {
       "kind": 38,
@@ -937,9 +1303,19 @@
       "isLarge": false,
       "behaviorFlags": "8470662",
       "abilityFlags": "4096",
-      "family": "construct",
+      "family": "turret",
       "class": "BrogueMonsterK38",
-      "model": "38_dart_turret.obj"
+      "model": "38_dart_turret.obj",
+      "skin": "graphics/BRGM38.png",
+      "authoringSource": "assets/monsters/sources/38_dart_turret.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 38",
+      "workIndex": "BRG-M38",
+      "authoredDimensions": [
+        28.0,
+        30.0,
+        35.0
+      ]
     },
     {
       "kind": 39,
@@ -961,9 +1337,19 @@
       "isLarge": true,
       "behaviorFlags": "3737664",
       "abilityFlags": "64",
-      "family": "serpentine",
+      "family": "tentacles",
       "class": "BrogueMonsterK39",
-      "model": "39_kraken.obj"
+      "model": "39_kraken.obj",
+      "skin": "graphics/BRGM39.png",
+      "authoringSource": "assets/monsters/sources/39_kraken.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 39",
+      "workIndex": "BRG-M39",
+      "authoredDimensions": [
+        60.0,
+        60.0,
+        66.0
+      ]
     },
     {
       "kind": 40,
@@ -987,7 +1373,17 @@
       "abilityFlags": "32",
       "family": "humanoid",
       "class": "BrogueMonsterK40",
-      "model": "40_lich.obj"
+      "model": "40_lich.obj",
+      "skin": "graphics/BRGM40.png",
+      "authoringSource": "assets/monsters/sources/40_lich.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 40",
+      "workIndex": "BRG-M40",
+      "authoredDimensions": [
+        30.0,
+        36.0,
+        66.0
+      ]
     },
     {
       "kind": 41,
@@ -1009,9 +1405,19 @@
       "isLarge": false,
       "behaviorFlags": "25247782",
       "abilityFlags": "40",
-      "family": "humanoid",
+      "family": "gem",
       "class": "BrogueMonsterK41",
-      "model": "41_phylactery.obj"
+      "model": "41_phylactery.obj",
+      "skin": "graphics/BRGM41.png",
+      "authoringSource": "assets/monsters/sources/41_phylactery.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 41",
+      "workIndex": "BRG-M41",
+      "authoredDimensions": [
+        18.0,
+        18.0,
+        22.0
+      ]
     },
     {
       "kind": 42,
@@ -1033,9 +1439,19 @@
       "isLarge": false,
       "behaviorFlags": "104860672",
       "abilityFlags": "0",
-      "family": "humanoid",
+      "family": "winged",
       "class": "BrogueMonsterK42",
-      "model": "42_pixie.obj"
+      "model": "42_pixie.obj",
+      "skin": "graphics/BRGM42.png",
+      "authoringSource": "assets/monsters/sources/42_pixie.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 42",
+      "workIndex": "BRG-M42",
+      "authoredDimensions": [
+        18.0,
+        34.0,
+        20.0
+      ]
     },
     {
       "kind": 43,
@@ -1057,9 +1473,19 @@
       "isLarge": true,
       "behaviorFlags": "19457",
       "abilityFlags": "0",
-      "family": "amorphous",
+      "family": "specter",
       "class": "BrogueMonsterK43",
-      "model": "43_phantom.obj"
+      "model": "43_phantom.obj",
+      "skin": "graphics/BRGM43.png",
+      "authoringSource": "assets/monsters/sources/43_phantom.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 43",
+      "workIndex": "BRG-M43",
+      "authoredDimensions": [
+        32.0,
+        38.0,
+        66.0
+      ]
     },
     {
       "kind": 44,
@@ -1081,9 +1507,19 @@
       "isLarge": false,
       "behaviorFlags": "8470662",
       "abilityFlags": "0",
-      "family": "construct",
+      "family": "turret",
       "class": "BrogueMonsterK44",
-      "model": "44_flame_turret.obj"
+      "model": "44_flame_turret.obj",
+      "skin": "graphics/BRGM44.png",
+      "authoringSource": "assets/monsters/sources/44_flame_turret.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 44",
+      "workIndex": "BRG-M44",
+      "authoredDimensions": [
+        32.0,
+        34.0,
+        42.0
+      ]
     },
     {
       "kind": 45,
@@ -1107,7 +1543,17 @@
       "abilityFlags": "2",
       "family": "humanoid",
       "class": "BrogueMonsterK45",
-      "model": "45_imp.obj"
+      "model": "45_imp.obj",
+      "skin": "graphics/BRGM45.png",
+      "authoringSource": "assets/monsters/sources/45_imp.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 45",
+      "workIndex": "BRG-M45",
+      "authoredDimensions": [
+        30.0,
+        30.0,
+        35.0
+      ]
     },
     {
       "kind": 46,
@@ -1129,9 +1575,19 @@
       "isLarge": false,
       "behaviorFlags": "66560",
       "abilityFlags": "0",
-      "family": "amorphous",
+      "family": "winged",
       "class": "BrogueMonsterK46",
-      "model": "46_fury.obj"
+      "model": "46_fury.obj",
+      "skin": "graphics/BRGM46.png",
+      "authoringSource": "assets/monsters/sources/46_fury.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 46",
+      "workIndex": "BRG-M46",
+      "authoredDimensions": [
+        30.0,
+        58.0,
+        40.0
+      ]
     },
     {
       "kind": 47,
@@ -1153,9 +1609,19 @@
       "isLarge": true,
       "behaviorFlags": "512",
       "abilityFlags": "0",
-      "family": "humanoid",
+      "family": "specter",
       "class": "BrogueMonsterK47",
-      "model": "47_revenant.obj"
+      "model": "47_revenant.obj",
+      "skin": "graphics/BRGM47.png",
+      "authoringSource": "assets/monsters/sources/47_revenant.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 47",
+      "workIndex": "BRG-M47",
+      "authoredDimensions": [
+        34.0,
+        40.0,
+        70.0
+      ]
     },
     {
       "kind": 48,
@@ -1177,9 +1643,19 @@
       "isLarge": true,
       "behaviorFlags": "0",
       "abilityFlags": "0",
-      "family": "amorphous",
+      "family": "tentacles",
       "class": "BrogueMonsterK48",
-      "model": "48_tentacle_horror.obj"
+      "model": "48_tentacle_horror.obj",
+      "skin": "graphics/BRGM48.png",
+      "authoringSource": "assets/monsters/sources/48_tentacle_horror.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 48",
+      "workIndex": "BRG-M48",
+      "authoredDimensions": [
+        60.0,
+        60.0,
+        106.0
+      ]
     },
     {
       "kind": 49,
@@ -1203,7 +1679,17 @@
       "abilityFlags": "0",
       "family": "humanoid",
       "class": "BrogueMonsterK49",
-      "model": "49_golem.obj"
+      "model": "49_golem.obj",
+      "skin": "graphics/BRGM49.png",
+      "authoringSource": "assets/monsters/sources/49_golem.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 49",
+      "workIndex": "BRG-M49",
+      "authoredDimensions": [
+        40.0,
+        48.0,
+        88.0
+      ]
     },
     {
       "kind": 50,
@@ -1225,9 +1711,19 @@
       "isLarge": true,
       "behaviorFlags": "4104",
       "abilityFlags": "16384",
-      "family": "flying",
+      "family": "dragon",
       "class": "BrogueMonsterK50",
-      "model": "50_dragon.obj"
+      "model": "50_dragon.obj",
+      "skin": "graphics/BRGM50.png",
+      "authoringSource": "assets/monsters/sources/50_dragon.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 50",
+      "workIndex": "BRG-M50",
+      "authoredDimensions": [
+        62.0,
+        58.0,
+        100.0
+      ]
     },
     {
       "kind": 51,
@@ -1251,7 +1747,17 @@
       "abilityFlags": "139296",
       "family": "humanoid",
       "class": "BrogueMonsterK51",
-      "model": "51_goblin_chieftan.obj"
+      "model": "51_goblin_chieftan.obj",
+      "skin": "graphics/BRGM51.png",
+      "authoringSource": "assets/monsters/sources/51_goblin_chieftan.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 51",
+      "workIndex": "BRG-M51",
+      "authoredDimensions": [
+        38.0,
+        36.0,
+        51.0
+      ]
     },
     {
       "kind": 52,
@@ -1273,9 +1779,19 @@
       "isLarge": true,
       "behaviorFlags": "0",
       "abilityFlags": "512",
-      "family": "amorphous",
+      "family": "slime",
       "class": "BrogueMonsterK52",
-      "model": "52_black_jelly.obj"
+      "model": "52_black_jelly.obj",
+      "skin": "graphics/BRGM52.png",
+      "authoringSource": "assets/monsters/sources/52_black_jelly.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 52",
+      "workIndex": "BRG-M52",
+      "authoredDimensions": [
+        54.0,
+        50.0,
+        34.0
+      ]
     },
     {
       "kind": 53,
@@ -1299,7 +1815,17 @@
       "abilityFlags": "2344",
       "family": "humanoid",
       "class": "BrogueMonsterK53",
-      "model": "53_vampire.obj"
+      "model": "53_vampire.obj",
+      "skin": "graphics/BRGM53.png",
+      "authoringSource": "assets/monsters/sources/53_vampire.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 53",
+      "workIndex": "BRG-M53",
+      "authoredDimensions": [
+        32.0,
+        40.0,
+        64.0
+      ]
     },
     {
       "kind": 54,
@@ -1321,9 +1847,19 @@
       "isLarge": true,
       "behaviorFlags": "4329472",
       "abilityFlags": "4",
-      "family": "humanoid",
+      "family": "flame",
       "class": "BrogueMonsterK54",
-      "model": "54_flamedancer.obj"
+      "model": "54_flamedancer.obj",
+      "skin": "graphics/BRGM54.png",
+      "authoringSource": "assets/monsters/sources/54_flamedancer.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 54",
+      "workIndex": "BRG-M54",
+      "authoredDimensions": [
+        40.0,
+        46.0,
+        80.0
+      ]
     },
     {
       "kind": 55,
@@ -1345,9 +1881,19 @@
       "isLarge": false,
       "behaviorFlags": "159466498",
       "abilityFlags": "0",
-      "family": "humanoid",
+      "family": "blade",
       "class": "BrogueMonsterK55",
-      "model": "55_spectral_blade.obj"
+      "model": "55_spectral_blade.obj",
+      "skin": "graphics/BRGM55.png",
+      "authoringSource": "assets/monsters/sources/55_spectral_blade.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 55",
+      "workIndex": "BRG-M55",
+      "authoredDimensions": [
+        12.0,
+        10.0,
+        34.0
+      ]
     },
     {
       "kind": 56,
@@ -1369,9 +1915,19 @@
       "isLarge": false,
       "behaviorFlags": "25248770",
       "abilityFlags": "0",
-      "family": "humanoid",
+      "family": "blade",
       "class": "BrogueMonsterK56",
-      "model": "56_spectral_image.obj"
+      "model": "56_spectral_image.obj",
+      "skin": "graphics/BRGM56.png",
+      "authoringSource": "assets/monsters/sources/56_spectral_image.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 56",
+      "workIndex": "BRG-M56",
+      "authoredDimensions": [
+        16.0,
+        12.0,
+        42.0
+      ]
     },
     {
       "kind": 57,
@@ -1393,9 +1949,19 @@
       "isLarge": false,
       "behaviorFlags": "830542370",
       "abilityFlags": "262144",
-      "family": "construct",
+      "family": "humanoid",
       "class": "BrogueMonsterK57",
-      "model": "57_guardian.obj"
+      "model": "57_guardian.obj",
+      "skin": "graphics/BRGM57.png",
+      "authoringSource": "assets/monsters/sources/57_guardian.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 57",
+      "workIndex": "BRG-M57",
+      "authoredDimensions": [
+        38.0,
+        38.0,
+        64.0
+      ]
     },
     {
       "kind": 58,
@@ -1417,9 +1983,19 @@
       "isLarge": false,
       "behaviorFlags": "830542370",
       "abilityFlags": "262144",
-      "family": "construct",
+      "family": "humanoid",
       "class": "BrogueMonsterK58",
-      "model": "58_winged_guardian.obj"
+      "model": "58_winged_guardian.obj",
+      "skin": "graphics/BRGM58.png",
+      "authoringSource": "assets/monsters/sources/58_winged_guardian.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 58",
+      "workIndex": "BRG-M58",
+      "authoredDimensions": [
+        32.0,
+        60.0,
+        66.0
+      ]
     },
     {
       "kind": 59,
@@ -1441,9 +2017,19 @@
       "isLarge": false,
       "behaviorFlags": "553718274",
       "abilityFlags": "262144",
-      "family": "construct",
+      "family": "humanoid",
       "class": "BrogueMonsterK59",
-      "model": "59_charm_guardian.obj"
+      "model": "59_charm_guardian.obj",
+      "skin": "graphics/BRGM59.png",
+      "authoringSource": "assets/monsters/sources/59_charm_guardian.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 59",
+      "workIndex": "BRG-M59",
+      "authoredDimensions": [
+        38.0,
+        38.0,
+        64.0
+      ]
     },
     {
       "kind": 60,
@@ -1467,7 +2053,17 @@
       "abilityFlags": "0",
       "family": "humanoid",
       "class": "BrogueMonsterK60",
-      "model": "60_warden_of_yendor.obj"
+      "model": "60_warden_of_yendor.obj",
+      "skin": "graphics/BRGM60.png",
+      "authoringSource": "assets/monsters/sources/60_warden_of_yendor.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 60",
+      "workIndex": "BRG-M60",
+      "authoredDimensions": [
+        44.0,
+        48.0,
+        92.0
+      ]
     },
     {
       "kind": 61,
@@ -1489,9 +2085,19 @@
       "isLarge": false,
       "behaviorFlags": "813776934",
       "abilityFlags": "32",
-      "family": "construct",
+      "family": "totem",
       "class": "BrogueMonsterK61",
-      "model": "61_eldritch_totem.obj"
+      "model": "61_eldritch_totem.obj",
+      "skin": "graphics/BRGM61.png",
+      "authoringSource": "assets/monsters/sources/61_eldritch_totem.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 61",
+      "workIndex": "BRG-M61",
+      "authoredDimensions": [
+        30.0,
+        30.0,
+        56.0
+      ]
     },
     {
       "kind": 62,
@@ -1513,9 +2119,19 @@
       "isLarge": false,
       "behaviorFlags": "813781542",
       "abilityFlags": "262144",
-      "family": "construct",
+      "family": "prism",
       "class": "BrogueMonsterK62",
-      "model": "62_mirrored_totem.obj"
+      "model": "62_mirrored_totem.obj",
+      "skin": "graphics/BRGM62.png",
+      "authoringSource": "assets/monsters/sources/62_mirrored_totem.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 62",
+      "workIndex": "BRG-M62",
+      "authoredDimensions": [
+        24.0,
+        24.0,
+        46.0
+      ]
     },
     {
       "kind": 63,
@@ -1537,9 +2153,19 @@
       "isLarge": true,
       "behaviorFlags": "104857600",
       "abilityFlags": "0",
-      "family": "beast",
+      "family": "quadruped",
       "class": "BrogueMonsterK63",
-      "model": "63_unicorn.obj"
+      "model": "63_unicorn.obj",
+      "skin": "graphics/BRGM63.png",
+      "authoringSource": "assets/monsters/sources/63_unicorn.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 63",
+      "workIndex": "BRG-M63",
+      "authoredDimensions": [
+        60.0,
+        30.0,
+        70.0
+      ]
     },
     {
       "kind": 64,
@@ -1563,7 +2189,17 @@
       "abilityFlags": "0",
       "family": "humanoid",
       "class": "BrogueMonsterK64",
-      "model": "64_ifrit.obj"
+      "model": "64_ifrit.obj",
+      "skin": "graphics/BRGM64.png",
+      "authoringSource": "assets/monsters/sources/64_ifrit.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 64",
+      "workIndex": "BRG-M64",
+      "authoredDimensions": [
+        42.0,
+        50.0,
+        70.0
+      ]
     },
     {
       "kind": 65,
@@ -1585,9 +2221,19 @@
       "isLarge": true,
       "behaviorFlags": "1073746944",
       "abilityFlags": "0",
-      "family": "flying",
+      "family": "winged",
       "class": "BrogueMonsterK65",
-      "model": "65_phoenix.obj"
+      "model": "65_phoenix.obj",
+      "skin": "graphics/BRGM65.png",
+      "authoringSource": "assets/monsters/sources/65_phoenix.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 65",
+      "workIndex": "BRG-M65",
+      "authoredDimensions": [
+        42.0,
+        62.0,
+        64.0
+      ]
     },
     {
       "kind": 66,
@@ -1609,9 +2255,19 @@
       "isLarge": false,
       "behaviorFlags": "1082216998",
       "abilityFlags": "40",
-      "family": "flying",
+      "family": "egg",
       "class": "BrogueMonsterK66",
-      "model": "66_phoenix_egg.obj"
+      "model": "66_phoenix_egg.obj",
+      "skin": "graphics/BRGM66.png",
+      "authoringSource": "assets/monsters/sources/66_phoenix_egg.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 66",
+      "workIndex": "BRG-M66",
+      "authoredDimensions": [
+        26.0,
+        26.0,
+        25.0
+      ]
     },
     {
       "kind": 67,
@@ -1633,9 +2289,19 @@
       "isLarge": true,
       "behaviorFlags": "1715486720",
       "abilityFlags": "0",
-      "family": "humanoid",
+      "family": "dryad",
       "class": "BrogueMonsterK67",
-      "model": "67_ancient_spirit.obj"
+      "model": "67_ancient_spirit.obj",
+      "skin": "graphics/BRGM67.png",
+      "authoringSource": "assets/monsters/sources/67_ancient_spirit.blend",
+      "generator": "tools/monster_models/creatures.py",
+      "rebuildCommand": "python -m tools.monster_models.creatures --kind 67",
+      "workIndex": "BRG-M67",
+      "authoredDimensions": [
+        48.0,
+        58.0,
+        84.0
+      ]
     }
   ]
 }

@@ -43,3 +43,33 @@ Suggested labels:
 - `blocked-license`
 - `dependencies`
 - `good first issue`
+
+## Development workspace to pull request
+
+The `BrogueDoom2` working directory is the local development and evidence
+workspace; it is not the GitHub checkout. Build products, captures, crash
+reports, generated campaigns, and other ignored evidence remain there.
+
+Use the clean `ProjectBroom` GitHub clone for commits and pull requests:
+
+1. Update its local `main` from `origin/main` and confirm the checkout is clean.
+2. Create a focused `codex/<topic>` branch from that current `main`.
+3. Run `scripts/audit-public-tree.ps1 -WorkingTree` in the development workspace.
+4. Export the curated source to a new empty directory with
+   `scripts/export-public-source.ps1`; never copy the entire development tree.
+5. Compare the export with the clean clone, then copy only the reviewed public
+   additions and modifications. Do not interpret a file absent from the export
+   as a deletion unless that deletion was intentional and separately reviewed.
+6. Keep local captures such as root-level review screenshots out of Git. Stage
+   explicit reviewed paths, inspect `git diff --cached --stat` and
+   `git diff --cached --check`, then commit.
+7. Push the topic branch, open a pull request targeting `main`, and complete the
+   repository pull-request template with exact tests, hashes, runtime evidence,
+   asset provenance, and known limitations.
+8. Wait for `source-and-python`, `native-bridge`, and the path-filtered
+   `build-engine` check when it applies. Fix failures on the same branch and
+   squash-merge only after every required check passes.
+
+Do not develop or commit directly on `main`. The GitHub merge commit is the
+authoritative update to `main`; after merging, fast-forward the clean clone's
+local `main` and leave the development/evidence workspace intact.

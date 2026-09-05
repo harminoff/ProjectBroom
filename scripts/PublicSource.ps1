@@ -21,7 +21,7 @@ function Get-ProjectBroomPublicSourceFiles([string]$Root) {
     }
 
     $excluded = @(
-        '(^|/)(obj|build|build-[^/]+|__pycache__|\.vs|\.idea)(/|$)',
+        '(^|/)(obj|build|build-[^/]+|__pycache__|\.vs|\.idea)/',
         '^tools/BrogueDoomLauncher/bin/',
         '^src/brogue-mapgen/bin/(?!assets/)',
         '^src/brogue-mapgen/vars/',
