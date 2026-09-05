@@ -2,47 +2,53 @@ name: Engine integration
 
 on:
   pull_request:
-    paths:
-      - 'src/gzdoom-bridge/**'
-      - 'src/brogue-mapgen/**'
-      - 'patches/**'
-      - 'mod/**'
-      - 'assets/**'
-      - 'scripts/**'
-      - 'tools/mapcompiler/**'
-      - 'tools/engine_source.py'
-      - 'tools/test_engine_source.py'
-      - 'dependencies.lock.json'
-      - '.github/workflows/engine-ci.yml'
-  push:
-    branches: [main]
-    paths:
-      - 'src/gzdoom-bridge/**'
-      - 'src/brogue-mapgen/**'
-      - 'patches/**'
-      - 'mod/**'
-      - 'assets/**'
-      - 'scripts/**'
-      - 'tools/mapcompiler/**'
-      - 'tools/engine_source.py'
-      - 'tools/test_engine_source.py'
-      - 'dependencies.lock.json'
+  workflow_dispatch:
 
 permissions:
   contents: read
+  pull-requests: read
+
+concurrency:
+  group: engine-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build-engine:
     runs-on: windows-2022
     steps:
+      # Always report the required check. API failures fail the job.
+      - name: Determine whether native engine inputs changed
+        id: scope
+        uses: actions/github-script@v7
+        with:
+          script: |
+            if (context.eventName === 'workflow_dispatch') {
+              core.setOutput('build', 'true');
+              return;
+            }
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              ...context.repo, pull_number: context.issue.number, per_page: 100
+            });
+            const nativeInput = /^(src\/gzdoom-bridge\/|src\/brogue-mapgen\/.*\.h$|patches\/|dependencies\.lock\.json$|scripts\/(bootstrap-dev|build-dev|build-source-bridge|build-bridge|build-mapgen|build-launcher|ProjectBroom\.Common)\.ps1$|tools\/(engine_source|run_native)\.py$|\.github\/workflows\/engine-ci\.yml$)/;
+            const changed = files.some(f => nativeInput.test(f.filename) ||
+              (f.previous_filename && nativeInput.test(f.previous_filename)));
+            // GitHub caps this endpoint at 3,000 files: build if truncated.
+            const build = changed || files.length >= 3000;
+            core.setOutput('build', String(build));
+            core.notice(build ? 'Native engine inputs changed: compiling UZDoom.' :
+              'No native engine inputs changed; source and bridge CI cover this PR.');
       - uses: actions/checkout@v5
+        if: steps.scope.outputs.build == 'true'
       - uses: actions/setup-python@v5
+        if: steps.scope.outputs.build == 'true'
         with:
           python-version: '3.11'
       - uses: actions/setup-dotnet@v4
+        if: steps.scope.outputs.build == 'true'
         with:
           dotnet-version: '8.0.x'
       - uses: msys2/setup-msys2@v2
+        if: steps.scope.outputs.build == 'true'
         with:
           msystem: UCRT64
           update: true
@@ -50,12 +56,16 @@ jobs:
             make
             mingw-w64-ucrt-x86_64-gcc
       - name: Bootstrap pinned dependencies
+        if: steps.scope.outputs.build == 'true'
         shell: powershell
         run: .\scripts\bootstrap-dev.ps1
       - name: Build complete source bridge
+        if: steps.scope.outputs.build == 'true'
         shell: powershell
-        run: .\scripts\build-dev.ps1
+        # The two CI jobs already own the full test suite.
+        run: .\scripts\build-dev.ps1 -SkipTests
       - name: Verify engine executable
+        if: steps.scope.outputs.build == 'true'
         shell: powershell
         run: |
           $engine = @('.build\uzdoom\uzdoom.exe', '.build\uzdoom\Release\uzdoom.exe') | Where-Object { Test-Path $_ } | Select-Object -First 1
