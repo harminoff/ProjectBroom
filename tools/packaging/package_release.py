@@ -8,8 +8,13 @@ import hashlib
 import json
 import shutil
 import stat
+import sys
+import subprocess
 import zipfile
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from tools.engine_source import validate_build
 
 ZIP_TIME = (2026, 1, 1, 0, 0, 0)
 PUBLIC_ROOT_FILES = {
@@ -50,7 +55,10 @@ def excluded(relative: str) -> bool:
 
 
 def public_source_files(root: Path):
-    for path in sorted(root.rglob("*")):
+    candidates = [root / name for name in PUBLIC_ROOT_FILES]
+    for name in sorted(PUBLIC_ROOTS):
+        candidates.extend((root / name).rglob("*"))
+    for path in sorted(candidates):
         if not path.is_file():
             continue
         relative = path.relative_to(root)
@@ -63,6 +71,14 @@ def public_source_files(root: Path):
 def copy_file(source: Path, target: Path) -> None:
     target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source, target)
+
+
+def copy_corresponding_source(checkout: Path, target: Path) -> None:
+    # A filename such as buildtexture.cpp is source, not a build artifact.
+    tracked = subprocess.check_output(["git", "-C", str(checkout), "ls-files", "-z"])
+    for name in sorted(tracked.decode("utf-8").split("\0")):
+        if name:
+            copy_file(checkout / name, target / name)
 
 
 def zip_tree(root: Path, output: Path, prefix: str = "") -> None:
@@ -90,6 +106,8 @@ def locate(engine_dir: Path, name: str, fallback_dir: Path | None = None) -> Pat
 def assemble(args: argparse.Namespace) -> tuple[Path, Path, Path]:
     root = args.root.resolve()
     output = args.output.resolve()
+    engine_dir = locate(args.engine_dir.resolve(), "uzdoom.exe").parent
+    validate_build(root, engine_dir)
     stage = output / "stage" / f"ProjectBroom-{args.version}"
     source_stage = output / "source-stage" / f"ProjectBroom-Source-{args.version}"
     if stage.exists():
@@ -101,9 +119,16 @@ def assemble(args: argparse.Namespace) -> tuple[Path, Path, Path]:
 
     copy_file(args.launcher.resolve(), stage / "ProjectBroom.exe")
     engine_target = stage / "runtime" / "engine"
-    engine_runtime = root / ".deps" / "gzdoom-runtime-4.14.2"
-    for name in ("gzdoom.exe", "gzdoom.pk3", "game_support.pk3", "game_widescreen_gfx.pk3", "brightmaps.pk3", "lights.pk3", "openal32.dll", "zmusic.dll", "sndfile.dll"):
-        copy_file(locate(args.engine_dir.resolve(), name, engine_runtime), engine_target / name)
+    copy_file(engine_dir / "project-broom-build.json", engine_target / "project-broom-build.json")
+    engine_runtime = root / ".deps" / "uzdoom-runtime-5.0.0"
+    lock = json.loads((root / "dependencies.lock.json").read_text(encoding="utf-8"))
+    for name in ("uzdoom.exe", "uzdoom.pk3", "game_support.pk3", "game_widescreen_gfx.pk3", "brightmaps.pk3", "lights.pk3"):
+        copy_file(locate(args.engine_dir.resolve(), name), engine_target / name)
+    for entry in lock["components"]["uzdoom"]["windowsRuntime"]["files"]:
+        source = engine_runtime / entry["path"]
+        if sha256(source) != entry["sha256"]:
+            raise ValueError(f"UZDoom runtime hash mismatch: {source.name}")
+        copy_file(source, engine_target / entry["path"])
     copy_file(root / "src" / "brogue-mapgen" / "bin" / "brogue.exe", stage / "runtime" / "brogue" / "brogue.exe")
     copy_file(root / "src" / "brogue-mapgen" / "bin" / "brogue-bridge.dll", engine_target / "brogue-bridge.dll")
     copy_file(args.mapcompiler.resolve(), stage / "runtime" / "compiler" / "ProjectBroomMapCompiler.exe")
@@ -115,8 +140,8 @@ def assemble(args: argparse.Namespace) -> tuple[Path, Path, Path]:
     for name in ("LICENSE", "ASSETS-LICENSE.md", "THIRD_PARTY_NOTICES.md", "README.md"):
         copy_file(root / name, stage / "licenses" / name)
     copy_file(root / "src" / "brogue-mapgen" / "LICENSE.txt", stage / "licenses" / "BrogueCE-AGPL-3.0.txt")
-    copy_file(root / ".deps" / "gzdoom-source" / "LICENSE", stage / "licenses" / "GZDoom-GPL-3.0.txt")
-    copy_file(engine_runtime / "licenses.zip", stage / "licenses" / "GZDoom-runtime-licenses.zip")
+    copy_file(root / ".deps" / "uzdoom-source" / "LICENSE", stage / "licenses" / "UZDoom-GPL-3.0.txt")
+    copy_file(engine_runtime / "licenses.zip", stage / "licenses" / "UZDoom-runtime-licenses.zip")
     for name in ("COPYING.txt", "CREDITS.txt", "CREDITS-MUSIC.txt"):
         copy_file(root / ".deps" / "freedoom-0.13.0" / name, stage / "licenses" / "Freedoom" / name)
     copy_file(root / "mod" / "BrogueDoom" / "ULTIMATECLASSICMINIMAP-LICENSE.txt", stage / "licenses" / "UltimateClassicMinimap-MIT.txt")
@@ -133,7 +158,7 @@ def assemble(args: argparse.Namespace) -> tuple[Path, Path, Path]:
         "platform": "win-x64",
         "dataRoot": "%LOCALAPPDATA%/ProjectBroom",
         "paths": {
-            "engine": "runtime/engine/gzdoom.exe",
+            "engine": "runtime/engine/uzdoom.exe",
             "bridge": "runtime/engine/brogue-bridge.dll",
             "exporter": "runtime/brogue/brogue.exe",
             "compiler": "runtime/compiler/ProjectBroomMapCompiler.exe",
@@ -149,23 +174,13 @@ def assemble(args: argparse.Namespace) -> tuple[Path, Path, Path]:
 
     for path, relative in public_source_files(root):
         copy_file(path, source_stage / relative)
-    gzdoom_source = root / ".deps" / "gzdoom-source"
-    for path in sorted(p for p in gzdoom_source.rglob("*") if p.is_file()):
-        relative = path.relative_to(gzdoom_source)
-        if ".git" in relative.parts or any(part.startswith("build") for part in relative.parts):
-            continue
-        copy_file(path, source_stage / "third_party_source" / "gzdoom-g4.14.2" / relative)
+    copy_corresponding_source(root / ".deps/uzdoom-source", source_stage / "third_party_source/uzdoom-5.0.0")
     for checkout_name, archive_name in (
-        ("zmusic-source", "ZMusic-1.1.14"),
         ("libsndfile-source", "libsndfile-1.2.2"),
         ("openal-soft-source", "openal-soft-1.23.1"),
     ):
         checkout = root / ".deps" / checkout_name
-        for path in sorted(p for p in checkout.rglob("*") if p.is_file()):
-            relative = path.relative_to(checkout)
-            if ".git" in relative.parts or any(part.startswith("build") for part in relative.parts):
-                continue
-            copy_file(path, source_stage / "third_party_source" / archive_name / relative)
+        copy_corresponding_source(checkout, source_stage / "third_party_source" / archive_name)
 
     runtime_zip = output / f"ProjectBroom-Windows-x64-{args.version}.zip"
     source_zip = output / f"ProjectBroom-Source-{args.version}.zip"

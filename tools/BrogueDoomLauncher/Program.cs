@@ -188,7 +188,7 @@ internal sealed class PreparationWindow : Form
             else
                 await PrepareDevelopmentAsync();
             status.Text = "ENTERING THE DUNGEON";
-            detail.Text = "GZDoom is ready.";
+            detail.Text = "UZDoom is ready.";
             progress.Style = ProgressBarStyle.Continuous;
             progress.Value = 100;
             await Task.Delay(250);
@@ -275,6 +275,10 @@ internal sealed class PreparationWindow : Form
         Directory.CreateDirectory(cache);
         Directory.CreateDirectory(logs);
         Directory.CreateDirectory(config);
+        string engineConfig = Path.Combine(config, "uzdoom.ini");
+        string legacyConfig = Path.Combine(config, "gzdoom.ini");
+        if (!File.Exists(engineConfig) && File.Exists(legacyConfig))
+            File.Copy(legacyConfig, engineConfig);
         string json = Path.Combine(cache, "brogue-dungeon.json");
         string package = Path.Combine(cache, $"ProjectBroom-seed-{seed}.pk3");
 
@@ -297,7 +301,7 @@ internal sealed class PreparationWindow : Form
         if (!File.Exists(package))
         {
             status.Text = "BUILDING THE 3D CAMPAIGN";
-            detail.Text = "Converting Brogue terrain into 40 playable GZDoom maps.";
+            detail.Text = "Converting Brogue terrain into 40 playable UZDoom maps.";
             ProcessResult result = await RunCapturedAsync(compiler,
                 new[] { "compile", "--input", json, "--output", package }, packageRoot);
             combinedLog.Append(result.Output).Append(result.Error);
@@ -327,14 +331,14 @@ internal sealed class PreparationWindow : Form
         foreach (string argument in new[]
         {
             "-width", "1280", "-height", "720", "-nosound",
-            "-config", Path.Combine(config, "gzdoom.ini"),
+            "-config", engineConfig,
             "-iwad", iwad, "-file", staticMod, package,
             "+set", "brg_seed", seed.ToString(), "+set", "brg_hud_scale", "1",
             "+set", "brg_debug", "false", "+ucm_hide", "true",
             "+ucm_drawmap", "false", "+ucm_mapshowall", "false",
             "+screenblocks", "12", "+menu_main"
         }) start.ArgumentList.Add(argument);
-        _ = Process.Start(start) ?? throw new InvalidOperationException("GZDoom could not be started.");
+        _ = Process.Start(start) ?? throw new InvalidOperationException("UZDoom could not be started.");
         WriteDiagnosticLog(logs, 0, combinedLog.ToString(), string.Empty);
     }
 
@@ -387,9 +391,9 @@ internal sealed class PreparationWindow : Form
         else if (line.StartsWith("Compiling", StringComparison.OrdinalIgnoreCase))
         {
             status.Text = "BUILDING THE 3D CAMPAIGN";
-            detail.Text = "Converting Brogue terrain into 40 playable GZDoom maps.";
+            detail.Text = "Converting Brogue terrain into 40 playable UZDoom maps.";
         }
-        else if (line.StartsWith("Using cached GZDoom", StringComparison.OrdinalIgnoreCase))
+        else if (line.StartsWith("Using cached UZDoom", StringComparison.OrdinalIgnoreCase))
         {
             status.Text = "3D CAMPAIGN FOUND";
             detail.Text = "The matching compiled map package is already available.";
@@ -399,7 +403,7 @@ internal sealed class PreparationWindow : Form
             status.Text = "VERIFYING THE CAMPAIGN";
             detail.Text = "Checking map topology, metadata, stairs, and package integrity.";
         }
-        else if (line.StartsWith("Launching GZDoom", StringComparison.OrdinalIgnoreCase)
+        else if (line.StartsWith("Launching UZDoom", StringComparison.OrdinalIgnoreCase)
                  || line.StartsWith("Project Broom prepared", StringComparison.OrdinalIgnoreCase))
         {
             status.Text = "OPENING PROJECT BROOM";

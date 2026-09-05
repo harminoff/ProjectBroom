@@ -3,11 +3,14 @@ param([switch]$SkipTests)
 
 . (Join-Path $PSScriptRoot "ProjectBroom.Common.ps1")
 $root = Get-ProjectBroomRoot
-$engineBuild = Join-Path $root ".build\gzdoom"
+$engineBuild = Join-Path $root ".build\uzdoom"
 
 if (-not (Test-Path -LiteralPath (Join-Path $engineBuild "CMakeCache.txt") -PathType Leaf)) {
     & (Join-Path $PSScriptRoot "bootstrap-dev.ps1")
 }
+
+$python = Resolve-ProjectBroomCommand "python.exe" "Install Python 3.11."
+Invoke-ProjectBroomCommand $python -Arguments @((Join-Path $root "tools\engine_source.py"), "--root", $root)
 
 & (Join-Path $PSScriptRoot "build-bridge.ps1")
 & (Join-Path $PSScriptRoot "build-mapgen.ps1")
@@ -25,9 +28,12 @@ if (-not $SkipTests) {
 $cmake = Resolve-ProjectBroomCommand "cmake.exe" "Install CMake."
 Invoke-ProjectBroomCommand $cmake -Arguments @("--build", $engineBuild, "--config", "Release", "-j", "4")
 
+Copy-ProjectBroomEngineRuntime
+Invoke-ProjectBroomCommand $python -Arguments @((Join-Path $root "tools\engine_source.py"), "--root", $root, "--record-build", (Get-ProjectBroomEngineDirectory))
+
 & (Join-Path $PSScriptRoot "build-launcher.ps1") -SelfContained
 
-Write-Output (Join-Path $engineBuild "Release\gzdoom.exe")
-if (-not (Test-Path -LiteralPath (Join-Path $engineBuild "Release\gzdoom.exe"))) {
-    Write-Output (Join-Path $engineBuild "gzdoom.exe")
+Write-Output (Join-Path $engineBuild "Release\uzdoom.exe")
+if (-not (Test-Path -LiteralPath (Join-Path $engineBuild "Release\uzdoom.exe"))) {
+    Write-Output (Join-Path $engineBuild "uzdoom.exe")
 }

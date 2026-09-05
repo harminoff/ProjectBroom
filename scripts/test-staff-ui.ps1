@@ -1,9 +1,15 @@
 [CmdletBinding()]
-param([switch]$Wand, [string]$ResourcePackage)
+param([switch]$Wand, [string]$ResourcePackage,
+      [string]$EngineDirectory, [string]$IwadPath,
+      [ValidateSet('Vulkan', 'OpenGL')][string]$Renderer = 'Vulkan',
+      [ValidateRange(1, 3)][int]$HudScale = 1)
 
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$engineDir = Join-Path $projectRoot '.build/gzdoom/Release'
+. (Join-Path $PSScriptRoot 'ProjectBroom.Common.ps1')
+if ($EngineDirectory) { $engineDir = (Resolve-Path -LiteralPath $EngineDirectory).Path }
+else { $engineDir = Get-ProjectBroomEngineDirectory; Copy-ProjectBroomEngineRuntime }
+if (-not $IwadPath) { $IwadPath = Join-Path $projectRoot '.deps/freedoom-0.13.0/freedoom2.wad' }
 $device = if ($Wand) { 'wand' } else { 'staff' }
 $seed = if ($Wand) { 19 } else { 14 }
 $label = $device.ToUpperInvariant() + '_UI'
@@ -23,13 +29,14 @@ if (-not (Test-Path -LiteralPath $campaign)) {
     throw "Prepare seed $seed with scripts/launch-source-bridge.ps1 -Seed $seed before running this check."
 }
 New-Item -ItemType Directory -Path $evidence -Force | Out-Null
-Copy-Item -LiteralPath (Join-Path $projectRoot 'src/brogue-mapgen/bin/brogue-bridge.dll') -Destination $engineDir -Force
 $runtimeLog = Join-Path $evidence 'runtime.log'
 $arguments = @(
     '-stdout', '-config', (Join-Path $evidence 'smoke.ini'), '-window', '-width', '1280', '-height', '720', '-nosound',
-    '-iwad', (Join-Path $projectRoot '.deps/freedoom-0.13.0/freedoom2.wad'),
+    '-iwad', $IwadPath,
     '-file', $resources, $campaign,
     '+set', 'brg_seed', "$seed", '+set', 'brg_debug', 'false',
+    '+set', 'vid_preferbackend', $(if ($Renderer -eq 'Vulkan') { '1' } else { '0' }),
+    '+set', 'brg_hud_scale', "$HudScale",
     '+screenblocks', '12', '+ucm_drawmap', 'false', '+ucm_hide', 'true',
     '+set', 'vid_activeinbackground', 'true', '+set', 'i_pauseinbackground', 'false',
     '+set', 'screenshot_dir', $evidence, '+set', 'brg_rat_walk_tics', '5',
@@ -37,7 +44,7 @@ $arguments = @(
 ) + $actions.Split(' ')
 # Quote paths for Start-Process's Windows argument-string boundary.
 $quotedArguments = $arguments | ForEach-Object { '"' + $_ + '"' }
-$process = Start-Process -FilePath (Join-Path $engineDir 'gzdoom.exe') -WorkingDirectory $engineDir `
+$process = Start-Process -FilePath (Join-Path $engineDir 'uzdoom.exe') -WorkingDirectory $engineDir `
     -ArgumentList $quotedArguments -WindowStyle Hidden -PassThru `
     -RedirectStandardOutput $runtimeLog -RedirectStandardError (Join-Path $evidence 'stderr.log')
 try {
@@ -52,7 +59,7 @@ try {
             Write-Output "$device UI passed: cancellation preserved state and firing advanced one revision. Evidence: $evidence"
             return
         }
-        if ($process.HasExited) { throw "GZDoom exited before $device verification; see $runtimeLog" }
+        if ($process.HasExited) { throw "UZDoom exited before $device verification; see $runtimeLog" }
     } while ((Get-Date) -lt $deadline)
     throw "$device UI check timed out; see $runtimeLog"
 } finally {

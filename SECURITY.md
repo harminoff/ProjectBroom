@@ -2,13 +2,13 @@
 
 ## Current binary-release status
 
-Public binary releases are intentionally blocked while Project Broom remains
-based on GZDoom 4.14.2. That version is affected by CVE-2025-54065. The source
-repository may be reviewed and developed privately or publicly, but do not
-publish runtime archives until the bridge has migrated to and passed its full
-test matrix on UZDoom 4.14.3 or a later patched engine baseline.
+Public binary releases remain blocked pending the complete UZDoom 5.0.0
+migration acceptance matrix. The previous GZDoom 4.14.2 baseline was affected
+by CVE-2025-54065 and must not be distributed as a fallback.
 
-The release workflow enforces this rule from `dependencies.lock.json`.
+The release workflow requires the pinned UZDoom source and commit plus an
+explicit `release.engineMigrationVerified` flag in `dependencies.lock.json`.
+Changing the engine name alone does not open the release gate.
 
 ## Supported versions
 

@@ -78,7 +78,7 @@ try {
     $launchOutput = & $sourceLauncher -Seed $Seed -WindowWidth $halfWidth -WindowHeight $windowHeight -ComparePid $brogue.Id -HudScale $HudScale -ShowFPS:$ShowFPS -PassThru
     $doom = $launchOutput | Where-Object { $_ -is [System.Diagnostics.Process] } | Select-Object -Last 1
     if ($null -eq $doom) {
-        throw "The GZDoom launcher did not return its process handle."
+        throw "The UZDoom launcher did not return its process handle."
     }
     $doomWindow = Wait-MainWindow $doom
 
@@ -89,7 +89,7 @@ try {
     [BrogueDoom.NativeWindow]::SetForegroundWindow($brogueWindow) | Out-Null
 
     Write-Output "Comparison mode started for exact pinned Brogue seed $Seed."
-    Write-Output "Brogue PID $($brogue.Id) is on the left; GZDoom PID $($doom.Id) is on the right."
+    Write-Output "Brogue PID $($brogue.Id) is on the left; UZDoom PID $($doom.Id) is on the right."
     Write-Output "Numpad 8/9/6/3/2/1/4/7 moves both simulations; Numpad 5 waits. Press each key once."
 } catch {
     if ($null -ne $doom -and -not $doom.HasExited) { Stop-Process -Id $doom.Id -Force }

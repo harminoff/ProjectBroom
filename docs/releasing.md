@@ -4,10 +4,10 @@ Project Broom releases are produced only from a clean tagged `main` commit.
 The initial public format is a Windows x64 portable ZIP plus complete
 corresponding source.
 
-> **Security gate:** the current GZDoom 4.14.2 development baseline is affected
-> by CVE-2025-54065. Local/private test packages are permitted, but the release
-> workflow blocks public binaries until the engine bridge is migrated to and
-> verified on UZDoom 4.14.3 or a later patched baseline.
+> **Release gate:** UZDoom 5.0.0 is pinned, but public binaries remain blocked
+> until the migration acceptance matrix is complete and
+> `release.engineMigrationVerified` is true. Local validation packages are allowed.
+> The former GZDoom 4.14.2 baseline is affected by CVE-2025-54065.
 
 ## Required assets
 
@@ -16,12 +16,12 @@ corresponding source.
 - `SHA256SUMS.txt`
 - `release-manifest.json`
 
-The runtime ZIP contains Project Broom, the custom GZDoom runtime, Brogue
+The runtime ZIP contains Project Broom, the custom UZDoom runtime, Brogue
 bridge/exporter, Freedoom Phase 2, the static presentation PK3, map compiler,
 and all license and credit files. It does not contain reference WADs, generated
 campaigns, debug symbols, developer tools, or source-control metadata.
 
-The source ZIP includes the exact patched GZDoom source used for the binary,
+The source ZIP includes the exact patched UZDoom source used for the binary,
 the pinned Brogue CE snapshot, corresponding ZMusic, libsndfile, and OpenAL
 Soft source, all Project Broom preferred source, build scripts, and license
 material.

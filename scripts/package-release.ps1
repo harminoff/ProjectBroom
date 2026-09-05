@@ -29,7 +29,7 @@ if ($LASTEXITCODE -ne 0) { throw "Map compiler packaging failed." }
 
 & (Join-Path $PSScriptRoot "build-launcher.ps1") -SelfContained -OutputDirectory ".build\launcher"
 
-$engineDir = Join-Path $root ".build\gzdoom"
+$engineDir = Join-Path $root ".build\uzdoom"
 $launcher = Join-Path $root ".build\launcher\ProjectBroom.exe"
 $mapcompiler = Join-Path $mapcompilerDist "ProjectBroomMapCompiler.exe"
 New-Item -ItemType Directory -Force -Path $output | Out-Null

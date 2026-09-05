@@ -3,6 +3,7 @@ param(
     [ValidateRange(1, [int]::MaxValue)]
     [int]$Seed = 1,
     [switch]$RandomSeed,
+    [switch]$Force,
     [switch]$Menu,
     [switch]$ShowFPS,
     [ValidateRange(320, 7680)]
@@ -16,7 +17,8 @@ param(
     [switch]$PassThru
 )
 
-$projectRoot = Split-Path -Parent $PSScriptRoot
+. (Join-Path $PSScriptRoot "ProjectBroom.Common.ps1")
+$projectRoot = Get-ProjectBroomRoot
 $ErrorActionPreference = "Stop"
 
 function Get-BrogueSha256([string]$Path) {
@@ -44,34 +46,19 @@ if ($RandomSeed) {
     try { $seedGenerator.GetBytes($seedBytes) } finally { $seedGenerator.Dispose() }
     $Seed = [int](([BitConverter]::ToUInt32($seedBytes, 0) % 2147483646) + 1)
 }
-$canonicalEngineRoots = @(
-    (Join-Path $projectRoot ".build\gzdoom\Release"),
-    (Join-Path $projectRoot ".build\gzdoom"),
-    (Join-Path $projectRoot "tooling\GZDoom-source\build-brogue")
-)
-$engineDir = $canonicalEngineRoots | Where-Object { Test-Path -LiteralPath (Join-Path $_ "gzdoom.exe") -PathType Leaf } | Select-Object -First 1
-if (-not $engineDir) { $engineDir = $canonicalEngineRoots[0] }
-$engine = Join-Path $engineDir "gzdoom.exe"
-$pendingEngine = Join-Path $engineDir "gzdoom.project-broom-update.exe"
-if (Test-Path -LiteralPath $pendingEngine -PathType Leaf) {
-    try {
-        Copy-Item -LiteralPath $pendingEngine -Destination $engine -Force -ErrorAction Stop
-        Remove-Item -LiteralPath $pendingEngine -Force
-        Write-Output "Installed the pending Project Broom engine update."
-    } catch {
-        throw "Project Broom has an engine update ready, but gzdoom.exe is still running. Close the existing game and launch ProjectBroom.exe again."
-    }
-}
+$engineDir = Get-ProjectBroomEngineDirectory
+$engine = Join-Path $engineDir "uzdoom.exe"
+Copy-ProjectBroomEngineRuntime
 $bridge = Join-Path $projectRoot "src\brogue-mapgen\bin\brogue-bridge.dll"
 $exporter = Join-Path $projectRoot "src\brogue-mapgen\bin\brogue.exe"
-$canonicalIwad = Join-Path $projectRoot ".deps\freedoom-0.13.0\freedoom2.wad"
-$legacyIwad = Join-Path $projectRoot "tooling\GZDoom\freedoom2.wad"
-$iwad = if (Test-Path -LiteralPath $canonicalIwad -PathType Leaf) { $canonicalIwad } else { $legacyIwad }
-$legacyRuntime = Join-Path $projectRoot "tooling\GZDoom"
-$zmusic = Join-Path $engineDir "zmusic.dll"
-$sndfile = Join-Path $engineDir "sndfile.dll"
-if (-not (Test-Path -LiteralPath $zmusic -PathType Leaf)) { $zmusic = Join-Path $legacyRuntime "zmusic.dll" }
-if (-not (Test-Path -LiteralPath $sndfile -PathType Leaf)) { $sndfile = Join-Path $legacyRuntime "sndfile.dll" }
+$iwad = Join-Path $projectRoot ".deps\freedoom-0.13.0\freedoom2.wad"
+$configuration = Join-Path $env:LOCALAPPDATA "ProjectBroom\config"
+New-Item -ItemType Directory -Force -Path $configuration | Out-Null
+$engineConfig = Join-Path $configuration "uzdoom.ini"
+$oldConfig = Join-Path $configuration "gzdoom.ini"
+if (-not (Test-Path -LiteralPath $engineConfig) -and (Test-Path -LiteralPath $oldConfig)) {
+    Copy-Item -LiteralPath $oldConfig -Destination $engineConfig
+}
 $staticMod = Join-Path $projectRoot "mod\BrogueDoom"
 $textureRegistry = Join-Path $projectRoot "assets\terrain\broguedoom_cave_registry.json"
 $monsterRegistry = Join-Path $projectRoot "assets\monsters\brogue_monster_registry.json"
@@ -85,7 +72,7 @@ $json = Join-Path $projectRoot ("generated\seed-{0}\brogue-dungeon.json" -f $See
 $packageManifest = Join-Path $projectRoot ("generated\seed-{0}\brogue-manifest.json" -f $Seed)
 $engineBridge = Join-Path $engineDir "brogue-bridge.dll"
 
-foreach ($required in @($engine, $bridge, $exporter, $iwad, $zmusic, $sndfile, $textureRegistry, $monsterRegistry, $monsterAtlas, $weaponRegistry, $weaponModeldef, $compiler, $verifier)) {
+foreach ($required in @($engine, $bridge, $exporter, $iwad, $textureRegistry, $monsterRegistry, $monsterAtlas, $weaponRegistry, $weaponModeldef, $compiler, $verifier)) {
     if (-not (Test-Path -LiteralPath $required -PathType Leaf)) {
         throw "Required source-bridge artifact is missing: $required"
     }
@@ -93,7 +80,7 @@ foreach ($required in @($engine, $bridge, $exporter, $iwad, $zmusic, $sndfile, $
 $pythonCommand = Get-Command python.exe -ErrorAction Stop
 $generatedRoot = Split-Path -Parent $generated
 New-Item -ItemType Directory -Force -Path $generatedRoot | Out-Null
-if (-not (Test-Path -LiteralPath $json -PathType Leaf)) {
+if ($Force -or -not (Test-Path -LiteralPath $json -PathType Leaf)) {
     Write-Output "Generating Brogue dungeon for random seed $Seed..."
     & $exporter --export-dungeon-json $json --seed $Seed --depths 40
     if ($LASTEXITCODE -ne 0) { throw "Brogue export failed with exit code $LASTEXITCODE." }
@@ -101,7 +88,7 @@ if (-not (Test-Path -LiteralPath $json -PathType Leaf)) {
     Write-Output "Using cached Brogue dungeon for seed $Seed."
 }
 $inputHash = Get-BrogueSha256 $json
-$needsPackage = -not (Test-Path -LiteralPath $generated -PathType Leaf) -or -not (Test-Path -LiteralPath $packageManifest -PathType Leaf)
+$needsPackage = $Force -or -not (Test-Path -LiteralPath $generated -PathType Leaf) -or -not (Test-Path -LiteralPath $packageManifest -PathType Leaf)
 if (-not $needsPackage) {
     try {
         $manifest = Get-Content -Raw -LiteralPath $packageManifest | ConvertFrom-Json
@@ -111,11 +98,11 @@ if (-not $needsPackage) {
     }
 }
 if ($needsPackage) {
-    Write-Output "Compiling the Brogue dungeon into GZDoom maps..."
+    Write-Output "Compiling the Brogue dungeon into UZDoom maps..."
     & $pythonCommand.Source $compiler --input $json --output $generated
     if ($LASTEXITCODE -ne 0) { throw "PK3 compilation failed with exit code $LASTEXITCODE." }
 } else {
-    Write-Output "Using cached GZDoom campaign for seed $Seed."
+    Write-Output "Using cached UZDoom campaign for seed $Seed."
 }
 
 Write-Output "Verifying map topology and package integrity..."
@@ -123,13 +110,12 @@ Write-Output "Verifying map topology and package integrity..."
 if ($LASTEXITCODE -ne 0) { throw "Generated package verification failed with exit code $LASTEXITCODE." }
 
 Copy-BrogueFileIfDifferent $bridge $engineBridge
-Copy-BrogueFileIfDifferent $zmusic (Join-Path $engineDir "zmusic.dll")
-Copy-BrogueFileIfDifferent $sndfile (Join-Path $engineDir "sndfile.dll")
 
 $arguments = @(
     "-width", $WindowWidth,
     "-height", $WindowHeight,
     "-nosound",
+    "-config", $engineConfig,
     "-iwad", $iwad,
     "-file", $staticMod, $generated,
     "+set", "brg_seed", $Seed,
@@ -154,11 +140,11 @@ if ($ShowFPS) {
     $arguments += @("+vid_fps", "true")
 }
 
-Write-Output "Launching GZDoom for seed $Seed..."
+Write-Output "Launching UZDoom for seed $Seed..."
 $process = Start-Process -FilePath $engine -WorkingDirectory $engineDir -ArgumentList $arguments -PassThru
 Write-Output "Project Broom prepared seed $Seed."
 if ($PassThru) {
     Write-Output $process
 } else {
-    Write-Output "Started source-built GZDoom PID $($process.Id) with Brogue bridge seed $Seed."
+    Write-Output "Started source-built UZDoom PID $($process.Id) with Brogue bridge seed $Seed."
 }

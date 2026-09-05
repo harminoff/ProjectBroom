@@ -70,6 +70,28 @@ Use the clean `ProjectBroom` GitHub clone for commits and pull requests:
    `build-engine` check when it applies. Fix failures on the same branch and
    squash-merge only after every required check passes.
 
+Operational safeguards proven by the repository workflow:
+
+- Record user-excluded files before exporting and check those exact paths again
+  before staging. Root-level screenshots and generated run history are evidence,
+  not source.
+- The public export destination must be a new empty directory outside the
+  development workspace. The exporter intentionally rejects the source root,
+  descendants of it, and non-empty destinations.
+- A Windows generator run can leave Git status entries caused only by line
+  endings or timestamps. Review `git diff --name-only`, `git diff --stat`, and
+  `git diff --check`; never stage or reset files solely to silence status noise.
+- Treat source tests, the complete native build, fixed-seed UZDoom smoke runs,
+  and hosted GitHub checks as independent gates. A fresh
+  `scripts/build-source-bridge.ps1` run stages the pinned runtime DLLs beside the
+  built engine so the smoke scripts do not require a manual copy.
+- Before merging, inspect a long-running `build-engine` job rather than assuming
+  it is stalled. Merge only when every required check is green and GitHub reports
+  no conflicts.
+- After the squash merge, fast-forward the clean clone's `main` and verify its
+  `HEAD` is identical to `origin/main`. Report the PR URL, merge SHA, excluded
+  files, and any remaining local evidence.
+
 Do not develop or commit directly on `main`. The GitHub merge commit is the
 authoritative update to `main`; after merging, fast-forward the clean clone's
 local `main` and leave the development/evidence workspace intact.

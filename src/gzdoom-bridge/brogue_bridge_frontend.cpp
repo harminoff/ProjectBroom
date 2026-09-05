@@ -11,6 +11,7 @@
 #include "c_dispatch.h"
 #include "c_cvars.h"
 #include "d_event.h"
+#include "i_system.h"
 #include "doomstat.h"
 #include "g_levellocals.h"
 #include "keydef.h"
@@ -30,9 +31,9 @@
 #include <vector>
 #include <string>
 
-// Pinned GZDoom 4.14.2 presentation API, implemented in p_actionfunctions.cpp.
+// Pinned UZDoom 5.0.0 presentation API, implemented in p_actionfunctions.cpp.
 // This is an engine-private adapter, never part of BrogueBridge.h.
-void SetAnimationInternal(AActor *, FName, double, int, int, int, int, int, double);
+void SetAnimationNative(AActor *, int, double, int, int, int, int, int);
 
 #ifdef _WIN32
 #include <windows.h>
@@ -47,6 +48,7 @@ CVAR(Int, brg_compare_pid, 0, 0)
 CVAR(Float, brg_hud_scale, 1.0, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Bool, brg_debug, false, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Int, brg_fx_quality, 1, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+CVAR(Bool, brg_projection_smoke, false, 0)
 
 namespace
 {
@@ -585,8 +587,8 @@ void PlayRatClip(MonsterProxy &proxy, RatClip clip, int duration = 0, double rat
 	proxy.ratClip = clip;
 	proxy.ratPoseTics = duration;
 	// SAF_LOOP=2. IQM interpolation affects the mesh, never authoritative XY.
-	SetAnimationInternal(proxy.actor, FName(names[clip]), rate, -1, -1, -1, 2,
-		clip <= RatScurry ? 2 : 0, 1);
+	SetAnimationNative(proxy.actor, FName(names[clip]).GetIndex(), rate, -1, -1, -1, 2,
+		clip <= RatScurry ? 2 : 0);
 	if (brg_debug && clip != RatIdle)
 		Printf("Brogue rat animation: id=%llu clip=%s tics=%d rate=%.2f\n",
 			(unsigned long long)proxy.id, names[clip], duration, rate);
@@ -2938,9 +2940,35 @@ CCMD(brg_wand_smoke)
 	StaffSmokeNextTic = 0;
 }
 
+bool BrogueBridge_OwnsPlayerPosition(void)
+{
+	// Brogue commits input synchronously; rolling back its visual pawn would
+	// restore stale coordinates without rolling back the authoritative session.
+	return IsBrogueMap();
+}
+
 void BrogueBridge_DrawHud(void)
 {
 	if (!IsBrogueMap() || !EnsureStarted() || twod == nullptr || SmallFont == nullptr) return;
+	// Sample after the engine's prediction pass, where a rollback can undo an
+	// otherwise successful SyncPlayer. This diagnostic never advances Brogue.
+	if (brg_projection_smoke && State.absoluteTurn > 0 && primaryLevel->maptime > 70
+		&& PendingActions.empty() && players[consoleplayer].mo != nullptr)
+	{
+		static int samples = 0;
+		const DVector3 expected = BrogueCellToWorld(State.player.x, State.player.y);
+		const DVector3 actual = players[consoleplayer].mo->Pos();
+		const bool matched = (actual.XY() - expected.XY()).Length() < 0.01;
+		if (!matched || ++samples >= 35)
+		{
+			Printf("PROJECTION_SMOKE %s turn=%llu cell=%d,%d expected=%.3f,%.3f actual=%.3f,%.3f samples=%d\n",
+				matched ? "PASS" : "FAIL", (unsigned long long)State.absoluteTurn,
+				State.player.x, State.player.y, expected.X, expected.Y, actual.X, actual.Y, samples);
+			brg_projection_smoke = false;
+			samples = 0;
+			AddCommandString("screenshot");
+		}
+	}
 	DrawStatusRail();
 	DrawBrogueMinimap();
 	const int railWidth = StatusRailWidth();
@@ -2997,7 +3025,7 @@ bool HandleCommandConfirmationInput(const event_t *event)
 bool BrogueBridge_HandleInput(const event_t *event)
 {
 	if (event == nullptr || !IsBrogueMap()) return false;
-	if (!EnsureStarted()) return false;
+	if (!EnsureStarted()) return true;
 	if (HandleGameOverInput(event)) return true;
 	if (HandleCommandConfirmationInput(event)) return true;
 	if (event->data1 == KEY_MOUSE2 && WeaponUi != WeaponUiMode::None)
@@ -3041,11 +3069,16 @@ bool BrogueBridge_HandleInput(const event_t *event)
 	return true;
 }
 
-void BrogueBridge_PrepareTiccmd(ticcmd_t *cmd)
+void BrogueBridge_PrepareTiccmd(usercmd_t *cmd)
 {
 	if (cmd == nullptr || !IsBrogueMap()) return;
-	EnsureStarted();
-	if (!Started) return;
+	if (!EnsureStarted())
+	{
+		cmd->forwardmove = cmd->sidemove = cmd->upmove = 0;
+		cmd->buttons = 0;
+		I_Error("Project Broom could not attach its Brogue bridge. See the engine log and rebuild matching components.");
+		return;
+	}
 	if (!InventoryOpen && WeaponUi == WeaponUiMode::None && !CommandConfirmationOpen) PollComparisonInput();
 	// A Brogue-driven map change is applied by GZDoom after the action returns.
 	// Project the authoritative landing coordinate as soon as that map is live.
@@ -3067,10 +3100,10 @@ void BrogueBridge_PrepareTiccmd(ticcmd_t *cmd)
 		PendingActions.clear();
 		PendingActionIndex = 0;
 		HasBufferedAction = false;
-		cmd->ucmd.forwardmove = 0;
-		cmd->ucmd.sidemove = 0;
-		cmd->ucmd.upmove = 0;
-		cmd->ucmd.buttons = 0;
+		cmd->forwardmove = 0;
+		cmd->sidemove = 0;
+		cmd->upmove = 0;
+		cmd->buttons = 0;
 		return;
 	}
 	const bool animating = TickMonsterAnimations();
@@ -3098,10 +3131,10 @@ void BrogueBridge_PrepareTiccmd(ticcmd_t *cmd)
 
 	// View angle/pitch remain GZDoom presentation controls. Prevent every
 	// gameplay-affecting Doom command and all translational movement.
-	cmd->ucmd.forwardmove = 0;
-	cmd->ucmd.sidemove = 0;
-	cmd->ucmd.upmove = 0;
-	cmd->ucmd.buttons = 0;
+	cmd->forwardmove = 0;
+	cmd->sidemove = 0;
+	cmd->upmove = 0;
+	cmd->buttons = 0;
 }
 
 void BrogueBridge_Shutdown(void)

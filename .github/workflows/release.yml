@@ -45,8 +45,13 @@ jobs:
         shell: powershell
         run: |
           $lock = Get-Content -Raw dependencies.lock.json | ConvertFrom-Json
-          if ('${{ github.event.repository.visibility }}' -eq 'public' -and $lock.components.gzdoom.tag -eq 'g4.14.2') {
-            throw 'Public binaries are blocked: GZDoom 4.14.2 is affected by CVE-2025-54065. Migrate and verify the bridge on UZDoom 4.14.3 or a later patched baseline first.'
+          if ($lock.components.uzdoom.source -ne 'https://github.com/UZDoom/UZDoom.git' -or
+              $lock.components.uzdoom.commit -ne '292cf4203ebd3ced951cb67f6819180f588c1d44') {
+            throw 'Release requires the approved UZDoom source pin.'
+          }
+          if ('${{ github.event.repository.visibility }}' -eq 'public' -and
+              $lock.release.engineMigrationVerified -ne $true) {
+            throw 'Public binaries remain blocked until the migration acceptance matrix is verified.'
           }
       - name: Audit, build, test, and package
         shell: powershell

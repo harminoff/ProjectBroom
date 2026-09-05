@@ -8,6 +8,7 @@ $python = Resolve-ProjectBroomCommand "python.exe" "Install Python 3.11."
 $make = Resolve-ProjectBroomMsysTool "make.exe"
 $gcc = Resolve-ProjectBroomMsysTool "x86_64-w64-mingw32-gcc.exe"
 $sh = Resolve-ProjectBroomMsysTool "sh.exe"
+$originalPath = $env:Path
 Enable-ProjectBroomMsysPath @($make, $gcc, $sh)
 $makeShell = $sh.Replace('\', '/')
 
@@ -20,6 +21,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "Brogue exporter build failed with exit code $LASTEXITCODE." }
 }
 finally {
+    $env:Path = $originalPath
     Pop-Location
 }
 

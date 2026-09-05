@@ -7,6 +7,7 @@ $sourceRoot = Join-Path $projectRoot "src\brogue-mapgen"
 $make = Resolve-ProjectBroomMsysTool "make.exe"
 $gcc = Resolve-ProjectBroomMsysTool "x86_64-w64-mingw32-gcc.exe"
 $sh = Resolve-ProjectBroomMsysTool "sh.exe"
+$originalPath = $env:Path
 Enable-ProjectBroomMsysPath @($make, $gcc, $sh)
 $makeShell = $sh.Replace('\', '/')
 
@@ -17,6 +18,7 @@ try {
         throw "Brogue bridge build failed with exit code $LASTEXITCODE."
     }
 } finally {
+    $env:Path = $originalPath
     Pop-Location
 }
 

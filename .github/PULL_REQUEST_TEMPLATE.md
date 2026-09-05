@@ -10,7 +10,7 @@ Describe the defect or missing Brogue behavior and the focused solution.
 
 ## Authority analysis
 
-State whether Brogue CE or GZDoom owns the behavior. For bridge work, name the
+State whether Brogue CE or UZDoom owns the behavior. For bridge work, name the
 existing Brogue entry points used.
 
 ## Gameplay declaration

@@ -1,6 +1,6 @@
-# Brogue CE → GZDoom runtime bridge
+# Brogue CE → UZDoom runtime bridge
 
-Status: bridge API v15, native GZDoom monster presentation, authoritative weapon, consumable, and targeted staff/wand commands, generalized Brogue confirmation forwarding, an authoritative loss screen, fall-source/landing events, and visual-only first-person weapon models are implemented and built from the official GZDoom 4.14.2 source checkout.
+Status: bridge API v15, native UZDoom monster presentation, authoritative weapon, consumable, and targeted staff/wand commands, generalized Brogue confirmation forwarding, an authoritative loss screen, fall-source/landing events, and visual-only first-person weapon models are implemented and built from the official UZDoom 5.0.0 source checkout.
 
 ## Chasms and fall shafts
 
@@ -25,7 +25,7 @@ unchanged Brogue cell centers.
 
 Generated sidedefs use UDMF's canonical `texturetop`, `texturebottom`, and
 `texturemiddle` fields. Earlier builds emitted the nonstandard names
-`textureupper` and `texturelower`; GZDoom ignored those keys and its missing
+`textureupper` and `texturelower`; UZDoom ignored those keys and its missing
 lower-texture path exposed horizontal floor or liquid materials across vertical
 height transitions. The verifier now rejects those legacy fields and requires
 an actual bottom texture on both sides of every floor-height transition.
@@ -43,7 +43,7 @@ highlights advance downward; they do not warp the horizontal floor artwork
 across the wall.
 
 Depth 1 retains a continuous cave ceiling at 224 units. Depths 2–40 raise the
-logical ceiling to 352 units and use GZDoom's `F_SKY1` ceiling with the
+logical ceiling to 352 units and use UZDoom's `F_SKY1` ceiling with the
 dedicated true-black `BRGSKY` texture. Because sky ceilings do not draw a
 horizontal plane, looking upward after a fall reads as open darkness rather
 than the underside of the independently generated floor above. Their one-sided
@@ -66,7 +66,7 @@ Immediately before `startLevel()` replaces the source `pmap`, the adapter
 records the exact cell from which the player fell. API v13 marks the resulting
 `LEVEL_CHANGE_REQUESTED` event with `BROGUE_EVENT_FLAG_LEVEL_FALL` and copies
 the source and authoritative destination coordinates into `fromX/fromY` and
-`toX/toY`. Once the destination map is live, GZDoom places a presentation-only
+`toX/toY`. Once the destination map is live, UZDoom places a presentation-only
 dark recessed shaft beneath the landing cell's open void. Stair transitions do
 not create this marker. The destination's collision and Brogue
 topology remain unchanged; independently generated depths are not falsely
@@ -107,7 +107,7 @@ brogue_bridge_perform_action(WAIT)
 
 Movement direction values are translated only at the boundary to Brogue's existing `UP`, `UPRIGHT`, `RIGHT`, `DOWNRIGHT`, `DOWN`, `DOWNLEFT`, `LEFT`, and `UPLEFT` values. The adapter does not perform a destination-cell legality check. `playerMoves()` returns whether the intent was accepted; turn consumption is measured from Brogue's `absoluteTurnNumber` before and after the call.
 
-The null platform is configured for synchronous headless execution. `serverMode` and `nonInteractivePlayback` route terminal cleanup away from Brogue's interactive UI. Server mode skips only the terminal death-acknowledgment loop; it does not set `rogue.quit`, so genuine deaths retain Brogue's death outcome and score. During a semantic bridge command, `IO.c::confirm()` first delegates to the bridge confirmation broker. With no approved response remaining, the broker copies Brogue's exact prompt and supplies a safe negative response, allowing the action to unwind without a turn or revision change. GZDoom can then retry that exact command and revision with one more approved prompt. Confirmations outside a live bridge command retain the deterministic server/noninteractive policy.
+The null platform is configured for synchronous headless execution. `serverMode` and `nonInteractivePlayback` route terminal cleanup away from Brogue's interactive UI. Server mode skips only the terminal death-acknowledgment loop; it does not set `rogue.quit`, so genuine deaths retain Brogue's death outcome and score. During a semantic bridge command, `IO.c::confirm()` first delegates to the bridge confirmation broker. With no approved response remaining, the broker copies Brogue's exact prompt and supplies a safe negative response, allowing the action to unwind without a turn or revision change. UZDoom can then retry that exact command and revision with one more approved prompt. Confirmations outside a live bridge command retain the deterministic server/noninteractive policy.
 
 ## State and events
 
@@ -144,7 +144,7 @@ exact Brogue descriptions and encounter-table references, explicit inferred
 dimensions, source links and per-kind verification status. Numeric sizes are
 presentation decisions, not physical measurements supplied by Brogue.
 See [model authoring and export](gzdoom-model-authoring.md) for the pinned
-GZDoom/Blender format, axes, material, packaging, and verification contract.
+UZDoom/Blender format, axes, material, packaging, and verification contract.
 
 ## Headless command and tests
 
@@ -177,24 +177,24 @@ The test suite proves seed-one initial state, exact repeatability including outp
 
 When Brogue ends a run, `gameOver()` remains the source of the outcome. After it
 has constructed the same sentence used by the original death screen, the bridge
-copies that sentence and its score into `BrogueBridgeGameResult`. GZDoom stops
+copies that sentence and its score into `BrogueBridgeGameResult`. UZDoom stops
 all queued actions and draws a crisp Brogue-style loss panel. Space, Enter, Esc,
 or primary click returns to the main menu; none of those presentation inputs
 advance the ended Brogue simulation.
 
-## GZDoom integration
+## UZDoom integration
 
-`scripts/bootstrap-dev.ps1` checks out official GZDoom 4.14.2 under the ignored
-`.deps/gzdoom-source/` directory, pinned to commit
-`99aa489d09015a95bb78df2b30ede29f328cc874`, and applies the checked-in Project
+`scripts/bootstrap-dev.ps1` checks out official UZDoom 5.0.0 under the ignored
+`.deps/uzdoom-source/` directory, pinned to commit
+`292cf4203ebd3ced951cb67f6819180f588c1d44`, and applies the checked-in Project
 Broom integration patch.
 
 The source build adds `src/gzdoom-bridge/brogue_bridge_frontend.cpp` to the engine and uses
 `src/brogue-mapgen/bin/brogue-bridge.dll` as a same-process C ABI adapter. The
 DLL boundary isolates Brogue's global C state without using networking or a
-second simulation. The engine loads it from beside the source-built `gzdoom.exe`, starts
+second simulation. The engine loads it from beside the source-built `uzdoom.exe`, starts
 Brogue on the first `BRGxx` level tick, and invokes the public bridge API
-synchronously on the GZDoom game thread.
+synchronously on the UZDoom game thread.
 
 `G_Responder` intercepts arrow, movement, and Space keys before normal Doom
 bindings. Key-up events are consumed, key-down events become semantic
@@ -204,6 +204,10 @@ remain absolute. WASD is camera-relative: `W` moves forward, `S` backward, `A`
 left, `D` right, and `E` forward-right; the camera yaw is quantized to Brogue's
 eight directions. Space submits `WAIT`. The numpad is reserved for the explicit
 side-by-side parity mode, where one key edge is delivered to both applications.
+On Brogue maps, `P_PredictClient` skips prediction backups: Brogue has already
+committed the input, and restoring an older Doom pawn would undo only its visual
+position. See [the rollback regression](uzdoom-player-projection-fix.md).
+
 At the end of command construction, all Doom translational/action buttons are
 cleared, so Doom physics cannot advance the authoritative player.
 
@@ -215,24 +219,24 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/build-dev.ps1
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/run-dev.ps1 -Seed 1
 ```
 
-The source engine is configured with CMake and built as `gzdoom.exe` under
-`.build/gzdoom/`. The native integration files are
+The source engine is configured with CMake and built as `uzdoom.exe` under
+`.build/uzdoom/`. The native integration files are
 `src/gzdoom-bridge/brogue_bridge_frontend.h` and
 `src/gzdoom-bridge/brogue_bridge_frontend.cpp`; the small upstream hooks are
-recorded in `patches/gzdoom-project-broom.patch`.
+recorded in `patches/uzdoom-project-broom.patch`.
 
 For a deterministic in-engine smoke without synthetic keyboard injection, the
 source build also registers the development command `brg_wait`. Because startup
 commands are processed before `+map`, it queues until `BRG01` is active:
 
 ```text
-gzdoom.exe ... +map BRG01 +brg_wait
+uzdoom.exe ... +map BRG01 +brg_wait
 ```
 
 The resulting log should contain an attachment line followed by
 `Brogue command=WAIT accepted=true` with an incremented turn and bridge
 revision. Physical direct-input controls remain available through the normal
-GZDoom window.
+UZDoom window.
 
 ### Dynamic doors and stair presentation
 
@@ -250,10 +254,10 @@ addressable door sector but starts, or is moved, to the surrounding ceiling.
 
 When Brogue promotes or otherwise changes a door cell, the bridge consumes the
 ordered `BROGUE_EVENT_CELL_TERRAIN_CHANGED` event, reads the authoritative
-post-turn cell state, and raises or closes that tagged sector with GZDoom's
+post-turn cell state, and raises or closes that tagged sector with UZDoom's
 native sector-door mover. Consequently, the normal interaction is Brogue's:
 bump/move toward a closed door, let Brogue decide whether it opens and whether
-time is consumed, and only then animate the GZDoom sector. The Use key does not
+time is consumed, and only then animate the UZDoom sector. The Use key does not
 bypass Brogue.
 
 The logical stair actors remain invisible at the exact Brogue stair cell
@@ -267,7 +271,7 @@ arriving on a destination ladder cannot immediately send the player away
 again. Stepping off arms it for the next entry in the stock-engine visual
 fallback. In the source-integrated frontend, Brogue's existing `playerMoves()`
 stair branch invokes `useStairs()` and emits `LEVEL_CHANGE_REQUESTED`; only
-that authoritative event asks GZDoom to load the matching `BRGxx` map.
+that authoritative event asks UZDoom to load the matching `BRGxx` map.
 The up-ladder marker carries a generated UDMF `scaley` derived from its exact
 sector floor and ceiling. Its rails therefore terminate at the ceiling in
 corridors, rooms, and tall liquid caverns alike. A separately skinned near-black
@@ -290,7 +294,7 @@ This is a development harness, not an alternate movement implementation.
 ## Pickup presentation
 
 The live source bridge now mirrors every floor item as a non-interactive
-GZDoom presentation actor. `assets/items/brogue_pickup_registry.json` enumerates
+UZDoom presentation actor. `assets/items/brogue_pickup_registry.json` enumerates
 all 100 item kinds from the local Brogue CE catalogs: food, weapons, armor,
 potions, scrolls, staves, wands, rings, charms, gold, the Amulet of Yendor,
 luminescent gemstones, and all key types. The deterministic generator at
@@ -332,7 +336,7 @@ gated while those animations run and buffers at most one next action, so frame
 rate and held input cannot create extra Brogue turns.
 
 The rat instead uses IQM idle/scurry/bite/scratch/recoil/death clips through
-GZDoom's decoupled animation API. The pose durations do not enter the existing
+UZDoom's decoupled animation API. The pose durations do not enter the existing
 command-gating predicate. A 26-tic non-interacting collapse visual may outlive
 the original 7-tic death gate, but Brogue has already removed the creature.
 The adapter chooses by current presentation class, so hallucinated shapes do
@@ -352,7 +356,7 @@ feet start moving immediately.
 
 Visibility is entirely Brogue-owned. Hidden actors stay allocated but use zero
 alpha; sensed creatures use a translucent proxy; directly visible creatures
-use their catalog presentation. Allies carry GZDoom's friendly display flag
+use their catalog presentation. Allies carry UZDoom's friendly display flag
 for the minimap only. `brg_monster_omniscience` is an explicit development
 override and does not alter Brogue state. During hallucination, a proxy may
 change its model class while retaining the same bridge ID. Ultimate Classic
@@ -381,7 +385,7 @@ pushes, rolls gameplay RNG, or submits an action to Brogue.
 bridge particles and ambient effect actors, `1` is the sampled and
 distance-culled default, and `2` increases particle density and samples lava
 cells more densely. Fire and gas cells are never sampled away. The options menu also
-exposes GZDoom's bloom, SSAO, dynamic-light shadow-map, and actor-shadow
+exposes UZDoom's bloom, SSAO, dynamic-light shadow-map, and actor-shadow
 settings without forcing expensive defaults. Ambient lava and fire lights are
 explicitly excluded from shadow maps to keep large liquid caverns tractable.
 
@@ -397,7 +401,7 @@ named cosmetic RNG streams and cannot perturb Brogue's RNG.
 `ProjectBroom.exe` is the player-facing entry point. On a normal double-click it
 chooses a cryptographically random positive seed, runs the pinned Brogue
 exporter for all 40 depths in canonical order, compiles or reuses the matching
-GZDoom campaign, and then opens the Brogue-styled title menu. Selecting **New
+UZDoom campaign, and then opens the Brogue-styled title menu. Selecting **New
 Game** starts `BRG01` and initializes the live bridge with that same prepared
 seed, so generated geometry and authoritative simulation cannot disagree.
 
@@ -413,7 +417,7 @@ menu text. Its title-page interval is deliberately pinned because this frontend
 does not ship Doom demo or credit pages to rotate into.
 
 Load/save is intentionally absent from the title menu until Brogue bridge state
-serialization is implemented. Loading only GZDoom's presentation state would
+serialization is implemented. Loading only UZDoom's presentation state would
 not restore the authoritative Brogue simulation.
 
 ## Known limitations
@@ -436,7 +440,7 @@ counter only for a charged use. No-charge outcomes and identification remain
 unchanged. See [targeted wand use](targeted-wand-use.md) for the differential
 tests against Brogue's normal `apply()`/`chooseTarget()` path.
 
-- The native source build currently uses a Windows DLL loaded beside `gzdoom.exe`; it is in-process but not yet a statically linked GZDoom target.
+- The native source build currently uses a Windows DLL loaded beside `uzdoom.exe`; it is in-process but not yet a statically linked UZDoom target.
 - The API v13 GUI snapshot exposes copied Brogue-owned player statistics,
   equipment slots, inventory order and letters, item descriptions and action
   masks, three message lines, and each cell's final `getCellAppearance()`
@@ -450,13 +454,13 @@ tests against Brogue's normal `apply()`/`chooseTarget()` path.
 - `L` opens a non-turn-consuming look cursor. Cursor movement and Tab/wheel
   target cycling happen only in the frontend, while `brogue_bridge_inspect_cell`
   returns visibility-safe descriptions from Brogue's own `describeLocation`,
-  `monsterDetails`, and `itemDetails` paths. GZDoom renders the selected cell
+  `monsterDetails`, and `itemDetails` paths. UZDoom renders the selected cell
   marker and a compact Diablo-style inspection card; it does not infer hidden
   creature or item identities.
 - Item and monster inspection details preserve Brogue's explicit paragraph
   breaks and embedded RGB color changes in copied bridge-owned spans. The Look
   card renders that authoritative detail once, without prepending the shorter
-  location summary or rebuilding item prose in GZDoom.
+  location summary or rebuilding item prose in UZDoom.
 - Inventory navigation is frontend-only and consumes no turn. Equip/remove,
   drop, throw, and apply are semantic bridge commands; Brogue validates and
   executes them. Food, potions, scrolls, and charms route through Brogue's
@@ -467,7 +471,7 @@ tests against Brogue's normal `apply()`/`chooseTarget()` path.
 - Brogue prompts reached by movement, combat, and item commands are forwarded
   through the generalized confirmation broker. Prompts reached outside a live
   semantic command still use the deterministic noninteractive policy.
-- Level transitions are reported through state/event changes but are not yet swapped by a live GZDoom frontend.
+- Level transitions are reported through state/event changes but are not yet swapped by a live UZDoom frontend.
 - Pickup and monster models are an initial procedural low-poly presentation
   set. Item-use interactions, final combat effects, 3D FOV treatment,
   save/replay frontend, and complete multi-level runtime

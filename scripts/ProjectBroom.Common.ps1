@@ -27,9 +27,43 @@ function Invoke-ProjectBroomCommand {
         [Parameter(Mandatory = $true)][string]$FilePath,
         [string[]]$Arguments = @()
     )
-    & $FilePath @Arguments
+    if ([IO.Path]::GetFileNameWithoutExtension($FilePath) -eq "cmake") {
+        $python = Resolve-ProjectBroomCommand "python.exe" "Install Python 3.11."
+        & $python (Join-Path (Get-ProjectBroomRoot) "tools\run_native.py") $FilePath @Arguments
+    } else {
+        & $FilePath @Arguments
+    }
     if ($LASTEXITCODE -ne 0) {
         throw "Command failed with exit code ${LASTEXITCODE}: $FilePath $($Arguments -join ' ')"
+    }
+}
+
+function Get-ProjectBroomEngineDirectory {
+    $build = Join-Path (Get-ProjectBroomRoot) ".build\uzdoom"
+    foreach ($directory in @((Join-Path $build "Release"), $build)) {
+        if (Test-Path -LiteralPath (Join-Path $directory "uzdoom.exe") -PathType Leaf) { return $directory }
+    }
+    throw "Custom UZDoom is missing. Run scripts/build-dev.ps1."
+}
+
+function Copy-ProjectBroomEngineRuntime {
+    $root = Get-ProjectBroomRoot
+    $lock = Get-ProjectBroomLock
+    $target = Get-ProjectBroomEngineDirectory
+    $runtime = Join-Path $root ".deps\uzdoom-runtime-5.0.0"
+    foreach ($file in $lock.components.uzdoom.windowsRuntime.files) {
+        $source = Join-Path $runtime $file.path
+        if ((Get-ProjectBroomSha256 $source) -ne $file.sha256) { throw "UZDoom dependency hash mismatch: $($file.path)" }
+        $destination = Join-Path $target $file.path
+        New-Item -ItemType Directory -Force -Path (Split-Path -Parent $destination) | Out-Null
+        if (-not (Test-Path -LiteralPath $destination) -or (Get-ProjectBroomSha256 $destination) -ne $file.sha256) {
+            Copy-Item -LiteralPath $source -Destination $destination -Force
+        }
+    }
+    $bridge = Join-Path $root "src\brogue-mapgen\bin\brogue-bridge.dll"
+    $destination = Join-Path $target "brogue-bridge.dll"
+    if (-not (Test-Path -LiteralPath $destination) -or (Get-ProjectBroomSha256 $destination) -ne (Get-ProjectBroomSha256 $bridge)) {
+        Copy-Item -LiteralPath $bridge -Destination $destination -Force
     }
 }
 

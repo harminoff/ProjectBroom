@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate one Brogue depth, compile it as MAP01, and optionally launch GZDoom."""
+"""Generate one Brogue depth, compile it as MAP01, and optionally inspect MAP01 with UZDoom (not an authoritative game)."""
 
 from __future__ import annotations
 
@@ -46,8 +46,8 @@ def export_model(exporter: Path, output_path: Path, seed: int, depth: int) -> di
 
 def launch_gzdoom(package_path: Path) -> int:
     root = project_root()
-    gzdoom = root / "tooling" / "GZDoom" / "gzdoom.exe"
-    iwad = root / "tooling" / "GZDoom" / "freedoom2.wad"
+    gzdoom = root / ".build" / "uzdoom" / "Release" / "uzdoom.exe"
+    iwad = root / ".deps" / "freedoom-0.13.0" / "freedoom2.wad"
     mod = root / "mod" / "BrogueDoom"
     for required in (gzdoom, iwad, mod):
         if not required.exists():

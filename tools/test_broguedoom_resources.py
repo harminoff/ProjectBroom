@@ -548,7 +548,7 @@ class BrogueDoomResourceTests(unittest.TestCase):
         menudef = (ROOT / "mod" / "BrogueDoom" / "MENUDEF.txt").read_text(encoding="utf-8")
         gameinfo = (ROOT / "mod" / "BrogueDoom" / "GAMEINFO").read_text(encoding="utf-8")
         launcher = (ROOT / "scripts" / "launch-source-bridge.ps1").read_text(encoding="utf-8")
-        engine_patch = (ROOT / "patches" / "gzdoom-project-broom.patch").read_text(encoding="utf-8")
+        engine_patch = (ROOT / "patches" / "uzdoom-project-broom.patch").read_text(encoding="utf-8")
         launcher_source = (ROOT / "tools" / "BrogueDoomLauncher" / "Program.cs").read_text(encoding="utf-8")
 
         for token in ("ClearEpisodes", "Episode BRG01", "NoSkillMenu", 'TitlePage = "TITLEPIC"',
@@ -580,8 +580,8 @@ class BrogueDoomResourceTests(unittest.TestCase):
                       "GENERATING THE DUNGEON", "BUILDING THE 3D CAMPAIGN",
                       "VERIFYING THE CAMPAIGN", "CreateNoWindow = true"):
             self.assertIn(token, launcher_source)
-        for token in ("Using cached Brogue dungeon", "Using cached GZDoom campaign",
-                      "Verifying map topology", "Launching GZDoom"):
+        for token in ("Using cached Brogue dungeon", "Using cached UZDoom campaign",
+                      "Verifying map topology", "Launching UZDoom"):
             self.assertIn(token, launcher)
 
     def test_side_by_side_comparison_mode_is_exact_commit_and_edge_driven(self) -> None:
