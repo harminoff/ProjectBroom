@@ -45,7 +45,7 @@ CONTOUR_DEPTH = 8
 CONTOUR_SHOULDER = 12
 CONTOUR_MIN_RUN = 3
 CONTOUR_RUN_STRIDE = 4
-COMPILER_VERSION = "42"
+COMPILER_VERSION = "43"
 RENDER_MAPPING_PATH = Path(__file__).with_name("terrain_render_map.json")
 THEME_REGISTRY_PATH = PROJECT_ROOT / "assets" / "terrain" / "broguedoom_cave_registry.json"
 RESOURCE_GRAPHICS_DIR = PROJECT_ROOT / "mod" / "BrogueDoom" / "graphics"
@@ -113,6 +113,7 @@ RESOURCE_PRESENTATION_FILES = (
     "models/stairs/fall_shaft.obj",
 )
 CUSTOM_TEXTURES = {"BRGCAVE", "BRGWET", "BRGMASON", "BRGCVUP", "BRGWTUP", "BRGMSUP", "BRGDOOR", "BRGWFALL", "BRGSFALL", "BRGWCLF", "BRGSCLF", "BRGLFALL", "BRGVOID", "BRGCLIFF", "BRGSKY"}
+CUSTOM_TEXTURES.update({'RRGCAVE', 'RRGWET', 'RRGMASON', 'RRGCVUP', 'RRGWTUP', 'RRGMSUP'})
 CUSTOM_FLATS = {"BRGEARTH", "BRGCEIL", "BRGMOSS", "BRGFLAG", "BRGBRID", "BRGWATR", "BRGSLDG", "BRGMOLT", "BRGCHASM", "BRGABYSS"}
 
 OPEN_VOID_WALL_TEXTURES = {
@@ -218,6 +219,9 @@ def resource_pack_hash() -> str:
         [THEME_REGISTRY_PATH]
         + [RESOURCE_GRAPHICS_DIR / name for name in RESOURCE_ASSET_FILES]
         + [RESOURCE_MOD_DIR / name for name in RESOURCE_PRESENTATION_FILES]
+        + sorted((RESOURCE_MOD_DIR / 'models/search').glob('*.obj'))
+        + [RESOURCE_MOD_DIR / 'search.zs', RESOURCE_MOD_DIR / 'shaders/search-reveal.fp',
+           RESOURCE_MOD_DIR / 'shaders/search-floor-reveal.fp', RESOURCE_GRAPHICS_DIR / 'BRGSEARCH.png']
     )
     for path in paths:
         if not path.is_file():
@@ -657,6 +661,7 @@ def cell_is_chasm_void(cell: dict[str, Any]) -> bool:
     has_bridge = layer_symbol(cell, "surface") in {
         "BRIDGE", "BRIDGE_FALLING", "BRIDGE_EDGE", "STONE_BRIDGE"
     }
+    is_chasm = is_chasm or any(layer_symbol(cell, layer) == "TRAP_DOOR" for layer in ("dungeon", "liquid", "surface"))
     return is_chasm and not has_bridge and bool(int_field(cell.get("terrainFlags"), "cell.terrainFlags") & AUTO_DESCENT)
 
 
@@ -1307,7 +1312,9 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
         # BRGDOOR is a single framed panel sized to one Brogue boundary. It
         # must begin at its own origin instead of continuing the cave wall's
         # world-space panning across the door.
-        texture_offset = 0 if is_door_boundary else edge["offsetx"]
+        texture_offset = edge["offsetx"]
+        secret_cell = next((c for c in (front_cell, back_cell)
+                            if c and layer_symbol(c, "dungeon") == "SECRET_DOOR"), None)
         if back is None:
             blocked = True
             front_side = len(sidedefs)
@@ -1339,7 +1346,13 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
             two_sided = True
         if back is None:
             two_sided = False
-        lines.append({"v1": line_v1, "v2": line_v2, "front": front_side, "back": back_side, "two_sided": two_sided, "blocking": blocked, "door_portal": is_door_boundary and back is not None})
+        reveal_id = 0
+        if secret_cell is not None and back is not None:
+            reveal_id = 20000 + int(secret_cell['y']) * width + int(secret_cell['x'])
+            for side_index, appearance_cell in ((front_side, front_cell), (back_side, back_cell)):
+                material = boundary_material(appearance_cell, secret_cell, game_seed, depth, cells, material_layout)
+                sidedefs[side_index]['texturemiddle'] = 'R' + material[1:]
+        lines.append({"v1": line_v1, "v2": line_v2, "front": front_side, "back": back_side, "two_sided": two_sided, "blocking": blocked, "door_portal": is_door_boundary and back is not None, "reveal_id": reveal_id})
 
     parts = ['namespace = "ZDoom";\n']
     for vertex_x, vertex_y in vertices:
@@ -1348,6 +1361,9 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
     for line in lines:
         parts.append("linedef {\n")
         parts.append(f"  v1 = {line['v1']}; v2 = {line['v2']};\n")
+        if line['reveal_id']:
+            parts.append(f"  id = {line['reveal_id']}; wrapmidtex = true;\n")
+            parts.append(f"  user_brogue_reveal_cell = {line['reveal_id'] - 20000};\n")
         parts.append(f"  sidefront = {line['front']};\n")
         if line["back"] is not None:
             parts.append(f"  sideback = {line['back']}; twosided = {'true' if line['two_sided'] else 'false'};\n")
@@ -1458,7 +1474,7 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
                 start_angle(door_x, door_y),
                 floor_height(door_cell),
                 args=(door_x, door_y),
-                alpha=1.0 if closed else 0.0,
+                alpha=1.0 if closed and layer_symbol(door_cell, 'dungeon') != 'SECRET_DOOR' else 0.0,
             )
         )
 

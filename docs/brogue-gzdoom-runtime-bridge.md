@@ -1,6 +1,6 @@
 # Brogue CE → UZDoom runtime bridge
 
-Status: bridge API v16, native UZDoom monster presentation, authoritative weapon, consumable, and targeted staff/wand commands, generalized Brogue confirmation forwarding, an authoritative loss screen, fall-source/landing events, and visual-only first-person weapon models are implemented and built from the official UZDoom 5.0.0 source checkout.
+Status: bridge API v17 adds shared single/repeated search and knowledge-limited discovery presentation. See [search behavior and acceptance evidence](search-and-discovery.md). Native UZDoom monster presentation, authoritative weapon, consumable, and targeted staff/wand commands, generalized Brogue confirmation forwarding, an authoritative loss screen, fall-source/landing events, and visual-only first-person weapon models are built from the official UZDoom 5.0.0 source checkout.
 
 ## Chasms and fall shafts
 

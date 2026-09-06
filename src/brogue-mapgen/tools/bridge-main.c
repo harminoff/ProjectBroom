@@ -20,6 +20,7 @@
 #include "bridge-staff-smoke.h"
 #include "bridge-wand-smoke.h"
 #include "bridge-target-smoke.h"
+#include "bridge-search-smoke.h"
 
 static void printEvents(const BrogueBridgeTurnResult *result);
 
@@ -477,10 +478,10 @@ static int equalsIgnoreCase(const char *first, const char *second) {
 
 static int parseAction(const char *token, BrogueBridgeAction *outAction) {
     static const char *names[BROGUE_ACTION_COUNT] = {
-        "N", "NE", "E", "SE", "S", "SW", "W", "NW", "WAIT"
+        "N", "NE", "E", "SE", "S", "SW", "W", "NW", "WAIT", "SEARCH"
     };
     static const char *numpad[BROGUE_ACTION_COUNT] = {
-        "8", "9", "6", "3", "2", "1", "4", "7", "5"
+        "8", "9", "6", "3", "2", "1", "4", "7", "5", "SEARCH"
     };
     int i;
 
@@ -539,6 +540,7 @@ int main(int argc, char **argv) {
     boolean staffSmoke = false;
     boolean wandSmoke = false;
     boolean targetSmoke = false;
+    boolean searchSmoke = false;
     boolean warningSmoke = false;
     boolean lookSmoke = false;
     const char *catalogOutput = NULL;
@@ -588,6 +590,8 @@ int main(int argc, char **argv) {
             staffSmoke = true;
         } else if (strcmp(argv[i], "--target-smoke") == 0) {
             targetSmoke = true;
+        } else if (strcmp(argv[i], "--search-smoke") == 0) {
+            searchSmoke = true;
         } else if (strcmp(argv[i], "--wand-smoke") == 0) {
             wandSmoke = true;
         } else if (strcmp(argv[i], "--warning-smoke") == 0) {
@@ -640,6 +644,12 @@ int main(int argc, char **argv) {
         return 1;
     }
     printStateLine("INITIAL", &state);
+
+    if (searchSmoke) {
+        exitCode = runSearchSmoke(&state);
+        brogue_bridge_shutdown();
+        return exitCode;
+    }
 
     if (weaponSmoke) {
         exitCode = runWeaponSmoke(&state, verbose);

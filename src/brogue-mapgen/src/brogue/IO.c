@@ -2527,15 +2527,15 @@ void executeKeystroke(signed long keystroke, boolean controlKey, boolean shiftKe
             break;
         case SEARCH_KEY:
             if (controlKey) {
-                rogue.disturbed = false;
-                rogue.automationActive = true;
+                beginRepeatedSearch();
                 do {
-                    manualSearch();
+                    stepRepeatedSearch();
                     if (pauseAnimation(80, PAUSE_BEHAVIOR_DEFAULT)) {
                         rogue.disturbed = true;
+                        finishRepeatedSearch();
                     }
-                } while (player.status[STATUS_SEARCHING] < 5 && !rogue.disturbed);
-                rogue.automationActive = false;
+                } while (rogue.repeatedSearchActive);
+                finishRepeatedSearch();
             } else {
                 manualSearch();
             }

@@ -1,4 +1,6 @@
 ifeq ($(BRIDGE),YES)
+tools/bridge-main.o tools/bridge-main.dll.o: tools/bridge-search-smoke.h
+
 bin/brogue-bridge bin/brogue-bridge.exe: $(bridge_objects) vars/cflags vars/LDFLAGS vars/libs make/bridge.mk
 	$(CC) $(cflags) $(LDFLAGS) -Wl,--stack,8388608 -o $@ $(bridge_objects) $(libs)
 

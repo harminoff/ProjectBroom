@@ -2149,6 +2149,30 @@ void autoRest() {
     rogue.automationActive = false;
 }
 
+void beginRepeatedSearch(void) {
+    rogue.disturbed = false;
+    rogue.automationActive = true;
+    rogue.repeatedSearchActive = true;
+}
+
+void finishRepeatedSearch(void) {
+    rogue.automationActive = false;
+    rogue.repeatedSearchActive = false;
+}
+
+boolean stepRepeatedSearch(void) {
+    if (!rogue.repeatedSearchActive) return false;
+    const short depth = rogue.depthLevel;
+    manualSearch();
+    // The fifth-search message resets STATUS_SEARCHING and disturbs Brogue.
+    // Discoveries and ordinary Brogue messages may disturb it earlier.
+    if (player.status[STATUS_SEARCHING] >= 5 || rogue.disturbed
+        || rogue.gameHasEnded || rogue.depthLevel != depth) {
+        finishRepeatedSearch();
+    }
+    return rogue.repeatedSearchActive;
+}
+
 void manualSearch() {
     recordKeystroke(SEARCH_KEY, false, false);
 

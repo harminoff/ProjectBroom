@@ -388,6 +388,19 @@ class CompilerTests(unittest.TestCase):
         self.assertGreaterEqual(map_text.count("x = 96; y = 1760;"), 3)
         self.assertGreaterEqual(map_text.count("x = 4960; y = 96;"), 2)
 
+    def test_secret_door_has_addressable_wall_camouflage(self) -> None:
+        model = sample_model()
+        door = next(c for c in model['levels'][0]['cells'] if (c['x'], c['y']) == (10, 10))
+        door['layers']['dungeon'] = {'id': 6, 'symbol': 'SECRET_DOOR'}
+        door['terrainFlags'] = 1
+        first = make_map_text(model['levels'][0], 79, 29)
+        self.assertEqual(first, make_map_text(model['levels'][0], 79, 29))
+        self.assertIn('id = 20800; wrapmidtex = true;', first[0])
+        self.assertIn('user_brogue_reveal_cell = 800;', first[0])
+        self.assertIn('texturemiddle = "RRGCAVE";', first[0])
+        self.assertIn('alpha = 0.000000;', first[0])
+        self.assertIn('user_brogue_door_sector = 1;', first[0])
+
     def test_passable_brogue_door_still_starts_visually_closed(self) -> None:
         model = sample_model()
         door = next(cell for cell in model["levels"][0]["cells"] if (cell["x"], cell["y"]) == (10, 10))

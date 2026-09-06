@@ -33,6 +33,8 @@ not include changes that would reproduce Brogue rules in GZDoom.
   standalone visual acceptance remain open. See [evidence](generalized-targeting-preview.md).
 - [ ] Add single-turn search.
 - [ ] Add repeated search until interrupted or complete.
+  v17 implementation and automated parity are present; runtime acceptance
+  remains open. See [search evidence and remaining gates](search-and-discovery.md).
 - [ ] Add auto-rest.
 - [ ] Add auto-explore.
 - [ ] Add travel to a selected Brogue cell.

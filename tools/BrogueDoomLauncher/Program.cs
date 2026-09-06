@@ -280,7 +280,9 @@ internal sealed class PreparationWindow : Form
         if (!File.Exists(engineConfig) && File.Exists(legacyConfig))
             File.Copy(legacyConfig, engineConfig);
         string json = Path.Combine(cache, "brogue-dungeon.json");
-        string package = Path.Combine(cache, $"ProjectBroom-seed-{seed}.pk3");
+        // Compiler v43 adds addressable secret-door concealment. Keep older
+        // cached topology separate so upgrades cannot reuse an exposed doorway.
+        string package = Path.Combine(cache, $"ProjectBroom-v43-seed-{seed}.pk3");
 
         var combinedLog = new StringBuilder();
         if (!File.Exists(json))

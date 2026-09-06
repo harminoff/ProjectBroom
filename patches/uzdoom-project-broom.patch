@@ -25,6 +25,49 @@ index cc079f80af24b86ba6b0114e31828054c7d78789..88456a37a87ea3d16380adc44cf0f7d7
  	common/audio/sound
  	common/audio/music
  	common/2d
+diff --git a/src/d_main.cpp b/src/d_main.cpp
+index 35d4bf4ab4f8d34eaac3357c86c6c9b6da656a62..1db63f5b942d925ebb4059e1df4d654ad8f0847d 100644
+--- a/src/d_main.cpp
++++ b/src/d_main.cpp
+@@ -24,6 +24,7 @@
+ // HEADER FILES ------------------------------------------------------------
+ 
+ #include "c_cvars.h"
++#include "brogue_bridge_frontend.h"
+ #include "i_net.h"
+ #include "i_soundinternal.h"
+ 
+@@ -1115,6 +1116,7 @@ void D_Display ()
+ 	GC::CheckGC();
+ 
+ 	SetDeltaTime();
++	if (!AppActive) BrogueBridge_CancelSearchForUi();
+ 
+ 	if (nodrawers || screen == NULL)
+ 		return; 				// for comparative timing / profiling
+@@ -3989,7 +3991,7 @@ static int D_DoomMain_Internal (void)
+ 		StrTable_ValidFilter,
+ 		nullptr,
+ 		CheckSkipGameOptionBlock,
+-		System_ConsoleToggled,
++		[](int state) { BrogueBridge_CancelSearchForUi(); System_ConsoleToggled(state); },
+ 		nullptr,
+ 		nullptr,
+ 		System_ToggleFullConsole,
+@@ -3998,11 +4000,11 @@ static int D_DoomMain_Internal (void)
+ 		CheckCheatmode,
+ 		System_HudScaleChanged,
+ 		M_SetSpecialMenu,
+-		OnMenuOpen,
++		[](bool sound) { BrogueBridge_CancelSearchForUi(); OnMenuOpen(sound); },
+ 		System_LanguageChanged,
+ 		OkForLocalization,
+ 		[]() ->FConfigFile* { return GameConfig; },
+-		nullptr,
++		BrogueBridge_WantsSearchEscape,
+ 		RemapUserTranslation,
+ 		System_DisableAnisotropicFiltering
+ 	};
 diff --git a/src/g_game.cpp b/src/g_game.cpp
 index 3f7d18b4958dd6624f3127483df9e7d946e39883..d02b127a7e09beb4275e856ff40b9d2dc3e35608 100644
 --- a/src/g_game.cpp

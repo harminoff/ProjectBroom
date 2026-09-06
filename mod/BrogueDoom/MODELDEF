@@ -1,5 +1,14 @@
 // Static presentation models. Brogue's invisible logical stair actors retain
 // authoritative interaction and exact cell-center coordinates.
+Model BrogueSearchPlate
+{
+    Path "models/search"
+    Model 0 "plate.obj"
+    Skin 0 "graphics/BRGSEARCH.png"
+    Scale 1.0 1.0 1.0
+    FrameIndex BRGD A 0 0
+}
+
 Model BrogueUpStairMarker
 {
     Path "models/stairs"
@@ -53,3 +62,68 @@ Model BrogueBarricadeMarker
 #include "models/monsters/MODELDEF.txt"
 #include "models/weapons/MODELDEF.txt"
 #include "models/devices/MODELDEF.txt"
+
+Model BrogueSearchFire
+{
+ Path "models/search"
+ Model 0 "fire.obj"
+ Skin 0 "graphics/BRGSEARCH.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex BRGD A 0 0
+}
+Model BrogueSearchFlood
+{
+ Path "models/search"
+ Model 0 "flood.obj"
+ Skin 0 "graphics/BRGSEARCH.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex BRGD A 0 0
+}
+Model BrogueSearchNet
+{
+ Path "models/search"
+ Model 0 "net.obj"
+ Skin 0 "graphics/BRGSEARCH.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex BRGD A 0 0
+}
+Model BrogueSearchAlarm
+{
+ Path "models/search"
+ Model 0 "alarm.obj"
+ Skin 0 "graphics/BRGSEARCH.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex BRGD A 0 0
+}
+Model BrogueSearchVent
+{
+ Path "models/search"
+ Model 0 "vent.obj"
+ Skin 0 "graphics/BRGSEARCH.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex BRGD A 0 0
+}
+Model BrogueSearchLever
+{
+ Path "models/search"
+ Model 0 "lever.obj"
+ Skin 0 "graphics/BRGSEARCH.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex BRGD A 0 0
+}
+Model BrogueSearchRim
+{
+ Path "models/search"
+ Model 0 "rim.obj"
+ Skin 0 "graphics/BRGSEARCH.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex BRGD A 0 0
+}
+Model BrogueSearchCover
+{
+ Path "models/search"
+ Model 0 "cover.obj"
+ Skin 0 "graphics/BRGSEARCH.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex BRGD A 0 0
+}

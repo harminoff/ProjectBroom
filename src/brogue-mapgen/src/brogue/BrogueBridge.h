@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-#define BROGUE_BRIDGE_API_VERSION 16u
+#define BROGUE_BRIDGE_API_VERSION 17u
 #define BROGUE_BRIDGE_MAX_CELLS 2291u
 #define BROGUE_BRIDGE_MAX_CREATURES 1024u
 #define BROGUE_BRIDGE_MAX_ITEMS 1024u
@@ -63,6 +63,7 @@ typedef enum BrogueBridgeAction {
     BROGUE_ACTION_MOVE_W,
     BROGUE_ACTION_MOVE_NW,
     BROGUE_ACTION_WAIT,
+    BROGUE_ACTION_SEARCH,
     BROGUE_ACTION_COUNT
 } BrogueBridgeAction;
 
@@ -75,6 +76,9 @@ typedef enum BrogueBridgeCommandType {
     BROGUE_COMMAND_APPLY_ITEM,
     BROGUE_COMMAND_USE_STAFF,
     BROGUE_COMMAND_USE_WAND,
+    BROGUE_COMMAND_SEARCH_START,
+    BROGUE_COMMAND_SEARCH_CONTINUE,
+    BROGUE_COMMAND_SEARCH_CANCEL,
     BROGUE_COMMAND_COUNT
 } BrogueBridgeCommandType;
 
@@ -181,6 +185,9 @@ typedef struct BrogueBridgePlayerState {
     uint8_t alive;
     uint8_t gameInProgress;
     uint8_t gameHasEnded;
+    int32_t searchProgress;
+    int32_t searchMaximum;
+    uint8_t searchActive;
 } BrogueBridgePlayerState;
 
 typedef struct BrogueBridgeCreatureState {
@@ -387,6 +394,22 @@ typedef struct BrogueBridgeLookResult {
     BrogueBridgeResult errorCode;
 } BrogueBridgeLookResult;
 
+/* Knowledge-limited physical appearance; never infer it from raw layers. */
+typedef enum BrogueBridgeTerrainFeature {
+    BROGUE_FEATURE_NONE = 0,
+    BROGUE_FEATURE_WALL,
+    BROGUE_FEATURE_DOOR_CLOSED,
+    BROGUE_FEATURE_DOOR_OPEN,
+    BROGUE_FEATURE_GAS_PLATE,
+    BROGUE_FEATURE_FIRE_PLATE,
+    BROGUE_FEATURE_FLOOD_PLATE,
+    BROGUE_FEATURE_NET_PLATE,
+    BROGUE_FEATURE_ALARM_PLATE,
+    BROGUE_FEATURE_VENT,
+    BROGUE_FEATURE_HOLE,
+    BROGUE_FEATURE_LEVER
+} BrogueBridgeTerrainFeature;
+
 typedef struct BrogueBridgeCellState {
     int32_t x;
     int32_t y;
@@ -423,6 +446,7 @@ typedef struct BrogueBridgeCellState {
     uint8_t backgroundRed;
     uint8_t backgroundGreen;
     uint8_t backgroundBlue;
+    BrogueBridgeTerrainFeature terrainFeature;
 } BrogueBridgeCellState;
 
 typedef struct BrogueBridgeEvent {
