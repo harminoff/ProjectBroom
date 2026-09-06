@@ -2447,6 +2447,7 @@ typedef struct playerCharacter {
     boolean automationActive;           // cut some corners during redraws to speed things up
     boolean justRested;                 // previous turn was a rest -- used in stealth
     boolean justSearched;               // previous turn was a search -- used in manual searches
+    boolean repeatedSearchActive;       // synchronous shared search sequence
     boolean cautiousMode;               // used to prevent careless deaths caused by holding down a key
     boolean receivedLevitationWarning;  // only warn you once when you're hovering dangerously over liquid
     boolean updatedSafetyMapThisTurn;   // so it's updated no more than once per turn
@@ -3128,6 +3129,9 @@ extern "C" {
     void extinguishFireOnCreature(creature *monst);
     void autoRest(void);
     void manualSearch(void);
+    void beginRepeatedSearch(void);
+    boolean stepRepeatedSearch(void);
+    void finishRepeatedSearch(void);
     boolean startFighting(enum directions dir, boolean tillDeath);
     void autoFight(boolean tillDeath);
     void synchronizePlayerTimeState(void);

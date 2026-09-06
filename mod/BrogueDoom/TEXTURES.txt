@@ -41,6 +41,28 @@ Texture "BLANK", 16, 16
 
 // Original Project Broom cave palette. A 9.796875 scale maps each 1254px
 // source tile to 128 world units, avoiding an obvious one-cell repeat grid.
+Texture "RRGCAVE", 1254, 1254
+{
+    XScale 9.796875
+    YScale 9.796875
+    WorldPanning
+    Patch "BRGROCK", 0, 0
+}
+Texture "RRGWET", 1254, 1254
+{
+    XScale 9.796875
+    YScale 9.796875
+    WorldPanning
+    Patch "BRGROCK", 0, 0
+}
+Texture "RRGMASON", 1254, 1254
+{
+    XScale 9.796875
+    YScale 9.796875
+    WorldPanning
+    Patch "BRGSTONE", 0, 0
+}
+
 Texture "BRGCAVE", 1254, 1254
 {
 	XScale 9.796875
@@ -1864,3 +1886,76 @@ Sprite "BDWAI0", 96, 96
  Patch "BRGITEMS", 0, 0
 }
 // END GENERATED DEVICE PSPRITES
+
+Flat "RRGEARTH", 1254, 1254
+{
+ XScale 9.796875
+ YScale 9.796875
+ Patch "BRGDIRT", 0, 0
+}
+
+Flat "RRGMOSS", 1254, 1254
+{
+ XScale 9.796875
+ YScale 9.796875
+ Patch "BRGVEG0", 0, 0
+}
+
+Flat "RRGFLAG", 1254, 1254
+{
+ XScale 9.796875
+ YScale 9.796875
+ Patch "BRGSTONE", 0, 0
+}
+
+Texture "RRGCVUP", 256, 1024
+{
+	XScale 2.000000
+	YScale 2.000000
+	WorldPanning
+	Patch "PBRCVUP", 0, 0
+}
+
+Texture "RRGWTUP", 256, 1024
+{
+	XScale 2.000000
+	YScale 2.000000
+	WorldPanning
+	Patch "PBRCVUP", 0, 0
+}
+
+Texture "RRGMSUP", 256, 1024
+{
+	XScale 2.000000
+	YScale 2.000000
+	WorldPanning
+	Patch "PBRMSUP", 0, 0
+}
+
+Flat "RRGBRID", 1254, 1254
+{
+	XScale 9.796875
+	YScale 9.796875
+	Patch "RRGBRIDGE", 0, 0
+}
+
+Flat "RRGWATR", 1254, 1254
+{
+	XScale 9.796875
+	YScale 9.796875
+	Patch "BRGWATER", 0, 0
+}
+
+Flat "RRGSLDG", 1254, 1254
+{
+	XScale 9.796875
+	YScale 9.796875
+	Patch "BRGDIRT", 0, 0
+}
+
+Flat "RRGMOLT", 1254, 1254
+{
+	XScale 9.796875
+	YScale 9.796875
+	Patch "BRGLAVA", 0, 0
+}

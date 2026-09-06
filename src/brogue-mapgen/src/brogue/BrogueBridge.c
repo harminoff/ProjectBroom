@@ -288,6 +288,7 @@ static boolean tileIsChasm(enum tileType tile) {
         case HOLE:
         case HOLE_GLOW:
         case HOLE_EDGE:
+        case TRAP_DOOR:
             return true;
         default:
             return false;
@@ -329,6 +330,9 @@ static BrogueBridgePlayerState playerState(void) {
     state.alive = (player.bookkeepingFlags & MB_IS_DYING) == 0 && player.currentHP > 0;
     state.gameInProgress = rogue.gameInProgress;
     state.gameHasEnded = rogue.gameHasEnded;
+    state.searchProgress = player.status[STATUS_SEARCHING];
+    state.searchMaximum = player.maxStatus[STATUS_SEARCHING];
+    state.searchActive = rogue.repeatedSearchActive;
     return state;
 }
 
@@ -602,6 +606,37 @@ static void pruneIdentities(void) {
     }
 }
 
+static BrogueBridgeTerrainFeature terrainFeatureForTile(enum tileType tile) {
+    if (!validTile(tile)) return BROGUE_FEATURE_NONE;
+    if (tileCatalog[tile].mechFlags & TM_IS_SECRET) {
+        return (tileCatalog[tile].flags & T_OBSTRUCTS_PASSABILITY)
+            ? BROGUE_FEATURE_WALL : BROGUE_FEATURE_NONE;
+    }
+    if (tileIsDoor(tile)) {
+        return (tileCatalog[tile].flags & (T_OBSTRUCTS_PASSABILITY | T_OBSTRUCTS_VISION))
+            ? BROGUE_FEATURE_DOOR_CLOSED : BROGUE_FEATURE_DOOR_OPEN;
+    }
+    switch (tile) {
+        case DOOR: case WOODEN_BARRICADE: return BROGUE_FEATURE_DOOR_CLOSED;
+        case OPEN_DOOR: return BROGUE_FEATURE_DOOR_OPEN;
+        case GAS_TRAP_POISON: case GAS_TRAP_PARALYSIS: case GAS_TRAP_CONFUSION:
+            return BROGUE_FEATURE_GAS_PLATE;
+        case FLAMETHROWER: return BROGUE_FEATURE_FIRE_PLATE;
+        case FLOOD_TRAP: return BROGUE_FEATURE_FLOOD_PLATE;
+        case NET_TRAP: return BROGUE_FEATURE_NET_PLATE;
+        case ALARM_TRAP: return BROGUE_FEATURE_ALARM_PLATE;
+        case MACHINE_PARALYSIS_VENT:
+        case MACHINE_POISON_GAS_VENT: case MACHINE_POISON_GAS_VENT_DORMANT:
+        case MACHINE_METHANE_VENT: case MACHINE_METHANE_VENT_DORMANT:
+            return BROGUE_FEATURE_VENT;
+        case TRAP_DOOR: case HOLE: case HOLE_GLOW: case CHASM:
+            return BROGUE_FEATURE_HOLE;
+        case WALL_LEVER: case WALL_LEVER_PULLED: return BROGUE_FEATURE_LEVER;
+        default: return (tileCatalog[tile].flags & T_OBSTRUCTS_PASSABILITY)
+            ? BROGUE_FEATURE_WALL : BROGUE_FEATURE_NONE;
+    }
+}
+
 static void captureCell(BrogueBridgeCellState *outCell, int x, int y) {
     pcell *cell = &pmap[x][y];
     enum displayGlyph displayGlyph;
@@ -663,6 +698,11 @@ static void captureCell(BrogueBridgeCellState *outCell, int x, int y) {
     outCell->discovered = (cell->flags & (DISCOVERED | MAGIC_MAPPED)) != 0;
     outCell->currentlyVisible = (cell->flags & ANY_KIND_OF_VISIBLE) != 0;
     outCell->magicMapped = (cell->flags & MAGIC_MAPPED) != 0;
+    if (outCell->currentlyVisible) {
+        outCell->terrainFeature = terrainFeatureForTile(cell->layers[highestPriorityLayer(x, y, false)]);
+    } else if (cell->flags & DISCOVERED) {
+        outCell->terrainFeature = terrainFeatureForTile(cell->rememberedTerrain);
+    }
 
     /* Use Brogue's renderer-facing appearance resolver so the frontend map
      * sees the same remembered terrain, visibility, creature/item glyph and
@@ -933,6 +973,9 @@ static uint64_t hashPlayer(uint64_t hash, const BrogueBridgePlayerState *playerS
     hash = hashU64(hash, playerStateValue->gold);
     hash = hashU32(hash, playerStateValue->alive);
     hash = hashU32(hash, playerStateValue->gameInProgress);
+    hash = hashSigned(hash, playerStateValue->searchProgress);
+    hash = hashSigned(hash, playerStateValue->searchMaximum);
+    hash = hashU32(hash, playerStateValue->searchActive);
     return hashU32(hash, playerStateValue->gameHasEnded);
 }
 
@@ -1047,6 +1090,9 @@ static uint64_t presentationHash(const BrogueBridgeState *state) {
     uint64_t hash = UINT64_C(1469598103934665603);
     size_t i;
     hash = hashU64(hash, state->revision);
+    for (uint32_t i = 0; i < state->cellCount; ++i) {
+        hash = hashU32(hash, state->cells[i].terrainFeature);
+    }
     for (i = 0; i < state->creatureCount; i++) {
         const BrogueBridgeCreatureState *creatureState = &state->creatures[i];
         hash = hashU64(hash, creatureState->id);
@@ -1554,6 +1600,11 @@ BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *comm
             outResult->errorCode = BROGUE_BRIDGE_INVALID_ACTION;
             return outResult->errorCode;
         }
+    } else if (command->type >= BROGUE_COMMAND_SEARCH_START) {
+        if ((command->type == BROGUE_COMMAND_SEARCH_START && rogue.repeatedSearchActive)
+            || (command->type != BROGUE_COMMAND_SEARCH_START && !rogue.repeatedSearchActive)) {
+            return outResult->errorCode = BROGUE_BRIDGE_INVALID_STATE;
+        }
     } else {
         commandItem = itemForIdentity(command->itemId);
         if (commandItem == NULL || !itemIsCarried(commandItem)) {
@@ -1629,11 +1680,18 @@ BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *comm
     recordingActionEvents = true;
     beginConfirmationBroker(command->confirmed);
 
+    if (command->type < BROGUE_COMMAND_SEARCH_START && rogue.repeatedSearchActive) {
+        finishRepeatedSearch();
+    }
+
     switch (command->type) {
         case BROGUE_COMMAND_ACTION:
             if (action == BROGUE_ACTION_WAIT) {
                 rogue.justRested = true;
                 playerTurnEnded();
+                accepted = true;
+            } else if (action == BROGUE_ACTION_SEARCH) {
+                manualSearch();
                 accepted = true;
             } else {
                 direction = actionDirection(action);
@@ -1645,6 +1703,19 @@ BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *comm
                 }
                 accepted = playerMoves(direction);
             }
+            break;
+        case BROGUE_COMMAND_SEARCH_START:
+            beginRepeatedSearch();
+            stepRepeatedSearch();
+            accepted = true;
+            break;
+        case BROGUE_COMMAND_SEARCH_CONTINUE:
+            stepRepeatedSearch();
+            accepted = true;
+            break;
+        case BROGUE_COMMAND_SEARCH_CANCEL:
+            finishRepeatedSearch();
+            accepted = true;
             break;
         case BROGUE_COMMAND_EQUIP_ITEM:
             equip(commandItem);
@@ -1695,9 +1766,20 @@ BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *comm
         return outResult->errorCode;
     }
     bridgeRevision++;
-    beginIdentityCapture();
-    result = captureState(&bridgeState);
-    pruneIdentities();
+    if (command->type == BROGUE_COMMAND_SEARCH_CANCEL) {
+        /* A synchronous control-only cancellation cannot change terrain or
+         * entities. Reuse their complete copied snapshot, avoiding even
+         * cosmetic RNG calls in getCellAppearance()/hallucination capture. */
+        bridgeState.revision = bridgeRevision;
+        bridgeState.player.searchActive = 0;
+        bridgeState.stateHash = stateHash(&bridgeState);
+        bridgeState.presentationHash = presentationHash(&bridgeState);
+        result = BROGUE_BRIDGE_OK;
+    } else {
+        beginIdentityCapture();
+        result = captureState(&bridgeState);
+        pruneIdentities();
+    }
     if (result != BROGUE_BRIDGE_OK) {
         outResult->errorCode = result;
         return result;
@@ -1948,7 +2030,7 @@ const char *brogue_bridge_result_name(BrogueBridgeResult result) {
 
 const char *brogue_bridge_action_name(BrogueBridgeAction action) {
     static const char *names[BROGUE_ACTION_COUNT] = {
-        "MOVE_N", "MOVE_NE", "MOVE_E", "MOVE_SE", "MOVE_S", "MOVE_SW", "MOVE_W", "MOVE_NW", "WAIT"
+        "MOVE_N", "MOVE_NE", "MOVE_E", "MOVE_SE", "MOVE_S", "MOVE_SW", "MOVE_W", "MOVE_NW", "WAIT", "SEARCH"
     };
     if (action < 0 || action >= BROGUE_ACTION_COUNT) {
         return "INVALID_ACTION";
@@ -1973,7 +2055,8 @@ const char *brogue_bridge_event_name(BrogueBridgeEventType type) {
 
 const char *brogue_bridge_command_name(BrogueBridgeCommandType type) {
     static const char *names[BROGUE_COMMAND_COUNT] = {
-        "ACTION", "EQUIP_ITEM", "UNEQUIP_ITEM", "THROW_ITEM", "DROP_ITEM", "APPLY_ITEM", "USE_STAFF", "USE_WAND"
+        "ACTION", "EQUIP_ITEM", "UNEQUIP_ITEM", "THROW_ITEM", "DROP_ITEM", "APPLY_ITEM", "USE_STAFF", "USE_WAND",
+        "SEARCH_START", "SEARCH_CONTINUE", "SEARCH_CANCEL"
     };
     if (type < 0 || type >= BROGUE_COMMAND_COUNT) return "INVALID_COMMAND";
     return names[type];

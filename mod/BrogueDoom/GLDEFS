@@ -1,6 +1,16 @@
 // Project Broom presentation-only lights. Ambient lights deliberately opt out of
 // shadow maps so the enhanced default remains inexpensive on large caverns.
 
+material texture RRGCAVE { shader "shaders/search-reveal.fp" disablealphatest }
+material texture RRGWET { shader "shaders/search-reveal.fp" disablealphatest }
+material texture RRGMASON { shader "shaders/search-reveal.fp" disablealphatest }
+
+material "graphics/BRGSEARCH.png"
+{
+    shader "shaders/search-reveal.fp"
+    disablealphatest
+}
+
 flickerlight BROGUE_LAVA_LIGHT
 {
 	color 1.0 0.24 0.035
@@ -61,3 +71,23 @@ Glow
 		BRGMOLT, FF3F08, 40
 	}
 }
+
+material flat RRGEARTH { shader "shaders/search-floor-reveal.fp" disablealphatest }
+
+material flat RRGMOSS { shader "shaders/search-floor-reveal.fp" disablealphatest }
+
+material flat RRGFLAG { shader "shaders/search-floor-reveal.fp" disablealphatest }
+
+material texture RRGCVUP { shader "shaders/search-reveal.fp" disablealphatest }
+
+material texture RRGWTUP { shader "shaders/search-reveal.fp" disablealphatest }
+
+material texture RRGMSUP { shader "shaders/search-reveal.fp" disablealphatest }
+
+material flat RRGBRID { shader "shaders/search-floor-reveal.fp" disablealphatest }
+
+material flat RRGWATR { shader "shaders/search-floor-reveal.fp" disablealphatest }
+
+material flat RRGSLDG { shader "shaders/search-floor-reveal.fp" disablealphatest }
+
+material flat RRGMOLT { shader "shaders/search-floor-reveal.fp" disablealphatest }

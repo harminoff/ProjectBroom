@@ -18,6 +18,11 @@ alias UCM_TOGGLEFULLSIZE "netevent \"ucm.togglemaxsize\""
 alias UCM_TOGGLEFOLLOW "netevent \"ucm.togglefollow\""
 
 
+addkeysection "Project Broom" ProjectBroomControls
+addmenukey "Search (Ctrl: repeat)" brg_search
+addmenukey "Repeat search" brg_search_repeat
+defaultbind R brg_search
+
 addkeysection "Minimap Controls" UCMControls
 addmenukey "Toggle" UCM_TOGGLEALL
 addmenukey "Zoom In" +UCM_ZOOMIN

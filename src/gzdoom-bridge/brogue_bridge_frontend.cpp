@@ -9,6 +9,9 @@
 
 #include "BrogueBridge.h"
 #include "c_dispatch.h"
+#include "c_bind.h"
+#include "i_time.h"
+#include "menustate.h"
 #include "c_cvars.h"
 #include "d_event.h"
 #include "i_system.h"
@@ -21,6 +24,7 @@
 #include "v_video.h"
 #include "v_draw.h"
 #include "v_font.h"
+#include "texturemanager.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -48,6 +52,7 @@ CVAR(Int, brg_compare_pid, 0, 0)
 CVAR(Float, brg_hud_scale, 1.0, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Bool, brg_debug, false, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Int, brg_fx_quality, 1, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+CVAR(Int, brg_search_bindings_version, 0, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Bool, brg_projection_smoke, false, 0)
 
 namespace
@@ -124,6 +129,10 @@ struct DoorProxy
 	double yaw = 0.0;
 	PClassActor *presentationType = nullptr;
 	AActor *actor = nullptr;
+	int feature = -1;
+	int revealStart = -1;
+	struct Cover { line_t *line; FTextureID front, back; };
+	std::vector<Cover> covers;
 };
 
 enum class CellFxKind
@@ -145,6 +154,17 @@ struct CellFxProxy
 
 std::vector<DoorProxy> DoorProxies;
 FLevelLocals *DoorProxyLevel = nullptr;
+struct FeatureProxy {
+	int feature = -1, revealStart = -1;
+	AActor *actor = nullptr, *cover = nullptr;
+	sector_t *sector = nullptr;
+	double baseZ = 0;
+	FTextureID floorTexture;
+	std::vector<std::pair<side_t *, FTextureID>> lowerTextures;
+	bool lowered = false;
+};
+std::unordered_map<int, FeatureProxy> FeatureProxies;
+FLevelLocals *FeatureProxyLevel = nullptr;
 std::unordered_map<int, CellFxProxy> CellFxProxies;
 FLevelLocals *CellFxProxyLevel = nullptr;
 int LastLoggedCellFxCount = -1;
@@ -1061,6 +1081,13 @@ void SyncDoorMarkers()
 			proxy.yaw = actor->Angles.Yaw.Degrees();
 			proxy.presentationType = actor->GetClass();
 			proxy.actor = actor;
+			auto lines = primaryLevel->GetLineIdIterator(20000 + proxy.y * 79 + proxy.x);
+			int lineIndex;
+			while ((lineIndex = lines.Next()) >= 0) {
+				auto &line = primaryLevel->lines[lineIndex];
+				if (line.sidedef[0] && line.sidedef[1]) proxy.covers.push_back({&line,
+					line.sidedef[0]->GetTexture(side_t::mid), line.sidedef[1]->GetTexture(side_t::mid)});
+			}
 			DoorProxies.push_back(proxy);
 		}
 		DoorProxyLevel = primaryLevel;
@@ -1084,7 +1111,23 @@ void SyncDoorMarkers()
 		// a wooden barricade blocks movement while deliberately allowing sight.
 		// Either obstruction means that the authoritative doorway presentation
 		// remains closed. OPEN_DOOR has neither flag and removes the marker.
-		const bool closed = cell->isDoor && (cell->isSolid || cell->blocksVision);
+		const int feature = int(cell->terrainFeature);
+		if (proxy.feature != feature) {
+			proxy.revealStart = proxy.feature == BROGUE_FEATURE_WALL
+				&& cell->currentlyVisible && feature == BROGUE_FEATURE_DOOR_CLOSED
+				&& int(brg_fx_quality) > 0 ? primaryLevel->maptime : -1;
+			proxy.feature = feature;
+		}
+		const double progress = proxy.revealStart >= 0
+			? (std::min)(1.0, (primaryLevel->maptime - proxy.revealStart) / 21.0) : 1.0;
+		const bool concealed = feature == BROGUE_FEATURE_WALL || !cell->discovered;
+		for (auto &cover : proxy.covers) {
+			const bool present = concealed || progress < 1.0;
+			cover.line->sidedef[0]->SetTexture(side_t::mid, present ? cover.front : FTextureID());
+			cover.line->sidedef[1]->SetTexture(side_t::mid, present ? cover.back : FTextureID());
+			cover.line->setAlpha(concealed ? 1.0 : 1.0 - progress);
+		}
+		const bool closed = cell->terrainFeature == BROGUE_FEATURE_DOOR_CLOSED;
 		const bool actorAlive = proxy.actor != nullptr
 			&& !(proxy.actor->ObjectFlags & OF_EuthanizeMe);
 		if (!closed)
@@ -1115,6 +1158,110 @@ void SyncDoorMarkers()
 		proxy.actor->Alpha = 1.0;
 		proxy.actor->renderflags &= ~RF_INVISIBLE;
 		proxy.actor->SetOrigin(position, false);
+	}
+}
+
+void SyncTerrainFeatures()
+{
+	if (primaryLevel == nullptr || primaryLevel->levelnum != State.depth) return;
+	if (FeatureProxyLevel != primaryLevel) {
+		FeatureProxies.clear(); FeatureProxyLevel = primaryLevel;
+	}
+	for (uint32_t i = 0; i < State.cellCount; ++i) {
+		const auto &cell = State.cells[i];
+		const int key = cell.y * 79 + cell.x;
+		auto &proxy = FeatureProxies[key];
+		const int feature = int(cell.terrainFeature);
+		if (feature != proxy.feature) {
+			const bool newlyObserved = proxy.feature >= 0 && cell.currentlyVisible
+				&& (proxy.feature == BROGUE_FEATURE_NONE || proxy.feature == BROGUE_FEATURE_WALL);
+			if (proxy.actor) proxy.actor->Destroy();
+			if (proxy.cover) proxy.cover->Destroy();
+			proxy.actor = proxy.cover = nullptr;
+			if (proxy.lowered && feature != BROGUE_FEATURE_HOLE) {
+				proxy.sector->floorplane.ChangeHeight(proxy.baseZ - proxy.sector->floorplane.ZatPoint(BrogueCellToWorld(cell.x,cell.y)));
+				proxy.sector->SetPlaneTexZ(sector_t::floor, proxy.baseZ, true);
+				proxy.sector->SetTexture(sector_t::floor, proxy.floorTexture);
+				for (auto &side : proxy.lowerTextures) side.first->SetTexture(side_t::bottom, side.second);
+				proxy.lowerTextures.clear();
+				proxy.lowered = false;
+			}
+			DVector3 position = BrogueCellToWorld(cell.x, cell.y);
+			double featureYaw = 0;
+			const char *className = nullptr;
+			switch (feature) {
+			case BROGUE_FEATURE_GAS_PLATE: className = "BrogueSearchPlate"; break;
+			case BROGUE_FEATURE_FIRE_PLATE: className = "BrogueSearchFire"; break;
+			case BROGUE_FEATURE_FLOOD_PLATE: className = "BrogueSearchFlood"; break;
+			case BROGUE_FEATURE_NET_PLATE: className = "BrogueSearchNet"; break;
+			case BROGUE_FEATURE_ALARM_PLATE: className = "BrogueSearchAlarm"; break;
+			case BROGUE_FEATURE_VENT: className = "BrogueSearchVent"; break;
+			case BROGUE_FEATURE_LEVER: className = "BrogueSearchLever"; break;
+			case BROGUE_FEATURE_HOLE:
+				// Already-generated chasms retain their bounded contour and materials.
+				if (position.Z <= -128) break;
+				proxy.sector = primaryLevel->PointInSector(position.X, position.Y);
+				proxy.baseZ = position.Z;
+				proxy.floorTexture = proxy.sector->GetTexture(sector_t::floor);
+				proxy.sector->floorplane.ChangeHeight(-128 - position.Z);
+				proxy.sector->SetPlaneTexZ(sector_t::floor, -128, true);
+				proxy.sector->SetTexture(sector_t::floor, TexMan.GetTextureID("BRGVOID", ETextureType::Flat));
+				for (auto line : proxy.sector->Lines) for (auto side : line->sidedef)
+					if (side) {
+						proxy.lowerTextures.push_back({side, side->GetTexture(side_t::bottom)});
+						side->SetTexture(side_t::bottom, TexMan.GetTextureID("BRGCLIFF", ETextureType::Wall));
+					}
+				if (newlyObserved && int(brg_fx_quality) > 0) {
+					proxy.cover = Spawn(primaryLevel, PClass::FindActor("BrogueSearchCover"), position, NO_REPLACE);
+					if (proxy.cover) {
+						const auto *texture = TexMan.GetGameTexture(proxy.floorTexture);
+						FString name = texture ? texture->GetName() : "BRGEARTH";
+						name.LockBuffer()[0] = 'R'; name.UnlockBuffer();
+						auto data = Create<DActorModelData>();
+						data->flags = MODELDATA_HADMODEL;
+						data->modelDef = nullptr;
+						data->skinIDs.Push(TexMan.GetTextureID(name.GetChars(), ETextureType::Flat));
+						proxy.cover->modelData = data;
+						GC::WriteBarrier(proxy.cover, data);
+					}
+				}
+				proxy.lowered = true;
+				className = "BrogueSearchRim";
+				break;
+			}
+			proxy.feature = feature;
+			proxy.revealStart = newlyObserved && int(brg_fx_quality) > 0 ? primaryLevel->maptime : -1;
+			if (className) {
+				if (feature == BROGUE_FEATURE_LEVER) {
+					const int offsets[][2] = {{1,0},{0,-1},{-1,0},{0,1}};
+					for (const auto &offset : offsets) {
+						const auto *neighbor = FindStateCell(cell.x+offset[0], cell.y+offset[1]);
+						if (neighbor && neighbor->discovered && neighbor->terrainFeature != BROGUE_FEATURE_WALL) {
+							position.X += offset[0] * 33; position.Y -= offset[1] * 33;
+							featureYaw = std::atan2(-double(offset[1]), double(offset[0])) * 180.0 / 3.141592653589793;
+							break;
+						}
+					}
+				}
+				position.Z += .1;
+				proxy.actor = Spawn(primaryLevel, PClass::FindActor(className), position, NO_REPLACE);
+				if (proxy.actor) proxy.actor->Angles.Yaw = DAngle::fromDeg(featureYaw);
+				if (proxy.actor && feature == BROGUE_FEATURE_NET_PLATE) {
+					auto sector = primaryLevel->PointInSector(position.X,position.Y);
+					proxy.actor->Scale.Y = (sector->ceilingplane.ZatPoint(position)-position.Z)/224.0;
+				}
+			}
+		}
+		if (proxy.actor) {
+			const double progress = proxy.revealStart < 0 || int(brg_fx_quality) <= 0 ? 1.0
+				: (std::min)(1.0, (primaryLevel->maptime-proxy.revealStart)/21.0);
+			proxy.actor->Alpha = progress;
+			proxy.actor->RenderStyle = progress < 1.0 ? STYLE_Translucent : STYLE_Normal;
+			if (proxy.cover) {
+				proxy.cover->Alpha = 1.0 - progress;
+				if (progress >= 1.0) { proxy.cover->Destroy(); proxy.cover = nullptr; }
+			}
+		}
 	}
 }
 
@@ -1215,6 +1362,8 @@ void DetachLevelPresentation()
 	ItemProxyLevel = nullptr;
 	MonsterProxyLevel = nullptr;
 	DoorProxyLevel = nullptr;
+	FeatureProxyLevel = nullptr;
+	FeatureProxies.clear();
 	CellFxProxyLevel = nullptr;
 	LastLoggedCellFxCount = -1;
 	LastLoggedItemCount = -1;
@@ -1368,6 +1517,17 @@ bool EnsureStarted()
 	}
 
 	Started = true;
+	// defaultbind deliberately preserves Doom's saved +reload binding. Migrate
+	// that obsolete default once, without replacing a customized search binding.
+	if (int(brg_search_bindings_version) < 1) {
+		const char *binding = Bindings.GetBind("R");
+		if (binding && !strcmp(binding, "+reload")
+			&& Bindings.GetKeysForCommand("brg_search").Size() == 0) {
+			Bindings.DoBind("R", "brg_search");
+			Printf(PRINT_NONOTIFY, "Project Broom: migrated R from reload to Search.\n");
+		}
+		brg_search_bindings_version = 1;
+	}
 	Api.getMonsterCatalog(&MonsterCatalog);
 	if (brg_debug)
 		Printf("Brogue bridge: attached seed=%llu depth=%d levelSeed=%llu player=%d,%d.\n",
@@ -1414,6 +1574,7 @@ BrogueBridgeResult PerformCommandResult(BrogueBridgeCommand command, const char 
 	if (SyncLevelEvent(result)) return BROGUE_BRIDGE_OK;
 
 	SyncTerrainEvents(result);
+	SyncTerrainFeatures();
 	SyncDoorMarkers();
 	SyncCellEffects();
 	SpawnBridgeEventEffects(result);
@@ -1439,6 +1600,96 @@ bool PerformCommand(BrogueBridgeCommand command, const char *source)
 {
 	BrogueBridgeTurnResult result{};
 	return PerformCommandResult(command, source, result, true) == BROGUE_BRIDGE_OK;
+}
+
+uint64_t SearchNextMs = 0;
+bool SearchKeyHeld[NUM_KEYS]{};
+bool SearchControlHeld = false;
+int RevealMaterialSmoke = 0;
+AActor *RevealMaterialActor = nullptr;
+
+void TickRevealMaterialSmoke()
+{
+	if (!RevealMaterialSmoke || primaryLevel == nullptr || primaryLevel->maptime < 70) return;
+	AActor *pawn = players[consoleplayer].mo;
+	if (pawn == nullptr) return;
+	if (RevealMaterialSmoke == 1) {
+		DVector3 position = pawn->Pos();
+		position.X += pawn->Angles.Yaw.Cos() * 40;
+		position.Y += pawn->Angles.Yaw.Sin() * 40;
+		position.Z = pawn->floorz + 1;
+		RevealMaterialActor = Spawn(primaryLevel, PClass::FindActor("BrogueSearchPlate"), position, NO_REPLACE);
+		pawn->Angles.Pitch = DAngle::fromDeg(40);
+		if (!RevealMaterialActor) { Printf("REVEAL_MATERIAL FAIL spawn\n"); RevealMaterialSmoke = 0; return; }
+	}
+	if (RevealMaterialSmoke == 1 || RevealMaterialSmoke == 22 || RevealMaterialSmoke == 43) {
+		RevealMaterialActor->Alpha = (RevealMaterialSmoke - 1) / 42.0;
+    }
+    // Screenshot reads the last completed framebuffer; allow two render tics
+    // after the material change instead of accidentally capturing its old alpha.
+    if (RevealMaterialSmoke == 3 || RevealMaterialSmoke == 24 || RevealMaterialSmoke == 45) {
+		Printf(PRINT_NONOTIFY, "REVEAL_MATERIAL capture alpha=%.2f\n", RevealMaterialActor->Alpha);
+		AddCommandString("screenshot");
+	}
+	if (++RevealMaterialSmoke > 65) {
+		RevealMaterialActor->Destroy(); RevealMaterialActor = nullptr;
+		RevealMaterialSmoke = 0;
+		Printf(PRINT_NONOTIFY, "REVEAL_MATERIAL PASS\n");
+	}
+}
+
+void CancelSearch()
+{
+	if (!State.player.searchActive || State.player.gameHasEnded) return;
+	BrogueBridgeCommand command{};
+	command.apiVersion = BROGUE_BRIDGE_API_VERSION;
+	command.type = BROGUE_COMMAND_SEARCH_CANCEL;
+	PerformCommand(command, "search-cancel");
+	SearchNextMs = 0;
+}
+
+bool SearchHasFocus()
+{
+#ifdef _WIN32
+	DWORD process = 0;
+	GetWindowThreadProcessId(GetForegroundWindow(), &process);
+	return process == GetCurrentProcessId();
+#else
+	return true;
+#endif
+}
+
+void SearchCommand(bool repeat)
+{
+	if (!EnsureStarted() || State.player.gameHasEnded || InventoryOpen
+		|| WeaponUi != WeaponUiMode::None || CommandConfirmationOpen || menuactive != MENU_Off) return;
+	CancelSearch();
+	BrogueBridgeCommand command{};
+	command.apiVersion = BROGUE_BRIDGE_API_VERSION;
+	command.type = repeat ? BROGUE_COMMAND_SEARCH_START : BROGUE_COMMAND_ACTION;
+	command.action = BROGUE_ACTION_SEARCH;
+	PerformCommand(command, "search-input");
+	SearchNextMs = I_msTime() + 80; // Schedule from completion, never accumulate catch-up turns.
+}
+
+void TickSearch(bool advance)
+{
+	if (!State.player.searchActive) return;
+	if (menuactive != MENU_Off || !SearchHasFocus() || InventoryOpen
+		|| WeaponUi != WeaponUiMode::None || CommandConfirmationOpen
+		|| primaryLevel == nullptr || primaryLevel->levelnum != State.depth) {
+		CancelSearch();
+		std::fill(std::begin(SearchKeyHeld), std::end(SearchKeyHeld), false);
+		SearchControlHeld = false;
+		return;
+	}
+	if (advance && I_msTime() >= SearchNextMs) {
+		BrogueBridgeCommand command{};
+		command.apiVersion = BROGUE_BRIDGE_API_VERSION;
+		command.type = BROGUE_COMMAND_SEARCH_CONTINUE;
+		PerformCommand(command, "search-continue");
+		SearchNextMs = I_msTime() + 80;
+	}
 }
 
 void ClearCommandConfirmation()
@@ -1683,6 +1934,7 @@ bool ParseActionName(const char *name, BrogueBridgeAction &action)
 		{"S", BROGUE_ACTION_MOVE_S}, {"SW", BROGUE_ACTION_MOVE_SW},
 		{"W", BROGUE_ACTION_MOVE_W}, {"NW", BROGUE_ACTION_MOVE_NW},
 		{"WAIT", BROGUE_ACTION_WAIT},
+		{"SEARCH", BROGUE_ACTION_SEARCH},
 	};
 	for (const NamedAction &candidate : names)
 	{
@@ -2004,7 +2256,8 @@ void CycleLookTarget()
 	for (uint32_t index = 0; index < State.cellCount; ++index)
 	{
 		const BrogueBridgeCellState &cell = State.cells[index];
-		if (cell.currentlyVisible && (cell.isStairsUp || cell.isStairsDown || (cell.isDoor && !cell.isSecret)))
+		if (cell.currentlyVisible && (cell.isStairsUp || cell.isStairsDown
+			|| cell.terrainFeature == BROGUE_FEATURE_DOOR_CLOSED || cell.terrainFeature == BROGUE_FEATURE_DOOR_OPEN))
 			points.push_back({cell.x, cell.y});
 	}
 	std::sort(points.begin(), points.end(), [](const LookPoint &left, const LookPoint &right)
@@ -2394,7 +2647,8 @@ FString CellDescription(const BrogueBridgeCellState *cell)
 	if (cell == nullptr) return "Unknown terrain";
 	if (cell->isStairsUp) return "Up ladder";
 	if (cell->isStairsDown) return "Down ladder";
-	if (cell->isDoor) return cell->isSecret ? "Secret door" : "Door";
+	if (cell->terrainFeature == BROGUE_FEATURE_WALL) return "Wall";
+	if (cell->terrainFeature == BROGUE_FEATURE_DOOR_CLOSED || cell->terrainFeature == BROGUE_FEATURE_DOOR_OPEN) return "Door";
 	if (cell->isBridge) return "Bridge";
 	if (cell->isLava) return "Lava";
 	if (cell->isDeepWater) return "Deep water";
@@ -2925,6 +3179,10 @@ CCMD(brg_wait)
 	PerformQueuedWait();
 }
 
+CCMD(brg_search) { SearchCommand(false); }
+CCMD(brg_search_repeat) { SearchCommand(true); }
+CCMD(brg_reveal_material_smoke) { RevealMaterialSmoke = 1; }
+
 // Deterministic in-engine bridge smoke harness. It is intentionally semantic
 // (N/NE/E/SE/S/SW/W/NW/WAIT), so it exercises the same Brogue authority path
 // as physical input without synthesizing OS keyboard events.
@@ -3006,6 +3264,18 @@ CCMD(brg_wand_smoke)
 	StaffSmokeNextTic = 0;
 }
 
+bool BrogueBridge_WantsSearchEscape(void)
+{
+	return Started && IsBrogueMap() && State.player.searchActive;
+}
+
+void BrogueBridge_CancelSearchForUi(void)
+{
+	if (Started && IsBrogueMap()) CancelSearch();
+	std::fill(std::begin(SearchKeyHeld), std::end(SearchKeyHeld), false);
+	SearchControlHeld = false;
+}
+
 bool BrogueBridge_OwnsPlayerPosition(void)
 {
 	// Brogue commits input synchronously; rolling back its visual pawn would
@@ -3036,14 +3306,22 @@ void BrogueBridge_DrawHud(void)
 		}
 	}
 	DrawStatusRail();
+	TickSearch(false);
+	if (State.player.searchActive) {
+		FString searching;
+		searching.Format("Searching %d/%d  |  Esc Cancel", State.player.searchProgress, State.player.searchMaximum);
+		HudText(CR_TAN, StatusRailWidth() + HudSize(10), HudSize(82), searching.GetChars());
+	}
 	DrawBrogueMinimap();
 	const int railWidth = StatusRailWidth();
 	for (uint32_t line = 0; line < State.messageCount && line < 3; ++line)
 		HudText(line == 0 ? CR_WHITE : CR_TAN, railWidth + HudSize(10), HudSize(8) + int(line) * HudSize(23), State.messages[line]);
 	const BrogueBridgeCellState *cell = FindStateCell(State.player.x, State.player.y);
 	FString footer;
-	footer.Format("%s  |  Cell %d,%d  |  L Look  |  I Inventory  |  Q Weapons  |  T Throw  |  Space Wait",
-		CellDescription(cell).GetChars(), State.player.x, State.player.y);
+	auto searchKeys = Bindings.GetKeysForCommand("brg_search");
+	FString searchKey = searchKeys.Size() ? C_NameKeys(searchKeys.Data(), 1) : "Unbound";
+	footer.Format("%s Search (Ctrl: repeat)  |  L Look  |  I Inventory  |  Q Weapons  |  T Throw  |  Space Wait  |  %s  |  Cell %d,%d",
+		searchKey.GetChars(), CellDescription(cell).GetChars(), State.player.x, State.player.y);
 	const int footerHeight = HudSize(28);
 	Dim(twod, 0x00000000, .62f, railWidth, twod->GetHeight() - footerHeight, twod->GetWidth() - railWidth, footerHeight);
 	HudText(CR_TAN, railWidth + HudSize(10), twod->GetHeight() - HudSize(24), footer.GetChars());
@@ -3096,6 +3374,33 @@ bool BrogueBridge_HandleInput(const event_t *event)
 {
 	if (event == nullptr || !IsBrogueMap()) return false;
 	if (!EnsureStarted()) return true;
+	if (event->data1 == 0x1d || event->data1 == 0x9d) {
+		if (event->type == EV_KeyDown) SearchControlHeld = true;
+		if (event->type == EV_KeyUp) SearchControlHeld = false;
+	}
+	if (event->data1 >= 0 && event->data1 < NUM_KEYS) {
+		const int key = event->data1;
+		if (event->type == EV_KeyUp && SearchKeyHeld[key]) {
+			SearchKeyHeld[key] = false;
+			return true;
+		}
+		const char *binding = Bindings.GetBind(key);
+		const bool single = binding && !strcmp(binding, "brg_search");
+		const bool repeat = binding && !strcmp(binding, "brg_search_repeat");
+		if ((single || repeat) && event->type == EV_KeyDown) {
+			if (!SearchKeyHeld[key]) {
+				SearchKeyHeld[key] = true;
+				SearchCommand(repeat || SearchControlHeld);
+			}
+			return true;
+		}
+	}
+	if (State.player.searchActive && event->type == EV_KeyDown
+		&& event->data1 != 0x1d && event->data1 != 0x9d
+		&& event->data1 != 0x2a && event->data1 != 0x36) {
+		CancelSearch();
+		if (event->data1 == KEY_ESCAPE) return true;
+	}
 	if (HandleGameOverInput(event)) return true;
 	if (HandleCommandConfirmationInput(event)) return true;
 	if (event->data1 == KEY_MOUSE2 && WeaponUi != WeaponUiMode::None)
@@ -3167,6 +3472,7 @@ void BrogueBridge_PrepareTiccmd(usercmd_t *cmd)
 		SyncPlayer();
 		SyncFallShaftMarker();
 		SyncDoorMarkers();
+		SyncTerrainFeatures();
 		SyncItems();
 		SyncMonsters();
 	}
@@ -3208,6 +3514,8 @@ void BrogueBridge_PrepareTiccmd(usercmd_t *cmd)
 	}
 
 	TickStaffSmoke();
+	TickRevealMaterialSmoke();
+	TickSearch(true);
 	TickThrowSmoke();
 
 	// View angle/pitch remain GZDoom presentation controls. Prevent every

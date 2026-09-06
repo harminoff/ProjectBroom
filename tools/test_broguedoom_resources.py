@@ -325,7 +325,7 @@ class BrogueDoomResourceTests(unittest.TestCase):
         self.assertIn("class BrogueBarricadeMarker : BrogueDoorMarker", zscript)
         self.assertIn("15021 = BrogueBarricadeMarker", mapinfo)
         self.assertIn("void SyncDoorMarkers()", frontend)
-        self.assertIn("cell->isDoor && (cell->isSolid || cell->blocksVision)", frontend)
+        self.assertIn("cell->terrainFeature == BROGUE_FEATURE_DOOR_CLOSED", frontend)
         self.assertIn("proxy.presentationType = actor->GetClass();", frontend)
         self.assertIn("if (!actor->IsA(type)) continue;", frontend)
         self.assertIn("if (actorAlive) proxy.actor->Destroy();", frontend)
@@ -424,7 +424,7 @@ class BrogueDoomResourceTests(unittest.TestCase):
     def test_complete_brogue_monster_roster_is_generated(self) -> None:
         catalog = json.loads(MONSTER_CATALOG.read_text(encoding="utf-8"))
         registry = json.loads(MONSTER_REGISTRY.read_text(encoding="utf-8"))
-        self.assertEqual(catalog["bridgeApiVersion"], 16)
+        self.assertEqual(catalog["bridgeApiVersion"], 17)
         self.assertEqual(catalog["count"], 68)
         self.assertEqual(registry["nonPlayerModelCount"], 67)
         self.assertEqual(registry["presentationModelCount"], 68)

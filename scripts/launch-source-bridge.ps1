@@ -92,7 +92,7 @@ $needsPackage = $Force -or -not (Test-Path -LiteralPath $generated -PathType Lea
 if (-not $needsPackage) {
     try {
         $manifest = Get-Content -Raw -LiteralPath $packageManifest | ConvertFrom-Json
-        $needsPackage = $manifest.inputSha256 -ne $inputHash -or $manifest.compilerVersion -ne "42" -or $manifest.resourcePack -ne "Project Broom Original Cave Textures"
+        $needsPackage = $manifest.inputSha256 -ne $inputHash -or $manifest.compilerVersion -ne "43" -or $manifest.resourcePack -ne "Project Broom Original Cave Textures"
     } catch {
         $needsPackage = $true
     }

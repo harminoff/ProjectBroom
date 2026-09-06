@@ -113,7 +113,7 @@ class BrogueBridgeTests(unittest.TestCase):
                 cwd=BRIDGE_DIR, check=True, capture_output=True, text=True,
             )
             catalog = __import__("json").loads(output.read_text(encoding="utf-8"))
-        self.assertEqual(catalog["bridgeApiVersion"], 16)
+        self.assertEqual(catalog["bridgeApiVersion"], 17)
         self.assertEqual(catalog["count"], 68)
         self.assertEqual(catalog["kinds"][0]["symbol"], "MK_YOU")
         self.assertEqual(catalog["kinds"][1]["symbol"], "MK_RAT")
@@ -145,14 +145,23 @@ class BrogueBridgeTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertEqual(
             hashlib.sha256(first.encode("utf-8")).hexdigest(),
-            # API v13 adds authoritative mud semantics to the normalized cell
-            # hash while retaining deterministic text output.
-            "f980b157b1ef9809c3a46e7df79e43cad1d32e8fa2a849ca24a4df4173de1fcc",
+            # API v17 includes search progress and knowledge-limited terrain.
+            "cc8beabe22d82404ddd09cbdb30e720a738516cac917f52ce9f19b29447ad504",
         )
         action_matches = lines_matching(first, ACTION_RE)
         self.assertEqual(len(action_matches), 6)
         self.assertEqual([match["turn"] for match in action_matches], ["1", "2", "3", "4", "5", "6"])
         self.assertTrue(all(match["hash"] for match in action_matches))
+
+    def test_search_matches_standalone(self) -> None:
+        for seed in (1, 2, 42, 12345, 99999):
+            with self.subTest(seed=seed):
+                command = [str(BRIDGE_EXE), '--seed', str(seed), '--search-smoke']
+                first = subprocess.run(command, cwd=BRIDGE_DIR, capture_output=True, text=True, check=True).stdout
+                second = subprocess.run(command, cwd=BRIDGE_DIR, capture_output=True, text=True, check=True).stdout
+                self.assertEqual(first, second)
+                self.assertEqual(first.count('parity=true'), 21)
+                self.assertIn('contract=truncation-memory-reset cancelTurn=false cancelRng=false', first)
 
     def test_multiple_game_seeds_keep_the_same_contract(self) -> None:
         actions = "WAIT,N,E,SE,WAIT,W"
