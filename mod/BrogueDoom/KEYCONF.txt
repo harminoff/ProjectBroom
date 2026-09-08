@@ -21,6 +21,9 @@ alias UCM_TOGGLEFOLLOW "netevent \"ucm.togglefollow\""
 addkeysection "Project Broom" ProjectBroomControls
 addmenukey "Search (Ctrl: repeat)" brg_search
 addmenukey "Repeat search" brg_search_repeat
+addmenukey "Save and exit" brg_save_exit
+addmenukey "Map" brg_map
+defaultbind M brg_map
 defaultbind R brg_search
 
 addkeysection "Minimap Controls" UCMControls

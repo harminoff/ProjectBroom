@@ -20,12 +20,16 @@
  *
  */
 
+#ifndef _WIN32
+#define _POSIX_C_SOURCE 200809L
+#endif
 #include <time.h>
 #include <math.h>
 #include <limits.h>
 #include "Rogue.h"
 #include "GlobalsBase.h"
 #include "Globals.h"
+#include "RecordingIO.h"
 
 #define RECORDING_HEADER_LENGTH     36  // bytes at the start of the recording file to store global data
 
@@ -174,103 +178,61 @@ void recordMouseClick(short x, short y, boolean controlKey, boolean shiftKey) {
     recordEvent(&theEvent);
 }
 
-static void writeHeaderInfo(char *path) {
-    unsigned char c[RECORDING_HEADER_LENGTH];
-    short i;
-    FILE *recordFile;
-
-    // Zero out the entire header to start.
-    for (i=0; i<RECORDING_HEADER_LENGTH; i++) {
-        c[i] = 0;
-    }
-
-    // Note the version string to gracefully deny compatibility when necessary.
-    for (i = 0; rogue.versionString[i] != '\0'; i++) {
-        c[i] = rogue.versionString[i];
-    }
-    c[15] = rogue.mode;
-    i = 16;
-    numberToString(rogue.seed, 8, &c[i]);
-    i += 8;
-    numberToString(rogue.playerTurnNumber, 4, &c[i]);
-    i += 4;
-    numberToString(rogue.deepestLevel, 4, &c[i]);
-    i += 4;
-    numberToString(lengthOfPlaybackFile, 4, &c[i]);
-    i += 4;
-
-    if (!fileExists(path)) {
-        recordFile = fopen(path, "wb");
-        if (recordFile) {
-            fclose(recordFile);
-        }
-    }
-
-    recordFile = fopen(path, "r+b");
-    rewind(recordFile);
-    for (i=0; i<RECORDING_HEADER_LENGTH; i++) {
-        putc(c[i], recordFile);
-    }
-    if (recordFile) {
-        fclose(recordFile);
-    }
-
-    if (lengthOfPlaybackFile < RECORDING_HEADER_LENGTH) {
-        lengthOfPlaybackFile = RECORDING_HEADER_LENGTH;
-    }
+static void recordingHeader(unsigned char *header, unsigned long length) {
+    memset(header, 0, RECORDING_HEADER_LENGTH);
+    memcpy(header, rogue.versionString, 15);
+    header[15] = rogue.mode;
+    numberToString(rogue.seed, 8, header + 16);
+    numberToString(rogue.playerTurnNumber, 4, header + 24);
+    numberToString(rogue.deepestLevel, 4, header + 28);
+    numberToString(length, 4, header + 32);
 }
 
 void flushBufferToFile() {
-    if (rogue.playbackMode) {
-        return;
+    unsigned char header[RECORDING_HEADER_LENGTH];
+    if (rogue.playbackMode) return;
+    if (!currentFilePath[0]) { locationInRecordingBuffer = 0; return; }
+    unsigned long prefix = lengthOfPlaybackFile < RECORDING_HEADER_LENGTH ? 0 : lengthOfPlaybackFile;
+    unsigned long length = max(prefix, RECORDING_HEADER_LENGTH) + locationInRecordingBuffer;
+    recordingHeader(header, length);
+    // The first publication consists of a header; later flushes append to the
+    // committed prefix and replace the header in the same atomic transaction.
+    if (!prefix) {
+        if (!recordingPublish(NULL, currentFilePath, 0, header, sizeof(header), NULL)) return;
+        prefix = RECORDING_HEADER_LENGTH;
     }
-
-    if (!currentFilePath[0] == '\0') {
-        short i;
-        FILE *recordFile;
-
-        lengthOfPlaybackFile += locationInRecordingBuffer;
-        writeHeaderInfo(currentFilePath);
-
-        if (locationInRecordingBuffer != 0) {
-
-            recordFile = fopen(currentFilePath, "ab");
-
-            for (i=0; i<locationInRecordingBuffer; i++) {
-                putc(inputRecordBuffer[i], recordFile);
-            }
-
-            if (recordFile) {
-                fclose(recordFile);
-            }
-        }
-    }
+    if (!recordingPublish(currentFilePath, currentFilePath, prefix,
+                          inputRecordBuffer, locationInRecordingBuffer, header)) return;
+    lengthOfPlaybackFile = length;
     locationInRecordingBuffer = 0;
+    clearRecordingError();
 }
 
 void fillBufferFromFile() {
-//  short i;
-    FILE *recordFile;
-
-    recordFile = fopen(currentFilePath, "rb");
-    fseek(recordFile, positionInPlaybackFile, SEEK_SET);
-
-    fread((void *) inputRecordBuffer, 1, INPUT_RECORD_BUFFER, recordFile);
-
-    positionInPlaybackFile = ftell(recordFile);
-    fclose(recordFile);
-
+    FILE *file = openBrogueFile(currentFilePath, "rb");
+    playbackBufferBytes = 0;
     locationInRecordingBuffer = 0;
+    if (!file) { recordingFail("Read recording"); rogue.gameHasEnded = true; return; }
+    if (!fseek(file, positionInPlaybackFile, SEEK_SET)) {
+        playbackBufferBytes = fread(inputRecordBuffer, 1, INPUT_RECORD_BUFFER, file);
+        positionInPlaybackFile = ftell(file);
+    }
+    if (ferror(file) || !playbackBufferBytes) {
+        errno = EIO; recordingFail("Truncated recording"); rogue.gameHasEnded = true;
+    }
+    fclose(file);
 }
 
 static unsigned char recallChar() {
     unsigned char c;
-    if (recordingLocation > lengthOfPlaybackFile) {
+    if (recordingLocation >= lengthOfPlaybackFile || locationInRecordingBuffer >= playbackBufferBytes) {
+        errno = EIO; recordingFail("Unexpected end of recording");
+        rogue.gameHasEnded = true;
         return END_OF_RECORDING;
     }
     c = inputRecordBuffer[locationInRecordingBuffer++];
     recordingLocation++;
-    if (locationInRecordingBuffer >= INPUT_RECORD_BUFFER) {
+    if (locationInRecordingBuffer >= INPUT_RECORD_BUFFER && recordingLocation < lengthOfPlaybackFile) {
         fillBufferFromFile();
     }
     return c;
@@ -319,9 +281,11 @@ static void playbackPanic() {
         const SavedDisplayBuffer rbuf = saveDisplayBuffer();
         printTextBox(OOS_APOLOGY, 0, 0, 0, &white, &black, NULL, 0);
 
-        rogue.playbackMode = false;
-        displayMoreSign();
-        rogue.playbackMode = true;
+        if (!managedLoad) {
+            rogue.playbackMode = false;
+            displayMoreSign();
+            rogue.playbackMode = true;
+        }
 
         restoreDisplayBuffer(&rbuf);
 
@@ -333,7 +297,7 @@ static void playbackPanic() {
         printf("Playback panic at location %li! Turn number %li.\n", recordingLocation - 1, rogue.playerTurnNumber);
         restoreDisplayBuffer(&rbuf);
 
-        mainInputLoop();
+        if (!managedLoad) mainInputLoop();
     }
 }
 
@@ -468,10 +432,8 @@ void initRecording() {
     }
 
     short i;
-    enum gameMode mode;
     unsigned short recPatch;
     char buf[1000], *versionString = rogue.versionString;
-    FILE *recordFile;
 
 #ifdef AUDIT_RNG
     if (fileExists(RNG_LOG)) {
@@ -545,10 +507,7 @@ void initRecording() {
         strcpy(versionString, gameConst->recordingVersionString);
 
         lengthOfPlaybackFile = 1;
-        remove(currentFilePath);
-        recordFile = fopen(currentFilePath, "wb"); // create the file
-        fclose(recordFile);
-
+        clearRecordingError();
         flushBufferToFile(); // header info never makes it into inputRecordBuffer when recording
         rogue.recording = true;
     }
@@ -1161,6 +1120,23 @@ static void getDefaultFilePath(char *defaultPath, boolean gameOver) {
     }
 }
 
+boolean saveGameToPath(const char *path) {
+    if (rogue.playbackMode || !currentFilePath[0] || !path || !path[0]
+        || strlen(path) >= BROGUE_FILENAME_MAX) {
+        errno = EINVAL; return recordingFail("Cannot save this session");
+    }
+    flushBufferToFile();
+    if (recordingError[0]) return false;
+    if (strcmp(currentFilePath, path) && !recordingPublish(currentFilePath, path,
+            lengthOfPlaybackFile, NULL, 0, NULL)) return false;
+    if (strcmp(currentFilePath, path)) recordingRemove(currentFilePath);
+    strcpy(currentFilePath, path);
+    rogue.gameHasEnded = true;
+    rogue.gameExitStatusCode = EXIT_STATUS_SUCCESS;
+    rogue.recording = false;
+    return true;
+}
+
 void saveGameNoPrompt() {
     char filePath[BROGUE_FILENAME_MAX], defaultPath[BROGUE_FILENAME_MAX];
     if (rogue.playbackMode) {
@@ -1168,13 +1144,8 @@ void saveGameNoPrompt() {
     }
     getDefaultFilePath(defaultPath, false);
     getAvailableFilePath(filePath, defaultPath, GAME_SUFFIX);
-    flushBufferToFile();
     strcat(filePath, GAME_SUFFIX);
-    rename(currentFilePath, filePath);
-    strcpy(currentFilePath, filePath);
-    rogue.gameHasEnded = true;
-    rogue.gameExitStatusCode = EXIT_STATUS_SUCCESS;
-    rogue.recording = false;
+    saveGameToPath(filePath);
 }
 #define MAX_TEXT_INPUT_FILENAME_LENGTH (COLS - 12) // max length including the suffix
 
@@ -1196,14 +1167,8 @@ void saveGame() {
                                MAX_TEXT_INPUT_FILENAME_LENGTH, filePathWithoutSuffix, GAME_SUFFIX, TEXT_INPUT_FILENAME, true)) {
             snprintf(filePath, BROGUE_FILENAME_MAX, "%s%s", filePathWithoutSuffix, GAME_SUFFIX);
             if (!fileExists(filePath) || confirm("File of that name already exists. Overwrite?", true)) {
-                remove(filePath);
-                flushBufferToFile();
-                rename(currentFilePath, filePath);
-                strcpy(currentFilePath, filePath);
-                rogue.recording = false;
-                message("Saved.", REQUIRE_ACKNOWLEDGMENT);
-                rogue.gameHasEnded = true;
-                rogue.gameExitStatusCode = EXIT_STATUS_SUCCESS;
+                if (saveGameToPath(filePath)) message("Saved.", REQUIRE_ACKNOWLEDGMENT);
+                else message(recordingError, REQUIRE_ACKNOWLEDGMENT);
             } else {
                 askAgain = true;
             }
@@ -1260,112 +1225,152 @@ void saveRecording(char *filePathWithoutSuffix) {
     } while (askAgain);
 }
 
-static void copyFile(char *fromFilePath, char *toFilePath, unsigned long fromFileLength) {
-    unsigned long m, n;
-    unsigned char fileBuffer[INPUT_RECORD_BUFFER];
-    FILE *fromFile, *toFile;
-
-    remove(toFilePath);
-
-    fromFile    = fopen(fromFilePath, "rb");
-    toFile      = fopen(toFilePath, "wb");
-
-    for (n = 0; n < fromFileLength; n += m) {
-        m = min(INPUT_RECORD_BUFFER, fromFileLength - n);
-        fread((void *) fileBuffer, 1, m, fromFile);
-        fwrite((void *) fileBuffer, 1, m, toFile);
-    }
-
-    fclose(fromFile);
-    fclose(toFile);
+static uint64_t headerNumber(const unsigned char *bytes, int count) {
+    uint64_t value = 0;
+    while (count--) value = value * 256 + *bytes++;
+    return value;
 }
 
-// at the end of loading a saved game, this function transitions into active play mode.
-void switchToPlaying() {
-    char lastGamePath[BROGUE_FILENAME_MAX];
-
-    getAvailableFilePath(lastGamePath, LAST_GAME_NAME, GAME_SUFFIX);
-    strcat(lastGamePath, GAME_SUFFIX);
-
-    rogue.playbackMode          = false;
-    rogue.playbackFastForward   = false;
-    rogue.playbackOmniscience   = false;
-    rogue.recording             = true;
-    locationInRecordingBuffer   = 0;
-    copyFile(currentFilePath, lastGamePath, recordingLocation);
-#ifndef ENABLE_PLAYBACK_SWITCH
-    if (DELETE_SAVE_FILE_AFTER_LOADING) {
-        remove(currentFilePath);
+boolean inspectSavedGame(const char *path, uint64_t *seed, unsigned long *turns, int *mode, char *version) {
+    unsigned char header[RECORDING_HEADER_LENGTH];
+    unsigned short patch;
+    FILE *file;
+    clearRecordingError();
+    if (!path || !path[0] || strlen(path) >= BROGUE_FILENAME_MAX) {
+        errno = EINVAL; return recordingFail("Invalid save path");
     }
-#endif
-
-    strcpy(currentFilePath, lastGamePath);
-
-    blackOutScreen();
-    refreshSideBar(-1, -1, false);
-    updateMessageDisplay();
-    displayLevel();
+    file = openBrogueFile(path, "rb");
+    if (!file) return recordingFail("Open save");
+    boolean valid = fread(header, 1, sizeof(header), file) == sizeof(header);
+    valid = valid && !fseek(file, 0, SEEK_END);
+    long size = ftell(file);
+    fclose(file);
+    if (!valid || size < sizeof(header) || !memchr(header, 0, 15)
+        || headerNumber(header+32, 4) != (uint64_t)size || header[15] > GAME_MODE_EASY) {
+        errno = EINVAL; return recordingFail("Invalid or truncated Brogue save");
+    }
+    if (!(getPatchVersion((char *)header, &patch) && patch <= gameConst->patchVersion)
+        && strcmp((char *)header, gameConst->recordingVersionString)) {
+        snprintf(recordingError, sizeof(recordingError), "Save version %s is incompatible with %s.",
+                 header, gameConst->recordingVersionString);
+        return false;
+    }
+    if (seed) *seed = headerNumber(header+16, 8);
+    if (turns) *turns = headerNumber(header+24, 4);
+    if (mode) *mode = header[15];
+    if (version) { memcpy(version, header, 15); version[15] = 0; }
+    return true;
 }
 
-// Return whether the load was cancelled by an event
-boolean loadSavedGame() {
-    unsigned long progressBarInterval;
-    unsigned long previousRecordingLocation;
-    rogueEvent theEvent;
-
-    screenDisplayBuffer dbuf;
-
+boolean beginSavedGameLoad(const char *path) {
+    if (!inspectSavedGame(path, NULL, NULL, NULL, NULL)) return false;
+    strcpy(currentFilePath, path);
+    strcpy(rogue.currentGamePath, path);
+    annotationPathname[0] = 0;
+    managedLoad = true;
     randomNumbersGenerated = 0;
     rogue.playbackMode = true;
     rogue.playbackFastForward = true;
-    initializeRogue(0); // Calls initRecording(). Seed argument is ignored because we're initially in playback mode.
-    if (!rogue.gameHasEnded) {
-        blackOutScreen();
-        startLevel(rogue.depthLevel, 1);
-    }
+    initializeRogue(0);
+    if (!rogue.gameHasEnded && !recordingError[0]) startLevel(rogue.depthLevel, 1);
+    return !rogue.gameHasEnded && !recordingError[0];
+}
 
-    if (rogue.howManyTurns > 0) {
-
-        progressBarInterval = max(1, lengthOfPlaybackFile / 100);
-        previousRecordingLocation = -1; // unsigned
-        clearDisplayBuffer(&dbuf);
-        rectangularShading((COLS - 20) / 2, ROWS / 2, 20, 1, &black, INTERFACE_OPACITY, &dbuf);
-        rogue.playbackFastForward = false;
-        overlayDisplayBuffer(&dbuf);
-        rogue.playbackFastForward = true;
-
-        while (recordingLocation < lengthOfPlaybackFile
-               && rogue.playerTurnNumber < rogue.howManyTurns
-               && !rogue.gameHasEnded
-               && !rogue.playbackOOS) {
-
-            rogue.RNG = RNG_COSMETIC;
-            nextBrogueEvent(&theEvent, false, true, false);
-            rogue.RNG = RNG_SUBSTANTIVE;
-
-            executeEvent(&theEvent);
-
-            if (recordingLocation / progressBarInterval != previousRecordingLocation / progressBarInterval && !rogue.playbackOOS) {
-                rogue.playbackFastForward = false; // so that pauseBrogue looks for inputs
-                printProgressBar((COLS - 20) / 2, ROWS / 2, "[     Loading...   ]", recordingLocation, lengthOfPlaybackFile, &darkPurple, false);
-                while (pauseBrogue(0, PAUSE_BEHAVIOR_DEFAULT)) { // pauseBrogue(0) is necessary to flush the display to the window in SDL, as well as look for inputs
-                    rogue.creaturesWillFlashThisTurn = false; // prevent monster flashes from showing up on screen
-                    nextBrogueEvent(&theEvent, true, false, true);
-                    if (rogue.gameHasEnded || theEvent.eventType == KEYSTROKE && theEvent.param1 == ESCAPE_KEY) {
-                        return false;
-                    }
-                }
-                rogue.playbackFastForward = true;
-                previousRecordingLocation = recordingLocation;
-            }
+int stepSavedGameLoad(unsigned int maxEvents) {
+    if (!managedLoad) return -1;
+    while (maxEvents-- && recordingLocation < lengthOfPlaybackFile
+           && rogue.playerTurnNumber < rogue.howManyTurns && !rogue.gameHasEnded && !rogue.playbackOOS) {
+        rogueEvent event;
+        unsigned long before = recordingLocation;
+        rogue.RNG = RNG_COSMETIC;
+        nextBrogueEvent(&event, false, true, false);
+        rogue.RNG = RNG_SUBSTANTIVE;
+        if (!rogue.gameHasEnded) executeEvent(&event);
+        if (before == recordingLocation) {
+            errno = EINVAL; recordingFail("Save reconstruction made no progress"); break;
         }
     }
-
-    if (!rogue.gameHasEnded && !rogue.playbackOOS) {
-        switchToPlaying();
-        recordChar(SAVED_GAME_LOADED);
+    if (rogue.gameHasEnded || rogue.playbackOOS || recordingError[0]) {
+        if (!recordingError[0]) snprintf(recordingError, sizeof(recordingError), "Brogue save reconstruction is out of sync.");
+        return -1;
     }
+    if (rogue.playerTurnNumber < rogue.howManyTurns && recordingLocation >= lengthOfPlaybackFile) {
+        errno = EINVAL; recordingFail("Save ended before its final turn"); return -1;
+    }
+    return rogue.playerTurnNumber >= rogue.howManyTurns ? 1 : 0;
+}
+
+static boolean resumeRecordingAtPath(const char *workingPath, boolean consume, boolean loadMarker) {
+    unsigned char header[RECORDING_HEADER_LENGTH], marker = SAVED_GAME_LOADED;
+    unsigned long length = recordingLocation + (loadMarker ? 1 : 0);
+    if (!workingPath || !workingPath[0] || strlen(workingPath) >= BROGUE_FILENAME_MAX
+        || !strcmp(workingPath, currentFilePath)) {
+        errno = EINVAL; return recordingFail("Invalid resume path");
+    }
+    recordingHeader(header, length);
+    if (!recordingPublish(currentFilePath, workingPath, recordingLocation,
+                          &marker, loadMarker ? 1 : 0, header)) return false;
+    if (consume && !recordingRemove(currentFilePath)) {
+        recordingRemove(workingPath);
+        return recordingFail("Consume suspended save");
+    }
+    strcpy(currentFilePath, workingPath);
+    lengthOfPlaybackFile = length;
+    recordingLocation = length;
+    locationInRecordingBuffer = 0;
+    rogue.playbackMode = rogue.playbackFastForward = rogue.playbackOmniscience = false;
+    rogue.recording = true;
+    managedLoad = false;
+    clearRecordingError();
     return true;
+}
+
+boolean finishSavedGameLoad(const char *workingPath, boolean consume) {
+    if (!managedLoad || stepSavedGameLoad(0) != 1) return false;
+    return resumeRecordingAtPath(workingPath, consume, true);
+}
+
+void cancelSavedGameLoad(void) { managedLoad = false; }
+
+void switchToPlaying() {
+    char path[BROGUE_FILENAME_MAX];
+    getAvailableFilePath(path, LAST_GAME_NAME, GAME_SUFFIX);
+    strcat(path, GAME_SUFFIX);
+#ifdef ENABLE_PLAYBACK_SWITCH
+    boolean consume = false;
+#else
+    boolean consume = DELETE_SAVE_FILE_AFTER_LOADING;
+#endif
+    if (!resumeRecordingAtPath(path, consume, false)) return;
+    blackOutScreen(); refreshSideBar(-1, -1, false); updateMessageDisplay(); displayLevel();
+}
+
+boolean loadSavedGame() {
+    char path[BROGUE_FILENAME_MAX], working[BROGUE_FILENAME_MAX];
+    strcpy(path, currentFilePath);
+    if (!beginSavedGameLoad(path)) return false;
+    int state;
+    while ((state = stepSavedGameLoad(32)) == 0) {
+        rogue.playbackFastForward = false;
+        printProgressBar((COLS-20)/2, ROWS/2, "[     Loading...   ]",
+                         recordingLocation, lengthOfPlaybackFile, &darkPurple, false);
+        if (pauseBrogue(0, PAUSE_BEHAVIOR_DEFAULT)) {
+            rogueEvent event;
+            nextBrogueEvent(&event, true, false, true);
+            if (rogue.gameHasEnded || (event.eventType == KEYSTROKE && event.param1 == ESCAPE_KEY)) {
+                cancelSavedGameLoad(); return false;
+            }
+        }
+        rogue.playbackFastForward = true;
+    }
+    if (state < 0) { cancelSavedGameLoad(); return false; }
+    getAvailableFilePath(working, LAST_GAME_NAME, GAME_SUFFIX);
+    strcat(working, GAME_SUFFIX);
+#ifdef ENABLE_PLAYBACK_SWITCH
+    return finishSavedGameLoad(working, false);
+#else
+    return finishSavedGameLoad(working, DELETE_SAVE_FILE_AFTER_LOADING);
+#endif
 }
 
 // the following functions are used to create human-readable descriptions of playback files for debugging purposes

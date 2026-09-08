@@ -82,7 +82,7 @@ class RatAssetTests(unittest.TestCase):
             for kind in source['kinds']:
                 custom=generate.CUSTOM_MODELS.get(kind['symbol'])
                 if custom and kind['kind']!=1:
-                    name=f"{kind['kind']:02d}_{generate.slug(kind['symbol'])}.obj"
+                    name=custom.get('runtimeFilename',f"{kind['kind']:02d}_{generate.slug(kind['symbol'])}.obj")
                     (models/name).write_bytes(original)
                     (graphics/Path(custom['skin']).name).write_bytes(b'skin')
             with patch.multiple(generate,ROOT=root,CATALOG=catalog,REGISTRY=root/'registry.json',

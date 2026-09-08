@@ -14,6 +14,7 @@
  * adapter and these functions are inert outside a bridge session. */
 void brogue_bridge_note_movement(creature *mover, pos from, pos to);
 void brogue_bridge_note_player_fall(pos source);
+void brogue_bridge_note_terrain_activity(short x, short y, unsigned int activity);
 void brogue_bridge_note_attack(creature *attacker, creature *defender, boolean lungeAttack);
 void brogue_bridge_note_damage(creature *attacker, creature *defender, short amount, boolean lethal);
 void brogue_bridge_note_death(creature *decedent, boolean administrativeDeath);

@@ -15,13 +15,15 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `humanoid`.
-- Authored silhouette dimensions: 40 / 27 / 32 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-monkey`.
+- Authored silhouette dimensions: 29.49 / 19.4024 / 32.2037 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
 - Visual construction cues: primate, tail, fur.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/05_monkey.obj).
-- [Editable Blender source](../../assets/monsters/sources/05_monkey.blend).
+- [Runtime model](../../mod/BrogueDoom/models/monsters/05_monkey.iqm).
+- [Editable Blender source](../../assets/monsters/monkey/monkey-animated.blend).
+- [Animation manifest](../../assets/monsters/monkey/animation.json); 23 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
 
 ## Brogue encounter-table references
 
@@ -44,6 +46,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

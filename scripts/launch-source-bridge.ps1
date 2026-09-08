@@ -1,8 +1,9 @@
 [CmdletBinding()]
 param(
-    [ValidateRange(1, [int]::MaxValue)]
-    [int]$Seed = 1,
+    [ValidateRange(1, [uint64]::MaxValue)]
+    [uint64]$Seed = 1,
     [switch]$RandomSeed,
+    [string]$LoadSave = "",
     [switch]$Force,
     [switch]$Menu,
     [switch]$ShowFPS,
@@ -55,6 +56,10 @@ $iwad = Join-Path $projectRoot ".deps\freedoom-0.13.0\freedoom2.wad"
 $configuration = Join-Path $env:LOCALAPPDATA "ProjectBroom\config"
 New-Item -ItemType Directory -Force -Path $configuration | Out-Null
 $engineConfig = Join-Path $configuration "uzdoom.ini"
+$engineLogs = Join-Path $env:LOCALAPPDATA "ProjectBroom\logs"
+New-Item -ItemType Directory -Force -Path $engineLogs | Out-Null
+# Pinned UZDoom prefixes log- and appends .txt; the argument must be a basename.
+$engineLog = "engine-" + (Get-Date -Format "yyyyMMdd-HHmmss-fff")
 $oldConfig = Join-Path $configuration "gzdoom.ini"
 if (-not (Test-Path -LiteralPath $engineConfig) -and (Test-Path -LiteralPath $oldConfig)) {
     Copy-Item -LiteralPath $oldConfig -Destination $engineConfig
@@ -67,9 +72,9 @@ $weaponRegistry = Join-Path $projectRoot "assets\weapons\brogue_weapon_registry.
 $weaponModeldef = Join-Path $projectRoot "mod\BrogueDoom\models\weapons\MODELDEF.txt"
 $compiler = Join-Path $projectRoot "tools\mapcompiler\compile.py"
 $verifier = Join-Path $projectRoot "tools\mapcompiler\verify.py"
-$generated = Join-Path $projectRoot ("generated\seed-{0}\ProjectBroom-seed-{0}.pk3" -f $Seed)
+$generated = Join-Path $projectRoot ("generated\seed-{0}\startup\ProjectBroom-seed-{0}.pk3" -f $Seed)
 $json = Join-Path $projectRoot ("generated\seed-{0}\brogue-dungeon.json" -f $Seed)
-$packageManifest = Join-Path $projectRoot ("generated\seed-{0}\brogue-manifest.json" -f $Seed)
+$packageManifest = Join-Path $projectRoot ("generated\seed-{0}\startup\brogue-manifest.json" -f $Seed)
 $engineBridge = Join-Path $engineDir "brogue-bridge.dll"
 
 foreach ($required in @($engine, $bridge, $exporter, $iwad, $textureRegistry, $monsterRegistry, $monsterAtlas, $weaponRegistry, $weaponModeldef, $compiler, $verifier)) {
@@ -92,21 +97,21 @@ $needsPackage = $Force -or -not (Test-Path -LiteralPath $generated -PathType Lea
 if (-not $needsPackage) {
     try {
         $manifest = Get-Content -Raw -LiteralPath $packageManifest | ConvertFrom-Json
-        $needsPackage = $manifest.inputSha256 -ne $inputHash -or $manifest.compilerVersion -ne "43" -or $manifest.resourcePack -ne "Project Broom Original Cave Textures"
+        $needsPackage = $manifest.inputSha256 -ne $inputHash -or $manifest.compilerVersion -ne "45" -or $manifest.startupOnly -ne $true -or $manifest.resourcePack -ne "Project Broom Original Cave Textures"
     } catch {
         $needsPackage = $true
     }
 }
 if ($needsPackage) {
     Write-Output "Compiling the Brogue dungeon into UZDoom maps..."
-    & $pythonCommand.Source $compiler --input $json --output $generated
+    & $pythonCommand.Source $compiler --input $json --output $generated --startup
     if ($LASTEXITCODE -ne 0) { throw "PK3 compilation failed with exit code $LASTEXITCODE." }
 } else {
     Write-Output "Using cached UZDoom campaign for seed $Seed."
 }
 
 Write-Output "Verifying map topology and package integrity..."
-& $pythonCommand.Source $verifier --input $json --package $generated
+& $pythonCommand.Source $verifier --input $json --package $generated --startup
 if ($LASTEXITCODE -ne 0) { throw "Generated package verification failed with exit code $LASTEXITCODE." }
 
 Copy-BrogueFileIfDifferent $bridge $engineBridge
@@ -116,9 +121,12 @@ $arguments = @(
     "-height", $WindowHeight,
     "-nosound",
     "-config", $engineConfig,
+    "+logfile", $engineLog,
     "-iwad", $iwad,
     "-file", $staticMod, $generated,
     "+set", "brg_seed", $Seed,
+    "+set", "brg_map_compiler", $pythonCommand.Source,
+    "+set", "brg_map_compiler_root", $projectRoot,
     "+set", "brg_hud_scale", $HudScale.ToString([System.Globalization.CultureInfo]::InvariantCulture),
     "+set", "brg_debug", "false",
     "+ucm_hide", "true",
@@ -128,7 +136,9 @@ $arguments = @(
     "+set", "brg_monster_anim_tics", "5",
     "+set", "brg_monster_omniscience", "false"
 )
-if ($Menu) {
+if ($LoadSave) {
+    $arguments += @("+set", "brg_load_path", $LoadSave, "+menu_main")
+} elseif ($Menu) {
     $arguments += @("+menu_main")
 } else {
     $arguments += @("+map", "BRG01")
@@ -141,7 +151,7 @@ if ($ShowFPS) {
 }
 
 Write-Output "Launching UZDoom for seed $Seed..."
-$process = Start-Process -FilePath $engine -WorkingDirectory $engineDir -ArgumentList $arguments -PassThru
+$process = Start-Process -FilePath $engine -WorkingDirectory $engineLogs -ArgumentList $arguments -PassThru
 Write-Output "Project Broom prepared seed $Seed."
 if ($PassThru) {
     Write-Output $process

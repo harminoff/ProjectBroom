@@ -10,16 +10,33 @@ class BrogueMonsterProxyBase : Actor
     States { Spawn: BRM0 A -1; Stop; }
 }
 
+#include "brogue_rat_skeleton.zs"
 class BrogueMonsterK00 : BrogueMonsterProxyBase {}
-class BrogueMonsterK01 : BrogueMonsterProxyBase
+class BrogueMonsterK01 : BrogueRatSkeletalProxy
 {
     Default { +DECOUPLEDANIMATIONS; }
     States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
 }
-class BrogueMonsterK02 : BrogueMonsterProxyBase {}
-class BrogueMonsterK03 : BrogueMonsterProxyBase {}
+class BrogueMonsterK02 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK03 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
 class BrogueMonsterK04 : BrogueMonsterProxyBase {}
-class BrogueMonsterK05 : BrogueMonsterProxyBase {}
+class BrogueMonsterK05 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK05Captive : BrogueMonsterK05
+{
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("captive", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
 class BrogueMonsterK06 : BrogueMonsterProxyBase {}
 class BrogueMonsterK07 : BrogueMonsterProxyBase {}
 class BrogueMonsterK08 : BrogueMonsterProxyBase {}

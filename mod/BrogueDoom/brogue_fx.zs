@@ -24,7 +24,8 @@ class BrogueAmbientFx : Actor
 	override void Tick()
 	{
 		Super.Tick();
-		if (EffectQuality() == 0) Destroy();
+		// The reconciler owns lifetime. Basic suppresses emission in subclasses;
+		// keeping this inert actor allows quality changes without a new snapshot.
 	}
 
 	Default
@@ -85,7 +86,7 @@ class BrogueFireFx : BrogueAmbientFx
 				frandom[BrogueFireFx](14, 24), frandom[BrogueFireFx](2.0, 4.5), 0,
 				frandom[BrogueFireFx](-20, 20), frandom[BrogueFireFx](-20, 20), frandom[BrogueFireFx](1, 8),
 				frandom[BrogueFireFx](-0.12, 0.12), frandom[BrogueFireFx](-0.12, 0.12), frandom[BrogueFireFx](0.55, 1.25),
-				0, 0, 0.018, frandom[BrogueFireFx](0.70, 1.0), -1, -0.055);
+				0, 0, 0.018, Alpha * frandom[BrogueFireFx](0.70, 1.0), -1, -0.055);
 		}
 	}
 }
@@ -103,11 +104,11 @@ class BrogueGasFx : BrogueAmbientFx
 		int count = quality >= 2 ? 2 : 1;
 		for (int i = 0; i < count; i++)
 		{
-			A_SpawnParticle("678B58", SPF_REPLACE,
+			A_SpawnParticle(FillColor == 0 ? 0x678B58 : FillColor, SPF_REPLACE,
 				frandom[BrogueGasFx](30, 55), frandom[BrogueGasFx](4.0, 7.0), 0,
 				frandom[BrogueGasFx](-28, 28), frandom[BrogueGasFx](-28, 28), frandom[BrogueGasFx](2, 22),
 				frandom[BrogueGasFx](-0.12, 0.12), frandom[BrogueGasFx](-0.12, 0.12), frandom[BrogueGasFx](0.05, 0.20),
-				0, 0, 0, frandom[BrogueGasFx](0.20, 0.38), -1, frandom[BrogueGasFx](0.015, 0.045));
+				0, 0, 0, Alpha * frandom[BrogueGasFx](0.30, 0.55), -1, frandom[BrogueGasFx](0.015, 0.045));
 		}
 	}
 }

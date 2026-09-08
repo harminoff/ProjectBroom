@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([switch]$Wand, [switch]$Throw, [string]$ResourcePackage,
+param([switch]$Wand, [switch]$Throw, [string]$ResourcePackage, [string]$EvidenceDirectory,
       [string]$EngineDirectory, [string]$IwadPath,
       [ValidateSet('Vulkan', 'OpenGL')][string]$Renderer = 'Vulkan',
       [ValidateRange(1, 3)][int]$HudScale = 1)
@@ -24,6 +24,7 @@ if ($ResourcePackage) {
     $resources = (Resolve-Path -LiteralPath $ResourcePackage -ErrorAction Stop).Path
     $evidence = Join-Path $projectRoot "artifacts/$device-ui-packaged-$Renderer-$HudScale"
 }
+if ($EvidenceDirectory) { $evidence = [IO.Path]::GetFullPath($EvidenceDirectory) }
 $campaign = Join-Path $projectRoot "generated/seed-$seed/ProjectBroom-seed-$seed.pk3"
 if (-not (Test-Path -LiteralPath $campaign)) {
     throw "Prepare seed $seed with scripts/launch-source-bridge.ps1 -Seed $seed before running this check."
@@ -40,7 +41,9 @@ $arguments = @(
     '+screenblocks', '12', '+ucm_drawmap', 'false', '+ucm_hide', 'true',
     '+set', 'vid_activeinbackground', 'true', '+set', 'i_pauseinbackground', 'false',
     '+set', 'screenshot_dir', $evidence, '+set', 'brg_rat_walk_tics', '5',
-    '+set', 'brg_monster_anim_tics', '5', '+map', 'BRG01', "+brg_${device}_smoke", '+brg_actions'
+    '+set', 'brg_monster_anim_tics', '5',
+    '+set', 'brg_save_root', (Join-Path $evidence 'native-saves'),
+    '+map', 'BRG01', "+brg_${device}_smoke", '+brg_actions'
 ) + @($actions.Split(' ') | Where-Object { $_ })
 # Quote paths for Start-Process's Windows argument-string boundary.
 $quotedArguments = $arguments | ForEach-Object { '"' + $_ + '"' }

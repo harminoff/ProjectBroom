@@ -1,0 +1,1507 @@
+{
+  "NOTHING": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "GRANITE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "FLOOR": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "FLOOR_FLOODABLE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "CARPET": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MARBLE_FLOOR": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "WALL": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DOOR": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueDoorMarker",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "OPEN_DOOR": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "SECRET_DOOR": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "LOCKED_DOOR": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueDoorMarker",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "OPEN_IRON_DOOR_INERT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DOWN_STAIRS": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "UP_STAIRS": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DUNGEON_EXIT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DUNGEON_PORTAL": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "TORCH_WALL": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainTorch",
+    "alias": "Original wall-mounted iron bracket and wooden torch. Dormant/transitioning retain ordinary flame; active haunted flame is purple.",
+    "motion": 0
+  },
+  "CRYSTAL_WALL": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "PORTCULLIS_CLOSED": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainGate",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "PORTCULLIS_DORMANT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "WOODEN_BARRICADE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueBarricadeMarker",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "PILOT_LIGHT_DORMANT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "PILOT_LIGHT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "HAUNTED_TORCH_DORMANT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainTorch",
+    "alias": "Original wall-mounted iron bracket and wooden torch. Dormant/transitioning retain ordinary flame; active haunted flame is purple.",
+    "motion": 0
+  },
+  "HAUNTED_TORCH_TRANSITIONING": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainTorch",
+    "alias": "Original wall-mounted iron bracket and wooden torch. Dormant/transitioning retain ordinary flame; active haunted flame is purple.",
+    "motion": 0
+  },
+  "HAUNTED_TORCH": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainTorch",
+    "alias": "Original wall-mounted iron bracket and wooden torch. Dormant/transitioning retain ordinary flame; active haunted flame is purple.",
+    "motion": 0
+  },
+  "WALL_LEVER_HIDDEN": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "WALL_LEVER": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueSearchLever",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "WALL_LEVER_PULLED": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueSearchLever",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 4
+  },
+  "WALL_LEVER_HIDDEN_DORMANT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "STATUE_INERT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainStatueMarble",
+    "alias": "Original carved statue; dormant forms preserve ordinary marble appearance.",
+    "motion": 0
+  },
+  "STATUE_DORMANT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainStatueMarble",
+    "alias": "Original carved statue; dormant forms preserve ordinary marble appearance.",
+    "motion": 0
+  },
+  "STATUE_CRACKING": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainStatueCracked",
+    "alias": "Original carved statue; dormant forms preserve ordinary marble appearance.",
+    "motion": 0
+  },
+  "STATUE_INSTACRACK": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainStatueMarble",
+    "alias": "Original carved statue; dormant forms preserve ordinary marble appearance.",
+    "motion": 0
+  },
+  "PORTAL": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "TURRET_DORMANT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "WALL_MONSTER_DORMANT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DARK_FLOOR_DORMANT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DARK_FLOOR_DARKENING": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DARK_FLOOR": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_TRIGGER_FLOOR": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ALTAR_INERT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ALTAR_KEYHOLE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ALTAR_CAGE_OPEN": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ALTAR_CAGE_CLOSED": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainCage",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ALTAR_SWITCH": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ALTAR_SWITCH_RETRACTING": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ALTAR_CAGE_RETRACTABLE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainCage",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "PEDESTAL": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MONSTER_CAGE_OPEN": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MONSTER_CAGE_CLOSED": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainCage",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "COFFIN_CLOSED": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "COFFIN_OPEN": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "GAS_TRAP_POISON_HIDDEN": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "GAS_TRAP_POISON": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueSearchPlate",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "TRAP_DOOR_HIDDEN": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "TRAP_DOOR": {
+    "floor": "BRGVOID",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "GAS_TRAP_PARALYSIS_HIDDEN": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "GAS_TRAP_PARALYSIS": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueSearchPlate",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_PARALYSIS_VENT_HIDDEN": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_PARALYSIS_VENT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueSearchVent",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "GAS_TRAP_CONFUSION_HIDDEN": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "GAS_TRAP_CONFUSION": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueSearchPlate",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "FLAMETHROWER_HIDDEN": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "FLAMETHROWER": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueSearchFire",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "FLOOD_TRAP_HIDDEN": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "FLOOD_TRAP": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueSearchFlood",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "NET_TRAP_HIDDEN": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "NET_TRAP": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueSearchNet",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ALARM_TRAP_HIDDEN": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ALARM_TRAP": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueSearchAlarm",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_POISON_GAS_VENT_HIDDEN": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_POISON_GAS_VENT_DORMANT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueSearchVent",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_POISON_GAS_VENT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueSearchVent",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_METHANE_VENT_HIDDEN": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_METHANE_VENT_DORMANT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueSearchVent",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_METHANE_VENT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueSearchVent",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "STEAM_VENT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueSearchVent",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_PRESSURE_PLATE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueSearchPlate",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_PRESSURE_PLATE_USED": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueSearchPlate",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_GLYPH": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_GLYPH_INACTIVE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DEWAR_CAUSTIC_GAS": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DEWAR_CONFUSION_GAS": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DEWAR_PARALYSIS_GAS": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DEWAR_METHANE_GAS": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DEEP_WATER": {
+    "floor": "BRGWATR",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "SHALLOW_WATER": {
+    "floor": "BRGWATR",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MUD": {
+    "floor": "BRGSLDG",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "CHASM": {
+    "floor": "BRGVOID",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "CHASM_EDGE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Safe chasm brink rendered as ordinary supporting cave ground; the adjacent falling cell owns the dark opening and cliff.",
+    "motion": 0
+  },
+  "MACHINE_COLLAPSE_EDGE_DORMANT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_COLLAPSE_EDGE_SPREADING": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "LAVA": {
+    "floor": "BRGMOLT",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "LAVA_RETRACTABLE": {
+    "floor": "BRGMOLT",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "LAVA_RETRACTING": {
+    "floor": "BRGMOLT",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "SUNLIGHT_POOL": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DARKNESS_PATCH": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ACTIVE_BRIMSTONE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "INERT_BRIMSTONE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "OBSIDIAN": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "BRIDGE": {
+    "floor": "BRGBRID",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "BRIDGE_FALLING": {
+    "floor": "BRGBRID",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 1
+  },
+  "BRIDGE_EDGE": {
+    "floor": "BRGBRID",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "STONE_BRIDGE": {
+    "floor": "BRGBRID",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_FLOOD_WATER_DORMANT": {
+    "floor": "BRGWATR",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_FLOOD_WATER_SPREADING": {
+    "floor": "BRGWATR",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_MUD_DORMANT": {
+    "floor": "BRGSLDG",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ICE_DEEP": {
+    "floor": "BRGICE",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Original frosted ice surface; distinct melting motion.",
+    "motion": 0
+  },
+  "ICE_DEEP_MELT": {
+    "floor": "BRGICE",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Original frosted ice surface; distinct melting motion.",
+    "motion": 2
+  },
+  "ICE_SHALLOW": {
+    "floor": "BRGICE",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Original frosted ice surface; distinct melting motion.",
+    "motion": 0
+  },
+  "ICE_SHALLOW_MELT": {
+    "floor": "BRGICE",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Original frosted ice surface; distinct melting motion.",
+    "motion": 2
+  },
+  "HOLE": {
+    "floor": "BRGVOID",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "HOLE_GLOW": {
+    "floor": "BRGVOID",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "HOLE_EDGE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "FLOOD_WATER_DEEP": {
+    "floor": "BRGWATR",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "FLOOD_WATER_SHALLOW": {
+    "floor": "BRGWATR",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "GRASS": {
+    "floor": "BRGMOSS",
+    "wall": "BRGCAVE",
+    "actor": "BrogueGrassProp",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DEAD_GRASS": {
+    "floor": "BRGMOSS",
+    "wall": "BRGCAVE",
+    "actor": "BrogueDeadVegetationProp",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "GRAY_FUNGUS": {
+    "floor": "BRGMOSS",
+    "wall": "BRGCAVE",
+    "actor": "BrogueFungusProp",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "LUMINESCENT_FUNGUS": {
+    "floor": "BRGMOSS",
+    "wall": "BRGCAVE",
+    "actor": "BrogueLuminousFungusProp",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "LICHEN": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "HAY": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "RED_BLOOD": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "GREEN_BLOOD": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "PURPLE_BLOOD": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ACID_SPLATTER": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "VOMIT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "URINE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "UNICORN_POOP": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "WORM_BLOOD": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ASH": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "BURNED_CARPET": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "PUDDLE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "BONES": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "RUBBLE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "JUNK": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "BROKEN_GLASS": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ECTOPLASM": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "EMBERS": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "SPIDERWEB": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "NETTING": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "FOLIAGE": {
+    "floor": "BRGMOSS",
+    "wall": "BRGCAVE",
+    "actor": "BrogueFoliageProp",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DEAD_FOLIAGE": {
+    "floor": "BRGMOSS",
+    "wall": "BRGCAVE",
+    "actor": "BrogueDeadVegetationProp",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "TRAMPLED_FOLIAGE": {
+    "floor": "BRGMOSS",
+    "wall": "BRGCAVE",
+    "actor": "BrogueFoliageProp",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "FUNGUS_FOREST": {
+    "floor": "BRGMOSS",
+    "wall": "BRGCAVE",
+    "actor": "BrogueFungusProp",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "TRAMPLED_FUNGUS_FOREST": {
+    "floor": "BRGMOSS",
+    "wall": "BRGCAVE",
+    "actor": "BrogueFungusProp",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "FORCEFIELD": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "FORCEFIELD_MELT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "SACRED_GLYPH": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MANACLE_TL": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainManacleCeiling",
+    "alias": "Original iron ceiling anchor, linked chain and open cuff; retained while Brogue retains this terrain.",
+    "motion": 0
+  },
+  "MANACLE_BR": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainManacleFloor",
+    "alias": "Original iron floor anchor, linked chain and open cuff; retained while Brogue retains this terrain.",
+    "motion": 0
+  },
+  "MANACLE_TR": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainManacleCeiling",
+    "alias": "Original iron ceiling anchor, linked chain and open cuff; retained while Brogue retains this terrain.",
+    "motion": 0
+  },
+  "MANACLE_BL": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainManacleFloor",
+    "alias": "Original iron floor anchor, linked chain and open cuff; retained while Brogue retains this terrain.",
+    "motion": 0
+  },
+  "MANACLE_T": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainManacleWall",
+    "alias": "Original iron wall anchor, linked chain and open cuff; retained while Brogue retains this terrain.",
+    "motion": 0
+  },
+  "MANACLE_B": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainManacleWall",
+    "alias": "Original iron wall anchor, linked chain and open cuff; retained while Brogue retains this terrain.",
+    "motion": 0
+  },
+  "MANACLE_L": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainManacleWall",
+    "alias": "Original iron wall anchor, linked chain and open cuff; retained while Brogue retains this terrain.",
+    "motion": 0
+  },
+  "MANACLE_R": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainManacleWall",
+    "alias": "Original iron wall anchor, linked chain and open cuff; retained while Brogue retains this terrain.",
+    "motion": 0
+  },
+  "PORTAL_LIGHT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "GUARDIAN_GLOW": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "PLAIN_FIRE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "BRIMSTONE_FIRE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "FLAMEDANCER_FIRE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "GAS_FIRE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "GAS_EXPLOSION": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DART_EXPLOSION": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ITEM_FIRE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "CREATURE_FIRE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "POISON_GAS": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "CONFUSION_GAS": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ROT_GAS": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "STENCH_SMOKE_GAS": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "PARALYSIS_GAS": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "METHANE_GAS": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "STEAM": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DARKNESS_CLOUD": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "HEALING_CLOUD": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "BLOODFLOWER_STALK": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainBloodwortStalk",
+    "alias": "Original CC0 bloodwort model; one snapshot-owned plant on the authoritative cell.",
+    "motion": 0
+  },
+  "BLOODFLOWER_POD": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainBloodwortPod",
+    "alias": "Original CC0 bloodwort model; one snapshot-owned plant on the authoritative cell.",
+    "motion": 0
+  },
+  "HAVEN_BEDROLL": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DEEP_WATER_ALGAE_WELL": {
+    "floor": "BRGWATR",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DEEP_WATER_ALGAE_1": {
+    "floor": "BRGWATR",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DEEP_WATER_ALGAE_2": {
+    "floor": "BRGWATR",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ANCIENT_SPIRIT_VINES": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ANCIENT_SPIRIT_GRASS": {
+    "floor": "BRGMOSS",
+    "wall": "BRGCAVE",
+    "actor": "BrogueGrassProp",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "AMULET_SWITCH": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "COMMUTATION_ALTAR": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "COMMUTATION_ALTAR_INERT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "PIPE_GLOWING": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "PIPE_INERT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "RESURRECTION_ALTAR": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "RESURRECTION_ALTAR_INERT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_TRIGGER_FLOOR_REPEATING": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "SACRIFICE_ALTAR_DORMANT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "SACRIFICE_ALTAR": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "SACRIFICE_LAVA": {
+    "floor": "BRGMOLT",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "SACRIFICE_CAGE_DORMANT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "DEMONIC_STATUE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainStatueDemon",
+    "alias": "Original carved statue; dormant forms preserve ordinary marble appearance.",
+    "motion": 0
+  },
+  "STATUE_INERT_DOORWAY": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainStatueBroken",
+    "alias": "Original carved statue; dormant forms preserve ordinary marble appearance.",
+    "motion": 0
+  },
+  "STATUE_DORMANT_DOORWAY": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "BrogueTerrainStatueMarble",
+    "alias": "Original carved statue; dormant forms preserve ordinary marble appearance.",
+    "motion": 0
+  },
+  "CHASM_WITH_HIDDEN_BRIDGE": {
+    "floor": "BRGBRID",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "CHASM_WITH_HIDDEN_BRIDGE_ACTIVE": {
+    "floor": "BRGBRID",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MACHINE_CHASM_EDGE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Safe machine chasm brink rendered as ordinary supporting cave ground; the adjacent falling cell owns the dark opening and cliff.",
+    "motion": 0
+  },
+  "RAT_TRAP_WALL_DORMANT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "RAT_TRAP_WALL_CRACKING": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ELECTRIC_CRYSTAL_OFF": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "ELECTRIC_CRYSTAL_ON": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "TURRET_LEVER": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "WORM_TUNNEL_MARKER_DORMANT": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "WORM_TUNNEL_MARKER_ACTIVE": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "WORM_TUNNEL_OUTER_WALL": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "BRAZIER": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MUD_FLOOR": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MUD_WALL": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  },
+  "MUD_DOORWAY": {
+    "floor": "BRGEARTH",
+    "wall": "BRGCAVE",
+    "actor": "",
+    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "motion": 0
+  }
+}

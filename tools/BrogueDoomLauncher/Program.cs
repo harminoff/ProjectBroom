@@ -14,6 +14,13 @@ internal static class Program
     private static void Main(string[] args)
     {
         ApplicationConfiguration.Initialize();
+        int probeIndex = Array.FindIndex(args, value => value == "--probe-save");
+        if (probeIndex >= 0 && probeIndex + 1 < args.Length)
+        {
+            try { Console.WriteLine(NativeSaves.Probe(args[probeIndex + 1])); }
+            catch (Exception error) { Console.Error.WriteLine(error.Message); Environment.ExitCode = 1; }
+            return;
+        }
         if (args.Any(value => value.Equals("--clear-cache", StringComparison.OrdinalIgnoreCase)))
         {
             ClearCache();
@@ -24,7 +31,17 @@ internal static class Program
             CreateDiagnosticBundle();
             return;
         }
-        Application.Run(new PreparationWindow(ParseSeed(args)));
+        ulong? seed = ParseSeed(args);
+        int loadIndex = Array.FindIndex(args, value => value == "--load-save");
+        LaunchSelection? selection;
+        try {
+            selection = loadIndex >= 0 && loadIndex + 1 < args.Length
+                ? NativeSaves.FromFile(args[loadIndex + 1])
+                : seed.HasValue ? new LaunchSelection(seed, null) : NativeSaves.Choose();
+        } catch (Exception error) {
+            MessageBox.Show(error.Message, "Cannot load save", MessageBoxButtons.OK, MessageBoxIcon.Error); return;
+        }
+        if (selection != null) Application.Run(new PreparationWindow(selection));
     }
 
     private static string DataRoot => Path.Combine(
@@ -66,12 +83,12 @@ internal static class Program
             MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 
-    private static int? ParseSeed(string[] args)
+    private static ulong? ParseSeed(string[] args)
     {
         for (int index = 0; index < args.Length - 1; index++)
         {
             if (args[index].Equals("--seed", StringComparison.OrdinalIgnoreCase)
-                && int.TryParse(args[index + 1], out int seed)
+                && ulong.TryParse(args[index + 1], out ulong seed)
                 && seed > 0)
                 return seed;
         }
@@ -84,11 +101,13 @@ internal sealed class PreparationWindow : Form
     private readonly Label status;
     private readonly Label detail;
     private readonly ProgressBar progress;
-    private readonly int? requestedSeed;
+    private readonly ulong? requestedSeed;
+    private readonly string? loadSave;
 
-    public PreparationWindow(int? requestedSeed)
+    public PreparationWindow(LaunchSelection selection)
     {
-        this.requestedSeed = requestedSeed;
+        this.requestedSeed = selection.Seed;
+        loadSave = selection.SavePath;
         Text = "Project Broom";
         ClientSize = new Size(640, 330);
         FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -232,6 +251,7 @@ internal sealed class PreparationWindow : Form
                 start.ArgumentList.Add("-RandomSeed");
             }
             start.ArgumentList.Add("-Menu");
+            if (loadSave != null) { start.ArgumentList.Add("-LoadSave"); start.ArgumentList.Add(loadSave); }
 
             using Process process = Process.Start(start)
                 ?? throw new InvalidOperationException("Windows PowerShell could not be started.");
@@ -267,7 +287,7 @@ internal sealed class PreparationWindow : Form
         foreach (string required in new[] { engine, exporter, compiler, iwad, staticMod })
             if (!File.Exists(required)) throw new FileNotFoundException("A required Project Broom component is missing.", required);
 
-        int seed = requestedSeed ?? RandomNumberGenerator.GetInt32(1, int.MaxValue);
+        ulong seed = requestedSeed ?? (ulong)RandomNumberGenerator.GetInt32(1, int.MaxValue);
         string dataRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ProjectBroom");
         string cache = Path.Combine(dataRoot, "cache", $"seed-{seed}");
         string logs = Path.Combine(dataRoot, "logs");
@@ -280,9 +300,9 @@ internal sealed class PreparationWindow : Form
         if (!File.Exists(engineConfig) && File.Exists(legacyConfig))
             File.Copy(legacyConfig, engineConfig);
         string json = Path.Combine(cache, "brogue-dungeon.json");
-        // Compiler v43 adds addressable secret-door concealment. Keep older
-        // cached topology separate so upgrades cannot reuse an exposed doorway.
-        string package = Path.Combine(cache, $"ProjectBroom-v43-seed-{seed}.pk3");
+        // Compiler v45 reserves every cell and both presentation planes and adds frost.
+        // Keep older topology separate so upgrades cannot reuse unaddressable maps.
+        string package = Path.Combine(cache, $"ProjectBroom-v45-startup-seed-{seed}.pk3");
 
         var combinedLog = new StringBuilder();
         if (!File.Exists(json))
@@ -302,10 +322,10 @@ internal sealed class PreparationWindow : Form
 
         if (!File.Exists(package))
         {
-            status.Text = "BUILDING THE 3D CAMPAIGN";
-            detail.Text = "Converting Brogue terrain into 40 playable UZDoom maps.";
+            status.Text = "PREPARING THE FIRST FLOOR";
+            detail.Text = "Building the entrance. Later floors are prepared when you reach them.";
             ProcessResult result = await RunCapturedAsync(compiler,
-                new[] { "compile", "--input", json, "--output", package }, packageRoot);
+                new[] { "compile", "--input", json, "--output", package, "--startup" }, packageRoot);
             combinedLog.Append(result.Output).Append(result.Error);
             EnsureSuccess(result, "3D campaign compilation");
         }
@@ -318,7 +338,7 @@ internal sealed class PreparationWindow : Form
         status.Text = "VERIFYING THE CAMPAIGN";
         detail.Text = "Checking map topology, metadata, stairs, and package integrity.";
         ProcessResult verification = await RunCapturedAsync(compiler,
-            new[] { "verify", "--input", json, "--package", package }, packageRoot);
+            new[] { "verify", "--input", json, "--package", package, "--startup" }, packageRoot);
         combinedLog.Append(verification.Output).Append(verification.Error);
         EnsureSuccess(verification, "Campaign verification");
 
@@ -327,19 +347,24 @@ internal sealed class PreparationWindow : Form
         var start = new ProcessStartInfo
         {
             FileName = engine,
-            WorkingDirectory = Path.GetDirectoryName(engine)!,
+            WorkingDirectory = logs,
             UseShellExecute = false
         };
         foreach (string argument in new[]
         {
             "-width", "1280", "-height", "720", "-nosound",
             "-config", engineConfig,
+            "+logfile", $"engine-{DateTime.Now:yyyyMMdd-HHmmss-fff}",
             "-iwad", iwad, "-file", staticMod, package,
+            "+set", "brg_map_compiler", compiler,
             "+set", "brg_seed", seed.ToString(), "+set", "brg_hud_scale", "1",
             "+set", "brg_debug", "false", "+ucm_hide", "true",
             "+ucm_drawmap", "false", "+ucm_mapshowall", "false",
             "+screenblocks", "12", "+menu_main"
         }) start.ArgumentList.Add(argument);
+        if (loadSave != null) {
+            start.ArgumentList.Add("+set"); start.ArgumentList.Add("brg_load_path"); start.ArgumentList.Add(loadSave);
+        }
         _ = Process.Start(start) ?? throw new InvalidOperationException("UZDoom could not be started.");
         WriteDiagnosticLog(logs, 0, combinedLog.ToString(), string.Empty);
     }
@@ -392,8 +417,8 @@ internal sealed class PreparationWindow : Form
         }
         else if (line.StartsWith("Compiling", StringComparison.OrdinalIgnoreCase))
         {
-            status.Text = "BUILDING THE 3D CAMPAIGN";
-            detail.Text = "Converting Brogue terrain into 40 playable UZDoom maps.";
+            status.Text = "PREPARING THE FIRST FLOOR";
+            detail.Text = "Building the entrance. Later floors are prepared when you reach them.";
         }
         else if (line.StartsWith("Using cached UZDoom", StringComparison.OrdinalIgnoreCase))
         {

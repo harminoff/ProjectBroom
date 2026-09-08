@@ -87,6 +87,7 @@ Model BrogueSearchNet
  Scale 1.0 1.0 1.0
  FrameIndex BRGD A 0 0
 }
+#include "models/terrain/MODELDEF.txt"
 Model BrogueSearchAlarm
 {
  Path "models/search"

@@ -78,7 +78,7 @@ class RatAnimationTests(unittest.TestCase):
         source=(rat.ROOT/'src/gzdoom-bridge/brogue_bridge_frontend.cpp').read_text()
         gating=source.split('bool MonsterAnimationsActive()')[1].split('void SyncItems()')[0]
         self.assertNotIn('ratDeathTics',gating); self.assertNotIn('ratPoseTics',gating)
-        helper=source.split('void PlayRatClip(')[1].split('void BeginMonsterEventAnimations')[0]
+        helper=source.split('void PlayMonsterClip(')[1].split('void BeginMonsterEventAnimations')[0]
         for forbidden in ('PerformAction','PerformCommand','Random','P_DamageMobj'):
             self.assertNotIn(forbidden,helper)
         self.assertIn('proxy.actor->GetClass()->TypeName == FName("BrogueMonsterK01")',source)
@@ -87,17 +87,29 @@ class RatAnimationTests(unittest.TestCase):
     def test_visible_rat_walk_pacing_contract(self):
         source=(rat.ROOT/'src/gzdoom-bridge/brogue_bridge_frontend.cpp').read_text()
         self.assertIn('CVAR(Int, brg_rat_walk_tics, 28,',source)
-        movement=source.split('const bool ratWalk =')[1].split('proxy.kind = creature.kind;')[0]
+        movement=source.split('const bool observed =')[1].split('proxy.kind = creature.kind;')[0]
         self.assertIn('IsSkeletalRat(proxy)',movement)
-        self.assertIn('creature.visibility != BROGUE_VISIBILITY_HIDDEN',movement)
-        self.assertIn('distance <= 64.0 * std::sqrt(2.0) + .01',movement)
-        self.assertIn('std::ceil(tileTics * distance / 64.0)',movement)
-        self.assertIn('2.0 * distance / 64.0',movement)
-        self.assertIn('proxy.moveTotal = proxy.moveTics',movement)
+        self.assertIn('creature.visibility == BROGUE_VISIBILITY_DIRECT',movement)
+        self.assertIn('EnemyMovement::Duration(observed, distance, tileTics)',movement)
+        self.assertIn('EnemyInCamera',movement)
         for forbidden in ('PerformAction','PerformCommand','Random','P_DamageMobj'):
             self.assertNotIn(forbidden,movement)
         ticking=source.split('bool TickMonsterAnimations()')[1].split('bool MonsterAnimationsActive()')[0]
-        self.assertIn('PlayRatClip(proxy, RatScurry, proxy.moveTics, proxy.ratScurryRate)',ticking)
+        self.assertIn('PlayMonsterClip(proxy, RatScurry, proxy.moveTics, proxy.ratScurryRate)',ticking)
+
+    def test_uzdoom_detail_mask_matches_pinned_skeleton(self):
+        # The cached renderer batch addresses these IQM joints by index.
+        self.assertEqual(len(rat.BONES),28)
+        self.assertEqual([rat.IDS[n] for n in ('head','ear_L','ear_R','tail_00','tail_07')],
+                         [4,6,7,20,27])
+        source=(rat.ROOT/'mod/BrogueDoom/brogue_rat_skeleton.zs').read_text()
+        self.assertIn('i == 4 || i == 6 || i == 7 || i >= 20',source)
+        self.assertIn('OverwriteBonesMask(DetailPose, DetailMask, SB_ADD)',source)
+        self.assertNotIn('ClearBoneOffsets();',source)
+        self.assertIn('PresentationClip <= 1',source)
+        for forbidden in ('SetOrigin','A_Chase','A_Damage','Random(', 'SetAnimation(',
+                          'IQM_GET_BONE_INFO','GetNamedBonePosition'):
+            self.assertNotIn(forbidden,source)
 
 
 if __name__=='__main__': unittest.main()

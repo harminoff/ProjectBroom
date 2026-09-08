@@ -48,7 +48,7 @@
       "commit": "292cf4203ebd3ced951cb67f6819180f588c1d44",
       "license": "GPL-3.0-or-later",
       "patch": "patches/uzdoom-project-broom.patch",
-      "patchSha256": "c1c98a09ae6e0773e5f93467c49bb22b6d7f5de0889cbc7e794464842b17f914",
+      "patchSha256": "d7744437756801d330796d3b8fca7212ea47d794c7c900958e2d64122d8342ea",
       "windowsRuntime": {
         "source": "https://github.com/UZDoom/UZDoom/releases/download/5.0.0/Windows-UZDoom-Release-x86_64.zip",
         "archiveSha256": "ecdce3c6c3a262f56d2631fe5d933a9327f39777bd21d669009944de44e7c6ab",

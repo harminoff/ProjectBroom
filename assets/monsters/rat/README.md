@@ -3,7 +3,7 @@
 ## Current animated version
 
 The runtime rat is now `models/monsters/01_rat.iqm`, with 28 weighted bones,
-80 editable anatomical parts, 15,916 triangles and six named clips: idle,
+51 editable anatomical objects, 14,060 triangles and six named clips: idle,
 scurry, bite, scratch, recoil and death. Its original coat/skin and approximate
 51 x 18 x 15 map-unit rest size are preserved. The jaw has a separate mandible,
 recessed mouth and lower incisors; planted paws use a two-joint leg solve.
@@ -89,3 +89,9 @@ before rebuilding. The general roster generator always preserves the custom OBJ.
 
 See [the model authoring guide](../../../docs/gzdoom-model-authoring.md) for
 format choices, verified GZDoom behavior, packaging, and acceptance checks.
+
+Connected body cage: `connected-skin.json.gz`, rebuilt with the shared Blender
+`blender_skin.py` authoring step. It has the same original Project Broom
+CC-BY-SA-4.0 provenance as this model. See
+[anatomy repair](../../../docs/enemy-anatomy-repair.md) for connectivity, scale
+and runtime verification.

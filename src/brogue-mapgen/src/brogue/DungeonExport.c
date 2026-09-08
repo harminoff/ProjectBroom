@@ -164,6 +164,7 @@ typedef struct dungeonWriter {
     FILE *file;
     sha256Context hash;
     boolean hashingEnabled;
+    boolean currentLevel;
 } dungeonWriter;
 
 static boolean writerBytes(dungeonWriter *writer, const char *bytes, size_t length) {
@@ -299,8 +300,11 @@ static boolean writeCell(dungeonWriter *writer, int x, int y) {
     pcell *cell = &pmap[x][y];
     pos loc = (pos) { .x = x, .y = y };
 
+    if (writer->currentLevel && !writerPrintf(writer,
+        "{\"currentlyVisible\":%s,\"discovered\":%s,",
+        jsonBoolean((cell->flags & ANY_KIND_OF_VISIBLE) != 0), jsonBoolean((cell->flags & DISCOVERED) != 0))) return false;
     if (!writerPrintf(writer,
-                      "{\"x\":%d,\"y\":%d,\"layers\":{\"dungeon\":",
+                      writer->currentLevel ? "\"x\":%d,\"y\":%d,\"layers\":{\"dungeon\":" : "{\"x\":%d,\"y\":%d,\"layers\":{\"dungeon\":",
                       x, y)
         || !writeCellLayer(writer, cell->layers[DUNGEON])
         || !writerPrintf(writer, ",\"liquid\":")
@@ -385,6 +389,7 @@ int exportDungeonJson(uint64_t seed, unsigned int depthCount, const char *output
     }
     sha256Initialize(&writer.hash);
     writer.hashingEnabled = true;
+    writer.currentLevel = false;
 
     initializeGameVariant();
     rogue.nextGame = NG_NOTHING;
@@ -451,4 +456,60 @@ int exportDungeonJson(uint64_t seed, unsigned int depthCount, const char *output
         return 1;
     }
     return 0;
+}
+
+/* Pure projection of the active level. Never initialize, move or simulate here. */
+int exportCurrentLevelJson(const char *outputPath, char *errorMessage) {
+    dungeonWriter writer;
+    unsigned char digest[32];
+    char digestHex[65];
+    int i;
+    boolean success;
+    if (!levels || !outputPath || !outputPath[0]) {
+        setExportError(errorMessage, "no active level or empty output path");
+        return 1;
+    }
+    writer.file = openBrogueFile(outputPath, "wb");
+    if (!writer.file) {
+        setExportError(errorMessage, "could not open current level output");
+        return 1;
+    }
+    sha256Initialize(&writer.hash);
+    writer.hashingEnabled = true;
+    writer.currentLevel = true;
+    success = writerPrintf(&writer,
+                           "{\"schemaVersion\":1,\"currentLevel\":true,\"source\":{\"repository\":\"%s\",\"commit\":\"%s\",\"variant\":\"Brogue\",\"version\":\"%s\",\"dungeonVersion\":\"%s\"},\"seed\":\"%llu\",\"dimensions\":{\"width\":%d,\"height\":%d},",
+                           BROGUE_SOURCE_REPOSITORY,
+                           BROGUE_SOURCE_COMMIT,
+                           gameConst->versionString,
+                           gameConst->dungeonVersionString,
+                           (unsigned long long) rogue.seed,
+                           DCOLS,
+                           DROWS)
+          && writeTerrainCatalog(&writer)
+          && writerPrintf(&writer, "\"levels\":[");
+
+    if (success) success = writeLevel(&writer, rogue.depthLevel);
+    if (success) {
+        if (!writerPrintf(&writer, "],\"sha256\":\"")) {
+            success = false;
+        } else {
+            writer.hashingEnabled = false;
+            sha256Finalize(&writer.hash, digest);
+            for (i = 0; i < 32; i++) {
+                sprintf(digestHex + i * 2, "%02x", digest[i]);
+            }
+            digestHex[64] = '\0';
+            if (!writerPrintf(&writer, "%s\"}\n", digestHex)) {
+                success = false;
+            }
+        }
+    }
+
+    if (fclose(writer.file) != 0) {
+        success = false;
+    }
+
+    if (!success) setExportError(errorMessage, "failed to write current level");
+    return success ? 0 : 1;
 }

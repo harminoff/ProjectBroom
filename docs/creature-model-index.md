@@ -7,7 +7,7 @@ Stable work IDs are `BRG-M00` through `BRG-M67`; they match catalog kinds, not l
 
 Brogue gives no meter/foot dimensions. `isLarge`, prose, color, anatomy and relative comparisons are facts; all numerical dimensions below are presentation decisions. Do not infer body size from HP. A cell is 64 map units; the humanoid art reference is about 58 units and the existing rat is about 15 units tall. Large coils and wings are posed compactly, not used to widen collision. The underworm is intentionally bulkier than the ogre. The mirrored totem is shoulder-high. Pixies are smaller than humanoids. Dar are elves, not flying creatures; the dragon has no flight flag and is not given wings.
 
-Dimensions are rest-pose X/Y/Z mesh extents including equipment and appendages, before separate flight clearance. Runtime bindings remain scale 1. Feet touch the local floor; levitating meshes have a documented 16-unit visual gap. Existing bridge visibility/submersion behavior is unchanged. Most forms remain static OBJs; the rat now uses a 28-bone IQM with six clips. See its work card and animation report.
+Dimensions are rest-pose X/Y/Z mesh extents including equipment and appendages, before separate flight clearance. Runtime bindings remain scale 1. Feet touch the local floor; levitating meshes have a documented 16-unit visual gap. Existing bridge visibility/submersion behavior is unchanged. Most forms remain static OBJs; the rat and kobold use weighted IQMs with six clips. See their work cards and the shared skeletal workflow.
 
 ## Work index
 
@@ -15,10 +15,10 @@ Dimensions are rest-pose X/Y/Z mesh extents including equipment and appendages, 
 | --- | --- | --- | --- | --- |
 | [BRG-M00](creatures/00_you.md) | you (`MK_YOU`) | existing | reference | reference-only |
 | [BRG-M01](creatures/01_rat.md) | rat (`MK_RAT`) | weighted-rat | 51.12 / 18.44 / 15 | authored-skeletal |
-| [BRG-M02](creatures/02_kobold.md) | kobold (`MK_KOBOLD`) | humanoid | 28 / 24 / 38 | authored-static |
-| [BRG-M03](creatures/03_jackal.md) | jackal (`MK_JACKAL`) | quadruped | 52 / 22 / 32 | authored-static |
+| [BRG-M02](creatures/02_kobold.md) | kobold (`MK_KOBOLD`) | weighted-kobold | 22.4004 / 18.6767 / 40.6239 | authored-skeletal |
+| [BRG-M03](creatures/03_jackal.md) | jackal (`MK_JACKAL`) | weighted-jackal | 53.7992 / 13.4069 / 33.9777 | authored-skeletal |
 | [BRG-M04](creatures/04_eel.md) | eel (`MK_EEL`) | serpent | 54 / 22 / 9 | authored-static |
-| [BRG-M05](creatures/05_monkey.md) | monkey (`MK_MONKEY`) | humanoid | 40 / 27 / 32 | authored-static |
+| [BRG-M05](creatures/05_monkey.md) | monkey (`MK_MONKEY`) | weighted-monkey | 29.49 / 19.4024 / 32.2037 | authored-skeletal |
 | [BRG-M06](creatures/06_bloat.md) | bloat (`MK_BLOAT`) | bloat | 28 / 28 / 32 | authored-static |
 | [BRG-M07](creatures/07_pit_bloat.md) | pit bloat (`MK_PIT_BLOAT`) | bloat | 28 / 28 / 32 | authored-static |
 | [BRG-M08](creatures/08_goblin.md) | goblin (`MK_GOBLIN`) | humanoid | 34 / 29 / 40 | authored-static |

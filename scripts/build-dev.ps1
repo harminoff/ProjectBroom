@@ -16,7 +16,12 @@ Invoke-ProjectBroomCommand $python -Arguments @((Join-Path $root "tools\engine_s
 & (Join-Path $PSScriptRoot "build-mapgen.ps1")
 
 $python = Resolve-ProjectBroomCommand "python.exe" "Install Python 3.11."
+Push-Location $root
+try { Invoke-ProjectBroomCommand $python -Arguments @("-m", "tools.monster_models.skeletal_registry", "--build") }
+finally { Pop-Location }
 Invoke-ProjectBroomCommand $python -Arguments @((Join-Path $root "tools\monster_models\generate.py"))
+Invoke-ProjectBroomCommand $python -Arguments @((Join-Path $root "tools\terrain_presentation.py"))
+Invoke-ProjectBroomCommand $python -Arguments @((Join-Path $root "tools\terrain_assets.py"))
 Push-Location $root
 try { Invoke-ProjectBroomCommand $python -Arguments @((Join-Path $root "tools\weapon_models\generate.py")) }
 finally { Pop-Location }

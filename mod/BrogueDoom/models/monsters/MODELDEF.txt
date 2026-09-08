@@ -22,19 +22,21 @@ Model BrogueMonsterK01
 Model BrogueMonsterK02
 {
     Path "models/monsters"
-    Model 0 "02_kobold.obj"
-    Skin 0 "graphics/BRGM02.png"
-    Scale 1.0 1.0 1.0
+    Model 0 "02_kobold.iqm"
+    Skin 0 "graphics/BRGKOB.png"
+    Scale 1.28 1.28 1.28
     FrameIndex BRM0 A 0 0
+    BaseFrame
 }
 
 Model BrogueMonsterK03
 {
     Path "models/monsters"
-    Model 0 "03_jackal.obj"
-    Skin 0 "graphics/BRGM03.png"
+    Model 0 "03_jackal.iqm"
+    Skin 0 "graphics/BRGJACK.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
+    BaseFrame
 }
 
 Model BrogueMonsterK04
@@ -49,10 +51,21 @@ Model BrogueMonsterK04
 Model BrogueMonsterK05
 {
     Path "models/monsters"
-    Model 0 "05_monkey.obj"
-    Skin 0 "graphics/BRGM05.png"
+    Model 0 "05_monkey.iqm"
+    Skin 0 "graphics/BRGMONKY.png"
     Scale 1.0 1.0 1.0
     FrameIndex BRM0 A 0 0
+    BaseFrame
+}
+
+Model BrogueMonsterK05Captive
+{
+    Path "models/monsters"
+    Model 0 "05_monkey_captive.iqm"
+    Skin 0 "graphics/BRGMONKY.png"
+    Scale 1.0 1.0 1.0
+    FrameIndex BRM0 A 0 0
+    BaseFrame
 }
 
 Model BrogueMonsterK06

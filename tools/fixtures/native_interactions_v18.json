@@ -1,0 +1,1604 @@
+{
+  "format": 1,
+  "entry": "executeKeystroke",
+  "head": "fb484b7600f2c84764d060c157f4eb23f4b6cba3",
+  "executable_sha256": "54d956390895dc5779ad1079c5905333a73fa8ed9972f28ddf905953a9bf257b",
+  "sources": {
+    "src/brogue-mapgen/src/brogue/Architect.c": "7f2ed854b138c0800031d60424e2be3f4b285a8082ca07d3738f6e6a0ccf2230",
+    "src/brogue-mapgen/src/brogue/BridgePersistence.h": "13aad9a8b56be2a010115c604a45a020d1ce9c3cd2b8e131c8a2e4dc22c6d18d",
+    "src/brogue-mapgen/src/brogue/BrogueBridge.c": "17bdc2b5dd3f57d8d06575d82007aae027c80f2b4c9de4282ad02710f25e3b7c",
+    "src/brogue-mapgen/src/brogue/BrogueBridge.h": "28a35d1d7f2b17b4328580309b915ca5a6ad273c36fafe94c1344151c16aca37",
+    "src/brogue-mapgen/src/brogue/BrogueBridgeInternal.h": "b6130d3f685b5365b16ab086ad84c16c36902cf54c899809cdd8ada6a680ec27",
+    "src/brogue-mapgen/src/brogue/Buttons.c": "a99470336e5e86e499180cae9c81d042759bc4b28ef401f36495acc05e71dc3a",
+    "src/brogue-mapgen/src/brogue/Combat.c": "30bdfe7a0dba82add68af61254374541151a91787d1596936d841311b284fd93",
+    "src/brogue-mapgen/src/brogue/Dijkstra.c": "7f206cf8c2407d6873635488fb416a7cae13d1e5bd47b01d36a2761bffc92a44",
+    "src/brogue-mapgen/src/brogue/DungeonExport.c": "b7a8d20012e3755c67dfaaf853f02ec269f6ba2c760fbfb5bfefe268775f3ecd",
+    "src/brogue-mapgen/src/brogue/Globals.c": "14fbafc8b586964273501f1771c8b8588b0f13237af345f7667f7a394b4eea35",
+    "src/brogue-mapgen/src/brogue/Globals.h": "f7ad5b7610392387fb204c9232c87fbe729a77b76aec17c075cc9a96e56f5279",
+    "src/brogue-mapgen/src/brogue/GlobalsBase.c": "0ff823bb6cf5302825a8e376c6b92dd53000daff57a917428dc096a6415f4bb7",
+    "src/brogue-mapgen/src/brogue/GlobalsBase.h": "b0cf450e6d188cda6bf3371b4ce261cb3acc9b2696c36408d90b83f4e48b716c",
+    "src/brogue-mapgen/src/brogue/Grid.c": "b924a27e9d66b4e0945bbb82a2a713d32ecf278069200f24aabfad0dcc6f6b77",
+    "src/brogue-mapgen/src/brogue/IO.c": "27e4915f48f05a4693c8d7cf5b05d1d525a727358a09cd8f96b3050575935f54",
+    "src/brogue-mapgen/src/brogue/Items.c": "a238030a4c9c14ba738609e635190b6a1f93a1b63b14779ce508a448fcd5fc4a",
+    "src/brogue-mapgen/src/brogue/Light.c": "1fd3d1dc8d337232f4bb2effd9f63113383b7e94993a63d591eed1014061f8aa",
+    "src/brogue-mapgen/src/brogue/MainMenu.c": "1277ade530d812781621d97221e2afbd5bf66ab4544cc22de1b4c2864b4c4256",
+    "src/brogue-mapgen/src/brogue/Math.c": "a7b304e8e805834a8fc8952b291f5a78b2e5e2e252a9a6059b873c933d399104",
+    "src/brogue-mapgen/src/brogue/Monsters.c": "41edd11fce690035bbcc7469caecafd301ea4044f3381fbffb140f540dbe6c4e",
+    "src/brogue-mapgen/src/brogue/Movement.c": "ce6c8ec82fa35c44eb001800ad01e301e66cb3e649e9e54fd619f635c669b879",
+    "src/brogue-mapgen/src/brogue/PowerTables.c": "b263d7ec2c5e513eb65c2715fa057f42c024c4e557d23d337bbda1198ca2002c",
+    "src/brogue-mapgen/src/brogue/RecordingIO.h": "841038aa1e31ad1dd9de7b34475bf3c26ce43d8a95159c9063953c9cdf5aa02e",
+    "src/brogue-mapgen/src/brogue/Recordings.c": "544daaddcb9aa49d8e90684d98e1e22691b570dbfaadee5b02ab0284f3c8ea65",
+    "src/brogue-mapgen/src/brogue/Rogue.h": "0355c960d62e0642094364beecb66ac1c67a22e906954c195efbaaf3bafc37e1",
+    "src/brogue-mapgen/src/brogue/RogueMain.c": "ad38d5e9063b745142552b40db6403cbe99353ae8a967edd098732a426676001",
+    "src/brogue-mapgen/src/brogue/SeedCatalog.c": "0cb7f422478130bba9a058c5800bc31c61525ae7af5f58c3d3038eaa40a73002",
+    "src/brogue-mapgen/src/brogue/TileTypeNames.generated.h": "52294cc4c033dc5f9cf6d515496f5b7000f727228f16fd207b67d15e2103d854",
+    "src/brogue-mapgen/src/brogue/Time.c": "af70af73e31ae71d1c2e17ad98e68493bbe53beb2d8e9bd23351f7539c933e50",
+    "src/brogue-mapgen/src/brogue/Utilities.c": "953cb6821506fe9f5960732276a5b9388584872cd444ff83bec7f8846129927e",
+    "src/brogue-mapgen/src/brogue/Wizard.c": "406b2d7ddca93efb1a2112e386b3038d8e017a307ed7dd523890cce267ff7bce",
+    "src/brogue-mapgen/src/platform/curses-platform.c": "60c3e7b9b1e38e106ef7ec50c2d30ba17e8b464d39cb4b7affcea45b3cea0bca",
+    "src/brogue-mapgen/src/platform/main.c": "ebf3763386f8c1f38084558ec64ab946c5669dd722575b3b22edad8f9d44c8a9",
+    "src/brogue-mapgen/src/platform/null-platform.c": "bf93c991aad1af39891994349520ae1d7293e1ebc6117403c5cb142824c8e112",
+    "src/brogue-mapgen/src/platform/platform.h": "c36af2c3109caacc291943f5e14602b83d005b810da2594f8ae8e16ac572eedc",
+    "src/brogue-mapgen/src/platform/PlatformDefines.h": "16308cfb038da96e70690b19e5893817c0e84d75640696fbe5eafd4ece6dd7c2",
+    "src/brogue-mapgen/src/platform/platformdependent.c": "9d8837304a0bf99d652967d53a1072206efd44de8476b495166415ca495835dc",
+    "src/brogue-mapgen/src/platform/sdl2-platform.c": "550408fbfc117c6213d338aac4468fe07d7f6455466892891bc578be67bfd2f2",
+    "src/brogue-mapgen/src/platform/term.c": "ec713be387e48cbd99a2eba7ac0ee9f9f36b6f14b5c335d86078e91eb7c70097",
+    "src/brogue-mapgen/src/platform/term.h": "3efd24ad2965bb1863a6c8842ee0e2cca53f2d22d55cb0907edd6fbdc82a6408",
+    "src/brogue-mapgen/src/platform/tiles.c": "004fcfc959ef1dbb2b7881dd6e692ff75d764848e44d237eee135a3ca7ff5e27",
+    "src/brogue-mapgen/src/platform/tiles.h": "15f1141d6ce34563867b8fddac28dfb2c7c2ba158e6b404391f7e5ee6c712347",
+    "src/brogue-mapgen/src/platform/web-platform.c": "221832b278e59707d9e5020234b9e5faa2d29bbad02030e5404d24874020040a",
+    "src/brogue-mapgen/src/variants/GlobalsBrogue.c": "20c6f31de74ecce6d79b2e5dec1dc901794981d82337cf402a6512ec3ddf4acf",
+    "src/brogue-mapgen/src/variants/GlobalsBrogue.h": "53014beac42f9b956d43ba02301950609da4895905fe73223483c1afd8d2857b",
+    "src/brogue-mapgen/src/variants/GlobalsBulletBrogue.c": "356a84ca0373b3385859ffd7454fade2787c2691b6e06914db7d436f8f7c33cf",
+    "src/brogue-mapgen/src/variants/GlobalsBulletBrogue.h": "0ab6c86f8a37ac57a6946cbb3009455cf2dd59cc64a5aa72845e7d77f9f47bde",
+    "src/brogue-mapgen/src/variants/GlobalsRapidBrogue.c": "b498ba316c346758dd6d54933e39ad729f95789540e014345e0029d280232fb9",
+    "src/brogue-mapgen/src/variants/GlobalsRapidBrogue.h": "8ce3bf63a4294092b69af04d4782ab79a5d4ec57d266fea62852d7c7507ccba0",
+    "src/brogue-mapgen/tools/bridge-main.c": "183615a848667217898a4650b772d06dde3f91b5884907e15286b7170738a75b",
+    "src/brogue-mapgen/tools/bridge-platform.c": "9ec56c704d9d4ecd87625f8a030b11a3ca81b664f20b6e6aa3e7a900180289a5",
+    "src/brogue-mapgen/tools/bridge-save-smoke.h": "ace7e0bf166dcc7bb2efb1fc0ce08713c3ab8ca94cd289cafb3842e1bdeb7aa4",
+    "src/brogue-mapgen/tools/bridge-search-smoke.h": "fee0e7ed7c03d7c1268dc65b157b9c648bcf51c6f7d601dc6946658d37c43f0a",
+    "src/brogue-mapgen/tools/bridge-staff-smoke.h": "f7b1998d0eb2318347cf8b7d79414bb8b23d3afd054853814c0075f626263879",
+    "src/brogue-mapgen/tools/bridge-target-smoke.h": "9da17edd35e4effc502d0649d0f5af517b5f16ba2528fe573f781cd7eb1cfea5",
+    "src/brogue-mapgen/tools/bridge-wand-smoke.h": "e502ddb3780fae1ae4ab9980d1db6bc417c530ebece036a1a7c9204530232f72",
+    "src/brogue-mapgen/tools/brogue-bridge.def": "906ea830a9d65eb7317750fbe76d0484ccd657dc1ae1b9b363faebec2f3eb46b",
+    "src/brogue-mapgen/tools/native-interaction-fixture.h": "0f09ac399c36761e7f3b4243607c3ce278316a11bc365eb7695903a59f956540",
+    "src/brogue-mapgen/make/bridge.mk": "fce9b147220c0e9d1edb484a2eb29db255de6de2215831677939cf5e4541c38f",
+    "src/brogue-mapgen/make/brogue.mk": "19f8a39f7f36a761c93fe1837e49b10d79fb7395462bb26afdf763531b60bc7b",
+    "src/brogue-mapgen/make/o.mk": "5113aef067e48ef4796b53e1b4821e04397665eb5afc592b2eb433a01b7b126f",
+    "src/brogue-mapgen/make/os2.mk": "28ff2605202a0ace84e7480bdd8694cff628486f3a82b1d34c70190a2f7db0d3",
+    "src/brogue-mapgen/make/releases.mk": "efb56b71d62ff101def9aa38d4ee8e1e02b1992cafd7aec258727ef9d2cfc86e",
+    "src/brogue-mapgen/make/windows.mk": "e046ed7f12da639ac9a2c5f69fc1ac40fe0ce168b8564a9efd6c0638133a81cb"
+  },
+  "cases": [
+    {
+      "seed": 1,
+      "scenario": "inscribe",
+      "terminal": "be01d72188ae9efb1fb8ce7f54622388850709cd491cbab59fc2e2f782118b66",
+      "recording": "ced1f6f83a1cc11946008f35288b5ecf0d635a26c34d1861d0f91980b7114f2f"
+    },
+    {
+      "seed": 1,
+      "scenario": "inscribe-clear",
+      "terminal": "9cfe1f2865aea7e783ec8bb5998f52a912cbd03bae3cccd77bf48f4cb68966aa",
+      "recording": "c03e817975686f72f1c98406731ad1c79279f457ab08f815e85078d57e69c906"
+    },
+    {
+      "seed": 1,
+      "scenario": "inscribe-cancel",
+      "terminal": "8aa191edd4807c4071e93d6fc8bb66779b68a2137e21b9c8a8a2f5896f8f845d",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "inscribe-maximum",
+      "terminal": "8c4e0aef8864b14bc87d18efa89a080ceb049d73cd89d5f81d7d9c9b241256b5",
+      "recording": "db067b80712d872e0294392f7d1f259f2d59ea1856e54f48a2352c9e6a78635f"
+    },
+    {
+      "seed": 1,
+      "scenario": "inscribe-invalid",
+      "terminal": "37252ecee07486ac240d1027e816f57057f06f352932aa2cf9df1511ad37c5c5",
+      "recording": "912587e3663af0081af06796de21f962c3bc5ce901e6fdf469af72d1f1471567"
+    },
+    {
+      "seed": 1,
+      "scenario": "inscribe-delete",
+      "terminal": "05c01dadd3a9519591a5a39e8d2d68fd23dbd78ba0b7ad21538cbed6a7465f99",
+      "recording": "a4d4f604760a3b31d7980fa024310c1b95e9c3f3904564769311ca4445e8e03e"
+    },
+    {
+      "seed": 1,
+      "scenario": "ring-inscribe",
+      "terminal": "f2aaa3a88cb5369453d20f93d4c6eb7ee0e8da083c9358c1fd41828a07de6a52",
+      "recording": "94b10db764b8036b247d40f02726a787aead01d4e23f6b7e26f9bc94fa615334"
+    },
+    {
+      "seed": 1,
+      "scenario": "kind-no",
+      "terminal": "27aabbe6b167122a4c77951ea329243e567d53909e217e73350b6f5e7f0a5f58",
+      "recording": "51394a98f95111d905c09e34e64daca48d956c51f3a64e55ff8f8d0f68727ade"
+    },
+    {
+      "seed": 1,
+      "scenario": "kind-escape",
+      "terminal": "d6c80d483a2d927ca7fd726403b78a90ebb4730ca8d67afa0fed2f6807a5e4be",
+      "recording": "51394a98f95111d905c09e34e64daca48d956c51f3a64e55ff8f8d0f68727ade"
+    },
+    {
+      "seed": 1,
+      "scenario": "kind-clear",
+      "terminal": "d09a467e6dac183902f5ed7ccf8132d9a5053f3987e66fcd71d3d01393f8df51",
+      "recording": "fe8e82ee499bb93a61bf9f496fbe486050652b19bb5d1f112fe9f2cac6edad18"
+    },
+    {
+      "seed": 1,
+      "scenario": "relabel-uppercase",
+      "terminal": "c5f2d94984d545471aa174b4d48890ef6de15fa056856140bffafd023fe765a8",
+      "recording": "4e47508ae1be3a0f2f710f7e6c6d2281ae54e29a42b1d4fdcd152efd72ab71e4"
+    },
+    {
+      "seed": 1,
+      "scenario": "relabel-swap",
+      "terminal": "a03ac8a27fdf9eda19798515eeb374ae9b51cd9b95aeb811305ff1b0c36aa289",
+      "recording": "066ca07fa4ec034521d045354cf425afbde5e1dac89ae3c599bc73b78d876c0c"
+    },
+    {
+      "seed": 1,
+      "scenario": "relabel-unchanged",
+      "terminal": "6732534c12df6955b17b9ecc537bef995be5a322dc85e3a5ffd7e7ae477b3f94",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "relabel-invalid",
+      "terminal": "86456ad87bf1b227a67f69c55ff12e980acb2c7fa11d6474afee8a643db28c88",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "relabel-cancel",
+      "terminal": "e86d1b03b51fb4676355fd2de658fb3b0571b5512263172cca68db7abc2acb6d",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "food-yes",
+      "terminal": "f17eb7b9383a2a9a93d512016e58f27a7105a084798c0abc9fc81d3c15c9c343",
+      "recording": "893fa1c26289d933105a5bc05a49e14a7da33442493073e90a261bab2e19ce2a"
+    },
+    {
+      "seed": 1,
+      "scenario": "food-no",
+      "terminal": "d207aacb8355864149d7ed47de4fa293ef93b36e054c07af20a3f05689b9d279",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "food-escape",
+      "terminal": "6d9f15a99d29b385377c93e66a92392518b5657423dd1c418c8f6c7d0f21565b",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "identify-valid",
+      "terminal": "99f70d1b29ef511292ad24d2157115297d337c166456eef429e015dd856835fe",
+      "recording": "8418a7a25b614c765be27d152bf69e7a9cc8f94b447e917e570b97573a7d4c28"
+    },
+    {
+      "seed": 1,
+      "scenario": "identify-escape",
+      "terminal": "66fed2aef2b5663d532b1fd2634d62d9b5cce3207d34884e7c2042bf068a3483",
+      "recording": "8418a7a25b614c765be27d152bf69e7a9cc8f94b447e917e570b97573a7d4c28"
+    },
+    {
+      "seed": 1,
+      "scenario": "identify-empty",
+      "terminal": "304e24f8282623da95f44e529c28cef92e6e289cc6d362655f316ae941d290d2",
+      "recording": "af6840f079d3829d1043b587df11eb72493be6668b43d2ace9b3f514f4f095a3"
+    },
+    {
+      "seed": 1,
+      "scenario": "enchant-valid",
+      "terminal": "1c0f102905ac0baf60eeb9caf2b7fb324d15f0a10763d5e9205165dbc55c25b0",
+      "recording": "80828ed70340fc36711d37e8914c3499f5e3c9b3932393bfcd2c6c6447a1d348"
+    },
+    {
+      "seed": 1,
+      "scenario": "enchant-escape",
+      "terminal": "42939c6a1ec024fa46710476541842bc7efa28e6e0b6b7b71403e54cce2549ce",
+      "recording": "80828ed70340fc36711d37e8914c3499f5e3c9b3932393bfcd2c6c6447a1d348"
+    },
+    {
+      "seed": 1,
+      "scenario": "enchant-empty",
+      "terminal": "a1745401676733217dac8126837835b693738b32372ea7e994132d95e29d7684",
+      "recording": "af6840f079d3829d1043b587df11eb72493be6668b43d2ace9b3f514f4f095a3"
+    },
+    {
+      "seed": 1,
+      "scenario": "equip-weapon",
+      "terminal": "4f68b867f9756ee3e02413a3bf60f620b9cf70effcdf698bbfcbab95ac49f94c",
+      "recording": "a7fe20696b43e05d98e39a7e061e7eaf221dba6f96891e351a1a1932333d66c4"
+    },
+    {
+      "seed": 1,
+      "scenario": "equip-cursed",
+      "terminal": "a56867fc5278255be90e909dcaad3c43b18855ca21377027b4d71e30e8083c99",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "equip-third-ring",
+      "terminal": "855acafa3415afe4b7652fd44c589408900091211dc07476becbd85ad6da0b75",
+      "recording": "5ce0dffcef970915729b047a56a4c6e619c6fb9e7081c86bcbadad8190292174"
+    },
+    {
+      "seed": 1,
+      "scenario": "equip-third-ring-cancel",
+      "terminal": "4e5353913dc85bfebcf7506af389ed5d263ae11d04c3b7ba9e3f783283a3db22",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "equip-third-ring-cursed",
+      "terminal": "143cd311789188d38fa8e1c251305d129a8e53e410a9d9f1e1be752b3d403e52",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "remove-weapon",
+      "terminal": "9568db47cc914774d413c34e9f814c95970250cb6da9713aa155a889fcab3e33",
+      "recording": "0e47e793138120be17d85bfd759ae998f426b37ab0bb9d73056ebbc0e58939d0"
+    },
+    {
+      "seed": 1,
+      "scenario": "remove-cursed",
+      "terminal": "2f6494695c67eb89c6f79ee5c78b900bbe9b0634cc56aa2e56c537b2a26f2ebf",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "drop-weapon",
+      "terminal": "211a11a76750aa5f7eda73775a3aebaa775e8308ed125c0985094dd6da723afc",
+      "recording": "c38788149c2d51ba64538830f4cc26516a27c844f171e502ac5da98691c31e66"
+    },
+    {
+      "seed": 1,
+      "scenario": "drop-cursed",
+      "terminal": "5c6fbcdabde0ae70d56557d6e319c68f75b7bd1f84ddcbbd44683cb879af8a2f",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "chasm-no",
+      "terminal": "1337cab83c29b2788e621b66fd1362158178d920014f0c5adacec229aa5c8e76",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "chasm-escape",
+      "terminal": "c332ae4ea6d33ed56f030a28e4ed0971de6823e780485a352b37b70e84e1770a",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "chasm-yes",
+      "terminal": "cec0eed21e6c1c44c5b48d61c95288372ace0097ba21dc037f6e3f6af09483d1",
+      "recording": "f97ae9e7daa5bb29be1d9713517eb7ce2ed221745e61f923fbd818cf955f1e33"
+    },
+    {
+      "seed": 1,
+      "scenario": "throw-cancel",
+      "terminal": "9ebddb779167e7a0731101a6488d01e1ba6fd11565164f7183e145016be61b43",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "throw-target",
+      "terminal": "7d51128021cc40e409479309e2f0a5d6bfd9a59828d06f4e9a11c883561459a3",
+      "recording": "e9f43ff0f79d334053838d29318849a3e1294375c019d249b5fd5750bfe392ce"
+    },
+    {
+      "seed": 1,
+      "scenario": "throw-cycle-cancel",
+      "terminal": "f05348ded050c8747c5ad752e52ae8514ef67bf1c6845dc4812a78ce09c441dd",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "staff-cancel",
+      "terminal": "16ef9e86189666d38263d69e1c7769463a5dd52e5551bd2d6584ccb76e136e02",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "staff-target",
+      "terminal": "197684b2ca35371397261b061c0816225e980c4a78ccac05b3eae4030a0b931c",
+      "recording": "e74560d98885181e1d9214f6c76fc60d6e7abbdf9363bd5775b10bd0bb7147bc"
+    },
+    {
+      "seed": 1,
+      "scenario": "wand-cancel",
+      "terminal": "24f8c2f5ce8d5b8786c6fb68e3d6018f72569c91afe0520a1d0c8c61304eab8a",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "wand-target",
+      "terminal": "51e7fca0b8d0a2de265ed6d311e58da45fab5ea37381140657729c105757506c",
+      "recording": "779602591421d34494b6371c767d102e1a0653659d77fd6603621d1c7273b704"
+    },
+    {
+      "seed": 1,
+      "scenario": "acid-yes",
+      "terminal": "975d5c33a2299da0357d996fc16866fd59bac8223d73eda65d7e7113a4bd147e",
+      "recording": "249bf35a8883c76c837f980eaf83df1d981cea4263f52a7f152e8d0412bc3f7d"
+    },
+    {
+      "seed": 1,
+      "scenario": "acid-no",
+      "terminal": "225f862fb442fbed982011b37913de67bbaef1aea8f143082bb4697f0395da6d",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "acid-escape",
+      "terminal": "ceedbc2a2dbd2b3ac19ea33e43baa39045e1817346062da31ace059e2c6bc025",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "sequential-yes",
+      "terminal": "965c78c52431ebdf3abc43641ea83f7fcd31e19ccf3bb776dd7ef23ac7110ee9",
+      "recording": "249bf35a8883c76c837f980eaf83df1d981cea4263f52a7f152e8d0412bc3f7d"
+    },
+    {
+      "seed": 1,
+      "scenario": "sequential-no",
+      "terminal": "cc48e085300ae549abd5304e05a9f0368f528d45782994ab648dacd53e4f6218",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "sequential-escape",
+      "terminal": "b8ab0a65f581ae97be97408f6a5d7eb45d2b5b4e9f768c83a963e9a88669e3ce",
+      "recording": "d48a1b09e8ec4aa64259e455e46b4cba3b35b733b7cb25102fab590139e31f45"
+    },
+    {
+      "seed": 1,
+      "scenario": "nested-inscribe",
+      "terminal": "3b7fa69d3e781b8d08051eca03c1d156ee909dc3e1a8cb6d2e9eb385bf96e948",
+      "recording": "b09d3eeca41124625f8e3652bca4febf634865828756bbf1504be918ce9e75d3"
+    },
+    {
+      "seed": 1,
+      "scenario": "nested-relabel",
+      "terminal": "883d3eecb786a64483f57557a6df5c422c45eff7eff6b661609d33a82cbff350",
+      "recording": "4e47508ae1be3a0f2f710f7e6c6d2281ae54e29a42b1d4fdcd152efd72ab71e4"
+    },
+    {
+      "seed": 2,
+      "scenario": "inscribe",
+      "terminal": "f6e66ddf9adbfbf0475020883429890096f3288531801dacaae62b23f01b417f",
+      "recording": "58ce153eddbe6a0945d9b431cb1781d4f562fc4da977f44fdb7cd070bfa5965c"
+    },
+    {
+      "seed": 2,
+      "scenario": "inscribe-clear",
+      "terminal": "e0557a8d731e561bfe2c3fbb7de268a1d7a55a4315a3ee201adf9ab21c5c5d63",
+      "recording": "ff5c3408f1fee67c5ee2cc596cbe03e74b62937a4c17e35b7be90f7cc4d58977"
+    },
+    {
+      "seed": 2,
+      "scenario": "inscribe-cancel",
+      "terminal": "92d6ad12fac3ca18310291ee4ebcd2911eb11ffb638ea5c00140a5fad6b39489",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "inscribe-maximum",
+      "terminal": "8e4474909b9056e9e87ae8db6d7505838088b18a634f8d7c70936e14cf5192f6",
+      "recording": "ae48a39a806610375d49472c2504e2b523f3b1790e2c4018b22fec5d21638889"
+    },
+    {
+      "seed": 2,
+      "scenario": "inscribe-invalid",
+      "terminal": "2da9096ed26ad3b8ec259188d01b87e3b62f01dee188ac516ea4e468da0ba442",
+      "recording": "d3fb13f05cf7418f8f31dd281b602e521e3262e0506ee96334e13306ec6cecbb"
+    },
+    {
+      "seed": 2,
+      "scenario": "inscribe-delete",
+      "terminal": "0c34cbac855c095685e8aede05bd24dbe829d600ee24223f98a8da04c3f95d50",
+      "recording": "702516618ad605681fe132d0d137cebd856849514478be4287dae9bda57b6996"
+    },
+    {
+      "seed": 2,
+      "scenario": "ring-inscribe",
+      "terminal": "e8366fa48de3696e014e1bc9a76b1fee7b4612b074b503abb9080f566ed68b75",
+      "recording": "bca815fbedcb4b6d90b329cb96d54d1fff71e4049402cac49cd859b1cfd9f49a"
+    },
+    {
+      "seed": 2,
+      "scenario": "kind-no",
+      "terminal": "9a1cbff650d497533c3113b997861d2b7270e4d1e763f68435731684b2d3d198",
+      "recording": "b1880136aa5ee9643d92301049feb002e73902c94c3a157fde145a0f0a3d3dc3"
+    },
+    {
+      "seed": 2,
+      "scenario": "kind-escape",
+      "terminal": "8e01b55b1f219eda52ec8db6ade4a074f2a85709a6753f92e495b445d7a4e7b1",
+      "recording": "b1880136aa5ee9643d92301049feb002e73902c94c3a157fde145a0f0a3d3dc3"
+    },
+    {
+      "seed": 2,
+      "scenario": "kind-clear",
+      "terminal": "e1c8dcd3492458e90851d8a1bf1c12e3640e7da727800552361597600418ddc3",
+      "recording": "5d56f96b8d95c5874de58d184a61c5d3111722bdf801d8f5d07ba9793488ad56"
+    },
+    {
+      "seed": 2,
+      "scenario": "relabel-uppercase",
+      "terminal": "ffb43b3999e34f23a2df3c9b1fc920acf4b0b86767c0363f9f3261ed246e28f1",
+      "recording": "7f629b93e547e42325a45a1797fba77823584fe617f54cc55617465b393a05c5"
+    },
+    {
+      "seed": 2,
+      "scenario": "relabel-swap",
+      "terminal": "8675b80d7517647f8dbb79c6c582767a408a707bad41d8d09d549aedb80b496b",
+      "recording": "91eab60c0b0f5322b93b71ab67f9489adecb2dc81ef254e550a593361faf67a7"
+    },
+    {
+      "seed": 2,
+      "scenario": "relabel-unchanged",
+      "terminal": "77b37cd38701c13f950057ea00525d23dd83db4a7f5c9af0c489636d8160de33",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "relabel-invalid",
+      "terminal": "cf320b80be8d26000d4dc28b0a0dc9031954401facabecf31d22019ee0c7347f",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "relabel-cancel",
+      "terminal": "5bbea6603cb9dba8f6684571846d31aed806e09ef9dec9310e0034db7cd18f56",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "food-yes",
+      "terminal": "4812d902519e4ef6bf0332a26e1ca528b6f7cf85eca03d17f0fccf608e403262",
+      "recording": "af30de4df75df889d7528cb96e920c3ef3b1dc12351c3b18f8983136e1876ab4"
+    },
+    {
+      "seed": 2,
+      "scenario": "food-no",
+      "terminal": "e12219973fbf39e4cdba5d0caf2d8d94a0d26d924af254047a62159168527e34",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "food-escape",
+      "terminal": "5e9e123e0a893f6569c7bacdaa81b6bb77079633fea0ff386b9ead5b522809ab",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "identify-valid",
+      "terminal": "7f0c9301102ea5f58354ee38215aeda11257c4909dc1fb35168822a2fdb94806",
+      "recording": "c50ae0dd996e97165ec8b3aef4af0fe6ba4548820c6b354b3cfc2cd0dcff8e26"
+    },
+    {
+      "seed": 2,
+      "scenario": "identify-escape",
+      "terminal": "020965de57aa0a60c370dda2af716db2c3fb0c7a331be63754c713de64fc52bd",
+      "recording": "c50ae0dd996e97165ec8b3aef4af0fe6ba4548820c6b354b3cfc2cd0dcff8e26"
+    },
+    {
+      "seed": 2,
+      "scenario": "identify-empty",
+      "terminal": "37e50b2238444375ee1c986cbe89bd2505ad435b1e60bd9b751a10bb5a653d92",
+      "recording": "80d402c811e9a050f8f259dad41e45a301c86c57e5550438be4a19f529cf7125"
+    },
+    {
+      "seed": 2,
+      "scenario": "enchant-valid",
+      "terminal": "ac9f4538982ce0ef4280bb8c38fd785e28aca16312ff42f3acd6a2e6131ee922",
+      "recording": "bb95b863329896cd81c63c2ff0bc43b8c15293c940a040a18933454cab2a8f96"
+    },
+    {
+      "seed": 2,
+      "scenario": "enchant-escape",
+      "terminal": "f1968e283b0c3ef5bb1dfcc93b5af2d7c2b2db023accc7a935f89ce35a44dc33",
+      "recording": "bb95b863329896cd81c63c2ff0bc43b8c15293c940a040a18933454cab2a8f96"
+    },
+    {
+      "seed": 2,
+      "scenario": "enchant-empty",
+      "terminal": "c258186dfda724bca358756ce4e5d64f4448df2c5ba782987cd059e384db05a2",
+      "recording": "80d402c811e9a050f8f259dad41e45a301c86c57e5550438be4a19f529cf7125"
+    },
+    {
+      "seed": 2,
+      "scenario": "equip-weapon",
+      "terminal": "7de2346716fabab385a10fa8de70a10bf4adc1921f101d7361c78b68dbe1c7de",
+      "recording": "f9cd85bd04b34de9a5d53da6ee7e759c649d63bc7f15df6d85a5d2de6c85a447"
+    },
+    {
+      "seed": 2,
+      "scenario": "equip-cursed",
+      "terminal": "8dab3b9985f9c2754654ea3b155b2b4308cd3cae186a03147665294b889a512a",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "equip-third-ring",
+      "terminal": "a78783a10b2b008affa12671339c17690b7f819525c432be29ca3fe779a9b26c",
+      "recording": "ad8de1702d90023b5b6f902530af5dbcbb77d2532549bd27e126661230b39686"
+    },
+    {
+      "seed": 2,
+      "scenario": "equip-third-ring-cancel",
+      "terminal": "cf2f52a4c583d5daf9cd18dae756dc34719a5524f39522bb3df1eaac094dc916",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "equip-third-ring-cursed",
+      "terminal": "fba4a9e05cc02e4258e3ded954c495f2ce999e7a74223a809bfc0d753cd484e9",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "remove-weapon",
+      "terminal": "1e1db1c9a7ad3a5071aee6eee3fbb954342c5f001e6b7c6f4435b2dd1774e2f5",
+      "recording": "f4c186a4dd1ca3a62427972d8b245816a3ef8f0c8253de428a915370fc90fb94"
+    },
+    {
+      "seed": 2,
+      "scenario": "remove-cursed",
+      "terminal": "215cd378bc6b359b9df5bdf899838da90a01412066927275d195df652a94985a",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "drop-weapon",
+      "terminal": "5a75b114201250821938a4731f39748b9cb21959c5b26ffb144507708fd600e9",
+      "recording": "c96d32f17979a1eba7bbde145d7a25d7464c0f9048f53fcad9ec0db797b9aa24"
+    },
+    {
+      "seed": 2,
+      "scenario": "drop-cursed",
+      "terminal": "81d172d97c6afe1b4fd3e849e748b15e4059dbfe1ba2568e7217bef219960aab",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "chasm-no",
+      "terminal": "17dfb41e4f746de5cc6453768859d1da6f7573284fa051ac8cf5ffd7f8dc51c0",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "chasm-escape",
+      "terminal": "9b499d8bc496c8f9d89c3b5a54f4c5b594af38e8c8eda713fd102fee41767159",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "chasm-yes",
+      "terminal": "32f5656028ea3e96ad0711198a93756127f50dd07b9614db8cbd0307e4732b7c",
+      "recording": "794fecd9d15fd27654b7e7a880554f7eded85744c9c043d1cc1cd0d83f3ce0d0"
+    },
+    {
+      "seed": 2,
+      "scenario": "throw-cancel",
+      "terminal": "9d46c432f21f93569682bafef25d00334065bb06b9ead08495368cc3d91df16e",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "throw-target",
+      "terminal": "1663fc125fa32ecdc753ef151d789f679a2487905ca370dc4ed38d3ee0a52917",
+      "recording": "0e6d0fc192005a99b5f73d02139265c23b53dd1816bcfb7e81e9082bba08d2f0"
+    },
+    {
+      "seed": 2,
+      "scenario": "throw-cycle-cancel",
+      "terminal": "e312841fef6d7b5ab043d3f8b6a3ce99810cace7c038b8969c7f04c7a91ae418",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "staff-cancel",
+      "terminal": "e9b8fa8f0b0c521474a27463746118abef51ee3044f2ec4c63dd95ba10d28552",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "staff-target",
+      "terminal": "ac111a28431f5cacbb305ae34ddbde3b0878878887253c9f3653837fdeebc19c",
+      "recording": "e38ce9c131142d6efdb94bd0c5abb4125a28fbe126675a46cd42d34d6ddcc50a"
+    },
+    {
+      "seed": 2,
+      "scenario": "wand-cancel",
+      "terminal": "d98e5867cfad8e39d3ab6c14af7b038c65962baebeee0fe6c3c30636d4ee9a6f",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "wand-target",
+      "terminal": "c85cd7b60e57c29859aa38e8e446744300daa165e5bc336a8a95157e5874a968",
+      "recording": "ae038f4cd9815be236be87aef2daaeab40375f7aa6403f97eab78f32724c190f"
+    },
+    {
+      "seed": 2,
+      "scenario": "acid-yes",
+      "terminal": "390d23c996e699f30208b1ec49f05bffa7ec3cade5105712732fcb144b61e943",
+      "recording": "4e0008215a2c71891d20b103d462bbab0bc17b0efb6ed063e698c94635998b76"
+    },
+    {
+      "seed": 2,
+      "scenario": "acid-no",
+      "terminal": "b1beacfbe12aae4d97b88c564ce565863a637d15e62fc76126501fa68ed1ec3d",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "acid-escape",
+      "terminal": "dfbc2e47a85ca9107ec532ccd5288c49671b8c9a8b85357a534a9642d9567491",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "sequential-yes",
+      "terminal": "b19cd41cfb5cbe59bebf079c567c872ab2168e8c6a8e7efde9f6ce9429b917ef",
+      "recording": "75117a8ac646cdfdc41cae353826ece871e940401ab70449a06282d91985cdd9"
+    },
+    {
+      "seed": 2,
+      "scenario": "sequential-no",
+      "terminal": "312e269c3edddb5f2193c4cf66fbdb5ea3ce07b798c343547eddbe855114aa1f",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "sequential-escape",
+      "terminal": "3601a5ddfadcf0d68ba5b4fd7f16195b4a0a51d224894722e0a189fb4a1d7791",
+      "recording": "631bf4e5ffaa2315546e6f72b9c90606707928b534681e7ba52f48f45673e724"
+    },
+    {
+      "seed": 2,
+      "scenario": "nested-inscribe",
+      "terminal": "6398268221676a167526fa5e2ae254427c56b6e3b2c6261fbb6c632060c484a0",
+      "recording": "23ba0563d752b2b85cad5214d0d893e70d3dfb3a577e4349395f2a5f62eafab6"
+    },
+    {
+      "seed": 2,
+      "scenario": "nested-relabel",
+      "terminal": "a364ca27ff252dced82de977325fc50cc0c29ed2d1c00e108ae8b860207f08dd",
+      "recording": "7f629b93e547e42325a45a1797fba77823584fe617f54cc55617465b393a05c5"
+    },
+    {
+      "seed": 42,
+      "scenario": "inscribe",
+      "terminal": "530aace0f64f43eab9c1ad68070c4ffb128efc21804ffcb4802ab887c5b9b09d",
+      "recording": "bc95f1b116344312c540045baa103fb916c0e52457b9c493958b671516424ce1"
+    },
+    {
+      "seed": 42,
+      "scenario": "inscribe-clear",
+      "terminal": "47da8b0e27203242f248b664d46578baa7e68cf760429239952d2a1dbd44d9c7",
+      "recording": "0fc8050b6cf9b0d9ea96896b7e59fcce6ea52e9129e1b18e4279c47cc967bf2f"
+    },
+    {
+      "seed": 42,
+      "scenario": "inscribe-cancel",
+      "terminal": "ab622ee4b8885e4b297c8a2c6ab078f94776f486385a89c9b202517bc9d853b6",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "inscribe-maximum",
+      "terminal": "dee33611d8bec51910c7d4e79ef64f1c8291ad15a74424d5c5e3c17d4366ba96",
+      "recording": "f09cd8585592d9c86e3693083a23dae940f8a83a4e4ee75bbc07c7323a2ec05c"
+    },
+    {
+      "seed": 42,
+      "scenario": "inscribe-invalid",
+      "terminal": "92a45a2cb9d0de215fcef65b97fbab4340a07f1625437f4b6cf08307689b0a4a",
+      "recording": "847c3a3e7bcd074b4baa92d1900ffba29526a5b7e5fd8ebcf4cf90f220453777"
+    },
+    {
+      "seed": 42,
+      "scenario": "inscribe-delete",
+      "terminal": "e7ca48958e69c6cb40c564a29891efbe9adb77c345ce96d390499815c2350df4",
+      "recording": "4aeabf046f21f89c6a300e37d88496a5333f26f0f6bccea36bf1cde6a4e1918e"
+    },
+    {
+      "seed": 42,
+      "scenario": "ring-inscribe",
+      "terminal": "13d868b454ffb8a302705c44df5256eab6952ff157a0f52925de7102292956c7",
+      "recording": "fefd50fca9dc65ffeecb6d56c25a814839b34030b5fdba4f1c73c77f4bda3c22"
+    },
+    {
+      "seed": 42,
+      "scenario": "kind-no",
+      "terminal": "496bfaa5d5506c01683ee66b34919fd2bae6f62fe4f5d4c17982ef67a7abc9f6",
+      "recording": "2dd00a4217bc1da9b3842f9df9a7d50d2bcb14988ef93f32d65d9912d6eac02c"
+    },
+    {
+      "seed": 42,
+      "scenario": "kind-escape",
+      "terminal": "93ec7986096f7c163f90adea1a9c4cb74ce5c1d3e2cc64ff5dad5b8c3a46b166",
+      "recording": "2dd00a4217bc1da9b3842f9df9a7d50d2bcb14988ef93f32d65d9912d6eac02c"
+    },
+    {
+      "seed": 42,
+      "scenario": "kind-clear",
+      "terminal": "89f6bddfb9e84e7b39cf445abbc5371f2a15e23cf563973cefa0ebb68cfb4c26",
+      "recording": "8feb7354601b2691abb0d0c24b645b8a8c216fe1053109d87cf79f4281a3818f"
+    },
+    {
+      "seed": 42,
+      "scenario": "relabel-uppercase",
+      "terminal": "9f31a4d02d81e0ca51e65318910576064baae36a490bd4c5f817efc68c3d9562",
+      "recording": "776502547d09e01b5065f7e01d1333b93c6576c0f51dddf4d5fa4ff45e6ae3e4"
+    },
+    {
+      "seed": 42,
+      "scenario": "relabel-swap",
+      "terminal": "ea100e4cd1f17d9790ff4e5d1638fddff8a028e80d94f83caba52be00d614e6c",
+      "recording": "ce0d966f985079b5bf52112bcdc5919a6f686a3a586ddc8c9ed1b57143d02e2e"
+    },
+    {
+      "seed": 42,
+      "scenario": "relabel-unchanged",
+      "terminal": "a537063decc7e94aa3986b61f335b88c9ea9d4c41cfed03d0eabf3e2312256d4",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "relabel-invalid",
+      "terminal": "fdd9e747fb5f5cea4b32812f833c3cd4f9ab25e4772fa404e5820b4c972ba270",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "relabel-cancel",
+      "terminal": "4df32154e3afa2e428a23c740ff54825bd280788d47fcce8d65b89a7ada44853",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "food-yes",
+      "terminal": "2aa4cb74b76fa4ce227e996ab4f9fc4838bc51f73940e808467b47049f75e04e",
+      "recording": "acc62ac6900a3863b6d2f9b9b9e79b678a2b8b72d67ef2669743d0de3dc64516"
+    },
+    {
+      "seed": 42,
+      "scenario": "food-no",
+      "terminal": "f0dde1f0b165679566526fc52da31c5346efa5640a078f95ed875291c4defdf0",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "food-escape",
+      "terminal": "8402932f03f2960638217e072720af8d5cfa33e4f9432d71a2940b18ec15dfa7",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "identify-valid",
+      "terminal": "62d43d5004817a14170e6dcbc8b0618942734e281ab8b2081f796974215e0400",
+      "recording": "460d997b6826604a043cc626dcb7c7a2cb2cffce6a0e7bc5f6e72f12f5c5a021"
+    },
+    {
+      "seed": 42,
+      "scenario": "identify-escape",
+      "terminal": "c4b9b23c3d66a115e74306c07a48e9dc422844cd85bc839c5457660a615c7933",
+      "recording": "460d997b6826604a043cc626dcb7c7a2cb2cffce6a0e7bc5f6e72f12f5c5a021"
+    },
+    {
+      "seed": 42,
+      "scenario": "identify-empty",
+      "terminal": "15b8c56b71728ec6a754d92f8bbcbda5cb46d5945f8470228b90ba5dc76a679b",
+      "recording": "f6816f961b1baff5c32fc9863c036546e5e0aa7c0169a54e86a8f3954f8de71b"
+    },
+    {
+      "seed": 42,
+      "scenario": "enchant-valid",
+      "terminal": "5a6dd26604a460aa4cbe8669ba075b94e7f9297f80f1a8999bfc98669ac5b82f",
+      "recording": "f8ab13d04bbf9d5b05ad0c52a87f0557139748fcec4c36bbdeb9db7b379f09ff"
+    },
+    {
+      "seed": 42,
+      "scenario": "enchant-escape",
+      "terminal": "2774fbd0844125255605e37c161c87efbe3d3aa8a55b340f2af4af0e29fea1b8",
+      "recording": "f8ab13d04bbf9d5b05ad0c52a87f0557139748fcec4c36bbdeb9db7b379f09ff"
+    },
+    {
+      "seed": 42,
+      "scenario": "enchant-empty",
+      "terminal": "cebf12272f27ae6328caf032de2184f1238e0d8632f6f3d22f32d7777f6cb8d4",
+      "recording": "f6816f961b1baff5c32fc9863c036546e5e0aa7c0169a54e86a8f3954f8de71b"
+    },
+    {
+      "seed": 42,
+      "scenario": "equip-weapon",
+      "terminal": "bb0f7d7f48d414456ae02aa7427edac55740968ee81b04c86be212ce28d91a35",
+      "recording": "f5f3c68c84366d62274b11686136236c516b41f7c5838e408d1cc3a8a208ca7c"
+    },
+    {
+      "seed": 42,
+      "scenario": "equip-cursed",
+      "terminal": "2990bf7d308eb2f76b59abf2058588940fb9951551856c662d5cf80a396d087e",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "equip-third-ring",
+      "terminal": "75a12cc10f0fece3b43250288196196687e8def818518ba1a165ab20d8c2abe7",
+      "recording": "40a16b0ae46e2535a6bcda39e503bb03e27091bfa122f94a6cb977f1d220c6ae"
+    },
+    {
+      "seed": 42,
+      "scenario": "equip-third-ring-cancel",
+      "terminal": "abbee157b5f9c13accf332bc1a79684ddb160c2e41d4b7cb2c2169a2fcd2c208",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "equip-third-ring-cursed",
+      "terminal": "c549ad87244e59c3efa8d18d10a6665f8fa98c005308fe7e53e13260cf1674e5",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "remove-weapon",
+      "terminal": "e4c99c905c0674e35794f807497f5e119397bead03b94ada14cbb6354b94ab96",
+      "recording": "29ddcabce2b06073d6cd9c53f95a8b7ec9f86a62daaa0ca318e32e5f697b69cb"
+    },
+    {
+      "seed": 42,
+      "scenario": "remove-cursed",
+      "terminal": "565275d83a30db6d2447d36d941aaee19ce7ce8d1a0b758918d09e34a3f4fd3e",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "drop-weapon",
+      "terminal": "ce5cc61054a4ef20e49b32287c64e2c6ce8225ef3967ca616e217487be51ea79",
+      "recording": "5707b0ebdb580cc0862b475f479758a5f58b2a0c7b40a670569f4c47acdff215"
+    },
+    {
+      "seed": 42,
+      "scenario": "drop-cursed",
+      "terminal": "83f19eea9434dcec6e697150a93c579390bd5e840511beccc649c7b3f7ac193c",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "chasm-no",
+      "terminal": "81719386dcb7836e8058aa86e92133cb62f92c1dc7929d3d6a7d1481efc03dad",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "chasm-escape",
+      "terminal": "c526fbbf884513f7f575d58571e332f744d5dccb88f43e5e21eedce1781d0a0e",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "chasm-yes",
+      "terminal": "f16bc3624007182c2158b848f42c85eb02d7fc43de82e071e91efda5fceb6fd5",
+      "recording": "d199d4dad79c43a148519d7cac3bd27529be2467dd03b07f56e3ec39d28c19e3"
+    },
+    {
+      "seed": 42,
+      "scenario": "throw-cancel",
+      "terminal": "d58497a74af768e268d81283ba6a2ce279162d63066afaf3923b1115751b43d5",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "throw-target",
+      "terminal": "85099297be291f90d222074e403718786ea124782e3ba2190b1f7056954a7ee0",
+      "recording": "514a70910fe7f63b4a41590ccf1dfeb7e3a3bd64a417ca7a534af22b71371b9a"
+    },
+    {
+      "seed": 42,
+      "scenario": "throw-cycle-cancel",
+      "terminal": "a04225c239fb3c34f00a2cbcdb5e195c410f2bde4aba17c21f397b9609ba9ab8",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "staff-cancel",
+      "terminal": "96d8ce2f6099ff59915721d1cf9621e34eb4039424751eb67ffe9ad6fe2e703c",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "staff-target",
+      "terminal": "d43e1990dfacb0ca0e0bba744a2c59f9abdb0640b1fd769cc3cdd42ac201d45f",
+      "recording": "4d6ff6f67875b98fb8d953e3439909ea5241ab97e49b3be98c0681c280a76116"
+    },
+    {
+      "seed": 42,
+      "scenario": "wand-cancel",
+      "terminal": "782392a24859f50a0fbbc6445a537b4ebf6599080c3350aa5e91ece2dab1ccbe",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "wand-target",
+      "terminal": "b151038fe5003afd652b41326b84b7c085d82ed94f36b8f27ee43db361756096",
+      "recording": "ff2e10a8e4248ea9872fe1e975cb0825986ab87fb0a1b198e0b4366baec841bd"
+    },
+    {
+      "seed": 42,
+      "scenario": "acid-yes",
+      "terminal": "96e9d38c78b825fa284e164f6a47a075ea5689df9d89945ac027e3aab546af0b",
+      "recording": "57ad5681eab38145ce78a1b3aed4080b2f7d4d1c8d00e57452eb6571e81aa00b"
+    },
+    {
+      "seed": 42,
+      "scenario": "acid-no",
+      "terminal": "89bdc8d24fdfb42ad31582f17debbeab7e546c745bf2a79e14c9a451bc444433",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "acid-escape",
+      "terminal": "02f8637a8137f4e689552b967ad64aead904b22924a17ffdf4edab2c8721c0c4",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "sequential-yes",
+      "terminal": "01b03989df2732fd553f76ec2d41d541a89f6d1312b81acffabd28041dcae5d8",
+      "recording": "57ad5681eab38145ce78a1b3aed4080b2f7d4d1c8d00e57452eb6571e81aa00b"
+    },
+    {
+      "seed": 42,
+      "scenario": "sequential-no",
+      "terminal": "174b2239ff99285fe5508aa1544c03dc116f5b33de22df922ed32de0f0858eed",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "sequential-escape",
+      "terminal": "414761769a2aa4463711bee1dc2cdd4728306967fdc036ada1074adc38600bd2",
+      "recording": "22ea23933c503a92e5c824051098b429f2802775ad674edde97dd49316090957"
+    },
+    {
+      "seed": 42,
+      "scenario": "nested-inscribe",
+      "terminal": "abe5943a81bf2743cf09ddce33b8c1e1daf7509b6f953a9ef2d5ccfe50ac9cc1",
+      "recording": "a999bffa55c698ee46054032a5d2062bd080cc1cefe275f416ea0cb26b0b66bd"
+    },
+    {
+      "seed": 42,
+      "scenario": "nested-relabel",
+      "terminal": "932cdc469e54be7193595cde91a1645530ad13db6953983c4204024e4f81c283",
+      "recording": "776502547d09e01b5065f7e01d1333b93c6576c0f51dddf4d5fa4ff45e6ae3e4"
+    },
+    {
+      "seed": 12345,
+      "scenario": "inscribe",
+      "terminal": "bf8427eb1af69981d9154a27dee62c2aa90a770bf2724f6f75819bb035e9c5a9",
+      "recording": "46f4d48a604d08731ab0b3c6834828dfa492a850bb29bfdb9eef86f273a621f1"
+    },
+    {
+      "seed": 12345,
+      "scenario": "inscribe-clear",
+      "terminal": "862a1d79b78ec03d117f7bdc05f332407793371db34b27d1db775c82717f43c0",
+      "recording": "b61c4b3307e4bd26f7c49a88b2500ff51b929d2ea413d9d792b60f5d493fa85c"
+    },
+    {
+      "seed": 12345,
+      "scenario": "inscribe-cancel",
+      "terminal": "859e785db3016de72f47e83127c052acd27fd6e61bed086a6b0c2e54c05edd61",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "inscribe-maximum",
+      "terminal": "50b34bea4aa6a901e1a49b643c48ef4d57effa435e95a608e2969f8e1c912880",
+      "recording": "d55c9e5bd375749cdaf102cf5da61a50709f2a4ff364b9f82fa489f04cb85868"
+    },
+    {
+      "seed": 12345,
+      "scenario": "inscribe-invalid",
+      "terminal": "f1ebb83aabbad224c1567b207de04353c8923b1f955682682df5e55caa441ead",
+      "recording": "e302ae5fdf57671cb38090537d4d7bcafc22d15003b28c09f7cb5a15d96b5e26"
+    },
+    {
+      "seed": 12345,
+      "scenario": "inscribe-delete",
+      "terminal": "f32bb72373bc020134c25f7f535bbdfb93d3ec76c40561d12975e15dc9afcdff",
+      "recording": "537c017403174407f993e52a2cda3f62c9662b43258b95d51727e6a28f8cf9ef"
+    },
+    {
+      "seed": 12345,
+      "scenario": "ring-inscribe",
+      "terminal": "17a95e449c239401f0c45250952535712191498ad48aa1c801cba0fd115b64f9",
+      "recording": "113cbba4c7c28624c4c955dde45364482894e86a68617da9d1ce88205183ecc5"
+    },
+    {
+      "seed": 12345,
+      "scenario": "kind-no",
+      "terminal": "b2b2fa75cd92ffb9a7ff20da2f08a0c0c778fc2b5b293e671fc64a622e7e8aba",
+      "recording": "99aa8400738b969fdf7e83de2c80bab34486e12972615b1835e20dc3813f44da"
+    },
+    {
+      "seed": 12345,
+      "scenario": "kind-escape",
+      "terminal": "e564517b5c9296561e8abf532575fb00a10402461252674d390b4fdba55bb8ee",
+      "recording": "99aa8400738b969fdf7e83de2c80bab34486e12972615b1835e20dc3813f44da"
+    },
+    {
+      "seed": 12345,
+      "scenario": "kind-clear",
+      "terminal": "5df0267cce5d8f654857c9db1cdbe1256eaa81ad84e2bccf28c817e860aa5015",
+      "recording": "5259548616e5fbe124a1a5427bf15346924e295ef556b0f18bd9c6cd76233437"
+    },
+    {
+      "seed": 12345,
+      "scenario": "relabel-uppercase",
+      "terminal": "f747c1da35de8f62a1cbdeffbf78aa8c5b02e42951f2462b32c014de9369168c",
+      "recording": "258c0406e6c1c766314fb826238866e8fd13c22f566d581d337f299b3f13703d"
+    },
+    {
+      "seed": 12345,
+      "scenario": "relabel-swap",
+      "terminal": "37d0f1e071723c4796047c7d04263bc0f7a4fb56a93c517a7bc35dc780314094",
+      "recording": "4978fa5706faeef2927c016e1ac02c29591b1fd5529c07901bacf1bb5b63d8a1"
+    },
+    {
+      "seed": 12345,
+      "scenario": "relabel-unchanged",
+      "terminal": "23e9705267f5bfaf43889887fe245510281084b214f088c80d798891f7c55f8d",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "relabel-invalid",
+      "terminal": "b554085c5b6ec6a7d77e2c832c5f4f63e623079918544c3f6ac64cc00adda683",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "relabel-cancel",
+      "terminal": "0297abfec0b933a8bd49504fd485c894aa55c5d810947b989af730310ba9326b",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "food-yes",
+      "terminal": "1ee1dfff6b2fbf783e7d4053928ca181f188873e8e4ff9087db9eb91923aabe5",
+      "recording": "45e291a307ebca0b59bbd4f3d254e2d2d170aacbbca872f760f4cf90e05ea5e8"
+    },
+    {
+      "seed": 12345,
+      "scenario": "food-no",
+      "terminal": "b589a8628a5f462400dcea4c5340b75da74bd75479ac1e004881cc8dde5a420d",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "food-escape",
+      "terminal": "af3594fa406746fa7316416a3a9fb386479dd2841138f428c1857907dc5dbeb6",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "identify-valid",
+      "terminal": "f626f6cc0242ea4bbc7ceeacbe989079822d06aff3e6c9a5c71f98cac83ac016",
+      "recording": "b58509291160c8f97cb4cb3c6097b0edab9fcd701a80d5f8f5c6d78a6018ddb9"
+    },
+    {
+      "seed": 12345,
+      "scenario": "identify-escape",
+      "terminal": "ddf37630aff5f6aa140d64a9d03ae75f45197a3ffd12e7896fe5432f314d3da9",
+      "recording": "b58509291160c8f97cb4cb3c6097b0edab9fcd701a80d5f8f5c6d78a6018ddb9"
+    },
+    {
+      "seed": 12345,
+      "scenario": "identify-empty",
+      "terminal": "c9c00713f4374589a695c70364dd9d15e5c99bb9ac4458f78c0d98dd4d3161fd",
+      "recording": "d22d315c249fd4809aee871642aad729eb25a752dee9fb2eb06c055687b950ca"
+    },
+    {
+      "seed": 12345,
+      "scenario": "enchant-valid",
+      "terminal": "8db86263b5e286dc9bc3e7161f9ee6f7a7d5c3acc08d2254f594cb395c8c20a0",
+      "recording": "b08dd9d3eb460f7ae92f2bafdc91f3ce5ad829829e019f9a77881e4426eb1aa4"
+    },
+    {
+      "seed": 12345,
+      "scenario": "enchant-escape",
+      "terminal": "d712382d0292d30b5fa65b8bd3c4144c37a7e8a37e9807b8c2869634d8939979",
+      "recording": "b08dd9d3eb460f7ae92f2bafdc91f3ce5ad829829e019f9a77881e4426eb1aa4"
+    },
+    {
+      "seed": 12345,
+      "scenario": "enchant-empty",
+      "terminal": "bb2b25c389f0ce7afae29626264e876fad46f9fd64cb8c9c8ad24ff2d1b778ac",
+      "recording": "d22d315c249fd4809aee871642aad729eb25a752dee9fb2eb06c055687b950ca"
+    },
+    {
+      "seed": 12345,
+      "scenario": "equip-weapon",
+      "terminal": "8c5257e41b7284cf94d7d2e3f55a12a947f35eeeeacd5b78795d8dccff7ecee0",
+      "recording": "85970385d9a559ff6c9c0c499d4984a0d846fc0d370aca4f84703a610905e7b2"
+    },
+    {
+      "seed": 12345,
+      "scenario": "equip-cursed",
+      "terminal": "0104db97acd9e6dc6706b167153e9608e135d20f56755459dea2ceda0d85225e",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "equip-third-ring",
+      "terminal": "8ff82e0ffddbccdd921052ad4e6be6a47d245c37914d6d84397246e491cba98c",
+      "recording": "bdb60542ec8b6ae8907c1c8b37a8285302f0573d59fff7c74e2372c9e8eab4dd"
+    },
+    {
+      "seed": 12345,
+      "scenario": "equip-third-ring-cancel",
+      "terminal": "cc4dee901bb5d757882a5249af4fa710a05bb0aeb132a252d1f18f5095a7881b",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "equip-third-ring-cursed",
+      "terminal": "cf5a961148eabcff25adb5b6cb65137d23b7298e07777bfa014101995ef54cde",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "remove-weapon",
+      "terminal": "c351ab5e39c9c1e26de256679cea49da6f1e9e46c68f7b36558190d41c2000e3",
+      "recording": "1b9eb9c9c2a7478ad539b2912321f73f7f61f76efb6dda3eeeca32a70c78616d"
+    },
+    {
+      "seed": 12345,
+      "scenario": "remove-cursed",
+      "terminal": "70f09a91a6062506f52b1b847b15b338eac7bab7bdb73bd694b52c3940bdf459",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "drop-weapon",
+      "terminal": "134a616bab71163352ebf59ec6e7c69a131900d7ee7039c7377f804b3ae81a40",
+      "recording": "5f49581e8630ed0c7e67d655f8665c58c1b7b054d4adbcc72c9e2b746f219b44"
+    },
+    {
+      "seed": 12345,
+      "scenario": "drop-cursed",
+      "terminal": "d65bc844b4bb83f317dd43832b3fb92a4fc6d86de3fa6ebb2cd93b3242029074",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "chasm-no",
+      "terminal": "68542b35ce5d93606afaa53acbb6df51d1d4e74a2c986a13fbcc27010c6410eb",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "chasm-escape",
+      "terminal": "b46d6c8c0832cf8fd9909f5e86c6f9a4a5148e2e38ac7619954a730329ab4d82",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "chasm-yes",
+      "terminal": "395f7b05bcbd23e1008f286b7ddaf3adc7c954ba3b1ce6c6e2cd2c743b49535b",
+      "recording": "e79c77d26993c205cede1e6c76db738bfcf1c348aa0e9084927f5735abb7cb2b"
+    },
+    {
+      "seed": 12345,
+      "scenario": "throw-cancel",
+      "terminal": "74fe06717f24a6dd6f098db47113d713f4c9fb6ef34dc35d62bc605a9e36ff64",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "throw-target",
+      "terminal": "285f8befe19a79dd55b3a08df01c02c9e10ef6faae9fe90bff784fb3131e853c",
+      "recording": "e9130438bfc5d0916a8d775034d92d8de61e7974a12eb63d2f53cd95d7a2ee64"
+    },
+    {
+      "seed": 12345,
+      "scenario": "throw-cycle-cancel",
+      "terminal": "d5a72d9fe6bea0529d632a6ab2ccf80ac8d43a9a11bf2ce0d682b834c95d52e3",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "staff-cancel",
+      "terminal": "c1565d5c691f01a931c3efad64d4f670dfa1da6c91c4e2cc4b416918f6c5363f",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "staff-target",
+      "terminal": "a325e22365e242f605aab08abd975a8d6dce2e939a9898ed927b7e53e33031df",
+      "recording": "2c2703ab169bb4510991ba45348813cefd9343110413259408392735b2f7ca8e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "wand-cancel",
+      "terminal": "1e483e9416ab3617d71f411c13f0839ac0145e30ab4a36ddfdf3ef749a08f84d",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "wand-target",
+      "terminal": "e20279fc12724be32697d1402abdafe9205fcf5602d8f005b561a9671158c5ae",
+      "recording": "f41f70715d0a0b3427202bec5d822b42a571900c4a148f0c47e7f8598154cef6"
+    },
+    {
+      "seed": 12345,
+      "scenario": "acid-yes",
+      "terminal": "21be54c22731d9ce0343a47a5175197f7a123c807e6abd7d08b9c2e68494088d",
+      "recording": "5bdcf315638b0e611dba0526fe6059f15a2d4c5d4c15f85b94626fd9a5303715"
+    },
+    {
+      "seed": 12345,
+      "scenario": "acid-no",
+      "terminal": "204574617fb54ffd984a630a31c39db48f61e4f08371f9a78c6fe4a237af1298",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "acid-escape",
+      "terminal": "d35885631e6dba7aec3425286efc92956259a5ced36e9a76914aa76a4204c91f",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "sequential-yes",
+      "terminal": "41b5ec489f97f0cc0848f78f03e1d801f43c57cd5936a6ddcd61616b516dffa2",
+      "recording": "5bdcf315638b0e611dba0526fe6059f15a2d4c5d4c15f85b94626fd9a5303715"
+    },
+    {
+      "seed": 12345,
+      "scenario": "sequential-no",
+      "terminal": "e75431ba5e71a71738ebbcf9c2b10b777c21e3f152a25d4a7f23a5fdd5f4f2b5",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "sequential-escape",
+      "terminal": "a8fd581fd9838e659c62d34a2a552afa5cb84aa0740b221b94a48a614d845863",
+      "recording": "052788613ce650ddb41d74f8b4617b019723a3b81ce22bf38bfc248b22ba728e"
+    },
+    {
+      "seed": 12345,
+      "scenario": "nested-inscribe",
+      "terminal": "03b803d32c97caa2919498f534928e7b10829e666ae505369e27f0b944e26c03",
+      "recording": "1b291f4f91a79a7ac4b633b4db8287542d4d047fe40f1487629487505ad58e9f"
+    },
+    {
+      "seed": 12345,
+      "scenario": "nested-relabel",
+      "terminal": "70b9a6eb58b3189de6c07d3bbf2a0e2a7439b4df8385d57aecb2559196d4020e",
+      "recording": "258c0406e6c1c766314fb826238866e8fd13c22f566d581d337f299b3f13703d"
+    },
+    {
+      "seed": 99999,
+      "scenario": "inscribe",
+      "terminal": "f416ead40449fae401e7dd8fd2f9fc120fcc1e7d98f05c1b97b0868ca38d73a4",
+      "recording": "ba8f179aa70a44404a3bcf887b8d9473e36aa256712ec72dad6238ccee451e5d"
+    },
+    {
+      "seed": 99999,
+      "scenario": "inscribe-clear",
+      "terminal": "76d32c25cc2853afeb1523e4ec106c280503cd25059023bd79eb5e766990f621",
+      "recording": "c361fbc32810731a9e7f29cb64ea1f0de3a6e67d95b972ee23cb7fc682adbb11"
+    },
+    {
+      "seed": 99999,
+      "scenario": "inscribe-cancel",
+      "terminal": "a3ba19d29218e144136f8edd9ce1d9df34039bfb94cb0b172f266e5a80ec82f3",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "inscribe-maximum",
+      "terminal": "e30c69fc2474ad8bb33dcb3ce6913cf3e81ce2ee5c5b6d16ce4d1d4e7efab9c0",
+      "recording": "1a3276a1ea606ec4f1a742dca1a6356aad838ec5800fd6c18da09f445bac8801"
+    },
+    {
+      "seed": 99999,
+      "scenario": "inscribe-invalid",
+      "terminal": "68a4e7f68eea853cb76b48ca6a34ae73fc46db7f2f335ad0659bfd27d7ef3984",
+      "recording": "2d5361c793a6dc7f99ec799d83df1aac190c385cefd42022fc2b89ec701cdf60"
+    },
+    {
+      "seed": 99999,
+      "scenario": "inscribe-delete",
+      "terminal": "da46e755956e355685fbd31833b6eb9e8181523dd4dc60107ed1442711df4026",
+      "recording": "9b4b1aac2a79b4f79f97fdc5c9df2ad45cc861db2218bc6447e6128d1f50fc01"
+    },
+    {
+      "seed": 99999,
+      "scenario": "ring-inscribe",
+      "terminal": "d6c69447bb9b5d6f843b59d7856a8852d617e58914113cd6c9cf1a4265295088",
+      "recording": "a6038012ee5fd2e9c1528621be98e021ec44296403b71273b5cc4ca6b4347cf2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "kind-no",
+      "terminal": "1c370bc6b43227af0ffbacf0cc3986557afb8478017940f5e30899c354b7e4e5",
+      "recording": "93fc466ad62e48d8996cbb499b41a10a156892591e0e8a1c30e6c38fcb618c40"
+    },
+    {
+      "seed": 99999,
+      "scenario": "kind-escape",
+      "terminal": "bb7763d63baf3ce7538093e9e1de4658e8d8f8f564f5a0f66384f54ad7a8d07b",
+      "recording": "93fc466ad62e48d8996cbb499b41a10a156892591e0e8a1c30e6c38fcb618c40"
+    },
+    {
+      "seed": 99999,
+      "scenario": "kind-clear",
+      "terminal": "0f138a46577878a34693fa45dfc4417b87e4b0210c1efb6d4971c785432f0736",
+      "recording": "e31ead895eb02795ecd831c1735e5133d72a491cb574ecd548f30d84a90abfd2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "relabel-uppercase",
+      "terminal": "33262bf973ccb4cca8e3215eafb5798151972a1217a84bfadff2c12ccf2b71be",
+      "recording": "ec59d1586c6af98cdc3aa4f94e3b9c93cdeee7dad9ae32ba4826aac05953a29a"
+    },
+    {
+      "seed": 99999,
+      "scenario": "relabel-swap",
+      "terminal": "5c40db4642f24f4c564266fd0912cbd83b0193fe2c643e3f9501e4daad29c561",
+      "recording": "229cef75450ab90f9ae79a9312e20beb993317cc812ef03be8dc674ad7501561"
+    },
+    {
+      "seed": 99999,
+      "scenario": "relabel-unchanged",
+      "terminal": "9d42ac8e46a3d31e507df2fa4a43698b94c67346a4078407e2c23585444b144f",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "relabel-invalid",
+      "terminal": "b2bf384a609c0df702c02bfb85b1740a3f0120b20330084f75eb576099718604",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "relabel-cancel",
+      "terminal": "4fff579643a966bd601a48521e32b7be20044f4aa18ab0d1c5fba230e19be1a7",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "food-yes",
+      "terminal": "693e531826ca879e1f502d1d056c28ec9216b2541cd204ac5906fd3349300b28",
+      "recording": "e090b2e81b5153dda28249bf63a9c7af52cf07456cdd4581e6f4f5b3ac063044"
+    },
+    {
+      "seed": 99999,
+      "scenario": "food-no",
+      "terminal": "dbb9e93799ac0933e73192c1ad7423e3b026f64ef4188a6e9356222ca1c1b34f",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "food-escape",
+      "terminal": "2dd9cebbbd443e80d2490f20deb099e0eea49c700192e4788cf3ed047eb9893e",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "identify-valid",
+      "terminal": "5df34375e6e4c9b400931f158eb0ad9f7247de19c5914b6ba1a6704073973d61",
+      "recording": "e51d95ebb7177b8f9fac8a4a6181dabdc830c6965f7c4c48a810be73a4f8901b"
+    },
+    {
+      "seed": 99999,
+      "scenario": "identify-escape",
+      "terminal": "668b870d787a9f276be0c82d0d2cb612201367e0f53aa86a66a87827270b2b06",
+      "recording": "e51d95ebb7177b8f9fac8a4a6181dabdc830c6965f7c4c48a810be73a4f8901b"
+    },
+    {
+      "seed": 99999,
+      "scenario": "identify-empty",
+      "terminal": "a970d4d91d5844678790c9bf233e370bfca7a71b4ae6c57056dd90bacc07e1d3",
+      "recording": "a8e40ad0b6f97c6f344ad2cb7c8fce8a0373b204753b3db0e05d7dbbfe8fbc11"
+    },
+    {
+      "seed": 99999,
+      "scenario": "enchant-valid",
+      "terminal": "4a0cb6738537bbe0b5a7793e41f297ccab13b029e2d3e6a7e0f4d6690a3091b3",
+      "recording": "e1eb0439c429e1a8e8a7ec9fc9e873f90f37e25d5869f38d536604177ee38bf9"
+    },
+    {
+      "seed": 99999,
+      "scenario": "enchant-escape",
+      "terminal": "173defa8703bd53f585599a1d4788bfa43615115e9a4cf684072192b8210d342",
+      "recording": "e1eb0439c429e1a8e8a7ec9fc9e873f90f37e25d5869f38d536604177ee38bf9"
+    },
+    {
+      "seed": 99999,
+      "scenario": "enchant-empty",
+      "terminal": "8ec641c1aeeb796767861c94e986414ad7f12454dc3086ca5080ac3c32054ec9",
+      "recording": "a8e40ad0b6f97c6f344ad2cb7c8fce8a0373b204753b3db0e05d7dbbfe8fbc11"
+    },
+    {
+      "seed": 99999,
+      "scenario": "equip-weapon",
+      "terminal": "5dcbcf5338e801e14cab153a9cc0d1dd330f6eac87edcdc6f55ff42f0f8a1de3",
+      "recording": "19205034d75989df965c0810bf19a9c47094f44aab2da9c9d31354f0fa955b61"
+    },
+    {
+      "seed": 99999,
+      "scenario": "equip-cursed",
+      "terminal": "2b49cb01f5fe479bcd697bba25a8ace020ebea636fe34abc65036b8b1aa71b01",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "equip-third-ring",
+      "terminal": "02093b1d921175d9f322ca48b71288e26cc7999a60befa56f7aea41ae8c1c606",
+      "recording": "619bb5e5839522c0302f683e21a34f78fe01892dffeeb58b663f50c39b105b6a"
+    },
+    {
+      "seed": 99999,
+      "scenario": "equip-third-ring-cancel",
+      "terminal": "bbaf666232c8a44bca988133d478abc6d2412dec45eb11db596897ce58e0ecde",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "equip-third-ring-cursed",
+      "terminal": "82bbc11d772da2ade0afd0c8234884a8a0d6f884160ed16bea5af8577a7e07c4",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "remove-weapon",
+      "terminal": "4cd66a86ee639d9903b1f6d2417cb23bc7fb34417fe827070ef6041073ecd7e9",
+      "recording": "888aadcc8c9c11be78370ac5b098f2c2dfa217da0f6640556b1afeb549451c16"
+    },
+    {
+      "seed": 99999,
+      "scenario": "remove-cursed",
+      "terminal": "18dac44d9ec2c21dcc20cf046e7af0ae4831ef228d31ce2ed578f66951440290",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "drop-weapon",
+      "terminal": "f3805347e7d3904a8ecd598e1f31b9eb39d115779832505965e965f03f9cd5fe",
+      "recording": "08f2f060f9e73204477b6335edcc0c9735b06bee6ae12fa1b950ef36bed73192"
+    },
+    {
+      "seed": 99999,
+      "scenario": "drop-cursed",
+      "terminal": "69738f80dc5b71950dd79e6e01f7f32af7cb8d621055fd6f8f0098334d779962",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "chasm-no",
+      "terminal": "ea4fb57ee180b68a56ecb5e10ebe96fd0b193b6438f11f9f4d74235f520f9538",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "chasm-escape",
+      "terminal": "fc197ce3525fc9305e33e427b0600dba90bbd74cf088ca1487ea0c58d923012c",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "chasm-yes",
+      "terminal": "5e50fa1326529c37ac7b3d1649f59739812a926ecf23361faa438f2afdd3c3e7",
+      "recording": "cd420ad786d9e5b1d64c2f1d89c24398818527fccd387d5b42984b0d474add76"
+    },
+    {
+      "seed": 99999,
+      "scenario": "throw-cancel",
+      "terminal": "bbe6133852371c18460e296ab97d15472b11b26fc0efd7ad69bdb0142266d0c7",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "throw-target",
+      "terminal": "d6b248ff8a767515a6a289b0c7727007012a06dd0122f56a6d2dde153e5fab9d",
+      "recording": "81390ebcc8ab457e08ed9249a5c23dc9c1cb2b307f6e48a79af5bb5f442e3cff"
+    },
+    {
+      "seed": 99999,
+      "scenario": "throw-cycle-cancel",
+      "terminal": "e61f81e6bd52d8262309ade99e67c18a95c71d528deb5a6e243ec5a86ec931d6",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "staff-cancel",
+      "terminal": "9fb9ded4dfec2140d1fe889ec65faed51becc107a65d9abc529cf3f1ef969ba0",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "staff-target",
+      "terminal": "72d1bc808a8aeb1824dd0aab0a86c240594b183b259e69959aa2abdd7caf3537",
+      "recording": "0afce51de0dc6483300d2196b9398de4dc0a5d4c2020f3c5e06f49a790228dbe"
+    },
+    {
+      "seed": 99999,
+      "scenario": "wand-cancel",
+      "terminal": "3091e3c63b884ffcbb6d652b5e1375694adc3c9be5298e94320a63eaab0aac43",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "wand-target",
+      "terminal": "6aaa78d4fff933478fdeb7a5aef05278e2238ff721c1f706589891eb2cada4c2",
+      "recording": "0afce51de0dc6483300d2196b9398de4dc0a5d4c2020f3c5e06f49a790228dbe"
+    },
+    {
+      "seed": 99999,
+      "scenario": "acid-yes",
+      "terminal": "ac90543adaa3baa2438d37574d6aefdadbf451f5de0cf8d6b6d5781c613e8200",
+      "recording": "746e35b99e4dc5e15402116f2c68606f4c994fbf4cb5d5e603c26df911f95937"
+    },
+    {
+      "seed": 99999,
+      "scenario": "acid-no",
+      "terminal": "69da805b35e1b454e15f163bb9193505041a28e6d1cfe71bd87dc3389c1856b3",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "acid-escape",
+      "terminal": "7e5a75167fc0c2acb57d4ebf90639fa9b10f88170b693f7e3ccd14caaa58d255",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "sequential-yes",
+      "terminal": "d2f957f1f707d8761d99f80a101fcb6174d04ad0ea712d00c719030914a52668",
+      "recording": "746e35b99e4dc5e15402116f2c68606f4c994fbf4cb5d5e603c26df911f95937"
+    },
+    {
+      "seed": 99999,
+      "scenario": "sequential-no",
+      "terminal": "e7ab918741e3ffdd2add203cb54d543580d660f77930484309477658d2413b61",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "sequential-escape",
+      "terminal": "33c760b4a9133427a388162a665db9aed3998f003bd883093c006df73ad54008",
+      "recording": "ca4af3a41356e6b27cdaddbecb4343c60858e8ca643868d68fbca43bbfea26e2"
+    },
+    {
+      "seed": 99999,
+      "scenario": "nested-inscribe",
+      "terminal": "a243b13cb528dd9e034ef7be428d1c27f60f03a048c11ed0b20613651a7c5eeb",
+      "recording": "9644eed22325b2c9b4f92ce3c047e2d9c3ec8e0af94cb3c3a3263c4bf75263d4"
+    },
+    {
+      "seed": 99999,
+      "scenario": "nested-relabel",
+      "terminal": "7161dc6263a0e6522d1aca89c8253084c824516157da976479dc04708efd06cb",
+      "recording": "ec59d1586c6af98cdc3aa4f94e3b9c93cdeee7dad9ae32ba4826aac05953a29a"
+    }
+  ]
+}

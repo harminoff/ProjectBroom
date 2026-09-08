@@ -225,6 +225,7 @@ void applyInstantTileEffectsToCreature(creature *monst) {
             discover(*x, *y);
             refreshDungeonCell((pos){ *x, *y });
         }
+        brogue_bridge_note_terrain_activity(*x, *y, 1);
         if (canSeeMonster(monst)) {
             monsterName(buf, monst, true);
             sprintf(buf2, "a pressure plate clicks underneath %s!", buf);
@@ -1105,6 +1106,7 @@ boolean circuitBreakersPreventActivation(short machineNumber) {
 }
 
 void promoteTile(short x, short y, enum dungeonLayers layer, boolean useFireDF) {
+    brogue_bridge_note_terrain_activity(x, y, 2);
     short i, j;
     enum dungeonFeatureTypes DFType;
     const floorTileType *tile;

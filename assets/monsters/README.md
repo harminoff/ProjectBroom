@@ -34,7 +34,7 @@ The procedural definitions are the current reproducible master. Hand edits in
 Blender must be reconciled with those definitions before regeneration. Export
 only the `ASSET` collection; the 64-unit grid, 58-unit staff, floor, lights and
 camera are review aids, not game geometry. `.blend` is authoring source; only the
-OBJ (IQM for the rat) and PNG go into the mod package. All meshes face +X, Z up, at map-unit scale;
+OBJ (IQM for skeletal enemies) and PNG go into the mod package. All meshes face +X, Z up, at map-unit scale;
 runtime OBJ converts `(X,Y,Z)` to `(X,Z,-Y)`.
 
 ## Provenance and licensing
@@ -52,3 +52,9 @@ skeletal animations. Brogue supplies no numerical physical sizes: the authored
 dimensions are documented visual interpretations, not new simulation facts.
 See the [rollout report](../../docs/creature-model-rollout.md) for actual proof,
 limitations, and follow-up acceptance gates.
+
+For new skeletal work, use the [shared enemy workflow](../../docs/skeletal-enemy-workflow.md) and `skeletal_profiles.json`.
+
+The [monkey](monkey/README.md) now uses the shared skeletal pipeline, including
+original fur, a bound variant and a copied-state release animation. See the
+[verification report](../../docs/monkey-animation.md) for runtime scope.

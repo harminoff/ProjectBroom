@@ -14,6 +14,7 @@ ListMenu "MainMenu"
     Position 320, 188
     CenterText
     TextItem "NEW GAME", "n", "PlayerclassMenu"
+    TextItem "SAVES", "s", "BrogueSaves"
     TextItem "OPTIONS", "o", "OptionsMenu"
     TextItem "QUIT", "q", "QuitMenu"
 }
@@ -438,4 +439,13 @@ OptionValue "SpecialAction"
 	276, "Ceiling_Stop"					
 	279, "Floor_MoveToValueAndCrush"			
 	280, "Ceiling_MoveToValueAndCrush"
+}
+
+OptionMenu "BrogueSaves"
+{
+    Title "Brogue Saves"
+    Command "Continue", "brg_continue"
+    Command "Load / Import", "brg_load"
+    Command "Save and Exit", "brg_save_exit"
+    Command "Cancel Loading", "brg_load_cancel"
 }

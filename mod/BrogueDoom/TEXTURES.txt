@@ -63,6 +63,7 @@ Texture "RRGMASON", 1254, 1254
     Patch "BRGSTONE", 0, 0
 }
 
+Flat "BRGICE", 128, 128 { XScale 2 YScale 2 Patch "graphics/BRGICE.png", 0, 0 }
 Texture "BRGCAVE", 1254, 1254
 {
 	XScale 9.796875
@@ -240,7 +241,7 @@ Flat "BRGBRID", 1254, 1254
 {
 	XScale 9.796875
 	YScale 9.796875
-	Patch "BRGBRIDGE", 0, 0
+	Patch "graphics/BRGBRIDGE.png", 0, 0
 }
 
 Flat "BRGWATR", 1254, 1254
@@ -336,7 +337,7 @@ Sprite "BRGBA0", 1254, 1254
 	XScale 19.59375
 	YScale 14.928571
 	Offset 627, 1254
-	Patch "BRGBRIDGE", 0, 0
+	Patch "graphics/BRGBRIDGE.png", 0, 0
 }
 
 // Fallback states for presentation-only stair markers. MODELDEF replaces
@@ -1936,7 +1937,7 @@ Flat "RRGBRID", 1254, 1254
 {
 	XScale 9.796875
 	YScale 9.796875
-	Patch "RRGBRIDGE", 0, 0
+	Patch "graphics/BRGBRIDGE.png", 0, 0
 }
 
 Flat "RRGWATR", 1254, 1254
@@ -1959,3 +1960,5 @@ Flat "RRGMOLT", 1254, 1254
 	YScale 9.796875
 	Patch "BRGLAVA", 0, 0
 }
+
+#include "shaders/shoreline/textures.txt"

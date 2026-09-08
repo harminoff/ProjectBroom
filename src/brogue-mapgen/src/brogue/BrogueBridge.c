@@ -32,6 +32,9 @@ typedef struct bridgeItemIdentity {
 static boolean bridgeInitialized = false;
 static boolean bridgeGameStarted = false;
 static uint64_t bridgeRevision = 0;
+static uint64_t bridgeSession = 0;
+static BrogueBridgeSessionPhase bridgePhase = BROGUE_SESSION_IDLE;
+static char bridgeWorkingPath[BROGUE_FILENAME_MAX];
 static uint64_t bridgeNextEntityId = 2;
 static BrogueBridgeState bridgeState;
 static BrogueBridgeState bridgePreviousState;
@@ -424,6 +427,16 @@ void brogue_bridge_note_player_fall(pos source) {
     recordedPlayerFallSource = source;
 }
 
+void brogue_bridge_note_terrain_activity(short x, short y, unsigned int activity) {
+    if (!recordingActionEvents || !playerCanSeeOrSense(x, y)
+        || cellHasTMFlag((pos){x, y}, TM_IS_SECRET)) return;
+    BrogueBridgeEvent *event = recordActionEvent(BROGUE_EVENT_TERRAIN_ACTIVATED, NULL, NULL);
+    if (!event) return;
+    event->x = x; event->y = y;
+    event->amount = activity;
+    copyText(event->text, sizeof(event->text), "observable terrain activity");
+}
+
 void brogue_bridge_note_attack(creature *attacker, creature *defender,
                                boolean lungeAttack) {
     BrogueBridgeEvent *event = recordActionEvent(BROGUE_EVENT_ATTACK_ATTEMPTED,
@@ -637,6 +650,8 @@ static BrogueBridgeTerrainFeature terrainFeatureForTile(enum tileType tile) {
     }
 }
 
+#include "BridgeTerrainAppearance.inc"
+
 static void captureCell(BrogueBridgeCellState *outCell, int x, int y) {
     pcell *cell = &pmap[x][y];
     enum displayGlyph displayGlyph;
@@ -698,6 +713,7 @@ static void captureCell(BrogueBridgeCellState *outCell, int x, int y) {
     outCell->discovered = (cell->flags & (DISCOVERED | MAGIC_MAPPED)) != 0;
     outCell->currentlyVisible = (cell->flags & ANY_KIND_OF_VISIBLE) != 0;
     outCell->magicMapped = (cell->flags & MAGIC_MAPPED) != 0;
+    captureTerrainAppearance(&outCell->appearance, x, y);
     if (outCell->currentlyVisible) {
         outCell->terrainFeature = terrainFeatureForTile(cell->layers[highestPriorityLayer(x, y, false)]);
     } else if (cell->flags & DISCOVERED) {
@@ -874,6 +890,7 @@ static BrogueBridgeResult captureState(BrogueBridgeState *outState) {
     memset(outState, 0, sizeof(*outState));
     outState->apiVersion = BROGUE_BRIDGE_API_VERSION;
     outState->revision = bridgeRevision;
+    outState->session = bridgeSession;
     outState->gameSeed = rogue.seed;
     outState->depth = rogue.depthLevel;
     outState->width = DCOLS;
@@ -1092,6 +1109,15 @@ static uint64_t presentationHash(const BrogueBridgeState *state) {
     hash = hashU64(hash, state->revision);
     for (uint32_t i = 0; i < state->cellCount; ++i) {
         hash = hashU32(hash, state->cells[i].terrainFeature);
+        const BrogueBridgeTerrainAppearance *a = &state->cells[i].appearance;
+        hash = hashU32(hash, a->flags);
+        hash = hashU32(hash, a->structure); hash = hashU32(hash, a->ground);
+        hash = hashU32(hash, a->liquid); hash = hashU32(hash, a->deck);
+        hash = hashU32(hash, a->mechanism); hash = hashU32(hash, a->fire);
+        hash = hashU32(hash, a->gas); hash = hashU32(hash, a->gasVolume);
+        hash = hashU32(hash, a->knowledge); hash = hashU32(hash, a->liquidKind);
+        hash = hashU32(hash, a->bedKind);
+        hash = hashU32(hash, a->gasRed); hash = hashU32(hash, a->gasGreen); hash = hashU32(hash, a->gasBlue);
     }
     for (i = 0; i < state->creatureCount; i++) {
         const BrogueBridgeCreatureState *creatureState = &state->creatures[i];
@@ -1114,7 +1140,8 @@ static boolean creatureStateEqual(const BrogueBridgeCreatureState *first,
 static boolean cellGameplayEqual(const BrogueBridgeCellState *first,
                                  const BrogueBridgeCellState *second) {
     int layer;
-    if (first->volume != second->volume
+    if (((first->cellFlags ^ second->cellFlags) & PRESSURE_PLATE_DEPRESSED)
+        || first->volume != second->volume
         || first->machineNumber != second->machineNumber
         || first->exposedToFire != second->exposedToFire
         || first->terrainFlags != second->terrainFlags
@@ -1426,7 +1453,12 @@ BrogueBridgeResult brogue_bridge_start_game(uint64_t gameSeed) {
     rogue.quit = false;
     rogue.nextGame = NG_NOTHING;
 
+    if (bridgeWorkingPath[0]) strcpy(currentFilePath, bridgeWorkingPath);
     initializeRogue(gameSeed);
+    if (currentFilePath[0] && recordingLastError()[0]) {
+        freeEverything();
+        return BROGUE_BRIDGE_INTERNAL_BROGUE_ERROR;
+    }
     /* Server mode bypasses terminal-only death acknowledgement while leaving
      * Brogue's real quit/death outcome untouched. */
     rogue.quit = false;
@@ -1438,7 +1470,9 @@ BrogueBridgeResult brogue_bridge_start_game(uint64_t gameSeed) {
     creatureIdentityCount = 0;
     itemIdentityCount = 0;
     bridgeNextEntityId = 2;
-    bridgeRevision = 1;
+    ++bridgeRevision;
+    ++bridgeSession;
+    bridgePhase = BROGUE_SESSION_LIVE;
     eventSequence = 0;
     endConfirmationBroker();
     confirmationWasRequested = false;
@@ -1467,6 +1501,7 @@ BrogueBridgeResult brogue_bridge_get_state(BrogueBridgeState *outState) {
     if (!bridgeGameStarted) {
         return BROGUE_BRIDGE_GAME_NOT_STARTED;
     }
+    if (bridgePhase == BROGUE_SESSION_LOADING) return BROGUE_BRIDGE_INVALID_STATE;
     memcpy(outState, &bridgeState, sizeof(*outState));
     return BROGUE_BRIDGE_OK;
 }
@@ -1581,6 +1616,9 @@ BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *comm
         outResult->errorCode = BROGUE_BRIDGE_GAME_NOT_STARTED;
         return outResult->errorCode;
     }
+    if (bridgePhase != BROGUE_SESSION_LIVE) {
+        return outResult->errorCode = BROGUE_BRIDGE_INVALID_STATE;
+    }
     if (rogue.gameHasEnded) {
         outResult->errorCode = BROGUE_BRIDGE_GAME_ENDED;
         return outResult->errorCode;
@@ -1593,6 +1631,12 @@ BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *comm
     if (command->expectedRevision != 0 && command->expectedRevision != bridgeRevision) {
         outResult->errorCode = BROGUE_BRIDGE_STALE_REVISION;
         return outResult->errorCode;
+    }
+    /* Retry buffered I/O before accepting another action. A failed flush must
+     * not silently overflow the recording while gameplay keeps advancing. */
+    if (currentFilePath[0] && recordingLastError()[0]) {
+        flushBufferToFile();
+        if (recordingLastError()[0]) return outResult->errorCode = BROGUE_BRIDGE_INTERNAL_BROGUE_ERROR;
     }
     if (command->type == BROGUE_COMMAND_ACTION) {
         action = command->action;
@@ -1687,6 +1731,7 @@ BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *comm
     switch (command->type) {
         case BROGUE_COMMAND_ACTION:
             if (action == BROGUE_ACTION_WAIT) {
+                recordKeystroke(REST_KEY, false, false);
                 rogue.justRested = true;
                 playerTurnEnded();
                 accepted = true;
@@ -1733,7 +1778,7 @@ BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *comm
         case BROGUE_COMMAND_THROW_ITEM:
             accepted = throwItemAtTarget(commandItem,
                                          (pos){ (short) command->targetX, (short) command->targetY },
-                                         false);
+                                         true);
             break;
         case BROGUE_COMMAND_DROP_ITEM:
             drop(commandItem);
@@ -1831,6 +1876,7 @@ BrogueBridgeResult brogue_bridge_inspect_cell(int32_t x,
     outResult->errorCode = BROGUE_BRIDGE_OK;
     if (!bridgeInitialized) return outResult->errorCode = BROGUE_BRIDGE_NOT_INITIALIZED;
     if (!bridgeGameStarted) return outResult->errorCode = BROGUE_BRIDGE_GAME_NOT_STARTED;
+    if (bridgePhase == BROGUE_SESSION_LOADING) return outResult->errorCode = BROGUE_BRIDGE_INVALID_STATE;
     if (!coordinatesAreInMap(x, y)) return outResult->errorCode = BROGUE_BRIDGE_OUT_OF_RANGE;
 
     target = (pos){ (short) x, (short) y };
@@ -1907,6 +1953,7 @@ BrogueBridgeResult brogue_bridge_preview_target(const BrogueBridgeTargetRequest 
     outPreview->type = request->type;
     if (!bridgeInitialized) return aim->errorCode = BROGUE_BRIDGE_NOT_INITIALIZED;
     if (!bridgeGameStarted) return aim->errorCode = BROGUE_BRIDGE_GAME_NOT_STARTED;
+    if (bridgePhase != BROGUE_SESSION_LIVE) return aim->errorCode = BROGUE_BRIDGE_INVALID_STATE;
     if (rogue.gameHasEnded) return aim->errorCode = BROGUE_BRIDGE_GAME_ENDED;
     if (request->apiVersion != BROGUE_BRIDGE_API_VERSION
         || (request->type != BROGUE_COMMAND_THROW_ITEM && request->type != BROGUE_COMMAND_USE_STAFF
@@ -1997,7 +2044,9 @@ void brogue_bridge_shutdown(void) {
     memset(itemIdentities, 0, sizeof(itemIdentities));
     creatureIdentityCount = 0;
     itemIdentityCount = 0;
-    bridgeRevision = 0;
+    ++bridgeRevision;
+    bridgePhase = BROGUE_SESSION_IDLE;
+    cancelSavedGameLoad();
     bridgeNextEntityId = 2;
     eventSequence = 0;
     recordingActionEvents = false;
@@ -2045,9 +2094,9 @@ const char *brogue_bridge_event_name(BrogueBridgeEventType type) {
         "CELL_TERRAIN_CHANGED", "PLAYER_HP_CHANGED", "PLAYER_STATUS_CHANGED",
         "MESSAGE", "LEVEL_CHANGE_REQUESTED", "ATTACK_ATTEMPTED",
         "ENTITY_DAMAGED", "ENTITY_DIED", "WEAPON_EQUIPPED", "WEAPON_UNEQUIPPED",
-        "PROJECTILE_MOVED", "PROJECTILE_IMPACT", "ITEM_LANDED"
+        "PROJECTILE_MOVED", "PROJECTILE_IMPACT", "ITEM_LANDED", "TERRAIN_ACTIVATED"
     };
-    if (type < 0 || type > BROGUE_EVENT_ITEM_LANDED) {
+    if (type < 0 || type > BROGUE_EVENT_TERRAIN_ACTIVATED) {
         return "UNKNOWN";
     }
     return names[type];
@@ -2061,3 +2110,5 @@ const char *brogue_bridge_command_name(BrogueBridgeCommandType type) {
     if (type < 0 || type >= BROGUE_COMMAND_COUNT) return "INVALID_COMMAND";
     return names[type];
 }
+
+#include "BridgePersistence.h"

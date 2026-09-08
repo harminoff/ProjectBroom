@@ -222,21 +222,84 @@ def weapon_parts(kind,frame=0):
     return p
 
 
+def hand_loft(name, rows):
+    """Bevelled glove volume. Rows run wrist-to-knuckle along X.
+
+    A flattened octagon retains broad dorsal/palmar planes instead of the
+    balloon silhouette of an ellipsoid. Separate digits overlap this volume
+    below the knuckles, as sewn glove fingers do.
+    """
+    p=Part(name, 'glove')
+    section=((-1,-.65),(-.65,-1),(.65,-1),(1,-.65),
+             (1,.65),(.65,1),(-.65,1),(-1,.65))
+    for i,(x,y,z,depth,width) in enumerate(rows):
+        for j,(dy,dz) in enumerate(section):
+            p.vertex((x,y+dy*depth,z+dz*width),j/8,i/(len(rows)-1))
+    for i in range(len(rows)-1):
+        for j in range(8):
+            a=i*8+j; b=i*8+(j+1)%8
+            p.faces.extend(((a,b,b+8),(a,b+8,a+8)))
+    for end,reverse in ((0,True),(len(rows)-1,False)):
+        c=p.vertex(rows[end][:3],.5,.5)
+        for j in range(8):
+            a=end*8+j; b=end*8+(j+1)%8
+            p.faces.append((c,b,a) if reverse else (c,a,b))
+    return p
+
+
 def grip_parts(side='R',pinch=False,open_amount=0):
-    """Closed glove wraps around the hilt, not a fist beside the weapon."""
-    p=[ellipsoid(side+' palm',(-2.0,-.4,0),(1.3,2.0,3.5)),
-       ellipsoid(side+' thumb web',(-1.3,1.0,2),(1.2,1.35,1.65))]
-    for i,z in enumerate((-2.6,-.9,.8,2.5)):
-        radius=.65 if not pinch else .58
-        spread=open_amount*(2+i*.35)
-        points=[(-2.5,-1.0,z,radius),(-1.3,-2.0,z+.1,radius),(.6,-1.95-spread,z+.1,radius*.95),(1.8,-.65-spread,z,radius*.88),(1.35,1.0-spread,z-.1,radius*.72),(.35,1.4-spread,z-.2,.28)]
-        if pinch and i<2: points=[(x,y,z-1.2,r) for x,y,z,r in points]
-        p.append(tube(side+' articulated finger '+str(i+1),points,'glove',8))
-        p.append(ellipsoid(side+' knuckle pad '+str(i+1),(-1.4,-2.05,z+.15),(.8,.36,.63),'grip',10,6))
-    p.append(tube(side+' opposing thumb',[(-3,1.0,2,.85),(-1.8,2,2.9,.8),(0,1.8,2.4,.7),(.7,1.0,1.6,.58),(.5,.7,1.1,.3)],'glove',8))
-    # Connected palm heel and wrist; sleeve encloses the proximal end.
-    p.append(tube(side+' wrist',[(-6,0,-1,1.85),(-4.5,0,-.5,1.8),(-2,0,0,2.1)],'glove',12))
-    for z in (-1.7,0,1.7): p.append(tube(side+' glove stitching',[(-3,-1.25,z,.07),(-2.8,-1.7,z,.07),(-2,-1.85,z,.07)],'stitch',5))
+    """Original gloved hand: cupped palm, knuckle arc and opposing thumb.
+
+    Z runs little-to-index finger, X wrist-to-fingertip, Y around the grip.
+    Release uncurls the joints rather than translating whole finger segments.
+    Topology stays identical in every baked MD3 pose.
+    """
+    p=[hand_loft(side+' palm',[
+        (-4.8,0,-.6,1.35,1.6),(-3.8,-.1,-.15,1.45,2.5),
+        (-2.4,-.25,0,1.4,3.0),(-1.3,-.35,.1,1.15,2.95),
+        (-.8,-.35,.1,.85,2.65)])]
+    # Pinky, ring, middle, index. Unequal lengths and staggered knuckles;
+    # a restrained glove seam replaces the old separate dark knuckle blobs.
+    for i,(z,r,length) in enumerate(((-2.3,.53,.78),(-.95,.64,.95),
+                                      (.52,.67,1.0),(2.0,.62,.91))):
+        root=-1.45+(length-.8)*1.5
+        closed=[(root,-1.25,z,r),(.35*length,-1.65,z+.04,r),
+                (1.45*length,-1.2,z+.04,r*.96),
+                (1.9*length,-.15,z,r*.88),
+                (1.35*length,.95,z-.05,r*.78),
+                (.4*length,1.15,z-.08,r*.62),
+                (.1*length,1.1,z-.08,r*.3)]
+        if pinch:
+            # Narrow dart grip; lower fingers tuck into the palm, index
+            # and thumb oppose the small shaft instead of a full-size hilt.
+            closed=[(x*(.7 if i<2 else .83),y*(.75 if i<2 else .8),zz,rr)
+                    for x,y,zz,rr in closed]
+        extended=[(root,-1.25,z,r),(root+1.3*length,-1.4,z,r),
+                  (root+2.6*length,-1.35,z,r*.96),
+                  (root+3.8*length,-1.1,z,r*.88),
+                  (root+4.8*length,-.85,z,r*.78),
+                  (root+5.4*length,-.7,z,r*.62),
+                  (root+5.6*length,-.65,z,r*.3)]
+        points=[tuple(a+(b-a)*open_amount for a,b in zip(c,e))
+                for c,e in zip(closed,extended)]
+        # A little extra sampling rounds joint bends while preserving planes.
+        digit=tube(side+' articulated finger '+str(i+1),smooth_path(points,2),'glove',8)
+        p.append(digit)
+    p.append(ellipsoid(side+' thumb web',(-2.7,.65,1.85),(1.35,.95,1.35),'glove',12,8))
+    thumb=[(-3.1,.6,1.65,.83),(-2.45,1.2,2.6,.8),
+           (-1.25,1.55,2.9,.7),(-.05,1.4,2.4,.61),
+           (.7,.85,1.85,.51),(.82,.65,1.65,.25)]
+    if pinch: thumb=[(x,y*.7,z,r) for x,y,z,r in thumb]
+    thumb=[(x,y+open_amount*.5,z+open_amount*(i/5)*1.5,r)
+           for i,(x,y,z,r) in enumerate(thumb)]
+    p.append(tube(side+' opposing thumb',smooth_path(thumb,2),'glove',8))
+    # Preserve the existing cuff attachment, then flatten into the palm heel.
+    p.append(tube(side+' wrist',[(-6,0,-1,1.85),(-4.5,0,-.5,1.8),(-3.5,0,-.2,1.7)],'glove',12))
+    # The left hand must be an anatomical mirror, including surface winding.
+    if side=='L':
+        for part in p:
+            part.vertices=[(x,-y,z) for x,y,z in part.vertices]
+            part.faces=[(a,c,b) for a,b,c in part.faces]
     return p
 
 

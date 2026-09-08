@@ -25,8 +25,65 @@ index cc079f80af24b86ba6b0114e31828054c7d78789..88456a37a87ea3d16380adc44cf0f7d7
  	common/audio/sound
  	common/audio/music
  	common/2d
+diff --git a/src/common/console/c_enginecmds.cpp b/src/common/console/c_enginecmds.cpp
+index aff36fa707a4ed8d2a93e6818b1edfd9ff8a4d4a..94deb222063178e7dfa60faa7de3c04867cc513f 100644
+--- a/src/common/console/c_enginecmds.cpp
++++ b/src/common/console/c_enginecmds.cpp
+@@ -1,3 +1,4 @@
++#include "brogue_bridge_frontend.h"
+ /*
+ ** c_enginecmds.cpp
+ **
+@@ -51,12 +52,14 @@ extern FILE* Logfile;
+ void ConsoleEndoom();
+ CCMD (quit)
+ {
++	if (!BrogueBridge_SaveOnClose()) return;
+ 	ConsoleEndoom();
+ 	throw CExitEvent(0);
+ }
+ 
+ CCMD (exit)
+ {
++	if (!BrogueBridge_SaveOnClose()) return;
+ 	ConsoleEndoom();
+ 	throw CExitEvent(0);
+ }
+diff --git a/src/common/platform/win32/i_input.cpp b/src/common/platform/win32/i_input.cpp
+index 7e8c49c8198fa4c5fd797768229238e0376e1209..3cfa9d91ff9d792f12f039be585bb73fa3d75c70 100644
+--- a/src/common/platform/win32/i_input.cpp
++++ b/src/common/platform/win32/i_input.cpp
+@@ -1,3 +1,4 @@
++#include "brogue_bridge_frontend.h"
+ /*
+ ** i_input.cpp
+ **
+@@ -382,6 +383,10 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+ 
+ 	switch (message)
+ 	{
++	case WM_CLOSE:
++        if (BrogueBridge_SaveOnClose()) PostQuitMessage(0);
++        return 0;
++
+ 	case WM_DESTROY:
+ 		SetPriorityClass (GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
+ 		PostQuitMessage (0);
+@@ -567,8 +572,10 @@ void I_GetWindowEvent()
+ 
+ 	while (PeekMessage (&mess, NULL, 0, 0, PM_REMOVE))
+ 	{
+-		if (mess.message == WM_QUIT)
+-			throw CExitEvent(mess.wParam);
++		if (mess.message == WM_QUIT) {
++            if (BrogueBridge_SaveOnClose()) throw CExitEvent(mess.wParam);
++            continue;
++        }
+ 
+ 		if (GUICapture)
+ 		{
 diff --git a/src/d_main.cpp b/src/d_main.cpp
-index 35d4bf4ab4f8d34eaac3357c86c6c9b6da656a62..1db63f5b942d925ebb4059e1df4d654ad8f0847d 100644
+index 35d4bf4ab4f8d34eaac3357c86c6c9b6da656a62..0863a71e2d7d4c1992ebfc0fed5c8b19b894fc7a 100644
 --- a/src/d_main.cpp
 +++ b/src/d_main.cpp
 @@ -24,6 +24,7 @@
@@ -37,15 +94,32 @@ index 35d4bf4ab4f8d34eaac3357c86c6c9b6da656a62..1db63f5b942d925ebb4059e1df4d654a
  #include "i_net.h"
  #include "i_soundinternal.h"
  
-@@ -1115,6 +1116,7 @@ void D_Display ()
+@@ -1084,6 +1085,7 @@ static void DrawRateStuff()
+ static void DrawOverlays()
+ {
+ 	C_DrawConsole ();
++    BrogueBridge_DrawPersistence();
+ 	M_Drawer ();
+ 	DrawRateStuff();
+ 	if (!hud_toggled)
+@@ -1115,6 +1117,8 @@ void D_Display ()
  	GC::CheckGC();
  
  	SetDeltaTime();
++	BrogueBridge_TickPersistence();
 +	if (!AppActive) BrogueBridge_CancelSearchForUi();
  
  	if (nodrawers || screen == NULL)
  		return; 				// for comparative timing / profiling
-@@ -3989,7 +3991,7 @@ static int D_DoomMain_Internal (void)
+@@ -1216,6 +1220,7 @@ void D_Display ()
+ 	screen->FrameTime = I_msTimeFS();
+ 	TexAnim.UpdateAnimations(screen->FrameTime);
+ 	R_UpdateSky(I_GetTimeFrac());
++	if (gamestate == GS_LEVEL) BrogueBridge_PrepareScene();
+ 	screen->BeginFrame();
+ 	twod->ClearClipRect();
+ 	if ((gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL) && gametic != 0)
+@@ -3989,7 +3994,7 @@ static int D_DoomMain_Internal (void)
  		StrTable_ValidFilter,
  		nullptr,
  		CheckSkipGameOptionBlock,
@@ -54,7 +128,7 @@ index 35d4bf4ab4f8d34eaac3357c86c6c9b6da656a62..1db63f5b942d925ebb4059e1df4d654a
  		nullptr,
  		nullptr,
  		System_ToggleFullConsole,
-@@ -3998,11 +4000,11 @@ static int D_DoomMain_Internal (void)
+@@ -3998,11 +4003,11 @@ static int D_DoomMain_Internal (void)
  		CheckCheatmode,
  		System_HudScaleChanged,
  		M_SetSpecialMenu,
@@ -69,7 +143,7 @@ index 35d4bf4ab4f8d34eaac3357c86c6c9b6da656a62..1db63f5b942d925ebb4059e1df4d654a
  		System_DisableAnisotropicFiltering
  	};
 diff --git a/src/g_game.cpp b/src/g_game.cpp
-index 3f7d18b4958dd6624f3127483df9e7d946e39883..d02b127a7e09beb4275e856ff40b9d2dc3e35608 100644
+index 3f7d18b4958dd6624f3127483df9e7d946e39883..f44cfdaa853db52b13b7b454e26e1ed9880f7e55 100644
 --- a/src/g_game.cpp
 +++ b/src/g_game.cpp
 @@ -19,6 +19,7 @@
@@ -98,6 +172,38 @@ index 3f7d18b4958dd6624f3127483df9e7d946e39883..d02b127a7e09beb4275e856ff40b9d2d
  	if (!CanChat())
  		CT_Stop();
  
+@@ -1931,6 +1936,7 @@ void G_ScreenShot (const char *filename)
+ //
+ void G_LoadGame (const char* name, bool hidecon)
+ {
++    if (BrogueBridge_UsesNativeSaves()) { Printf("Use Project Broom Load or Import for native Brogue saves.\n"); return; }
+ 	if (name != NULL)
+ 	{
+ 		savename = name;
+@@ -2042,6 +2048,7 @@ void C_SerializeCVars(FSerializer& arc, const char* label, uint32_t filter)
+ 
+ void G_DoLoadGame ()
+ {
++    if (BrogueBridge_UsesNativeSaves()) { gameaction = ga_nothing; return; }
+ 	Net_ResetCommands(true);
+ 	SetupLoadingCVars();
+ 	bool hidecon;
+@@ -2238,6 +2245,7 @@ void G_DoLoadGame ()
+ //
+ void G_SaveGame (const char *filename, const char *description, bool quick)
+ {
++    if (BrogueBridge_UsesNativeSaves()) { AddCommandString("brg_save_exit"); return; }
+ 	if (sendsave || gameaction == ga_savegame || gameaction == ga_quicksave)
+ 	{
+ 		Printf ("%s\n", GStrings.GetString("TXT_SAVEPENDING"));
+@@ -2405,6 +2413,7 @@ static void PutSavePic (FileWriter *file, int width, int height)
+ 
+ void G_DoSaveGame (bool okForQuicksave, bool forceQuicksave, FString filename, const char *description)
+ {
++    if (BrogueBridge_UsesNativeSaves()) return;
+ 	TArray<FCompressedBuffer> savegame_content;
+ 	TArray<FString> savegame_filenames;
+ 
 diff --git a/src/g_statusbar/shared_sbar.cpp b/src/g_statusbar/shared_sbar.cpp
 index 26a1c7f7a9feaaeda6d330857ab34a5a54cde801..33d17484f5d8aae42252f890f1940c9cf9e3f740 100644
 --- a/src/g_statusbar/shared_sbar.cpp
@@ -119,7 +225,7 @@ index 26a1c7f7a9feaaeda6d330857ab34a5a54cde801..33d17484f5d8aae42252f890f1940c9c
  	{
  		DrawText(twod, SmallFont, CR_TAN, 0, GetTopOfStatusbar() - 40 * CleanYfac,
 diff --git a/src/menu/doommenu.cpp b/src/menu/doommenu.cpp
-index e0925eb2634afd895e8eb27d14193f71393fa71d..c47b8f231dcb06a4727fa5950594697a22b379ba 100644
+index e0925eb2634afd895e8eb27d14193f71393fa71d..b827976aa1b6d99dce28ac78a59ad711472ff611 100644
 --- a/src/menu/doommenu.cpp
 +++ b/src/menu/doommenu.cpp
 @@ -21,6 +21,7 @@
@@ -130,15 +236,65 @@ index e0925eb2634afd895e8eb27d14193f71393fa71d..c47b8f231dcb06a4727fa5950594697a
  #include "c_bind.h"
  #include "c_dispatch.h"
  #include "d_event.h"
-@@ -230,6 +231,8 @@ bool M_SetSpecialMenu(FName& menu, int param)
+@@ -230,6 +231,9 @@ bool M_SetSpecialMenu(FName& menu, int param)
  		NewGameStartupInfo.Skill = param;
  		[[fallthrough]];
  	case NAME_StartgameConfirmed:
++		if (!BrogueBridge_ConfirmNewGame()) return false;
 +		// Discard the old Brogue session before the prepared campaign restarts.
 +		BrogueBridge_Shutdown();
  
  		G_DeferedInitNew (&NewGameStartupInfo);
  		if (gamestate == GS_FULLCONSOLE)
+@@ -490,6 +494,7 @@ CCMD (menu_endgame)
+ 
+ CCMD (quicksave)
+ {	// F6
++    if (BrogueBridge_UsesNativeSaves()) { AddCommandString("brg_save_exit"); return; }
+ 	if (!usergame || (players[consoleplayer].health <= 0 && !multiplayer))
+ 	{
+ 		S_Sound (CHAN_VOICE, CHANF_UI|(haptics_do_menus?CHANF_RUMBLE:CHANF_NORUMBLE), "menu/invalid", snd_menuvolume, ATTN_NONE);
+@@ -545,6 +550,7 @@ CCMD (quicksave)
+ 
+ CCMD (quickload)
+ {	// F9
++    if (BrogueBridge_UsesNativeSaves()) { M_StartControlPanel(true); M_SetMenu("BrogueSaves", -1); return; }
+ 	if (netgame)
+ 	{
+ 		M_StartControlPanel(true);
+@@ -1474,12 +1480,14 @@ CCMD (menu_main)
+ 
+ CCMD (menu_load)
+ {	// F3
++    if (BrogueBridge_UsesNativeSaves()) { M_StartControlPanel(true); M_SetMenu("BrogueSaves", -1); return; }
+ 	M_StartControlPanel (true);
+ 	M_SetMenu(NAME_LoadgameMenu, -1);
+ }
+ 
+ CCMD (menu_save)
+ {	// F2
++    if (BrogueBridge_UsesNativeSaves()) { AddCommandString("brg_save_exit"); return; }
+ 	M_StartControlPanel (true);
+ 	M_SetMenu(NAME_SavegameMenu, -1);
+ }
+diff --git a/src/p_openmap.cpp b/src/p_openmap.cpp
+index df979f2a861a0059e7856c7a6c0f5a6079264a53..d50c13d30cf1a5c2c778ada148998cfcfc68849b 100644
+--- a/src/p_openmap.cpp
++++ b/src/p_openmap.cpp
+@@ -1,3 +1,4 @@
++#include "brogue_bridge_frontend.h"
+ /*
+ ** p_openmap.cpp
+ **
+@@ -101,6 +102,8 @@ static int GetMapIndex(const char *mapname, int lastindex, const char *lumpname,
+ 
+ MapData *P_OpenMapData(const char * mapname, bool justcheck)
+ {
++    const char *overridePath = BrogueBridge_MapOverride(mapname);
++    if (overridePath) mapname = overridePath;
+ 	MapData * map = new MapData;
+ 	FileReader * wadReader = nullptr;
+ 	bool externalfile = !strnicmp(mapname, "file:", 5);
 diff --git a/src/playsim/p_user.cpp b/src/playsim/p_user.cpp
 index 23ba8dbddfcd978d557a2e9c5df013882344b496..86d21ef2f9bf779d45042296e47d76357b91528d 100644
 --- a/src/playsim/p_user.cpp

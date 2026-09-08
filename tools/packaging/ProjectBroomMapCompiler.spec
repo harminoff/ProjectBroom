@@ -3,6 +3,8 @@ from pathlib import Path
 
 project_root = Path(SPECPATH).parents[1]
 datas = [
+    (str(project_root / "assets" / "terrain" / "terrain_presentation.json"), "assets/terrain"),
+    (str(project_root / "src" / "brogue-mapgen" / "src" / "brogue" / "Rogue.h"), "src/brogue-mapgen/src/brogue"),
     (str(project_root / "assets" / "terrain" / "broguedoom_cave_registry.json"), "assets/terrain"),
     (str(project_root / "mod" / "BrogueDoom"), "mod/BrogueDoom"),
     (str(project_root / "tools" / "mapcompiler" / "terrain_render_map.json"), "tools/mapcompiler"),

@@ -1,6 +1,27 @@
 // Project Broom presentation-only lights. Ambient lights deliberately opt out of
 // shadow maps so the enhanced default remains inexpensive on large caverns.
 
+flickerlight BROGUE_TORCH_LIGHT
+{
+ color 1.0 0.49 0.13
+ size 64
+ secondarySize 72
+ chance 0.20
+ attenuate 1
+ noshadowmap 1
+}
+flickerlight BROGUE_HAUNTED_TORCH_LIGHT
+{
+ color 0.58 0.20 1.0
+ size 54
+ secondarySize 62
+ chance 0.20
+ attenuate 1
+ noshadowmap 1
+}
+object BrogueTerrainTorchFlame { frame BRGDA { light BROGUE_TORCH_LIGHT } }
+object BrogueTerrainHauntedTorchFlame { frame BRGDA { light BROGUE_HAUNTED_TORCH_LIGHT } }
+
 material texture RRGCAVE { shader "shaders/search-reveal.fp" disablealphatest }
 material texture RRGWET { shader "shaders/search-reveal.fp" disablealphatest }
 material texture RRGMASON { shader "shaders/search-reveal.fp" disablealphatest }
@@ -91,3 +112,5 @@ material flat RRGWATR { shader "shaders/search-floor-reveal.fp" disablealphatest
 material flat RRGSLDG { shader "shaders/search-floor-reveal.fp" disablealphatest }
 
 material flat RRGMOLT { shader "shaders/search-floor-reveal.fp" disablealphatest }
+
+#include "shaders/shoreline/gldefs.txt"

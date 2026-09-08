@@ -60,7 +60,11 @@ def main() -> None:
         frames = [build_parts(kind, i) for i in range(len(POSE_NAMES))]
         (MODEL_DIR / filename).write_text(obj_text(frames[0]), encoding="ascii")
         animated = filename.replace(".obj", ".md3")
-        (MODEL_DIR / animated).write_bytes(md3_bytes(frames))
+        animated_path = MODEL_DIR / animated
+        payload = md3_bytes(frames)
+        # Avoid reopening unchanged binary assets during repeat builds.
+        if not animated_path.exists() or animated_path.read_bytes() != payload:
+            animated_path.write_bytes(payload)
         zscript.extend([
             f"class {cls} : BrogueVisualWeaponBase", "{", "    States", "    {",
             "    Spawn:", "        TNT1 A -1;", "        Stop;",

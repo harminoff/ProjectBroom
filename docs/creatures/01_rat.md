@@ -23,7 +23,7 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 - [Runtime model](../../mod/BrogueDoom/models/monsters/01_rat.iqm).
 - [Editable Blender source](../../assets/monsters/rat/rat-animated.blend).
 - [Animation manifest](../../assets/monsters/rat/animation.json); 28 bones.
-- [Rat animation implementation and evidence](../rat-animation-work.md).
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
 
 ## Brogue encounter-table references
 
@@ -38,7 +38,7 @@ These are nominal table ranges and weights, not guaranteed encounter depths or p
 Machine-readable results live in [bestiary-index.json](../../assets/monsters/bestiary-index.json). A generated asset is not automatically visually approved. These generated cards are not a hand-edited checklist: record later acceptance under the index entry’s `verification` object, which regeneration preserves.
 
 - [ ] Individual art/signature-feature approval.
-- [x] Fixed-seed normal encounter captured; see verification object for limited scope.
+- [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
 - [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 

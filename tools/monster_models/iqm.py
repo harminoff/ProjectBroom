@@ -8,7 +8,8 @@ import math
 import struct
 
 
-def encode(vertices, normals, uv, triangles, influences, bones, clips, bounds):
+def encode(vertices, normals, uv, triangles, influences, bones, clips, bounds, *,
+           mesh_label="Project_Broom_rat", material_path="graphics/BRGRAT.png"):
     """bones: (name,parent,localXYZ); clips: name/fps/loop/frames[bone][TRS10]."""
     text = bytearray(b'\0')
     names = {}
@@ -17,7 +18,7 @@ def encode(vertices, normals, uv, triangles, influences, bones, clips, bounds):
             names[value] = len(text)
             text.extend(value.encode('utf-8') + b'\0')
         return names[value]
-    mesh_name, material = name('Project_Broom_rat'), name('graphics/BRGRAT.png')
+    mesh_name, material = name(mesh_label), name(material_path)
     for b in bones: name(b[0])
     for clip in clips: name(clip['name'])
     data = bytearray(124)

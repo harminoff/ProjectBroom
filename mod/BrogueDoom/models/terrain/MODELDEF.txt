@@ -1,0 +1,192 @@
+Model BrogueTerrainStatueMarble
+{
+ Path "models/terrain"
+ Model 0 "statue_marble.obj"
+ Skin 0 "graphics/BRGSTMAR.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainStatueCracked
+{
+ Path "models/terrain"
+ Model 0 "statue_cracked.obj"
+ Skin 0 "graphics/BRGSTCRK.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainStatueBroken
+{
+ Path "models/terrain"
+ Model 0 "statue_broken.obj"
+ Skin 0 "graphics/BRGSTBRK.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainStatueDemon
+{
+ Path "models/terrain"
+ Model 0 "statue_demon.obj"
+ Skin 0 "graphics/BRGSTOBS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainTorch
+{
+ Path "models/terrain"
+ Model 0 "torch.obj"
+ Skin 0 "graphics/BRGTORCH.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainTorchFlame
+{
+ Path "models/terrain"
+ Model 0 "torch_flame.obj"
+ Skin 0 "graphics/BRGTORFL.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainHauntedTorchFlame
+{
+ Path "models/terrain"
+ Model 0 "torch_flame.obj"
+ Skin 0 "graphics/BRGTHAFL.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainManacleFloor
+{
+ Path "models/terrain"
+ Model 0 "manacle_floor.obj"
+ Skin 0 "graphics/BRGIRON.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainManacleCeiling
+{
+ Path "models/terrain"
+ Model 0 "manacle_ceiling.obj"
+ Skin 0 "graphics/BRGIRON.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainManacleCeilingDeep
+{
+ Path "models/terrain"
+ Model 0 "manacle_ceilingdeep.obj"
+ Skin 0 "graphics/BRGIRON.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainManacleWall
+{
+ Path "models/terrain"
+ Model 0 "manacle_wall.obj"
+ Skin 0 "graphics/BRGIRON.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainBloodwortStalk
+{
+ Path "models/terrain"
+ Model 0 "bloodwort_stalk.obj"
+ Skin 0 "graphics/BRGBWST.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainBloodwortPod
+{
+ Path "models/terrain"
+ Model 0 "bloodwort_pod.obj"
+ Skin 0 "graphics/BRGBWPD.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainBloodwortShell
+{
+ Path "models/terrain"
+ Model 0 "bloodwort_shell.obj"
+ Skin 0 "graphics/BRGBWSH.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainBloodwortSpores
+{
+ Path "models/terrain"
+ Model 0 "bloodwort_spores.obj"
+ Skin 0 "graphics/BRGBWSP.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainWood
+{
+ Path "models/terrain"
+ Model 0 "wood.obj"
+ Skin 0 "graphics/BRGBRIDGE.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainIce
+{
+ Path "models/terrain"
+ Model 0 "ice.obj"
+ Skin 0 "graphics/BRGICE.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainStone
+{
+ Path "models/terrain"
+ Model 0 "stone.obj"
+ Skin 0 "graphics/BRGROCK.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainVeil
+{
+ Path "models/terrain"
+ Model 0 "veil.obj"
+ Skin 0 "graphics/BRGROCK.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainCage
+{
+ Path "models/terrain"
+ Model 0 "cage.obj"
+ Skin 0 "graphics/BRGSEARCH.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainGate
+{
+ Path "models/terrain"
+ Model 0 "gate.obj"
+ Skin 0 "graphics/BRGSEARCH.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainFire
+{
+ Path "models/terrain"
+ Model 0 "fire.obj"
+ Skin 0 "graphics/BRGTFLAM.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainGas
+{
+ Path "models/terrain"
+ Model 0 "gas.obj"
+ Skin 0 "graphics/BRGTCLOUD.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueTerrainEmber
+{
+ Path "models/terrain"
+ Model 0 "stone.obj"
+ Skin 0 "graphics/BRGTFLAM.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
