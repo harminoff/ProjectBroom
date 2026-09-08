@@ -24,6 +24,7 @@
 
 #include "Rogue.h"
 #include "BrogueBridgeInternal.h"
+#include "ItemCommandFrame.h"
 #include "GlobalsBase.h"
 #include "Globals.h"
 
@@ -1290,28 +1291,6 @@ void updateFloorItems() {
     }
 }
 
-static boolean inscribeItem(item *theItem) {
-    char itemText[30], buf[COLS * 3], nameOfItem[COLS * 3], oldInscription[COLS];
-
-    strcpy(oldInscription, theItem->inscription);
-    theItem->inscription[0] = '\0';
-    itemName(theItem, nameOfItem, true, true, NULL);
-    strcpy(theItem->inscription, oldInscription);
-
-    sprintf(buf, "inscribe: %s \"", nameOfItem);
-    if (getInputTextString(itemText, buf, min(29, DCOLS - strLenWithoutEscapes(buf) - 1), "", "\"", TEXT_INPUT_NORMAL, false)) {
-        strcpy(theItem->inscription, itemText);
-        confirmMessages();
-        itemName(theItem, nameOfItem, true, true, NULL);
-        sprintf(buf, "%s %s.", (theItem->quantity > 1 ? "they're" : "it's"), nameOfItem);
-        messageWithColor(buf, &itemMessageColor, 0);
-        return true;
-    } else {
-        confirmMessages();
-        return false;
-    }
-}
-
 boolean itemCanBeCalled(item *theItem) {
     if (theItem->category & (WEAPON|ARMOR|SCROLL|RING|POTION|STAFF|WAND|CHARM)) {
         return true;
@@ -1324,98 +1303,9 @@ boolean itemCanBeCalled(item *theItem) {
 }
 
 void call(item *theItem) {
-    char itemText[30], buf[COLS * 3];
-    short c;
-    unsigned char command[100];
-    item *tempItem;
-
-    c = 0;
-    command[c++] = CALL_KEY;
-    if (theItem == NULL) {
-        // Need to gray out known potions and scrolls from inventory selection.
-        // Hijack the "item can be identified" flag for this purpose,
-        // and then reset it immediately afterward.
-        for (tempItem = packItems->nextItem; tempItem != NULL; tempItem = tempItem->nextItem) {
-            if ((tempItem->category & (POTION | SCROLL))
-                && tableForItemCategory(tempItem->category)[tempItem->kind].identified) {
-
-                tempItem->flags &= ~ITEM_CAN_BE_IDENTIFIED;
-            } else {
-                tempItem->flags |= ITEM_CAN_BE_IDENTIFIED;
-            }
-        }
-        theItem = promptForItemOfType((WEAPON|ARMOR|SCROLL|RING|POTION|STAFF|WAND|CHARM), ITEM_CAN_BE_IDENTIFIED, 0,
-                                      KEYBOARD_LABELS ? "Call what? (a-z, shift for more info; or <esc> to cancel)" : "Call what?",
-                                      true);
-        updateIdentifiableItems(); // Reset the flags.
-    }
-    if (theItem == NULL) {
-        return;
-    }
-
-    command[c++] = theItem->inventoryLetter;
-
-    confirmMessages();
-
-    if ((theItem->flags & ITEM_IDENTIFIED) || theItem->category & (WEAPON|ARMOR|CHARM|FOOD|GOLD|AMULET|GEM)) {
-        if (theItem->category & (WEAPON | ARMOR | CHARM | STAFF | WAND | RING)) {
-            if (inscribeItem(theItem)) {
-                command[c++] = '\0';
-                strcat((char *) command, theItem->inscription);
-                recordKeystrokeSequence(command);
-                recordKeystroke(RETURN_KEY, false, false);
-            }
-        } else {
-            message("you already know what that is.", 0);
-        }
-        return;
-    }
-
-    if (theItem->category & (WEAPON | ARMOR | STAFF | WAND | RING)) {
-        if (tableForItemCategory(theItem->category)[theItem->kind].identified) {
-            if (inscribeItem(theItem)) {
-                command[c++] = '\0';
-                strcat((char *) command, theItem->inscription);
-                recordKeystrokeSequence(command);
-                recordKeystroke(RETURN_KEY, false, false);
-            }
-            return;
-        } else if (confirm("Inscribe this particular item instead of all similar items?", true)) {
-            command[c++] = 'y'; // y means yes, since the recording also needs to negotiate the above confirmation prompt.
-            if (inscribeItem(theItem)) {
-                command[c++] = '\0';
-                strcat((char *) command, theItem->inscription);
-                recordKeystrokeSequence(command);
-                recordKeystroke(RETURN_KEY, false, false);
-            }
-            return;
-        } else {
-            command[c++] = 'n'; // n means no
-        }
-    }
-
-    if (tableForItemCategory(theItem->category)
-        && !(tableForItemCategory(theItem->category)[theItem->kind].identified)) {
-
-        if (getInputTextString(itemText, "call them: \"", 29, "", "\"", TEXT_INPUT_NORMAL, false)) {
-            command[c++] = '\0';
-            strcat((char *) command, itemText);
-            recordKeystrokeSequence(command);
-            recordKeystroke(RETURN_KEY, false, false);
-            if (itemText[0]) {
-                strcpy(tableForItemCategory(theItem->category)[theItem->kind].callTitle, itemText);
-                tableForItemCategory(theItem->category)[theItem->kind].called = true;
-            } else {
-                tableForItemCategory(theItem->category)[theItem->kind].callTitle[0] = '\0';
-                tableForItemCategory(theItem->category)[theItem->kind].called = false;
-            }
-            confirmMessages();
-            itemName(theItem, buf, false, true, NULL);
-            messageWithColor(buf, &itemMessageColor, 0);
-        }
-    } else {
-        message("you already know what that is.", 0);
-    }
+    nativeItemCommandFrame frame;
+    beginNativeItemCommand(&frame, NATIVE_ITEM_CALL, theItem);
+    driveNativeItemCommand(&frame);
 }
 
 // Generates the item name and returns it in the "root" string.
@@ -3231,71 +3121,9 @@ void strengthCheck(item *theItem, boolean noisy) {
 // Player's failure to select an item will result in failure.
 // Failure does not record input.
 void equip(item *theItem) {
-    unsigned char command[10];
-    short c = 0;
-    item *theItem2;
-
-    command[c++] = EQUIP_KEY;
-    if (!theItem) {
-        theItem = promptForItemOfType((WEAPON|ARMOR|RING), 0, ITEM_EQUIPPED,
-                                      KEYBOARD_LABELS ? "Equip what? (a-z, shift for more info; or <esc> to cancel)" : "Equip what?", true);
-    }
-    if (theItem == NULL) {
-        return;
-    }
-
-    theItem2 = NULL;
-    command[c++] = theItem->inventoryLetter;
-
-    if (theItem->category & (WEAPON|ARMOR|RING)) {
-
-        if (theItem->category & RING) {
-            if (theItem->flags & ITEM_EQUIPPED) {
-                confirmMessages();
-                message("you are already wearing that ring.", 0);
-                return;
-            } else if (rogue.ringLeft && rogue.ringRight) {
-                confirmMessages();
-                theItem2 = promptForItemOfType((RING), ITEM_EQUIPPED, 0,
-                                               "You are already wearing two rings; remove which first?", true);
-                if (!theItem2 || theItem2->category != RING || !(theItem2->flags & ITEM_EQUIPPED)) {
-                    if (theItem2) { // No message if canceled or did an inventory action instead.
-                        message("Invalid entry.", 0);
-                    }
-                    return;
-                } else {
-                    command[c++] = theItem2->inventoryLetter;
-                }
-            }
-        }
-
-        if (theItem->flags & ITEM_EQUIPPED) {
-            confirmMessages();
-            message("already equipped.", 0);
-            return;
-        }
-
-        if (theItem->category & (WEAPON | ARMOR)) {
-            // Swapped out rings are handled above
-            theItem2 = theItem->category & WEAPON ? rogue.weapon : rogue.armor;
-        }
-
-        if (!equipItem(theItem, false, theItem2)) {
-            return; // equip failed because current item is cursed
-        }
-
-        command[c] = '\0';
-        recordKeystrokeSequence(command);
-
-        // Something is only swapped in if something else swapped out
-        rogue.swappedOut = theItem2;
-        rogue.swappedIn = rogue.swappedOut ? theItem : NULL;
-
-        playerTurnEnded();
-    } else {
-        confirmMessages();
-        message("You can't equip that.", 0);
-    }
+    nativeItemCommandFrame frame;
+    beginNativeItemCommand(&frame, NATIVE_ITEM_EQUIP, theItem);
+    driveNativeItemCommand(&frame);
 }
 
 // Returns whether the given item is a key that can unlock the given location.
@@ -6452,57 +6280,9 @@ void throwCommand(item *theItem, boolean autoThrow) {
 }
 
 void relabel(item *theItem) {
-    item *oldItem;
-    char buf[COLS * 3], theName[COLS], newLabel;
-    unsigned char command[10];
-
-    if (!KEYBOARD_LABELS && !rogue.playbackMode) {
-        return;
-    }
-    if (theItem == NULL) {
-        theItem = promptForItemOfType((ALL_ITEMS), 0, 0,
-                                      KEYBOARD_LABELS ? "Relabel what? (a-z, shift for more info; or <esc> to cancel)" : "Relabel what?", true);
-    }
-    if (theItem == NULL) {
-        return;
-    }
-    temporaryMessage("New letter? (a-z)", 0);
-    newLabel = '\0';
-    do {
-        newLabel = nextKeyPress(true);
-    } while (!newLabel);
-
-    if (newLabel >= 'A' && newLabel <= 'Z') {
-        newLabel += 'a' - 'A'; // lower-case.
-    }
-    if (newLabel >= 'a' && newLabel <= 'z') {
-        if (newLabel != theItem->inventoryLetter) {
-            command[0] = RELABEL_KEY;
-            command[1] = theItem->inventoryLetter;
-            command[2] = newLabel;
-            command[3] = '\0';
-            recordKeystrokeSequence(command);
-
-            oldItem = itemOfPackLetter(newLabel);
-            if (oldItem) {
-                oldItem->inventoryLetter = theItem->inventoryLetter;
-                itemName(oldItem, theName, true, true, NULL);
-                sprintf(buf, "Relabeled %s as (%c);", theName, oldItem->inventoryLetter);
-                messageWithColor(buf, &itemMessageColor, 0);
-            }
-            theItem->inventoryLetter = newLabel;
-            itemName(theItem, theName, true, true, NULL);
-            sprintf(buf, "%selabeled %s as (%c).", oldItem ? " r" : "R", theName, newLabel);
-            messageWithColor(buf, &itemMessageColor, 0);
-        } else {
-            itemName(theItem, theName, true, true, NULL);
-            sprintf(buf, "%s %s already labeled (%c).",
-                    theName,
-                    theItem->quantity == 1 ? "is" : "are",
-                    theItem->inventoryLetter);
-            messageWithColor(buf, &itemMessageColor, 0);
-        }
-    }
+    nativeItemCommandFrame frame;
+    beginNativeItemCommand(&frame, NATIVE_ITEM_RELABEL, theItem);
+    driveNativeItemCommand(&frame);
 }
 
 // If the most recently equipped item caused another item to be unequiped, is
@@ -7702,89 +7482,15 @@ int itemMagicPolarity(item *theItem) {
 }
 
 void unequip(item *theItem) {
-    char buf[COLS * 3], buf2[COLS * 3];
-    unsigned char command[3];
-
-    command[0] = UNEQUIP_KEY;
-    if (theItem == NULL) {
-        theItem = promptForItemOfType(ALL_ITEMS, ITEM_EQUIPPED, 0,
-                                      KEYBOARD_LABELS ? "Remove (unequip) what? (a-z or <esc> to cancel)" : "Remove (unequip) what?",
-                                      true);
-    }
-    if (theItem == NULL) {
-        return;
-    }
-
-    command[1] = theItem->inventoryLetter;
-    command[2] = '\0';
-
-    if (!(theItem->flags & ITEM_EQUIPPED)) {
-        itemName(theItem, buf2, false, false, NULL);
-        sprintf(buf, "your %s %s not equipped.",
-                buf2,
-                theItem->quantity == 1 ? "was" : "were");
-        confirmMessages();
-        messageWithColor(buf, &itemMessageColor, 0);
-        return;
-    } else {
-        if (!unequipItem(theItem, false)) {
-            return; // cursed
-        }
-        recordKeystrokeSequence(command);
-        itemName(theItem, buf2, true, true, NULL);
-        if (strLenWithoutEscapes(buf2) > 52) {
-            itemName(theItem, buf2, false, true, NULL);
-        }
-        confirmMessages();
-        sprintf(buf, "you are no longer %s %s.", (theItem->category & WEAPON ? "wielding" : "wearing"), buf2);
-        messageWithColor(buf, &itemMessageColor, 0);
-    }
-    playerTurnEnded();
-}
-
-static boolean canDrop() {
-    if (cellHasTerrainFlag(player.loc, T_OBSTRUCTS_ITEMS)) {
-        return false;
-    }
-    return true;
+    nativeItemCommandFrame frame;
+    beginNativeItemCommand(&frame, NATIVE_ITEM_REMOVE, theItem);
+    driveNativeItemCommand(&frame);
 }
 
 void drop(item *theItem) {
-    char buf[COLS * 3], buf2[COLS * 3];
-    unsigned char command[3];
-
-    command[0] = DROP_KEY;
-    if (theItem == NULL) {
-        theItem = promptForItemOfType(ALL_ITEMS, 0, 0,
-                                      KEYBOARD_LABELS ? "Drop what? (a-z, shift for more info; or <esc> to cancel)" : "Drop what?",
-                                      true);
-    }
-    if (theItem == NULL) {
-        return;
-    }
-    command[1] = theItem->inventoryLetter;
-    command[2] = '\0';
-
-    if ((theItem->flags & ITEM_EQUIPPED) && (theItem->flags & ITEM_CURSED)) {
-        itemName(theItem, buf2, false, false, NULL);
-        sprintf(buf, "you can't; your %s appears to be cursed.", buf2);
-        confirmMessages();
-        messageWithColor(buf, &itemMessageColor, 0);
-    } else if (canDrop()) {
-        recordKeystrokeSequence(command);
-        if (theItem->flags & ITEM_EQUIPPED) {
-            unequipItem(theItem, false);
-        }
-        theItem = dropItem(theItem); // This is where it gets dropped.
-        theItem->flags |= ITEM_PLAYER_AVOIDS; // Try not to pick up stuff you've already dropped.
-        itemName(theItem, buf2, true, true, NULL);
-        sprintf(buf, "You dropped %s.", buf2);
-        messageWithColor(buf, &itemMessageColor, 0);
-        playerTurnEnded();
-    } else {
-        confirmMessages();
-        message("There is already something there.", 0);
-    }
+    nativeItemCommandFrame frame;
+    beginNativeItemCommand(&frame, NATIVE_ITEM_DROP, theItem);
+    driveNativeItemCommand(&frame);
 }
 
 item *promptForItemOfType(unsigned short category,

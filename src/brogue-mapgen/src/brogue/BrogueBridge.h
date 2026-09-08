@@ -14,7 +14,9 @@
 extern "C" {
 #endif
 
-#define BROGUE_BRIDGE_API_VERSION 17u
+/* v19 is reserved by the independent interaction migration. */
+#define BROGUE_BRIDGE_API_VERSION 20u
+#define BROGUE_BRIDGE_PATH_LENGTH 4096u
 #define BROGUE_BRIDGE_MAX_CELLS 2291u
 #define BROGUE_BRIDGE_MAX_CREATURES 1024u
 #define BROGUE_BRIDGE_MAX_ITEMS 1024u
@@ -119,7 +121,8 @@ typedef enum BrogueBridgeEventType {
     BROGUE_EVENT_WEAPON_UNEQUIPPED,
     BROGUE_EVENT_PROJECTILE_MOVED,
     BROGUE_EVENT_PROJECTILE_IMPACT,
-    BROGUE_EVENT_ITEM_LANDED
+    BROGUE_EVENT_ITEM_LANDED,
+    BROGUE_EVENT_TERRAIN_ACTIVATED
 } BrogueBridgeEventType;
 
 typedef enum BrogueBridgeVisibility {
@@ -410,6 +413,40 @@ typedef enum BrogueBridgeTerrainFeature {
     BROGUE_FEATURE_LEVER
 } BrogueBridgeTerrainFeature;
 
+typedef enum BrogueBridgeTerrainKnowledge {
+    BROGUE_TERRAIN_UNKNOWN = 0, BROGUE_TERRAIN_REMEMBERED,
+    BROGUE_TERRAIN_MAPPED, BROGUE_TERRAIN_VISIBLE
+} BrogueBridgeTerrainKnowledge;
+
+typedef enum BrogueBridgeLiquidAppearance {
+    BROGUE_LIQUID_NONE = 0, BROGUE_LIQUID_SHALLOW_WATER,
+    BROGUE_LIQUID_DEEP_WATER, BROGUE_LIQUID_MUD, BROGUE_LIQUID_LAVA
+} BrogueBridgeLiquidAppearance;
+
+enum BrogueBridgeTerrainAppearanceFlags {
+    BROGUE_APPEARANCE_OPAQUE = 1u, BROGUE_APPEARANCE_WALL = 2u,
+    BROGUE_APPEARANCE_HOLE = 4u, BROGUE_APPEARANCE_FLOOD = 8u,
+    BROGUE_APPEARANCE_BRIDGE = 16u, BROGUE_APPEARANCE_ICE = 32u,
+    BROGUE_APPEARANCE_DEPRESSED = 64u
+};
+
+/* Presentation-safe copied catalog identities, independently of raw layers.
+ * A remembered cell contains only Brogue's remembered priority tile; missing
+ * layers are deliberately not reconstructed from live hidden terrain.
+ * gasVolume is exclusively gas density. Liquid depth is liquidKind/flags.
+ * No coordinates, heights, textures, or renderer-specific types occur here. */
+typedef struct BrogueBridgeTerrainAppearance {
+    uint32_t flags;
+    uint16_t structure, ground, liquid, deck, mechanism, fire, gas;
+    uint16_t gasVolume;
+    uint8_t knowledge, liquidKind;
+    uint8_t gasRed, gasGreen, gasBlue;
+    uint8_t bedKind;
+    uint8_t reserved[2];
+} BrogueBridgeTerrainAppearance;
+
+typedef char BrogueTerrainAppearanceSizeCheck[sizeof(BrogueBridgeTerrainAppearance) == 28 ? 1 : -1];
+
 typedef struct BrogueBridgeCellState {
     int32_t x;
     int32_t y;
@@ -447,7 +484,10 @@ typedef struct BrogueBridgeCellState {
     uint8_t backgroundGreen;
     uint8_t backgroundBlue;
     BrogueBridgeTerrainFeature terrainFeature;
+    BrogueBridgeTerrainAppearance appearance;
 } BrogueBridgeCellState;
+
+typedef char BrogueCellStateSizeCheck[sizeof(BrogueBridgeCellState) == 112 ? 1 : -1];
 
 typedef struct BrogueBridgeEvent {
     uint64_t sequence;
@@ -503,7 +543,48 @@ typedef struct BrogueBridgeState {
     BrogueBridgeItemState items[BROGUE_BRIDGE_MAX_ITEMS];
     uint32_t messageCount;
     char messages[BROGUE_BRIDGE_MAX_MESSAGES][BROGUE_BRIDGE_MESSAGE_LENGTH];
+    uint64_t session;
 } BrogueBridgeState;
+
+typedef enum BrogueBridgeSessionPhase {
+    BROGUE_SESSION_IDLE = 0, BROGUE_SESSION_LIVE, BROGUE_SESSION_LOADING,
+    BROGUE_SESSION_LOAD_READY, BROGUE_SESSION_SUSPENDED
+} BrogueBridgeSessionPhase;
+
+typedef enum BrogueBridgePersistenceOperation {
+    BROGUE_PERSIST_CONFIGURE = 0, BROGUE_PERSIST_PROBE, BROGUE_PERSIST_SAVE,
+    BROGUE_PERSIST_LOAD_BEGIN, BROGUE_PERSIST_LOAD_STEP, BROGUE_PERSIST_LOAD_FINISH,
+    BROGUE_PERSIST_LOAD_CANCEL, BROGUE_PERSIST_STATUS, BROGUE_PERSIST_EXPORT_LEVEL
+} BrogueBridgePersistenceOperation;
+
+/* UTF-8 paths. Configure a unique working recording before starting a run.
+ * Load finish is called only after the frontend has prepared presentation.
+ * consumeSource must be false for an original imported/user-owned file. */
+typedef struct BrogueBridgePersistenceRequest {
+    uint32_t apiVersion;
+    BrogueBridgePersistenceOperation operation;
+    uint64_t expectedRevision;
+    uint64_t expectedSession;
+    uint8_t consumeSource;
+    char path[BROGUE_BRIDGE_PATH_LENGTH];
+} BrogueBridgePersistenceRequest;
+
+typedef struct BrogueBridgePersistenceState {
+    uint32_t apiVersion;
+    BrogueBridgeResult errorCode;
+    BrogueBridgeSessionPhase phase;
+    uint64_t session;
+    uint64_t revision;
+    uint64_t gameSeed;
+    uint64_t completedTurns;
+    uint64_t totalTurns;
+    int32_t mode;
+    char nativeVersion[16];
+    char error[BROGUE_BRIDGE_MESSAGE_LENGTH];
+} BrogueBridgePersistenceState;
+
+BrogueBridgeResult brogue_bridge_persistence(const BrogueBridgePersistenceRequest *request,
+                                              BrogueBridgePersistenceState *outState);
 
 typedef struct BrogueBridgeTurnResult {
     uint32_t apiVersion;

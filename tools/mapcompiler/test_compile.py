@@ -98,6 +98,33 @@ def sample_model() -> dict:
 
 
 class CompilerTests(unittest.TestCase):
+    def test_startup_preserves_first_map_and_all_depth_metadata(self):
+        import copy
+        model = sample_model()
+        model['levels'].append(copy.deepcopy(model['levels'][0]))
+        model['levels'][1]['depth'] = 2
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, full, startup, repeat = [root / name for name in ('input.json', 'full.pk3', 'startup.pk3', 'repeat.pk3')]
+            source.write_text(json.dumps(model))
+            compile_package(source, full)
+            manifest = compile_package(source, startup, startup=True)
+            compile_package(source, repeat, startup=True)
+            self.assertEqual(startup.read_bytes(), repeat.read_bytes())
+            self.assertTrue(manifest['startupOnly'])
+            self.assertEqual(verify_package(source, startup, startup=True)['maps'], 1)
+            with zipfile.ZipFile(full) as original, zipfile.ZipFile(startup) as prepared:
+                self.assertEqual(prepared.namelist(), ['MAPINFO', 'brogue-manifest.json', 'maps/BRG01.wad'])
+                self.assertEqual(prepared.read('maps/BRG01.wad'), original.read('maps/BRG01.wad'))
+                self.assertEqual(prepared.read('MAPINFO'), original.read('MAPINFO'))
+                entries = [(name, prepared.read(name)) for name in prepared.namelist()]
+            # A missing logical depth must fail even though only floor one is built.
+            with zipfile.ZipFile(startup, 'w') as damaged:
+                for name, data in entries:
+                    damaged.writestr(name, b'' if name == 'MAPINFO' else data)
+            with self.assertRaisesRegex(VerifyError, 'depth metadata'):
+                verify_package(source, startup, startup=True)
+
     def test_surfaces_tint_base_floor_and_bridges_replace_liquid(self) -> None:
         model = sample_model()
         cell = next(cell for cell in model["levels"][0]["cells"] if (cell["x"], cell["y"]) == (10, 10))
@@ -557,7 +584,7 @@ class CompilerTests(unittest.TestCase):
             self.assertEqual(manifest_one, manifest_two)
             self.assertEqual(manifest_one["resourcePack"], "Project Broom Original Cave Textures")
             self.assertRegex(manifest_one["resourceSha256"], r"^[0-9a-f]{64}$")
-            expected_geometry_sectors = sum(cell_has_geometry(cell) for cell in sample_model()["levels"][0]["cells"])
+            expected_geometry_sectors = 79 * 29 * 3
             self.assertEqual(manifest_one["maps"][0]["sectorCount"], expected_geometry_sectors)
             self.assertGreater(manifest_one["maps"][0]["vertexCount"], 0)
             self.assertEqual(manifest_one["maps"][0]["contourDepth"], CONTOUR_DEPTH)

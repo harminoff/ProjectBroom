@@ -1,6 +1,6 @@
 # Brogue CE → UZDoom runtime bridge
 
-Status: bridge API v17 adds shared single/repeated search and knowledge-limited discovery presentation. See [search behavior and acceptance evidence](search-and-discovery.md). Native UZDoom monster presentation, authoritative weapon, consumable, and targeted staff/wand commands, generalized Brogue confirmation forwarding, an authoritative loss screen, fall-source/landing events, and visual-only first-person weapon models are built from the official UZDoom 5.0.0 source checkout.
+Status: bridge API v20 adds copied terrain appearance and settled snapshot reconciliation; see [terrain implementation and acceptance](dynamic-terrain-foundation.md). API v19 remains reserved for the interaction migration. The earlier search integration adds shared single/repeated search and knowledge-limited discovery presentation. See [search behavior and acceptance evidence](search-and-discovery.md). Native UZDoom monster presentation, authoritative weapon, consumable, and targeted staff/wand commands, generalized Brogue confirmation forwarding, an authoritative loss screen, fall-source/landing events, and visual-only first-person weapon models are built from the official UZDoom 5.0.0 source checkout.
 
 ## Chasms and fall shafts
 
@@ -134,7 +134,10 @@ catalog, registry, ZScript classes, texture atlas, MODELDEF bindings, and one
 deterministic model binding for every catalog kind. `MK_RAT` now uses a weighted
 IQM from `tools/monster_models/rat_animation.py`, with a 28-bone source at
 `assets/monsters/rat/rat-animated.blend` and six presentation clips. The original
-static reference and its dedicated skin remain preserved. The other 66 non-player kinds use individual
+static reference and its dedicated skin remain preserved. The kobold uses a 24-bone IQM and six clips through the same registry-driven
+presentation path; see [shared skeletal authoring](skeletal-enemy-workflow.md).
+The jackal adds a 25-bone rig and six clips through the same profile registry.
+The other 64 non-player kinds use individual
 authored static OBJ/PNG replacements from `tools/monster_models/creatures.py`,
 with one editable Blender file per kind in `assets/monsters/sources/`. Roster
 regeneration preserves all these authored assets. The player/hallucination
@@ -343,6 +346,8 @@ The adapter chooses by current presentation class, so hallucinated shapes do
 not reveal the underlying kind. Attack facing comes only from copied event
 coordinates. Bite versus scratch is a deterministic cosmetic variation, not a
 claim about which Brogue text verb was chosen. See [rat verification](rat-animation-work.md).
+UZDoom 5.0 additionally applies masked head, ear and tail bone offsets over
+idle/scurry clips; see [bone-control research and runtime evidence](rat-uzdoom-bones.md).
 
 Visible skeletal rats use `brg_rat_walk_tics` (default 28, or 0.8 seconds per
 64-unit cardinal tile) for ordinary tile-to-tile movement. Diagonal travel
@@ -400,8 +405,11 @@ named cosmetic RNG streams and cannot perturb Brogue's RNG.
 
 `ProjectBroom.exe` is the player-facing entry point. On a normal double-click it
 chooses a cryptographically random positive seed, runs the pinned Brogue
-exporter for all 40 depths in canonical order, compiles or reuses the matching
-UZDoom campaign, and then opens the Brogue-styled title menu. Selecting **New
+exporter for all 40 depths in canonical order, compiles or reuses floor one's
+UZDoom map plus all depth metadata, verifies that startup package, and then
+opens the Brogue-styled title menu. Later depths use the existing live-state
+projection on entry. See [startup measurements](startup-performance.md).
+Selecting **New
 Game** starts `BRG01` and initializes the live bridge with that same prepared
 seed, so generated geometry and authoritative simulation cannot disagree.
 
@@ -416,11 +424,92 @@ backdrop and the small glyphs extracted from Brogue's own font sheet for the
 menu text. Its title-page interval is deliberately pinned because this frontend
 does not ship Doom demo or credit pages to rotate into.
 
-Load/save is intentionally absent from the title menu until Brogue bridge state
-serialization is implemented. Loading only UZDoom's presentation state would
-not restore the authoritative Brogue simulation.
+API v18 exposes native Brogue suspend/resume through `brogue_bridge_persistence`.
+The launcher selects a save before campaign preparation. Internal native
+recording playback reconstructs at most 32 top-level events per bridge call;
+there is no replay UI and no UZDoom save-state serialization. A new session
+identity accompanies each start/load and revisions increase across resets.
+
+`exportCurrentLevelJson` writes the active level without initializing or advancing
+Brogue. The runtime compiler produces an external WAD, and `P_OpenMapData` uses
+it while retaining the logical `BRGnn` map identity. The complete snapshot binds
+fresh presentation proxies before load finalization consumes the managed save.
+Depth entry also uses this projection. Compilation failure pauses gameplay and
+allows saving. See [save/load evidence](save-and-load.md) for remaining gates.
 
 ## Generalized targeting preview
+
+Holding W repeats camera-relative forward intent through the existing bridge
+movement command. The initial repeat delay is 500 ms, then 100 ms between
+completed attempts, subject to the existing animation gate. Release or a UI/
+focus transition cancels the hold without queued catch-up steps. Other movement
+keys remain discrete. See [held forward movement](held-forward-movement.md)
+for the native Brogue source trace, cancellation rules, and runtime evidence.
+
+Escape routing: the existing `BrogueBridge_WantsSearchEscape` engine callback
+now covers inventory (including apply prompts), weapon/throw/device/look
+panels, command confirmations, and the expanded map as well as search and
+loading. `D_ProcessEvents` therefore delivers Escape to the existing modal
+handler before `M_Responder` can open the main menu. An already-open engine
+menu or console retains priority, preserving the underlying Brogue prompt.
+Mandatory identify/enchant choices still consume Escape without cancelling a
+committed Brogue action. This is input routing only; no bridge ABI, action,
+turn, or RNG behavior changes.
+
+With `brg_debug` enabled, `brg_escape` posts an Escape down/up pair through
+the engine event queue (using GUI events when the engine UI owns focus),
+allowing responder-order checks rather than calling close handlers directly.
+September 7 Escape verification: the canonical source build (including launcher)
+and 37 resource/engine-source tests passed. Seed 42 Vulkan/OpenGL captures under
+`artifacts/modal-escape/{1,0}/` show map/inventory dismissal, normal main-menu
+opening, and a map preserved beneath the menu and resumed after dismissal.
+Both runs finish at turn 0, revision 2, hash `0c342dcf4271326d`. These checks
+inject events at `D_PostEvent`; physical keyboard input, every individual
+targeting/confirmation mode, a release ZIP, and standalone comparison were
+not separately exercised for this routing change.
+
+`M` toggles an expanded Brogue map in the game area; the left status sidebar
+stays visible. `M` or Escape closes it. The expanded view uses the same copied
+glyphs, colors, and discovery/visibility/magic-mapping filter as the minimap,
+fits the complete 79x29 grid to the available area, and hides the 3D view and
+other game-area overlays. Movement input is consumed while it is open. It
+does not submit a Brogue action, and it resets when leaving a level. Existing
+inventory, targeting, and confirmation panels retain input priority. The
+`brg_map` command is also listed in Project Broom's key bindings.
+
+Fullscreen glyphs use the separate 32x58 `BrogueFullMap` font, extracted directly
+from the same pinned Brogue tile sheet by `tools/ui/generate_brogue_fonts.py`.
+This avoids magnifying the minimap's prefiltered 5x8 alpha coverage. Glyphs use
+nearest-neighbor sampling at the existing integer cell bounds; the minimap and
+sidebar retain their original fonts. No global texture filtering is changed.
+Sharpening verification: 31 resource tests passed, all 282 generated font glyphs
+reproduced byte-for-byte, and before/after Vulkan and OpenGL captures are in
+`artifacts/full-map/` and `artifacts/full-map-sharp/`. The source engine and
+launcher builds passed; map toggles still leave revision 2 and turn 0 unchanged.
+
+September 7, 2026 map verification: UZDoom and launcher compiled, 31 resource
+tests passed, and seed 1 open/close captures passed on Vulkan and OpenGL with
+revision 2 and turn 0 unchanged. Evidence: `artifacts/full-map/{1,0}/`.
+The runtime checks used `brg_map`; attempted Windows key injection was not
+received by the game, so physical M/Escape input remains a manual check.
+These are development-runtime checks; a full release package and standalone
+comparison were not exercised for this presentation-only change.
+
+Thrown pickup models face each copied projectile trajectory segment from their
+first visible frame. The pickup weapon meshes use local +X for the tip; native
+presentation sets yaw from the world-space segment and synchronizes previous
+yaw so spawning cannot blend from the old fixed orientation. Camera movement
+does not steer the model. Zero-length segments preserve the last orientation.
+Flight timing, Brogue targeting, impacts, turns, and RNG are unchanged.
+
+September 7, 2026 verification: source UZDoom and launcher builds passed, as did
+36 resource/pickup tests (including dart, incendiary dart, and javelin forward
+geometry). Seed 1's real dagger throw passed cancellation/accepted-action smoke
+checks on Vulkan and OpenGL. A presentation-only observer measured five moving
+samples per renderer, all at the trajectory's 90-degree yaw with zero error;
+both runs finished at turn 1, hash `595eb8334acf0361`. Logs and flight captures
+are under `artifacts/throw-orientation/{1,0}/`. This is development-runtime
+evidence, not a standalone comparison or full release-package acceptance.
 
 API v16 unifies throw, staff, and wand previews through a read-only, revision-bound
 request and copied result. See [contract, evidence, and acceptance gaps](generalized-targeting-preview.md).
@@ -472,13 +561,52 @@ tests against Brogue's normal `apply()`/`chooseTarget()` path.
   existing item action functions. The bridge returns confirmation prompts
   before mutation and returns stable-ID choices for identify/enchant scrolls.
   Discovery/help screens, death/victory screens, and
-  save/replay frontends remain deferred.
+  replay frontend remains deferred; save/load acceptance is tracked separately.
 - Brogue prompts reached by movement, combat, and item commands are forwarded
   through the generalized confirmation broker. Prompts reached outside a live
   semantic command still use the deterministic noninteractive policy.
 - Level transitions are reported through state/event changes but are not yet swapped by a live UZDoom frontend.
 - Pickup and monster models are an initial procedural low-poly presentation
   set. Item-use interactions, final combat effects, 3D FOV treatment,
-  save/replay frontend, and complete multi-level runtime
+  replay frontend, remaining save/load acceptance, and complete multi-level runtime
   synchronization remain future work.
 - The long-run smoke pattern deliberately walks a small region and can reach Brogue's normal death state before the requested action count. That is evidence that the real monster/turn path is running, not a substitute for a long-lived survival scenario.
+
+## Targeting prompt presentation
+
+Throw, staff and wand targeting share a persistent Project Broom intent panel.
+The copied preview supplies the item, cell, range/termination information and
+unchanged Brogue warning text. The panel uses BrogueUI with whole-pixel scaling,
+cream body text, a gold heading and rule, and a dark backing. Controls occupy a
+separate wrapped row. Local scaling steps down on smaller windows so the card
+fits without covering the reticle. Empty-weapon notices use the same panel;
+validation diagnostics use BrogueUI and white text instead of Doom's red font.
+
+The panel reads the last preview and never submits commands or consumes turns.
+The same knowledge-limited preview now drives a two-segment world-space ribbon
+per guide cell, a pulsing selected-cell ring and elevated beacon, and a separate
+early-termination marker. The HUD identifies a safe creature or terrain target,
+reports distance and a plain-language path state, marks the guide and endpoint
+on the minimap with distinct `+`, `!`, and `X` shapes, and supplies a screen-edge
+direction cue when the endpoint is outside the camera view. Confirmation keeps
+these markers visible and moves to the bottom of the screen so the player can
+inspect the path before answering. Closing targeting clears all presentation.
+No new font asset, dependency, targeting policy, or gameplay rule is added.
+Runtime evidence for this pass lives in `artifacts/intent-panel/`: Vulkan and
+OpenGL at HUD scales 1–3, including the native throw UI smoke's unchanged-state
+cancellation and successful confirmation. Resource tests are recorded in
+`artifacts/intent-panel-tests.log`; canonical source build output is in
+`artifacts/intent-panel-build.log`. These are command-driven captures, not a
+claim of physical-input acceptance or a new packaged-release verification.
+
+The [general interaction migration](general-interaction-contract.md) now has
+an independent native-input baseline and shared native continuations for
+Call/Inscribe, Relabel, Equip, Remove and Drop. The remaining command families,
+ABI v19, unified frontend and persistence integration are still in progress;
+this does not complete the general-interaction TODOs.
+
+## Camera-visible enemy movement
+
+Enemy travel now uses shared camera-gated pacing and a filling circle while its
+existing movement input gate is active. Brogue coordinates remain authoritative;
+looking away settles presentation immediately. See [implementation and tests](enemy-movement.md).

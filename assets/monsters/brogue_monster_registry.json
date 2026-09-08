@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "bridgeApiVersion": 17,
+  "bridgeApiVersion": 20,
   "catalogCount": 68,
   "nonPlayerModelCount": 67,
   "presentationModelCount": 68,
@@ -81,17 +81,19 @@
       "abilityFlags": "0",
       "family": "humanoid",
       "class": "BrogueMonsterK02",
-      "model": "02_kobold.obj",
-      "skin": "graphics/BRGM02.png",
-      "authoringSource": "assets/monsters/sources/02_kobold.blend",
-      "generator": "tools/monster_models/creatures.py",
-      "rebuildCommand": "python -m tools.monster_models.creatures --kind 2",
+      "model": "02_kobold.iqm",
+      "skin": "graphics/BRGKOB.png",
+      "authoringSource": "assets/monsters/kobold/kobold-animated.blend",
+      "generator": "tools/monster_models/kobold_animation.py",
+      "rebuildCommand": "python -m tools.monster_models.kobold_animation",
       "workIndex": "BRG-M02",
       "authoredDimensions": [
-        28.0,
-        24.0,
-        38.0
-      ]
+        22.4004,
+        18.6767,
+        40.6239
+      ],
+      "runtimeFilename": "02_kobold.iqm",
+      "animationManifest": "assets/monsters/kobold/animation.json"
     },
     {
       "kind": 3,
@@ -115,17 +117,19 @@
       "abilityFlags": "0",
       "family": "quadruped",
       "class": "BrogueMonsterK03",
-      "model": "03_jackal.obj",
-      "skin": "graphics/BRGM03.png",
-      "authoringSource": "assets/monsters/sources/03_jackal.blend",
-      "generator": "tools/monster_models/creatures.py",
-      "rebuildCommand": "python -m tools.monster_models.creatures --kind 3",
+      "model": "03_jackal.iqm",
+      "skin": "graphics/BRGJACK.png",
+      "authoringSource": "assets/monsters/jackal/jackal-animated.blend",
+      "generator": "tools/monster_models/jackal_animation.py",
+      "rebuildCommand": "python -m tools.monster_models.jackal_animation",
       "workIndex": "BRG-M03",
       "authoredDimensions": [
-        52.0,
-        22.0,
-        32.0
-      ]
+        53.7992,
+        13.4069,
+        33.9777
+      ],
+      "runtimeFilename": "03_jackal.iqm",
+      "animationManifest": "assets/monsters/jackal/animation.json"
     },
     {
       "kind": 4,
@@ -183,17 +187,19 @@
       "abilityFlags": "2",
       "family": "humanoid",
       "class": "BrogueMonsterK05",
-      "model": "05_monkey.obj",
-      "skin": "graphics/BRGM05.png",
-      "authoringSource": "assets/monsters/sources/05_monkey.blend",
-      "generator": "tools/monster_models/creatures.py",
-      "rebuildCommand": "python -m tools.monster_models.creatures --kind 5",
+      "model": "05_monkey.iqm",
+      "skin": "graphics/BRGMONKY.png",
+      "authoringSource": "assets/monsters/monkey/monkey-animated.blend",
+      "generator": "tools/monster_models/monkey_animation.py",
+      "rebuildCommand": "python -m tools.monster_models.monkey_animation",
       "workIndex": "BRG-M05",
       "authoredDimensions": [
-        40.0,
-        27.0,
-        32.0
-      ]
+        29.49,
+        19.4024,
+        32.2037
+      ],
+      "runtimeFilename": "05_monkey.iqm",
+      "animationManifest": "assets/monsters/monkey/animation.json"
     },
     {
       "kind": 6,

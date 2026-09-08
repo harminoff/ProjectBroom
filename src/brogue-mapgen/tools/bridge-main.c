@@ -21,6 +21,12 @@
 #include "bridge-wand-smoke.h"
 #include "bridge-target-smoke.h"
 #include "bridge-search-smoke.h"
+#include "bridge-save-smoke.h"
+#include "bridge-terrain-smoke.h"
+#include "bridge-bloodwort-smoke.h"
+#ifndef BROGUE_BRIDGE_DLL
+#include "native-interaction-fixture.h"
+#endif
 
 static void printEvents(const BrogueBridgeTurnResult *result);
 
@@ -45,6 +51,7 @@ static void printUsage(void) {
     puts("Usage: brogue-bridge --seed SEED [--actions ACTIONS] [--long-run COUNT] [--weapon-smoke] [--consumable-smoke] [--warning-smoke] [--look-smoke] [--verbose]");
     puts("       brogue-bridge --dump-monster-catalog OUTPUT.json");
     puts("       brogue-bridge --seed SEED [--staff-smoke | --wand-smoke]");
+    puts("       brogue-bridge --seed SEED --native-interaction-fixture SCENARIO");
     puts("Actions: N, NE, E, SE, S, SW, W, NW, WAIT (or numpad 8,9,6,3,2,1,4,7,5)");
 }
 
@@ -541,6 +548,11 @@ int main(int argc, char **argv) {
     boolean wandSmoke = false;
     boolean targetSmoke = false;
     boolean searchSmoke = false;
+    boolean terrainSmoke = false;
+    boolean bloodwortSmoke = false;
+    boolean saveSmoke = false;
+    const char *nativeFixture = NULL;
+    boolean saveDepthSmoke = false;
     boolean warningSmoke = false;
     boolean lookSmoke = false;
     const char *catalogOutput = NULL;
@@ -573,6 +585,8 @@ int main(int argc, char **argv) {
                 return 2;
             }
             haveSeed = true;
+        } else if (strcmp(argv[i], "--native-interaction-fixture") == 0 && i + 1 < argc) {
+            nativeFixture = argv[++i];
         } else if (strcmp(argv[i], "--actions") == 0 && i + 1 < argc) {
             actionsText = argv[++i];
         } else if (strcmp(argv[i], "--long-run") == 0 && i + 1 < argc) {
@@ -590,8 +604,16 @@ int main(int argc, char **argv) {
             staffSmoke = true;
         } else if (strcmp(argv[i], "--target-smoke") == 0) {
             targetSmoke = true;
+        } else if (strcmp(argv[i], "--save-depth-smoke") == 0) {
+            saveSmoke = saveDepthSmoke = true;
+        } else if (strcmp(argv[i], "--save-smoke") == 0) {
+            saveSmoke = true;
         } else if (strcmp(argv[i], "--search-smoke") == 0) {
             searchSmoke = true;
+        } else if (strcmp(argv[i], "--bloodwort-smoke") == 0) {
+            bloodwortSmoke = true;
+        } else if (strcmp(argv[i], "--terrain-smoke") == 0) {
+            terrainSmoke = true;
         } else if (strcmp(argv[i], "--wand-smoke") == 0) {
             wandSmoke = true;
         } else if (strcmp(argv[i], "--warning-smoke") == 0) {
@@ -625,6 +647,7 @@ int main(int argc, char **argv) {
         return 2;
     }
 
+    if (nativeFixture) return runNativeInteractionFixture(seed, nativeFixture);
     currentConsole = nullConsole;
     bridgeResult = brogue_bridge_initialize();
     if (bridgeResult != BROGUE_BRIDGE_OK) {
@@ -644,6 +667,10 @@ int main(int argc, char **argv) {
         return 1;
     }
     printStateLine("INITIAL", &state);
+
+    if (saveSmoke) return runSaveSmoke(seed, saveDepthSmoke);
+    if (bloodwortSmoke) { exitCode = runBloodwortSmoke(&state); brogue_bridge_shutdown(); return exitCode; }
+    if (terrainSmoke) { exitCode = runTerrainSmoke(&state); brogue_bridge_shutdown(); return exitCode; }
 
     if (searchSmoke) {
         exitCode = runSearchSmoke(&state);

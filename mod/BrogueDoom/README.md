@@ -46,9 +46,11 @@ tool rather than an alternate simulation.
 
 The source bridge supplies player statistics, visible creatures and items,
 messages, map knowledge, and inventory data to the Brogue-framed HUD. The UI
-and minimap fonts are deterministic bitmap extractions from Brogue CE's pinned
+and map fonts are deterministic bitmap extractions from Brogue CE's pinned
 `bin/assets/tiles.png`; GZDoom renders them with nearest-neighbor integer
-scaling. Press
+scaling. The fullscreen map uses a separate 32x58 extraction for clear enlarged
+glyphs; the minimap retains its compact 5x8 font. Both retain the upstream
+Brogue CE font provenance and licensing. Press
 `I` for the modal two-pane inventory. Arrow keys, mouse wheel, or Brogue's
 inventory letters select items; `Enter`/`U` uses food, potions, scrolls, and
 charms, `E` equips or removes, `D` drops, and `T` enters the existing

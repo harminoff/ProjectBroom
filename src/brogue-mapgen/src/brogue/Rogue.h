@@ -3458,6 +3458,15 @@ extern "C" {
     short currentStealthRange(void);
 
     void initRecording(void);
+    FILE *openBrogueFile(const char *path, const char *mode);
+    const char *recordingLastError(void);
+    void clearRecordingError(void);
+    boolean saveGameToPath(const char *path);
+    boolean beginSavedGameLoad(const char *path);
+    int stepSavedGameLoad(unsigned int maxEvents);
+    boolean finishSavedGameLoad(const char *workingPath, boolean consume);
+    void cancelSavedGameLoad(void);
+    boolean inspectSavedGame(const char *path, uint64_t *seed, unsigned long *turns, int *mode, char *version);
     void flushBufferToFile(void);
     void fillBufferFromFile(void);
     void recordEvent(rogueEvent *event);
@@ -3522,6 +3531,7 @@ extern "C" {
     void dialogAlert(char *message);
     void mainBrogueJunction(void);
     int printSeedCatalog(uint64_t startingSeed, uint64_t numberOfSeedsToScan, unsigned int scanThroughDepth, boolean isCsvFormat, char *errorMessage);
+    int exportCurrentLevelJson(const char *outputPath, char *errorMessage);
     int exportDungeonJson(uint64_t seed, unsigned int depthCount, const char *outputPath, char *errorMessage);
 
     void initializeButton(brogueButton *button);

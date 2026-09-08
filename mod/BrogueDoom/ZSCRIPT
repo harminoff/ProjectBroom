@@ -1,4 +1,4 @@
-version "4.14.2"
+version "5.0"
 
 #include "brogue.zs"
 #include "brogue_pickups.zs"
@@ -7,6 +7,7 @@ version "4.14.2"
 #include "brogue_devices.zs"
 #include "brogue_fx.zs"
 #include "search.zs"
+#include "brogue_terrain.zs"
 #include "ucm/ucm_waypoints.zsc"
 #include "ucm/ucm_minimap.zsc"
 #include "ucm/ucm_math.zsc"

@@ -176,6 +176,8 @@ def write_index(metrics=None):
     if INDEX.exists():
         existing = {e['symbol']: e.get('verification', {}) for e in json.loads(INDEX.read_text())['creatures']}
         previous_art = {e['symbol']: e['art'] for e in json.loads(INDEX.read_text())['creatures']}
+    from .skeletal_registry import profiles as skeletal_profiles
+    skeletons={row['symbol']:row for row in skeletal_profiles()}
     creatures = []
     for record in records:
         k, symbol = record['kind'], record['symbol']
@@ -184,16 +186,19 @@ def write_index(metrics=None):
         status = 'reference-only' if k == 0 else 'rat-proof-of-concept' if k == 1 else 'authored-static'
         metric = (metrics or {}).get(symbol, {key:value for key,value in previous_art.get(symbol,{}).items()
                                             if key in ('triangles','parts','bounds','objSha256','skinSha256')})
-        rat_art={}
-        rat_manifest=ROOT/'assets/monsters/rat/animation.json'
-        if k==1 and rat_manifest.exists():
-            animated=json.loads(rat_manifest.read_text())
+        skeletal_art={}
+        if symbol in skeletons:
+            row=skeletons[symbol]
+            animated=json.loads((ROOT/row['manifest']).read_text())
             status='authored-skeletal'
-            rat_art={'runtimeModel':animated['runtimeModel'],'sourceBlend':animated['authoringSource'],
-                     'format':animated['format'],'boneCount':animated['boneCount'],
-                     'animationManifest':'assets/monsters/rat/animation.json',
-                     'dimensions':[51.12,18.44,15], 'recipe':'weighted-rat',
-                     'traits':['gray scavenger','articulated jaw','four-paw scurry','ear twitch','segmented tail']}
+            skeletal_art={'runtimeModel':animated['runtimeModel'],'sourceBlend':animated['authoringSource'],
+                          'format':animated['format'],'boneCount':animated['boneCount'],
+                          'animationManifest':row['manifest'],
+                          'staticReference':f'mod/BrogueDoom/models/monsters/{k:02d}_{slug}.obj',
+                          'dimensions':animated.get('dimensions',[51.12,18.44,15]),
+                          'recipe':'weighted-'+slug}
+            if k==1:
+                skeletal_art['traits']=['gray scavenger','articulated jaw','four-paw scurry','ear twitch','segmented tail']
             metric={'modelSha256':animated['sha256'],'skinSha256':animated['skinSha256'],
                     'triangles':animated['triangles'],'parts':animated['parts']}
         verification=existing.get(symbol,{})
@@ -208,7 +213,7 @@ def write_index(metrics=None):
                                   'runtimeModel': f'mod/BrogueDoom/models/monsters/{k:02d}_{slug}.obj',
                                   'sourceBlend': 'assets/monsters/rat/rat.blend' if k==1 else
                                   f'assets/monsters/sources/{k:02d}_{slug}.blend' if k>1 else None,
-                                  **metric, **rat_art}, 'verification': verification})
+                                  **metric, **skeletal_art}, 'verification': verification})
     INDEX.parent.mkdir(parents=True, exist_ok=True)
     result = {'schemaVersion': 1, 'sourceSha256': hashlib.sha256(SOURCE.read_bytes()).hexdigest(),
               'hordeSource':str(HORDES.relative_to(ROOT)).replace('\\','/'),
@@ -229,7 +234,7 @@ def write_docs(index):
              'Stable work IDs are `BRG-M00` through `BRG-M67`; they match catalog kinds, not live entity IDs.', '',
              '## Scale and authority', '',
              'Brogue gives no meter/foot dimensions. `isLarge`, prose, color, anatomy and relative comparisons are facts; all numerical dimensions below are presentation decisions. Do not infer body size from HP. A cell is 64 map units; the humanoid art reference is about 58 units and the existing rat is about 15 units tall. Large coils and wings are posed compactly, not used to widen collision. The underworm is intentionally bulkier than the ogre. The mirrored totem is shoulder-high. Pixies are smaller than humanoids. Dar are elves, not flying creatures; the dragon has no flight flag and is not given wings.', '',
-             'Dimensions are rest-pose X/Y/Z mesh extents including equipment and appendages, before separate flight clearance. Runtime bindings remain scale 1. Feet touch the local floor; levitating meshes have a documented 16-unit visual gap. Existing bridge visibility/submersion behavior is unchanged. Most forms remain static OBJs; the rat now uses a 28-bone IQM with six clips. See its work card and animation report.', '',
+             'Dimensions are rest-pose X/Y/Z mesh extents including equipment and appendages, before separate flight clearance. Runtime bindings remain scale 1. Feet touch the local floor; levitating meshes have a documented 16-unit visual gap. Existing bridge visibility/submersion behavior is unchanged. Most forms remain static OBJs; the rat and kobold use weighted IQMs with six clips. See their work cards and the shared skeletal workflow.', '',
              '## Work index', '', '| ID | Brogue kind | Recipe | Size X/Y/Z | State |', '| --- | --- | --- | --- | --- |']
     for item in index['creatures']:
         art = item['art']; symbol = item['symbol']; slug = symbol.removeprefix('MK_').lower()
@@ -253,7 +258,7 @@ def write_docs(index):
             doc.append(f"- [Editable Blender source](../../{art['sourceBlend']}).")
         if art.get('animationManifest'):
             doc.extend([f"- [Animation manifest](../../{art['animationManifest']}); {art['boneCount']} bones.",
-                        '- [Rat animation implementation and evidence](../rat-animation-work.md).'])
+                        '- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).'])
         doc.extend(['', '## Brogue encounter-table references', '',
                     'These are nominal table ranges and weights, not guaranteed encounter depths or percentages. Summoning rows use level 0 and name a summoner; captive/machine/out-of-depth selection follows Brogue itself. Expressions such as `DEEPEST_LEVEL-1` are preserved rather than guessed. No spawn rules are changed.', '',
                     '| Source row | Role | Leader/summoner | Nominal range | Terrain | Flags |',

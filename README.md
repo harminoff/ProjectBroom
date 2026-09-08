@@ -63,7 +63,7 @@ Important parity work still remaining:
 
 - a generalized targeting contract;
 - search, auto-rest, auto-explore, travel, and run-until-disturbed commands;
-- authoritative save/load and Brogue recording playback;
+- broader save/load acceptance and Brogue recording playback;
 - complete dynamic terrain synchronization, visibility behavior, status
   details, special-monster effects, and remaining Brogue information screens;
 - broader turn-by-turn comparison against standalone Brogue.
@@ -77,19 +77,27 @@ The first supported release platform is **Windows x64**.
 1. Download `ProjectBroom-Windows-x64-<version>.zip` from GitHub Releases.
 2. Extract the complete archive to a normal writable folder.
 3. Run `ProjectBroom.exe`.
-4. Choose **New Game**. Project Broom chooses a positive random Brogue seed,
-   generates its authoritative dungeon, verifies the 3D campaign, and starts
-   UZDoom.
+4. Choose **Continue**, **Load / Import**, **New Game**, or **New Game with
+   Seed**. A normal new game chooses a positive random Brogue seed; the seeded
+   option lets you enter a specific positive seed to replay. Project Broom then
+   generates the authoritative dungeon, prepares and verifies the first floor,
+   and starts UZDoom.
 
 The portable release includes the required Brogue CE simulation, modified
 UZDoom runtime, Freedoom Phase 2 IWAD, Project Broom presentation package, and
 map compiler. You do not need to install any of those separately.
 
+Later floors are prepared from Brogue's current state when you enter them.
 New seeds take longer on their first launch. Generated campaigns, settings,
-logs, and future save data live under `%LOCALAPPDATA%\ProjectBroom`; the
+logs, working recordings, and native saves live under `%LOCALAPPDATA%\ProjectBroom`; the
 installation folder remains read-only. Run `ProjectBroom.exe --seed 1` for a
 repeatable development game or `ProjectBroom.exe --clear-cache` to remove
-regenerable campaign data.
+regenerable campaign data. Saves remain intact.
+
+Use **Saves > Save and Exit** in the game menu to suspend a run. Normal window
+close also saves a live run. A successful resume consumes the managed save;
+importing a `.broguesave` preserves the original file. Both paths use Brogue's
+native recording format. See [save/load evidence and remaining gates](docs/save-and-load.md).
 
 Pre-alpha releases are unsigned and may trigger Windows SmartScreen. Verify
 the download against the release's `SHA256SUMS.txt` before running it.

@@ -1,0 +1,2915 @@
+// Shared shaders; masks are texture bindings, not shader permutations.
+material flat BSE00
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-00.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE01
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-01.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE02
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-02.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE03
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-03.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE04
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-04.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE05
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-05.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE06
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-06.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE07
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-07.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE08
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-08.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE09
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-09.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE0A
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0a.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE0B
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0b.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE0C
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0c.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE0D
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0d.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE0E
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0e.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE0F
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0f.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE10
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-10.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE14
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-14.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE18
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-18.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE1C
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-1c.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE20
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-20.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE21
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-21.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE28
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-28.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE29
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-29.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE30
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-30.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE38
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-38.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE40
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-40.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE41
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-41.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE42
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-42.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE43
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-43.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE50
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-50.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE60
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-60.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE61
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-61.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE70
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-70.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE80
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-80.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE82
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-82.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE84
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-84.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE86
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-86.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE90
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-90.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSE94
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-94.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSEA0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-a0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSEB0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-b0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSEC0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-c0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSEC2
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-c2.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSED0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-d0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSEE0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-e0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSEF0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-f0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 6.0
+}
+material flat BSM00
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-00.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM01
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-01.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM02
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-02.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM03
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-03.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM04
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-04.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM05
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-05.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM06
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-06.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM07
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-07.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM08
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-08.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM09
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-09.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM0A
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0a.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM0B
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0b.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM0C
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0c.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM0D
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0d.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM0E
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0e.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM0F
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0f.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM10
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-10.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM14
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-14.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM18
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-18.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM1C
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-1c.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM20
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-20.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM21
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-21.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM28
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-28.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM29
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-29.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM30
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-30.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM38
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-38.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM40
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-40.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM41
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-41.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM42
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-42.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM43
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-43.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM50
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-50.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM60
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-60.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM61
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-61.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM70
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-70.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM80
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-80.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM82
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-82.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM84
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-84.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM86
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-86.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM90
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-90.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSM94
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-94.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSMA0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-a0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSMB0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-b0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSMC0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-c0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSMC2
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-c2.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSMD0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-d0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSME0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-e0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSMF0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-f0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 7.0
+}
+material flat BSF00
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-00.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF01
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-01.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF02
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-02.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF03
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-03.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF04
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-04.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF05
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-05.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF06
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-06.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF07
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-07.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF08
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-08.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF09
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-09.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF0A
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0a.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF0B
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0b.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF0C
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0c.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF0D
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0d.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF0E
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0e.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF0F
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0f.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF10
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-10.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF14
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-14.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF18
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-18.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF1C
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-1c.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF20
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-20.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF21
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-21.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF28
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-28.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF29
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-29.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF30
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-30.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF38
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-38.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF40
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-40.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF41
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-41.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF42
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-42.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF43
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-43.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF50
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-50.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF60
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-60.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF61
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-61.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF70
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-70.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF80
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-80.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF82
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-82.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF84
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-84.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF86
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-86.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF90
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-90.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSF94
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-94.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSFA0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-a0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSFB0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-b0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSFC0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-c0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSFC2
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-c2.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSFD0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-d0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSFE0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-e0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSFF0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-f0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 4.0
+}
+material flat BSB00
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-00.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB01
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-01.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB02
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-02.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB03
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-03.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB04
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-04.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB05
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-05.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB06
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-06.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB07
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-07.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB08
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-08.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB09
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-09.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB0A
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0a.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB0B
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0b.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB0C
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0c.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB0D
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0d.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB0E
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0e.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB0F
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0f.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB10
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-10.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB14
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-14.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB18
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-18.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB1C
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-1c.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB20
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-20.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB21
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-21.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB28
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-28.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB29
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-29.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB30
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-30.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB38
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-38.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB40
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-40.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB41
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-41.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB42
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-42.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB43
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-43.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB50
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-50.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB60
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-60.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB61
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-61.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB70
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-70.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB80
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-80.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB82
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-82.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB84
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-84.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB86
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-86.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB90
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-90.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSB94
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-94.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSBA0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-a0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSBB0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-b0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSBC0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-c0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSBC2
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-c2.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSBD0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-d0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSBE0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-e0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSBF0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-f0.png"
+ define SHORE_WATER = 0
+ define SHORE_WIDTH = 3.0
+}
+material flat BSW00
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-00.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW01
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-01.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW02
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-02.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW03
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-03.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW04
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-04.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW05
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-05.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW06
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-06.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW07
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-07.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW08
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-08.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW09
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-09.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW0A
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0a.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW0B
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0b.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW0C
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0c.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW0D
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0d.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW0E
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0e.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW0F
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0f.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW10
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-10.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW14
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-14.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW18
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-18.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW1C
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-1c.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW20
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-20.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW21
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-21.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW28
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-28.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW29
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-29.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW30
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-30.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW38
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-38.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW40
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-40.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW41
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-41.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW42
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-42.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW43
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-43.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW50
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-50.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW60
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-60.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW61
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-61.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW70
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-70.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW80
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-80.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW82
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-82.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW84
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-84.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW86
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-86.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW90
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-90.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSW94
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-94.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSWA0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-a0.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSWB0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-b0.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSWC0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-c0.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSWC2
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-c2.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSWD0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-d0.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSWE0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-e0.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSWF0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-f0.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+}
+material flat BSD00
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-00.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD01
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-01.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD02
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-02.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD03
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-03.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD04
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-04.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD05
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-05.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD06
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-06.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD07
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-07.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD08
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-08.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD09
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-09.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD0A
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0a.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD0B
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0b.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD0C
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0c.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD0D
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0d.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD0E
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0e.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD0F
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0f.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD10
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-10.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD14
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-14.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD18
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-18.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD1C
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-1c.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD20
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-20.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD21
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-21.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD28
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-28.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD29
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-29.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD30
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-30.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD38
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-38.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD40
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-40.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD41
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-41.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD42
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-42.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD43
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-43.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD50
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-50.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD60
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-60.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD61
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-61.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD70
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-70.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD80
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-80.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD82
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-82.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD84
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-84.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD86
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-86.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD90
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-90.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSD94
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-94.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSDA0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-a0.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSDB0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-b0.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSDC0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-c0.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSDC2
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-c2.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSDD0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-d0.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSDE0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-e0.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSDF0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-f0.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+}
+material flat BSS00
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-00.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS01
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-01.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS02
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-02.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS03
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-03.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS04
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-04.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS05
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-05.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS06
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-06.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS07
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-07.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS08
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-08.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS09
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-09.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS0A
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0a.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS0B
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0b.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS0C
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0c.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS0D
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0d.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS0E
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0e.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS0F
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0f.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS10
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-10.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS14
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-14.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS18
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-18.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS1C
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-1c.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS20
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-20.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS21
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-21.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS28
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-28.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS29
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-29.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS30
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-30.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS38
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-38.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS40
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-40.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS41
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-41.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS42
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-42.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS43
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-43.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS50
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-50.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS60
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-60.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS61
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-61.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS70
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-70.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS80
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-80.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS82
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-82.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS84
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-84.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS86
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-86.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS90
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-90.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSS94
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-94.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSSA0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-a0.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSSB0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-b0.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSSC0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-c0.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSSC2
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-c2.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSSD0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-d0.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSSE0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-e0.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BSSF0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-f0.png"
+ define SHORE_WATER = 1
+ define SHORE_WIDTH = 11.0
+ disablealphatest
+ speed 0
+}
+material flat BST00
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-00.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST01
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-01.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST02
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-02.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST03
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-03.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST04
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-04.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST05
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-05.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST06
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-06.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST07
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-07.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST08
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-08.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST09
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-09.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST0A
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0a.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST0B
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0b.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST0C
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0c.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST0D
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0d.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST0E
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0e.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST0F
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-0f.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST10
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-10.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST14
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-14.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST18
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-18.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST1C
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-1c.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST20
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-20.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST21
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-21.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST28
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-28.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST29
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-29.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST30
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-30.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST38
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-38.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST40
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-40.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST41
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-41.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST42
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-42.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST43
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-43.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST50
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-50.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST60
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-60.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST61
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-61.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST70
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-70.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST80
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-80.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST82
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-82.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST84
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-84.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST86
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-86.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST90
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-90.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BST94
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-94.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BSTA0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-a0.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BSTB0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-b0.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BSTC0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-c0.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BSTC2
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-c2.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BSTD0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-d0.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BSTE0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-e0.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}
+material flat BSTF0
+{
+ shader "shaders/shoreline.fp"
+ texture shoreMask "shaders/shoreline/mask-f0.png"
+ define SHORE_WATER = 2
+ define SHORE_WIDTH = 9.0
+ disablealphatest
+ speed 0
+}

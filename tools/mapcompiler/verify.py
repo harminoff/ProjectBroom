@@ -27,6 +27,7 @@ try:
         map_side_points,
         prop_placement,
         validate_model,
+        make_mapinfo,
     )
 except ImportError:
     from compile import (  # type: ignore[no-redef]
@@ -43,6 +44,7 @@ except ImportError:
         map_side_points,
         prop_placement,
         validate_model,
+        make_mapinfo,
     )
 
 
@@ -106,6 +108,17 @@ def wad_textmap(payload: bytes, map_name: str) -> str:
 
 
 def verify_map(level: dict[str, Any], textmap: str, width: int, height: int) -> dict[str, int]:
+    if 'user_brogue_role = 1;' in textmap:
+        from tools.mapcompiler.terrain_geometry import verify_geometry
+        counts = verify_geometry(level, textmap)
+        sectors = blocks(textmap, 'sector')
+        sector_cells = {i: (int_property(s, 'user_brogue_x'), int_property(s, 'user_brogue_y'))
+                        for i, s in enumerate(sectors) if int_property(s, 'user_brogue_role') == 0}
+        cells = {(int(c['x']), int(c['y'])): c for c in level['cells']}
+        verify_things(level, width, height, sectors, sector_cells, blocks(textmap, 'thing'), set(cells), cells)
+        return dict(sectorsPerMap=counts['primarySectors']+counts['controlSectors'],
+                    verticesPerMap=counts['vertices'], linesPerMap=counts['lines'],
+                    sidedefsPerMap=len(blocks(textmap, 'sidedef')))
     depth = int(level["depth"])
     cells = {(int(cell["x"]), int(cell["y"])): cell for cell in level["cells"]}
     geometry_cell_map = {position: cell for position, cell in cells.items() if cell_has_geometry(cell)}
@@ -271,6 +284,18 @@ def verify_map(level: dict[str, Any], textmap: str, width: int, height: int) -> 
         if not degrees or any(degree != 2 for degree in degrees.values()):
             raise VerifyError(f"BRG{depth:02d}: sector {sector} does not form a closed boundary loop")
 
+    verify_things(level, width, height, sector_blocks, sector_cells, thing_blocks, geometry_cells, cells)
+    return {
+        "sectorsPerMap": len(sector_blocks),
+        "verticesPerMap": len(vertex_blocks),
+        "linesPerMap": len(line_blocks),
+        "sidedefsPerMap": len(side_blocks),
+    }
+
+
+
+def verify_things(level, width, height, sector_blocks, sector_cells, thing_blocks, geometry_cells, cells):
+    depth = int(level["depth"])
     thing_types = {int_property(body, "type"): body for body in thing_blocks}
     expected_up = level["upStairs"]
     expected_down = level["downStairs"]
@@ -359,15 +384,10 @@ def verify_map(level: dict[str, Any], textmap: str, width: int, height: int) -> 
     )
     if actual_props != sorted(expected_props):
         raise VerifyError(f"BRG{depth:02d}: semantic prop placement does not match Brogue surface layers")
-    return {
-        "sectorsPerMap": len(sector_blocks),
-        "verticesPerMap": len(vertex_blocks),
-        "linesPerMap": len(line_blocks),
-        "sidedefsPerMap": len(side_blocks),
-    }
 
-
-def verify_package(input_path: Path, package_path: Path, depth: int | None = None, map_name: str | None = None) -> dict[str, Any]:
+def verify_package(input_path: Path, package_path: Path, depth: int | None = None, map_name: str | None = None, startup: bool = False) -> dict[str, Any]:
+    if startup and (depth is not None or map_name is not None):
+        raise VerifyError('startup mode cannot be combined with standalone depth/map-name')
     try:
         model = json.loads(input_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as error:
@@ -376,7 +396,7 @@ def verify_package(input_path: Path, package_path: Path, depth: int | None = Non
         raise VerifyError("JSON root is not an object")
     width, height, _ = validate_model(model)
     if depth is None:
-        levels = model["levels"]
+        levels = model["levels"][:1] if startup else model["levels"]
         map_names = [f"BRG{int(level['depth']):02d}" for level in levels]
     else:
         if depth < 1 or depth > len(model["levels"]):
@@ -386,6 +406,12 @@ def verify_package(input_path: Path, package_path: Path, depth: int | None = Non
     for level in levels:
         level["_verifyGameSeed"] = str(model.get("seed", ""))
     with zipfile.ZipFile(package_path) as archive:
+        if startup:
+            expected_mapinfo = make_mapinfo([(f"BRG{int(level['depth']):02d}", int(level['depth'])) for level in model['levels']])
+            if archive.read('MAPINFO').decode('utf-8') != expected_mapinfo:
+                raise VerifyError('startup package lost depth metadata')
+            if json.loads(archive.read('brogue-manifest.json')).get('startupOnly') is not True:
+                raise VerifyError('not a startup package')
         expected_names = ["MAPINFO", "brogue-manifest.json"] + [f"maps/{name.lower() if depth is not None else name}.wad" for name in map_names]
         if archive.namelist() != expected_names:
             raise VerifyError("PK3 entry order or map set is not deterministic")
@@ -403,9 +429,10 @@ def main(argv: Iterable[str] | None = None) -> int:
     parser.add_argument("--package", required=True, type=Path)
     parser.add_argument("--depth", type=int, help="verify one exported depth compiled as a standalone map")
     parser.add_argument("--map-name", default=None, help="standalone map marker; defaults to MAP01")
+    parser.add_argument('--startup', action='store_true', help='verify the runtime bridge startup package')
     args = parser.parse_args(argv)
     try:
-        print(json.dumps(verify_package(args.input, args.package, args.depth, args.map_name), separators=(",", ":")))
+        print(json.dumps(verify_package(args.input, args.package, args.depth, args.map_name, args.startup), separators=(",", ":")))
     except (OSError, zipfile.BadZipFile, VerifyError) as error:
         print(f"mapcompiler verify: {error}", file=sys.stderr)
         return 2

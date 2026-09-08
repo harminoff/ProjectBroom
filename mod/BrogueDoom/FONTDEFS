@@ -18,6 +18,16 @@ BrogueMap
     KERNING 0
 }
 
+BrogueFullMap
+{
+    TEMPLATE "BFL%03d"
+    BASE 33
+    FIRST 33
+    COUNT 94
+    SPACEWIDTH 32
+    KERNING 0
+}
+
 BrogueMenu
 {
     TEMPLATE "BFT%03d"

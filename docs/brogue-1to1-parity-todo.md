@@ -81,6 +81,12 @@ not include changes that would reproduce Brogue rules in GZDoom.
 
 ## P1: Generalize dynamic terrain synchronization
 
+The [geometry foundation and evidence](dynamic-terrain-foundation.md) now includes
+ABI v20 copied appearance and a settled snapshot reconciler. The
+[animation implementation and evidence](terrain-animation-research.md) adds
+retargetable transitions and original physical assets. Full runtime/parity
+acceptance remains open; boxes stay open.
+
 - [ ] Replace terrain-change logging with a coordinate-addressed frontend
   update path for every changed Brogue cell.
 - [ ] Synchronize secret-door discovery and door promotion.
@@ -98,6 +104,10 @@ not include changes that would reproduce Brogue rules in GZDoom.
   presentation actors in previously changed cells.
 
 ## P1: Save, load, and replay
+
+Native save/load implementation and current evidence are in [save-and-load.md](save-and-load.md).
+Acceptance boxes remain open until the complete multi-depth, physical-input,
+standalone, and packaged gates pass. Replay UI is outside this implementation.
 
 - [ ] Expose Brogue's authoritative save operation through the bridge.
 - [ ] Restore Brogue simulation state and RNG through an authoritative load.
@@ -161,3 +171,8 @@ The bridge can be called 1:1 when every normal Brogue player command can be
 submitted semantically, Brogue alone resolves its result, every gameplay-
 relevant state can be restored and verified, and GZDoom consistently presents
 the resulting state without introducing independent gameplay decisions.
+
+Bloodwort now has original models, snapshot ownership, growth/burst/spore
+presentation and dedicated native/renderer/package checks. See
+[bloodwort evidence and remaining acceptance](bloodwort-presentation.md).
+This does not close unrelated dynamic-terrain backlog items.

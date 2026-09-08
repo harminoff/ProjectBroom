@@ -301,7 +301,7 @@ class BrogueWorldHandler : EventHandler
     {
         MapIsValid = false;
         Console.Printf("Brogue map validation failed: %s", message);
-        Console.MidPrint(null, "Brogue map validation failed. See the console for details.");
+        Console.MidPrint(Font.GetFont("BrogueUI"), "\c[White]Brogue map validation failed. See the console for details.");
     }
 
     bool ValidateMap()
@@ -315,7 +315,7 @@ class BrogueWorldHandler : EventHandler
         for (index = 0; index < ExpectedCells; index++)
             CellSectors[index] = null;
 
-        if (Level.Sectors.Size() <= 0 || Level.Sectors.Size() > ExpectedCells)
+        if (Level.Sectors.Size() <= 0 || Level.Sectors.Size() > ExpectedCells * 3)
         {
             ReportError(String.Format("expected 1-%d traversable sectors, found %d", ExpectedCells, Level.Sectors.Size()));
             return false;
@@ -323,6 +323,14 @@ class BrogueWorldHandler : EventHandler
 
         for (index = 0; index < Level.Sectors.Size(); index++)
         {
+            int role = Level.GetUDMFInt(UDMFSector, index, 'user_brogue_role');
+            if (role == 1 || role == 2)
+                continue; // Reserved liquid/deck controls never bind a Brogue cell.
+            if (role != 0)
+            {
+                ReportError(String.Format("sector %d has invalid terrain role %d", index, role));
+                return false;
+            }
             x = Level.GetUDMFInt(UDMFSector, index, 'user_brogue_x');
             y = Level.GetUDMFInt(UDMFSector, index, 'user_brogue_y');
             if (x < 0 || x >= Width || y < 0 || y >= Height)

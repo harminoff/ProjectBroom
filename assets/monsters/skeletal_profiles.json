@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "roles": [
+    "idle",
+    "walk",
+    "attack",
+    "attack_alt",
+    "hit",
+    "death"
+  ],
+  "enemies": [
+    {
+      "symbol": "MK_RAT",
+      "class": "BrogueMonsterK01",
+      "module": "rat_animation",
+      "model": "01_rat.iqm",
+      "skin": "graphics/BRGRAT.png",
+      "source": "assets/monsters/rat/rat-animated.blend",
+      "manifest": "assets/monsters/rat/animation.json",
+      "baseClass": "BrogueRatSkeletalProxy",
+      "clips": [
+        "idle",
+        "scurry",
+        "bite",
+        "scratch",
+        "recoil",
+        "death"
+      ],
+      "durations": [
+        0,
+        0,
+        16,
+        18,
+        12,
+        26
+      ],
+      "walkFrames": 16
+    },
+    {
+      "symbol": "MK_KOBOLD",
+      "visualScale": 1.28,
+      "class": "BrogueMonsterK02",
+      "module": "kobold_animation",
+      "model": "02_kobold.iqm",
+      "skin": "graphics/BRGKOB.png",
+      "source": "assets/monsters/kobold/kobold-animated.blend",
+      "manifest": "assets/monsters/kobold/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "clips": [
+        "idle",
+        "walk",
+        "attack",
+        "attack_alt",
+        "hit",
+        "death"
+      ],
+      "durations": [
+        0,
+        0,
+        20,
+        22,
+        12,
+        28
+      ],
+      "walkFrames": 16,
+      "referenceSkin": "graphics/BRGM02.png"
+    },
+    {
+      "symbol": "MK_JACKAL",
+      "class": "BrogueMonsterK03",
+      "module": "jackal_animation",
+      "model": "03_jackal.iqm",
+      "skin": "graphics/BRGJACK.png",
+      "referenceSkin": "graphics/BRGM03.png",
+      "source": "assets/monsters/jackal/jackal-animated.blend",
+      "manifest": "assets/monsters/jackal/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "clips": [
+        "idle",
+        "prowl",
+        "bite",
+        "maul",
+        "recoil",
+        "death"
+      ],
+      "durations": [
+        0,
+        0,
+        20,
+        24,
+        12,
+        28
+      ],
+      "walkFrames": 20
+    },
+    {
+      "symbol": "MK_MONKEY",
+      "class": "BrogueMonsterK05",
+      "module": "monkey_animation",
+      "model": "05_monkey.iqm",
+      "skin": "graphics/BRGMONKY.png",
+      "referenceSkin": "graphics/BRGM05.png",
+      "source": "assets/monsters/monkey/monkey-animated.blend",
+      "manifest": "assets/monsters/monkey/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "clips": [
+        "idle",
+        "walk",
+        "bite",
+        "snatch",
+        "recoil",
+        "death"
+      ],
+      "durations": [
+        0,
+        0,
+        20,
+        22,
+        12,
+        28
+      ],
+      "walkFrames": 20,
+      "captivity": {
+        "class": "BrogueMonsterK05Captive",
+        "model": "05_monkey_captive.iqm",
+        "idle": "captive",
+        "release": "released",
+        "duration": 21
+      }
+    }
+  ]
+}

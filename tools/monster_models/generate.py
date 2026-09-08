@@ -23,16 +23,7 @@ ZSCRIPT = ROOT / "mod" / "BrogueDoom" / "brogue_monsters.zs"
 
 # Authored assets are rebuilt by their own tool, never by the placeholder mesh
 # generator. Keep bindings here so regenerating the catalog preserves the art.
-CUSTOM_MODELS = {
-    "MK_RAT": {
-        "runtimeFilename": "01_rat.iqm",
-        "skin": "graphics/BRGRAT.png",
-        "authoringSource": "assets/monsters/rat/rat-animated.blend",
-        "generator": "tools/monster_models/rat_animation.py",
-        "rebuildCommand": "python -m tools.monster_models.rat_animation",
-        "animationManifest": "assets/monsters/rat/animation.json",
-    },
-}
+CUSTOM_MODELS = {}
 
 # Every non-player kind now has an explicit authored recipe and work card.
 # Catalog regeneration binds these files but never overwrites authored meshes.
@@ -53,6 +44,22 @@ for _symbol in _profiles:
         'family': _profiles[_symbol]['recipe'],
         'authoredDimensions': _profiles[_symbol]['dimensions'],
     }
+
+
+from tools.monster_models.skeletal_registry import profiles as skeletal_profiles, generate as generate_skeletal_bindings
+SKELETAL = {row['symbol']: row for row in skeletal_profiles()}
+for symbol, row in SKELETAL.items():
+    CUSTOM_MODELS[symbol] = {
+        **CUSTOM_MODELS.get(symbol, {}),
+        'runtimeFilename': row['model'], 'skin': row['skin'],
+        'authoringSource': row['source'],
+        'generator': 'tools/monster_models/'+row['module']+'.py',
+        'rebuildCommand': 'python -m tools.monster_models.'+row['module'],
+        'animationManifest': row['manifest'],
+    }
+    _animated = json.loads((ROOT/row['manifest']).read_text())
+    if 'dimensions' in _animated:
+        CUSTOM_MODELS[symbol]['authoredDimensions'] = _animated['dimensions']
 
 
 class Mesh:
@@ -199,6 +206,7 @@ def main() -> None:
                "    {", "        Radius 1; Height 1; Scale 1.0;",
                "        +NOBLOCKMAP; +NOGRAVITY; +NOINTERACTION; +NOTONAUTOMAP;",
                "    }", "    States { Spawn: BRM0 A -1; Stop; }", "}", ""]
+    zscript.append('#include "brogue_rat_skeleton.zs"')
     rows, columns = math.ceil(len(kinds) / 8), 8
     for kind in kinds:
         index = kind["kind"]
@@ -217,14 +225,23 @@ def main() -> None:
         entries.append({**kind, "family": family(kind["symbol"]), "class": class_name, "model": model,
                         **(custom or {})})
         skin = custom["skin"] if custom else "graphics/BRGMON.png"
+        visual_scale = SKELETAL.get(kind['symbol'], {}).get('visualScale', 1.0)
         modeldef.extend((f"Model {class_name}", "{", '    Path "models/monsters"',
                          f'    Model 0 "{model}"', f'    Skin 0 "{skin}"',
-                         "    Scale 1.0 1.0 1.0", "    FrameIndex BRM0 A 0 0",
-                         *(('    BaseFrame',) if index==1 else ()), "}", ""))
-        if index==1:
-            zscript.extend([f"class {class_name} : BrogueMonsterProxyBase", "{",
+                         f"    Scale {visual_scale} {visual_scale} {visual_scale}", "    FrameIndex BRM0 A 0 0",
+                         *(('    BaseFrame',) if kind['symbol'] in SKELETAL else ()), "}", ""))
+        if kind["symbol"] in SKELETAL:
+            base_class=SKELETAL[kind["symbol"]]["baseClass"]
+            zscript.extend([f"class {class_name} : {base_class}", "{",
                 "    Default { +DECOUPLEDANIMATIONS; }",
-                '    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }', "}"])
+                '    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("'+SKELETAL[kind['symbol']]['clips'][0]+'", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }', "}"])
+            captive=SKELETAL[kind['symbol']].get('captivity')
+            if captive:
+                modeldef.extend((f"Model {captive['class']}", "{", '    Path "models/monsters"',
+                    f'    Model 0 "{captive["model"]}"', f'    Skin 0 "{skin}"',
+                    f'    Scale {visual_scale} {visual_scale} {visual_scale}', '    FrameIndex BRM0 A 0 0', '    BaseFrame', '}', ''))
+                zscript.extend([f'class {captive["class"]} : {class_name}', '{',
+                    '    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("'+captive['idle']+'", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }', '}'])
         else: zscript.append(f"class {class_name} : BrogueMonsterProxyBase {{}}")
     registry = {"schemaVersion": 1, "bridgeApiVersion": source["bridgeApiVersion"],
                 "catalogCount": len(kinds), "nonPlayerModelCount": len(kinds) - 1,
@@ -233,6 +250,7 @@ def main() -> None:
     (MODEL_DIR / "MODELDEF.txt").write_text("\n".join(modeldef), encoding="utf-8")
     ZSCRIPT.write_text("\n".join(zscript) + "\n", encoding="utf-8")
     write_atlas(kinds)
+    generate_skeletal_bindings()
     print(f"Generated {len(kinds) - 1} gameplay monsters plus the hallucination/player presentation form.")
 
 

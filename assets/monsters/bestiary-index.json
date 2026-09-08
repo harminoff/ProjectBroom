@@ -118,13 +118,14 @@
         "clearance": 0,
         "runtimeModel": "mod/BrogueDoom/models/monsters/01_rat.iqm",
         "sourceBlend": "assets/monsters/rat/rat-animated.blend",
-        "modelSha256": "87512b1684f200d69a64e71697988a5f4f96b7c32852ebb8fd6f14c22b7779b7",
+        "modelSha256": "f5d7587d2e107ea82778d11093786f2d7ef8d55d29b8cf5dcefc22b7e39c6513",
         "skinSha256": "e5c3b4eb03bf81272391393c136ae49b6c538d9c98ed14203de0b08858fbec6a",
-        "triangles": 15916,
-        "parts": 80,
+        "triangles": 14060,
+        "parts": 51,
         "format": "IQM v2",
         "boneCount": 28,
         "animationManifest": "assets/monsters/rat/animation.json",
+        "staticReference": "mod/BrogueDoom/models/monsters/01_rat.obj",
         "dimensions": [
           51.12,
           18.44,
@@ -140,65 +141,68 @@
         ]
       },
       "verification": {
-        "stale": false,
-        "modelSha256": "87512b1684f200d69a64e71697988a5f4f96b7c32852ebb8fd6f14c22b7779b7",
-        "skeletalAnimation": "six-clips-verified",
-        "naturalEncounter": {
-          "seed": 1,
-          "actions": [
-            "N",
-            "N",
-            "N",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "W",
-            "N",
-            "W",
-            "WAIT",
-            "WAIT",
-            "W",
-            "W",
-            "W",
-            "W"
-          ],
-          "matchedTurns": 36,
-          "finalHash": "b7a257f2ef90e55f",
-          "repeatByteIdentical": true,
-          "ratEntityId": 11,
-          "clipsObserved": [
-            "scurry",
-            "bite",
-            "scratch",
-            "recoil",
-            "death"
-          ]
-        },
-        "blenderSourceReopen": "assets/monsters/rat/rat-animated.blend",
-        "individualArtApproval": "pending-user-review",
-        "report": "docs/rat-animation-work.md",
-        "localEvidence": "artifacts/rat-animation/verification.json"
+        "stale": true,
+        "previousAssetVerification": {
+          "stale": false,
+          "modelSha256": "87512b1684f200d69a64e71697988a5f4f96b7c32852ebb8fd6f14c22b7779b7",
+          "skeletalAnimation": "six-clips-verified",
+          "naturalEncounter": {
+            "seed": 1,
+            "actions": [
+              "N",
+              "N",
+              "N",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "W",
+              "N",
+              "W",
+              "WAIT",
+              "WAIT",
+              "W",
+              "W",
+              "W",
+              "W"
+            ],
+            "matchedTurns": 36,
+            "finalHash": "b7a257f2ef90e55f",
+            "repeatByteIdentical": true,
+            "ratEntityId": 11,
+            "clipsObserved": [
+              "scurry",
+              "bite",
+              "scratch",
+              "recoil",
+              "death"
+            ]
+          },
+          "blenderSourceReopen": "assets/monsters/rat/rat-animated.blend",
+          "individualArtApproval": "pending-user-review",
+          "report": "docs/rat-animation-work.md",
+          "localEvidence": "artifacts/rat-animation/verification.json"
+        }
       }
     },
     {
@@ -281,76 +285,127 @@
       "indexId": "BRG-M02",
       "role": "creature-or-construct",
       "art": {
-        "recipe": "humanoid",
+        "recipe": "weighted-kobold",
         "dimensions": [
-          28.0,
-          24.0,
-          38.0
+          22.4004,
+          18.6767,
+          40.6239
         ],
         "traits": [
           "lizard",
           "club",
           "scales"
         ],
-        "status": "authored-static",
+        "status": "authored-skeletal",
         "scaleAuthority": "artistic inference; not Brogue physical dimensions",
         "units": "one Blender unit = one GZDoom map unit; cell = 64",
         "clearance": 0,
-        "runtimeModel": "mod/BrogueDoom/models/monsters/02_kobold.obj",
-        "sourceBlend": "assets/monsters/sources/02_kobold.blend",
-        "triangles": 9244,
-        "parts": 46,
-        "bounds": [
-          [
-            -14.0,
-            -12.0,
-            0.0
-          ],
-          [
-            14.0,
-            12.0,
-            38.0
-          ]
-        ],
-        "objSha256": "323aabb694313aacfa4e1f9ce912bf00932ac6b5d0eff8873dd68ec01d4e1bdd",
-        "skinSha256": "49e898e9875306dd97fe861b83344764945bd2f076b7c987b136b08d8fd5cbe5"
+        "runtimeModel": "mod/BrogueDoom/models/monsters/02_kobold.iqm",
+        "sourceBlend": "assets/monsters/kobold/kobold-animated.blend",
+        "modelSha256": "dcaffcc85177d087f003f4b6f1dc14685894908e48464e07267908ea89f3f07a",
+        "skinSha256": "37a817c0c34c849ef99c0d166beebf2b2efee37510a7933462e2ca83d9b494ad",
+        "triangles": 11340,
+        "parts": 52,
+        "format": "IQM v2",
+        "boneCount": 24,
+        "animationManifest": "assets/monsters/kobold/animation.json",
+        "staticReference": "mod/BrogueDoom/models/monsters/02_kobold.obj"
       },
       "verification": {
-        "stale": false,
-        "objSha256": "323aabb694313aacfa4e1f9ce912bf00932ac6b5d0eff8873dd68ec01d4e1bdd",
-        "skinSha256": "49e898e9875306dd97fe861b83344764945bd2f076b7c987b136b08d8fd5cbe5",
-        "engineGallery": {
-          "status": "captured-and-reviewed-contact-sheet",
-          "before": "artifacts/creature-models/runtime-before/02.png",
-          "after": "artifacts/creature-models/runtime-after/02.png",
-          "scope": "isolated ART01; fixed 64-unit grid and 58-unit reference; not an encounter"
-        },
-        "packagedBytesMatchSource": true,
-        "individualArtApproval": "pending",
-        "skeletalAnimation": "not-authored-static-pose",
-        "blenderSourceReopen": {
-          "kind": 2,
-          "source": "assets/monsters/sources/02_kobold.blend",
-          "parts": 46,
-          "packedImages": 1,
-          "linkedLibraries": 0,
-          "boundsVerified": true
-        },
-        "naturalEncounter": {
-          "status": "captured-and-visually-reviewed",
-          "seed": 1,
-          "depth": 1,
-          "turn": 38,
-          "playerCell": [
-            12,
-            22
+        "stale": true,
+        "previousAssetVerification": {
+          "assetSha256": "f21b13ad8c85bcaadbd994337d584deac09cef9d59889b3abb23bd484eec34d5",
+          "skinSha256": "37a817c0c34c849ef99c0d166beebf2b2efee37510a7933462e2ca83d9b494ad",
+          "naturalEncounter": {
+            "seed": 1,
+            "backend": "OpenGL",
+            "matchedPreviousActionResults": 48,
+            "captures": 55,
+            "finalHash": "69afa7433350e1b6"
+          },
+          "galleryCapturesPerBackend": 19,
+          "galleryBackends": [
+            "Vulkan",
+            "OpenGL"
           ],
-          "creatureCell": [
-            13,
-            23
-          ],
-          "capture": "artifacts/creature-models/normal-visible-kobold.png",
-          "scope": "real player eye; diagnostic camera hides player reference model only; no omniscience or moved creatures"
+          "blenderFreshReopen": true,
+          "relevantTests": 47,
+          "userArtApproval": "pending",
+          "report": "docs/kobold-skin.md",
+          "previousAssetVerification": {
+            "stale": true,
+            "previousAssetVerification": {
+              "stale": true,
+              "previousAssetVerification": {
+                "assetSha256": "2b3d2c559f9daa253f89825b301b7e9a0fcd4f5506adc33037460cf1d52a82aa",
+                "naturalEncounter": {
+                  "seed": 1,
+                  "actions": "N,N,N,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,N,W,WAIT,WAIT,W,W,W,W,E,E,E,E,E,E,E,E,E,E,E,E",
+                  "matchedActions": 48,
+                  "repeatedHeadlessByteIdentical": true,
+                  "finalHash": "69afa7433350e1b6",
+                  "backends": [
+                    "Vulkan",
+                    "OpenGL"
+                  ],
+                  "clipsObserved": [
+                    "walk",
+                    "attack",
+                    "attack_alt",
+                    "hit",
+                    "death"
+                  ],
+                  "captureCountPerBackend": 55
+                },
+                "galleryCapturesPerBackend": 19,
+                "blenderFreshReopen": true,
+                "unitAndRegressionTests": 143,
+                "userArtApproval": "pending",
+                "report": "docs/kobold-animation.md",
+                "previousAssetVerification": {
+                  "stale": true,
+                  "previousAssetVerification": {
+                    "stale": false,
+                    "objSha256": "323aabb694313aacfa4e1f9ce912bf00932ac6b5d0eff8873dd68ec01d4e1bdd",
+                    "skinSha256": "49e898e9875306dd97fe861b83344764945bd2f076b7c987b136b08d8fd5cbe5",
+                    "engineGallery": {
+                      "status": "captured-and-reviewed-contact-sheet",
+                      "before": "artifacts/creature-models/runtime-before/02.png",
+                      "after": "artifacts/creature-models/runtime-after/02.png",
+                      "scope": "isolated ART01; fixed 64-unit grid and 58-unit reference; not an encounter"
+                    },
+                    "packagedBytesMatchSource": true,
+                    "individualArtApproval": "pending",
+                    "skeletalAnimation": "not-authored-static-pose",
+                    "blenderSourceReopen": {
+                      "kind": 2,
+                      "source": "assets/monsters/sources/02_kobold.blend",
+                      "parts": 46,
+                      "packedImages": 1,
+                      "linkedLibraries": 0,
+                      "boundsVerified": true
+                    },
+                    "naturalEncounter": {
+                      "status": "captured-and-visually-reviewed",
+                      "seed": 1,
+                      "depth": 1,
+                      "turn": 38,
+                      "playerCell": [
+                        12,
+                        22
+                      ],
+                      "creatureCell": [
+                        13,
+                        23
+                      ],
+                      "capture": "artifacts/creature-models/normal-visible-kobold.png",
+                      "scope": "real player eye; diagnostic camera hides player reference model only; no omniscience or moved creatures"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -450,60 +505,138 @@
       "indexId": "BRG-M03",
       "role": "creature-or-construct",
       "art": {
-        "recipe": "quadruped",
+        "recipe": "weighted-jackal",
         "dimensions": [
-          52.0,
-          22.0,
-          32.0
+          53.7992,
+          13.4069,
+          33.9777
         ],
         "traits": [
           "canine",
           "jaws",
           "fur"
         ],
-        "status": "authored-static",
+        "status": "authored-skeletal",
         "scaleAuthority": "artistic inference; not Brogue physical dimensions",
         "units": "one Blender unit = one GZDoom map unit; cell = 64",
         "clearance": 0,
-        "runtimeModel": "mod/BrogueDoom/models/monsters/03_jackal.obj",
-        "sourceBlend": "assets/monsters/sources/03_jackal.blend",
-        "triangles": 8676,
-        "parts": 50,
-        "bounds": [
-          [
-            -26.0,
-            -11.0,
-            0.0
-          ],
-          [
-            26.0,
-            11.0,
-            32.0
-          ]
-        ],
-        "objSha256": "4a587e17c33bc46eae9716aede8e007947c2beca989162736e9a704dfd563b4b",
-        "skinSha256": "891b315724d462308b222f6cffd893ec505f85da33b518dcecc6424c4e7415eb"
+        "runtimeModel": "mod/BrogueDoom/models/monsters/03_jackal.iqm",
+        "sourceBlend": "assets/monsters/jackal/jackal-animated.blend",
+        "modelSha256": "6beacf36e3abbbc9505a1a00da7f2ab7a070cec275a467e125668fc4bd6e638d",
+        "skinSha256": "30787078a9268ed400f8757fe02c556d558be2e30afba599be7b5765d70db3ec",
+        "triangles": 9360,
+        "parts": 46,
+        "format": "IQM v2",
+        "boneCount": 25,
+        "animationManifest": "assets/monsters/jackal/animation.json",
+        "staticReference": "mod/BrogueDoom/models/monsters/03_jackal.obj"
       },
       "verification": {
-        "stale": false,
-        "objSha256": "4a587e17c33bc46eae9716aede8e007947c2beca989162736e9a704dfd563b4b",
-        "skinSha256": "891b315724d462308b222f6cffd893ec505f85da33b518dcecc6424c4e7415eb",
-        "engineGallery": {
-          "status": "captured-and-reviewed-contact-sheet",
-          "before": "artifacts/creature-models/runtime-before/03.png",
-          "after": "artifacts/creature-models/runtime-after/03.png",
-          "scope": "isolated ART01; fixed 64-unit grid and 58-unit reference; not an encounter"
-        },
-        "packagedBytesMatchSource": true,
-        "individualArtApproval": "pending",
-        "skeletalAnimation": "not-authored-static-pose",
-        "blenderSourceReopen": {
-          "kind": 3,
-          "source": "assets/monsters/sources/03_jackal.blend",
-          "parts": 50,
-          "packedImages": 1,
-          "linkedLibraries": 0,
-          "boundsVerified": true
+        "stale": true,
+        "previousAssetVerification": {
+          "assetSha256": "2a45f713ee64f7e23a6463ebf55a0c0862fd83f14fc30f425f27a189e1638504",
+          "skinSha256": "30787078a9268ed400f8757fe02c556d558be2e30afba599be7b5765d70db3ec",
+          "naturalEncounter": {
+            "seed": 1,
+            "actions": [
+              "NE",
+              "NE",
+              "NE",
+              "NE",
+              "E",
+              "E",
+              "SE",
+              "SE",
+              "SE",
+              "E",
+              "E",
+              "E",
+              "E",
+              "E",
+              "E",
+              "E",
+              "NE",
+              "E",
+              "E",
+              "E",
+              "E",
+              "E",
+              "E",
+              "E",
+              "NE",
+              "NE",
+              "E",
+              "E",
+              "N",
+              "N",
+              "N",
+              "N",
+              "NW",
+              "NW",
+              "N",
+              "N",
+              "N",
+              "N",
+              "N",
+              "E",
+              "E",
+              "E",
+              "E",
+              "E",
+              "E",
+              "E",
+              "SE",
+              "SE"
+            ],
+            "matchedActions": 48,
+            "headlessRepeatedByteIdentical": true,
+            "finalHash": "6bfdb2d8cf5d78be",
+            "nativeRevisionOffset": 1,
+            "backendsMatched": true,
+            "clipsObserved": [
+              "bite",
+              "death",
+              "maul",
+              "recoil"
+            ],
+            "capturesPerBackend": 55
+          },
+          "galleryCapturesPerBackend": 19,
+          "blenderFreshReopen": true,
+          "regressionTests": 149,
+          "userArtApproval": "pending",
+          "report": "docs/jackal-animation.md",
+          "previousAssetVerification": {
+            "stale": true,
+            "previousAssetVerification": {
+              "stale": true,
+              "previousAssetVerification": {
+                "stale": true,
+                "previousAssetVerification": {
+                  "stale": false,
+                  "objSha256": "4a587e17c33bc46eae9716aede8e007947c2beca989162736e9a704dfd563b4b",
+                  "skinSha256": "891b315724d462308b222f6cffd893ec505f85da33b518dcecc6424c4e7415eb",
+                  "engineGallery": {
+                    "status": "captured-and-reviewed-contact-sheet",
+                    "before": "artifacts/creature-models/runtime-before/03.png",
+                    "after": "artifacts/creature-models/runtime-after/03.png",
+                    "scope": "isolated ART01; fixed 64-unit grid and 58-unit reference; not an encounter"
+                  },
+                  "packagedBytesMatchSource": true,
+                  "individualArtApproval": "pending",
+                  "skeletalAnimation": "not-authored-static-pose",
+                  "blenderSourceReopen": {
+                    "kind": 3,
+                    "source": "assets/monsters/sources/03_jackal.blend",
+                    "parts": 50,
+                    "packedImages": 1,
+                    "linkedLibraries": 0,
+                    "boundsVerified": true
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -812,60 +945,92 @@
       "indexId": "BRG-M05",
       "role": "creature-or-construct",
       "art": {
-        "recipe": "humanoid",
+        "recipe": "weighted-monkey",
         "dimensions": [
-          40.0,
-          27.0,
-          32.0
+          29.49,
+          19.4024,
+          32.2037
         ],
         "traits": [
           "primate",
           "tail",
           "fur"
         ],
-        "status": "authored-static",
+        "status": "authored-skeletal",
         "scaleAuthority": "artistic inference; not Brogue physical dimensions",
         "units": "one Blender unit = one GZDoom map unit; cell = 64",
         "clearance": 0,
-        "runtimeModel": "mod/BrogueDoom/models/monsters/05_monkey.obj",
-        "sourceBlend": "assets/monsters/sources/05_monkey.blend",
-        "triangles": 9512,
-        "parts": 34,
-        "bounds": [
-          [
-            -20.0,
-            -13.5,
-            0.0
-          ],
-          [
-            20.0,
-            13.5,
-            32.0
-          ]
-        ],
-        "objSha256": "da55dcf73ccc76c5f1b94ab832c7aec46fc19fbeb9677fe340c3970efec6b8a7",
-        "skinSha256": "061a675157f1fcf7a15bbc8b5958cd270a2e7065bbe13a9ecaceebc05c3d0faa"
+        "runtimeModel": "mod/BrogueDoom/models/monsters/05_monkey.iqm",
+        "sourceBlend": "assets/monsters/monkey/monkey-animated.blend",
+        "modelSha256": "a8448b4e54d87d99af6d44a25d573f6f574eab92429fa6de068bf4dd16bcc8e6",
+        "skinSha256": "9ecd4f256c32e85a3af9d793b13022926059273d9fb78add8689596010ede5d3",
+        "triangles": 10098,
+        "parts": 15,
+        "format": "IQM v2",
+        "boneCount": 23,
+        "animationManifest": "assets/monsters/monkey/animation.json",
+        "staticReference": "mod/BrogueDoom/models/monsters/05_monkey.obj"
       },
       "verification": {
-        "stale": false,
-        "objSha256": "da55dcf73ccc76c5f1b94ab832c7aec46fc19fbeb9677fe340c3970efec6b8a7",
-        "skinSha256": "061a675157f1fcf7a15bbc8b5958cd270a2e7065bbe13a9ecaceebc05c3d0faa",
-        "engineGallery": {
-          "status": "captured-and-reviewed-contact-sheet",
-          "before": "artifacts/creature-models/runtime-before/05.png",
-          "after": "artifacts/creature-models/runtime-after/05.png",
-          "scope": "isolated ART01; fixed 64-unit grid and 58-unit reference; not an encounter"
-        },
-        "packagedBytesMatchSource": true,
-        "individualArtApproval": "pending",
-        "skeletalAnimation": "not-authored-static-pose",
-        "blenderSourceReopen": {
-          "kind": 5,
-          "source": "assets/monsters/sources/05_monkey.blend",
-          "parts": 34,
-          "packedImages": 1,
-          "linkedLibraries": 0,
-          "boundsVerified": true
+        "stale": true,
+        "previousAssetVerification": {
+          "stale": false,
+          "modelSha256": "a8448b4e54d87d99af6d44a25d573f6f574eab92429fa6de068bf4dd16bcc8e6",
+          "assetSha256": "a8448b4e54d87d99af6d44a25d573f6f574eab92429fa6de068bf4dd16bcc8e6",
+          "skinSha256": "96c27ea6ceefbef1d56e22bd5d08b7d06860d683ce9b2e730d44927b7f03f10a",
+          "captiveModelSha256": "e83a184e0fd7caeb66d39e240c623e5d8e95bc5da0b779955f00b17fb7a1b2c1",
+          "naturalEncounter": {
+            "seed": 2,
+            "backends": [
+              "Vulkan",
+              "OpenGL"
+            ],
+            "releaseTurn": 17,
+            "releaseHash": "891359fb198ed00f",
+            "nextTurnHash": "aed1b77be1e3f7e6",
+            "declineUnchanged": true,
+            "capturesPerBackend": 7
+          },
+          "galleryCapturesPerBackend": 38,
+          "blenderFreshReopen": [
+            "normal",
+            "captive"
+          ],
+          "saveRestoration": [
+            "bound",
+            "free"
+          ],
+          "userArtApproval": "pending",
+          "report": "docs/monkey-animation.md",
+          "localEvidence": "artifacts/monkey-animation/",
+          "previousAssetVerification": {
+            "stale": true,
+            "previousAssetVerification": {
+              "stale": true,
+              "previousAssetVerification": {
+                "stale": false,
+                "objSha256": "da55dcf73ccc76c5f1b94ab832c7aec46fc19fbeb9677fe340c3970efec6b8a7",
+                "skinSha256": "061a675157f1fcf7a15bbc8b5958cd270a2e7065bbe13a9ecaceebc05c3d0faa",
+                "engineGallery": {
+                  "status": "captured-and-reviewed-contact-sheet",
+                  "before": "artifacts/creature-models/runtime-before/05.png",
+                  "after": "artifacts/creature-models/runtime-after/05.png",
+                  "scope": "isolated ART01; fixed 64-unit grid and 58-unit reference; not an encounter"
+                },
+                "packagedBytesMatchSource": true,
+                "individualArtApproval": "pending",
+                "skeletalAnimation": "not-authored-static-pose",
+                "blenderSourceReopen": {
+                  "kind": 5,
+                  "source": "assets/monsters/sources/05_monkey.blend",
+                  "parts": 34,
+                  "packedImages": 1,
+                  "linkedLibraries": 0,
+                  "boundsVerified": true
+                }
+              }
+            }
+          }
         }
       }
     },

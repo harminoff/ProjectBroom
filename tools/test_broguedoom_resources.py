@@ -258,11 +258,15 @@ class BrogueDoomResourceTests(unittest.TestCase):
             self.assertEqual(image.convert("RGB").getextrema(), ((0, 0), (0, 0), (0, 0)))
 
     def test_bridge_deck_has_a_dedicated_original_material(self) -> None:
+        from tools.mapcompiler.compile import COMPILER_VERSION
+        launcher = (ROOT / "tools/BrogueDoomLauncher/Program.cs").read_text(encoding="utf-8")
+        self.assertIn(f"ProjectBroom-v{COMPILER_VERSION}-startup-seed-", launcher)
+
         registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
         declarations = TEXTURES.read_text(encoding="utf-8")
         self.assertEqual(registry["themes"]["BRIDGE"]["floors"], ["BRGBRID"])
         self.assertIn('Flat "BRGBRID", 1254, 1254', declarations)
-        self.assertIn('Patch "BRGBRIDGE", 0, 0', declarations)
+        self.assertIn('Patch "graphics/BRGBRIDGE.png", 0, 0', declarations)
 
     def test_door_and_stair_presentations_are_declared(self) -> None:
         declarations = TEXTURES.read_text(encoding="utf-8")
@@ -424,7 +428,7 @@ class BrogueDoomResourceTests(unittest.TestCase):
     def test_complete_brogue_monster_roster_is_generated(self) -> None:
         catalog = json.loads(MONSTER_CATALOG.read_text(encoding="utf-8"))
         registry = json.loads(MONSTER_REGISTRY.read_text(encoding="utf-8"))
-        self.assertEqual(catalog["bridgeApiVersion"], 17)
+        self.assertEqual(catalog["bridgeApiVersion"], 20)
         self.assertEqual(catalog["count"], 68)
         self.assertEqual(registry["nonPlayerModelCount"], 67)
         self.assertEqual(registry["presentationModelCount"], 68)
@@ -452,7 +456,8 @@ class BrogueDoomResourceTests(unittest.TestCase):
         self.assertIn('#include "models/monsters/MODELDEF.txt"', MODELDEF.read_text(encoding="utf-8"))
         zscript = MONSTER_ZSCRIPT.read_text(encoding="utf-8")
         self.assertIn("class BrogueMonsterProxyBase : Actor", zscript)
-        self.assertEqual(zscript.count(" : BrogueMonsterProxyBase"), 68)
+        self.assertEqual(zscript.count(" : BrogueMonsterProxyBase"), 67)
+        self.assertIn("class BrogueMonsterK01 : BrogueRatSkeletalProxy", zscript)
         self.assertNotIn("+ISMONSTER", zscript)
         frontend = FRONTEND.read_text(encoding="utf-8")
         self.assertIn("std::unordered_map<uint64_t, MonsterProxy>", frontend)
@@ -543,6 +548,24 @@ class BrogueDoomResourceTests(unittest.TestCase):
         self.assertIn("ucm_mapshowall = false", cvars)
         self.assertIn('\"+ucm_mapshowall\", \"false\"', launcher)
 
+    def test_targeting_presentation_keeps_authoritative_preview_visible(self) -> None:
+        frontend = FRONTEND.read_text(encoding="utf-8")
+        targeting = frontend[frontend.index("void RefreshTargeting"):
+                             frontend.index("void CycleVisibleTarget")]
+        for token in ("VisibleTargetPreview = preview", "Clear path", "Out of range",
+                      "Blocked by terrain", "Beyond explored area", "MonsterName",
+                      "ImpactMarker", "TargetBeacon", "0.34, 0.68"):
+            self.assertIn(token, targeting)
+        minimap = frontend[frontend.index("void DrawBrogueMinimap"):
+                           frontend.index("void DrawStatusRail")]
+        for token in ("DrawTargetDirectionCue", "'+', pathColor", "'!', endpointColor",
+                      "'X', endpointColor", "<< TARGET", "TARGET >>"):
+            self.assertIn(token, minimap)
+        submit = frontend[frontend.index("else if (key == KEY_ENTER || key == KEY_MOUSE1)"):
+                          frontend.index("return false;", frontend.index("else if (key == KEY_ENTER || key == KEY_MOUSE1)"))]
+        self.assertIn("if (!CommandConfirmationOpen) CloseWeaponUi();", submit)
+        self.assertNotIn("CloseWeaponUi();\n            SubmitConfirmableCommand", submit)
+
     def test_executable_startup_prepares_random_seed_then_opens_brogue_menu(self) -> None:
         mapinfo = (ROOT / "mod" / "BrogueDoom" / "MAPINFO").read_text(encoding="utf-8")
         menudef = (ROOT / "mod" / "BrogueDoom" / "MENUDEF.txt").read_text(encoding="utf-8")
@@ -577,7 +600,7 @@ class BrogueDoomResourceTests(unittest.TestCase):
         self.assertEqual(94, len(list((ROOT / "mod" / "BrogueDoom" / "graphics" / "fonts" / "menu").glob("BFT*.png"))))
         for token in ("-RandomSeed", "-Menu", "--seed", "FindProjectRoot",
                       "launcher-last.log", "ProgressBarStyle.Marquee", "UpdateProgress",
-                      "GENERATING THE DUNGEON", "BUILDING THE 3D CAMPAIGN",
+                      "GENERATING THE DUNGEON", "PREPARING THE FIRST FLOOR",
                       "VERIFYING THE CAMPAIGN", "CreateNoWindow = true"):
             self.assertIn(token, launcher_source)
         for token in ("Using cached Brogue dungeon", "Using cached UZDoom campaign",
@@ -616,8 +639,8 @@ class BrogueDoomResourceTests(unittest.TestCase):
             "void HudRailText", "DTA_ClipRight, StatusRailWidth()",
             'V_GetFont("BrogueMap")', "DTA_ScaleX, HudScale()",
             "DTA_BilinearFilter, false", "DTA_FillColor, HudColor(color)",
-            "DTA_FillColor, foreground", "const int cellWidth = 5",
-            "const int cellHeight = 8", "const int rowStep = HudSize(23)",
+            "DTA_FillColor, foreground", "const int cellWidth = FullMapOpen",
+            "const int cellHeight = FullMapOpen", "const int rowStep = HudSize(23)",
             "const int footerHeight = HudSize(28)", "cell.displayCodepoint",
             "cell.foregroundRed", "cell.backgroundRed", "DrawChar(twod, font",
         ):
@@ -628,7 +651,9 @@ class BrogueDoomResourceTests(unittest.TestCase):
         self.assertIn('TEMPLATE "BFU%03d"', fontdefs)
         self.assertIn("BrogueMap", fontdefs)
         self.assertIn('TEMPLATE "BFM%03d"', fontdefs)
-        for directory, prefix, expected_size in (("ui", "BFU", (12, 22)), ("map", "BFM", (5, 8))):
+        self.assertIn('V_GetFont("BrogueFullMap")', frontend)
+        self.assertIn('TEMPLATE "BFL%03d"', fontdefs)
+        for directory, prefix, expected_size in (("ui", "BFU", (12, 22)), ("map", "BFM", (5, 8)), ("fullmap", "BFL", (32, 58))):
             glyphs = sorted((ROOT / "mod" / "BrogueDoom" / "graphics" / "fonts" / directory).glob(f"{prefix}*.png"))
             self.assertEqual(94, len(glyphs))
             data = glyphs[0].read_bytes()

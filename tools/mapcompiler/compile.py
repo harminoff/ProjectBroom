@@ -8,6 +8,7 @@ import hashlib
 import json
 import math
 import os
+import re
 import struct
 import sys
 import zipfile
@@ -45,7 +46,7 @@ CONTOUR_DEPTH = 8
 CONTOUR_SHOULDER = 12
 CONTOUR_MIN_RUN = 3
 CONTOUR_RUN_STRIDE = 4
-COMPILER_VERSION = "43"
+COMPILER_VERSION = "45"
 RENDER_MAPPING_PATH = Path(__file__).with_name("terrain_render_map.json")
 THEME_REGISTRY_PATH = PROJECT_ROOT / "assets" / "terrain" / "broguedoom_cave_registry.json"
 RESOURCE_GRAPHICS_DIR = PROJECT_ROOT / "mod" / "BrogueDoom" / "graphics"
@@ -222,6 +223,8 @@ def resource_pack_hash() -> str:
         + sorted((RESOURCE_MOD_DIR / 'models/search').glob('*.obj'))
         + [RESOURCE_MOD_DIR / 'search.zs', RESOURCE_MOD_DIR / 'shaders/search-reveal.fp',
            RESOURCE_MOD_DIR / 'shaders/search-floor-reveal.fp', RESOURCE_GRAPHICS_DIR / 'BRGSEARCH.png']
+        + [RESOURCE_MOD_DIR / 'shaders/shoreline.fp']
+        + sorted((RESOURCE_MOD_DIR / 'shaders/shoreline').glob('*'))
     )
     for path in paths:
         if not path.is_file():
@@ -360,7 +363,10 @@ def validate_model(model: dict[str, Any]) -> tuple[int, int, dict[int, str]]:
         raise CompileError("levels is empty")
     expected_depths = list(range(1, len(levels) + 1))
     actual_depths = [int_field(level.get("depth"), "level.depth") for level in levels if isinstance(level, dict)]
-    if actual_depths != expected_depths:
+    if model.get("currentLevel") is True:
+        if len(actual_depths) != 1 or not 1 <= actual_depths[0] <= 40:
+            raise CompileError("current level must contain one valid depth")
+    elif actual_depths != expected_depths:
         raise CompileError("levels must be ordered and numbered from depth 1")
 
     for level in levels:
@@ -1213,7 +1219,7 @@ def make_sector_text(
     )
 
 
-def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str | None = None, game_seed: Any = "") -> tuple[str, str, dict[str, Any]]:
+def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str | None = None, game_seed: Any = "", *, addressable: bool = False) -> tuple[str, str, dict[str, Any]]:
     depth = int_field(level["depth"], "level.depth")
     map_name = map_name or f"BRG{depth:02d}"
     game_seed = str(game_seed)
@@ -1223,6 +1229,11 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
     # open, valid volumes; Brogue-controlled marker models show closed panels.
     geometry_cells = {position: cell for position, cell in cells.items() if cell_has_geometry(cell)}
     material_layout = build_material_layout(cells, geometry_cells)
+    contour_cells = geometry_cells
+    if addressable:
+        geometry_cells = cells
+        from tools.terrain_presentation import load as load_terrain_presentation
+        presentation_registry = load_terrain_presentation()
     sorted_geometry_positions = sorted(geometry_cells)
     geometry_indices = {position: index for index, position in enumerate(sorted_geometry_positions)}
     geometry_positions_by_index = {index: position for position, index in geometry_indices.items()}
@@ -1287,8 +1298,15 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
                     cell,
                     cells.get(neighbor_pos),
                     cells,
-                    geometry_cells,
+                    contour_cells,
                 )
+                if addressable and (x, y) not in contour_cells:
+                    if neighbor_pos in contour_cells:
+                        points = list(reversed(map_side_points(
+                            height, neighbor_pos[0], neighbor_pos[1], (side_index + 2) % 4,
+                            cells[neighbor_pos], cell, cells, contour_cells)))
+                    else:
+                        points = contoured_side_points(height, x, y, side_index, contoured=False)
                 running_offset = side_texture_offset(x, y, side_index)
                 for start, end in zip(points, points[1:]):
                     add_edge(start, end, cell, cells.get(neighbor_pos), running_offset)
@@ -1393,7 +1411,17 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
         parts.append("}\n")
 
     for sector_index, position in enumerate(sorted_geometry_positions):
-        parts.append(make_sector_text(geometry_cells[position], width, depth, sector_index, game_seed, cells, material_layout))
+        sector_text = make_sector_text(geometry_cells[position], width, depth, sector_index, game_seed, cells, material_layout)
+        if addressable:
+            sector_text = re.sub(r"  id = \d+;", f"  id = {door_sector_tag(*position)};", sector_text)
+            sector_text = sector_text.replace("sector {\n", "sector {\n  user_brogue_role = 0;\n")
+            style = presentation_registry[layer_symbol(geometry_cells[position], floor_layer(geometry_cells[position]))]
+            sector_text = re.sub(r'  texturefloor = "[^"]*";', f'  texturefloor = "{style["floor"]}";', sector_text)
+        parts.append(sector_text)
+
+    if addressable:
+        from tools.mapcompiler.terrain_geometry import reserve_planes
+        parts.append(reserve_planes(sorted_geometry_positions, len(vertices), len(sidedefs)))
 
     up_x = int_field(level["upStairs"]["x"], "upStairs.x")
     up_y = int_field(level["upStairs"]["y"], "upStairs.y")
@@ -1503,8 +1531,8 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
     prop_counts: dict[str, int] = {}
     for cell in geometry_cells.values():
         position = (int(cell["x"]), int(cell["y"]))
-        theme = str(material_layout["theme_by_position"][position])
-        space_kind = str(material_layout["space_by_position"][position])
+        theme = str(material_layout["theme_by_position"].get(position, terrain_theme(cell, cells)))
+        space_kind = str(material_layout["space_by_position"].get(position, "CELL"))
         theme_counts[theme] = theme_counts.get(theme, 0) + 1
         space_counts[space_kind] = space_counts.get(space_kind, 0) + 1
     for prop in props:
@@ -1536,6 +1564,13 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
         raise CompileError("internal sector count mismatch")
     if metadata["vertexCount"] != len(vertex_indices):
         raise CompileError("internal vertex count mismatch")
+    if addressable:
+        controls = len(geometry_cells) * 2
+        metadata.update(primarySectorCount=len(geometry_cells), controlSectorCount=controls)
+        metadata["sectorCount"] += controls
+        metadata["vertexCount"] += controls * 4
+        metadata["lineCount"] += controls * 4
+        metadata["sidedefCount"] += controls * 4
     return map_text, f"{map_name}.wad", metadata
 
 
@@ -1586,7 +1621,9 @@ def zip_info(name: str) -> zipfile.ZipInfo:
     return info
 
 
-def compile_package(input_path: Path, output_path: Path, depth: int | None = None, map_name: str | None = None) -> dict[str, Any]:
+def compile_package(input_path: Path, output_path: Path, depth: int | None = None, map_name: str | None = None, startup: bool = False) -> dict[str, Any]:
+    if startup and (depth is not None or map_name is not None):
+        raise CompileError('startup mode cannot be combined with standalone depth/map-name')
     try:
         model = json.loads(input_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as error:
@@ -1596,7 +1633,7 @@ def compile_package(input_path: Path, output_path: Path, depth: int | None = Non
     width, height, _ = validate_model(model)
     all_levels = model["levels"]
     if depth is None:
-        levels = all_levels
+        levels = all_levels[:1] if startup else all_levels
         map_names = [f"BRG{int(level['depth']):02d}" for level in levels]
     else:
         if depth < 1 or depth > len(all_levels):
@@ -1612,7 +1649,7 @@ def compile_package(input_path: Path, output_path: Path, depth: int | None = Non
     map_files: list[tuple[str, bytes]] = []
     maps_metadata: list[dict[str, Any]] = []
     for level, current_map_name in zip(levels, map_names):
-        textmap, wad_name, metadata = make_map_text(level, width, height, current_map_name, model.get("seed", ""))
+        textmap, wad_name, metadata = make_map_text(level, width, height, current_map_name, model.get("seed", ""), addressable=True)
         wad = make_wad(current_map_name, textmap)
         metadata["wadSha256"] = hashlib.sha256(wad).hexdigest()
         map_files.append((f"maps/{wad_name.lower() if depth is not None else wad_name}", wad))
@@ -1631,8 +1668,15 @@ def compile_package(input_path: Path, output_path: Path, depth: int | None = Non
         "dimensions": {"width": width, "height": height, "cellSize": CELL_SIZE},
         "maps": maps_metadata,
     }
+    if startup:
+        manifest['startupOnly'] = True
     manifest_bytes = canonical_json(manifest)
-    mapinfo_bytes = make_mapinfo([(name, int(level["depth"])) for name, level in zip(map_names, levels)]).encode("utf-8")
+    # Later depths are compiled from live Brogue state by PrepareRestoredMap.
+    # Retain their logical metadata even though their obsolete pre-run WADs
+    # are no longer needed by the source bridge.
+    map_entries = ([(f"BRG{int(level['depth']):02d}", int(level['depth'])) for level in all_levels]
+                   if startup else [(name, int(level['depth'])) for name, level in zip(map_names, levels)])
+    mapinfo_bytes = make_mapinfo(map_entries).encode("utf-8")
 
     entries = sorted(
         map_files + [("MAPINFO", mapinfo_bytes), ("brogue-manifest.json", manifest_bytes)],
@@ -1659,9 +1703,10 @@ def main(argv: Iterable[str] | None = None) -> int:
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--depth", type=int, help="compile only one exported depth as a standalone map")
     parser.add_argument("--map-name", default=None, help="map marker for --depth mode; defaults to MAP01")
+    parser.add_argument('--startup', action='store_true', help='prepare floor one and all depth metadata for the runtime bridge')
     args = parser.parse_args(argv)
     try:
-        manifest = compile_package(args.input, args.output, args.depth, args.map_name)
+        manifest = compile_package(args.input, args.output, args.depth, args.map_name, args.startup)
     except CompileError as error:
         print(f"mapcompiler: {error}", file=sys.stderr)
         return 2

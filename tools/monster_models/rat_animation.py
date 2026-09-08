@@ -14,28 +14,7 @@ ROOT=rat.ROOT
 add,sub,mul,unit,cross=rat.add,rat.sub,rat.mul,rat.unit,rat.cross
 
 
-def qmul(a,b):
-    x,y,z,w=a; X,Y,Z,W=b
-    return (w*X+x*W+y*Z-z*Y,w*Y-x*Z+y*W+z*X,w*Z+x*Y-y*X+z*W,w*W-x*X-y*Y-z*Z)
-
-
-def inverse(q): return (-q[0],-q[1],-q[2],q[3])
-
-
-def rotate(q,v):
-    t=mul(cross(q[:3],v),2)
-    return add(v,add(mul(t,q[3]),cross(q[:3],t)))
-
-
-def axis(axis,angle): return (*mul(unit(axis),math.sin(angle/2)),math.cos(angle/2))
-
-
-def between(a,b):
-    a,b=unit(a),unit(b)
-    xyz=cross(a,b); w=1+sum(x*y for x,y in zip(a,b))
-    if w<1e-8: return axis(cross(a,(0,1,0)),math.pi)
-    n=math.sqrt(sum(x*x for x in xyz)+w*w)
-    return (*mul(xyz,1/n),w/n)
+from .skeletal import Rig, qmul, inverse, rotate, axis, between, assemble, sample_clips
 
 
 def skeleton():
@@ -61,6 +40,7 @@ def skeleton():
 
 
 BONES,REST=skeleton()
+RIG=Rig(BONES,REST)
 IDS={n:i for i,(n,p,v) in enumerate(BONES)}
 CLIPS=[('idle',40,20,True),('scurry',16,40,True),('bite',14,35,False),
        ('scratch',16,35,False),('recoil',10,35,False),('death',24,35,False)]
@@ -184,50 +164,19 @@ def pose(name,t):
     return [(*add(local,displacement[i]),*rotation[i],1,1,1) for i,(n,p,local) in enumerate(BONES)]
 
 
-def matrices(frame):
-    out=[]
-    for i,(name,parent,rest) in enumerate(BONES):
-        loc,q=frame[i][:3],frame[i][3:7]
-        if parent>=0:
-            pl,pq=out[parent]; loc=add(pl,rotate(pq,loc)); q=qmul(pq,q)
-        out.append((loc,q))
-    return out
+def matrices(frame): return RIG.matrices(frame)
 
 
-def deform(vertices,influences,frame):
-    transforms=matrices(frame)
-    shifted=[sub(loc,rotate(q,REST[i])) for i,(loc,q) in enumerate(transforms)]
-    return [tuple(sum(w*(rotate(transforms[b][1],v)[c]+shifted[b][c]) for b,w in weights) for c in range(3))
-            for v,weights in zip(vertices,influences)]
+def deform(vertices,influences,frame): return RIG.deform(vertices,influences,frame)
 
 
 def geometry():
-    parts=build_parts(); vertices=[]; normals=[]; uv=[]; triangles=[]; influences=[]
-    for part in parts:
-        base=len(vertices)
-        vertices.extend(part.vertices); normals.extend(part.normals()); uv.extend(part.uv)
-        triangles.extend(tuple(base+i for i in tri) for tri in part.triangles())
-        influences.extend(weights(part,v,u) for v,u in zip(part.vertices,part.uv))
-    return parts,vertices,normals,uv,triangles,influences
+    from .connected_skin import attach
+    return assemble(attach('rat',build_parts(),weights),weights)
 
 
 def animation_data(vertices,influences):
-    clips=[]; bounds=[]
-    for name,count,fps,loop in CLIPS:
-        frames=[]
-        for f in range(count):
-            frame=pose(name,f/(count if loop else count-1))
-            deformed=deform(vertices,influences,frame)
-            # Ground the whole skeleton, never independently clamp mesh points.
-            lift=max(0,.07-min(v[2] for v in deformed))
-            row=list(frame[0]); row[2]+=lift; frame[0]=tuple(row)
-            low=[min(v[i] for v in deformed)+(lift if i==2 else 0) for i in range(3)]
-            high=[max(v[i] for v in deformed)+(lift if i==2 else 0) for i in range(3)]
-            radius=math.sqrt(sum(max(abs(a),abs(b))**2 for a,b in zip(low,high)))
-            bounds.append((*low,*high,math.hypot(max(abs(low[0]),abs(high[0])),max(abs(low[1]),abs(high[1]))),radius))
-            frames.append(frame)
-        clips.append({'name':name,'fps':fps,'loop':loop,'frames':frames})
-    return clips,bounds
+    return sample_clips(RIG,CLIPS,pose,vertices,influences)
 
 
 def build():

@@ -66,3 +66,11 @@ identical; in-game captures are the framing authority.
 
 See [`hero-weapon-models.md`](../../docs/hero-weapon-models.md) for integration,
 verification, authority boundaries, and remaining limits.
+
+## Hand anatomy revision
+
+The shared glove generator uses a flattened, bevelled palm, a staggered
+knuckle arc, individually proportioned fingers and an opposing thumb. Left
+hands mirror the anatomy and winding. Throw poses uncurl the fingers while
+retaining the existing arm and weapon motion. See the
+[research and renderer evidence](../../docs/hand-model-refinement.md).

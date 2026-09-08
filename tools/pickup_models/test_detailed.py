@@ -7,6 +7,21 @@ from . import generate as catalog, detailed
 
 
 class PickupModelTests(unittest.TestCase):
+    def test_thrown_weapon_tips_use_positive_x_forward(self):
+        # Native projectile yaw assumes +X after the pickup's authoring rotation.
+        # Check the actual dart/javelin geometry, including every compass heading.
+        weapon = next(c for c in catalog.CATEGORIES if c.symbol == 'WEAPON')
+        for kind, tip_name, tail_name in ((12, 'Dart point', 'Flight vane'),
+                                           (13, 'Dart point', 'Flight vane'),
+                                           (14, 'Leaf spear point', 'Continuous ash pole')):
+            parts = detailed.build_parts(weapon, kind)
+            tip = max(v[0] for p in parts if p.name == tip_name for v in p.vertices)
+            tail = min(v[0] for p in parts if p.name == tail_name for v in p.vertices)
+            self.assertGreater(tip, tail)
+            for dx, dy in ((1,0), (1,1), (0,1), (-1,1), (-1,0), (-1,-1), (0,-1), (1,-1)):
+                yaw = math.atan2(dy, dx)
+                self.assertGreater((tip-tail)*(math.cos(yaw)*dx + math.sin(yaw)*dy), 0)
+
     def test_all_105_assets_are_deterministic_grounded_and_valid(self):
         registry=json.loads(catalog.REGISTRY_PATH.read_text())
         self.assertEqual(len(registry['models']),105)

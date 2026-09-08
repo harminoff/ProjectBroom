@@ -76,6 +76,20 @@ class EngineSourceTests(unittest.TestCase):
     def test_rejects_changed_binary_and_frontend(self):
         for name in ("src/gzdoom-bridge/brogue_bridge_frontend.cpp",
                      "src/gzdoom-bridge/brogue_bridge_frontend.h",
+              "src/gzdoom-bridge/brogue_persistence_frontend.inc",
+              "src/gzdoom-bridge/brogue_terrain_geometry_fixture.inc",
+              "src/gzdoom-bridge/brogue_terrain_frontend.inc",
+              "src/gzdoom-bridge/brogue_shoreline_frontend.inc",
+              "src/gzdoom-bridge/shoreline.h",
+              "src/gzdoom-bridge/terrain_reconciler.h",
+              "src/gzdoom-bridge/terrain_animation.h",
+              "src/gzdoom-bridge/brogue_terrain_animation.inc",
+              "src/gzdoom-bridge/brogue_terrain_animation_probe.inc",
+              "src/gzdoom-bridge/brogue_shoreline_probe.inc",
+              "src/gzdoom-bridge/terrain_presentation.generated.h",
+              "src/gzdoom-bridge/skeletal_presentation.generated.h",
+              "src/gzdoom-bridge/enemy_movement.h",
+              "src/gzdoom-bridge/held_movement.h",
                      "src/brogue-mapgen/src/brogue/BrogueBridge.h"):
             path = self.root / name
             path.parent.mkdir(parents=True, exist_ok=True)
@@ -87,6 +101,12 @@ class EngineSourceTests(unittest.TestCase):
         receipt = build_record(self.root, engine)
         (engine / "project-broom-build.json").write_text(json.dumps(receipt))
         validate_build(self.root, engine)
+        for name in ("shoreline.h", "brogue_shoreline_frontend.inc", "brogue_shoreline_probe.inc"):
+            source = self.root / "src/gzdoom-bridge" / name
+            source.write_text("changed shoreline")
+            with self.assertRaises(ValueError):
+                validate_build(self.root, engine)
+            source.write_text("fixture")
         (engine / "uzdoom.exe").write_bytes(b"changed")
         with self.assertRaises(ValueError):
             validate_build(self.root, engine)

@@ -40,6 +40,8 @@ def generate(source: Path, output: Path) -> None:
     variants = {
         "ui": ("BFU", (12, 22)),
         "map": ("BFM", (5, 8)),
+        # Fullscreen maps must not magnify the minimap's prefiltered 5x8 pixels.
+        "fullmap": ("BFL", (32, 58)),
     }
     for directory, (prefix, size) in variants.items():
         destination = output / directory

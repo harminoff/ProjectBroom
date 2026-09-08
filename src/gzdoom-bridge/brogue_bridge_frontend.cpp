@@ -10,15 +10,26 @@
 #include "BrogueBridge.h"
 #include "c_dispatch.h"
 #include "c_bind.h"
+#include "c_console.h"
 #include "i_time.h"
 #include "menustate.h"
+#include "menu.h"
 #include "c_cvars.h"
 #include "d_event.h"
 #include "i_system.h"
 #include "doomstat.h"
 #include "g_levellocals.h"
+#include "g_mapinfo.h"
 #include "keydef.h"
 #include "p_local.h"
+#include "p_3dfloors.h"
+#include "terrain_reconciler.h"
+#include "terrain_animation.h"
+#include "skeletal_presentation.generated.h"
+#include "enemy_movement.h"
+#include "held_movement.h"
+#include <chrono>
+#include "terrain_presentation.generated.h"
 #include "p_pspr.h"
 #include "g_statusbar/sbar.h"
 #include "v_video.h"
@@ -34,6 +45,9 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
+#include <filesystem>
+#include <cstdlib>
+#include <cerrno>
 
 // Pinned UZDoom 5.0.0 presentation API, implemented in p_actionfunctions.cpp.
 // This is an engine-private adapter, never part of BrogueBridge.h.
@@ -41,22 +55,31 @@ void SetAnimationNative(AActor *, int, double, int, int, int, int, int);
 
 #ifdef _WIN32
 #include <windows.h>
+#include <commdlg.h>
 #undef DrawText
 #endif
 
-CVAR(Int, brg_seed, 1, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+CVAR(String, brg_seed, "1", CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Int, brg_monster_anim_tics, 5, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Int, brg_rat_walk_tics, 28, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+CVAR(Int, brg_enemy_walk_tics, 28, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Bool, brg_monster_omniscience, false, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Int, brg_compare_pid, 0, 0)
 CVAR(Float, brg_hud_scale, 1.0, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Bool, brg_debug, false, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Int, brg_fx_quality, 1, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+CVAR(Bool, brg_shorelines, true, 0) // Presentation comparison switch; not gameplay state.
 CVAR(Int, brg_search_bindings_version, 0, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Bool, brg_projection_smoke, false, 0)
 
+CVAR(String, brg_map_compiler, "", 0)
+CVAR(String, brg_map_compiler_root, "", 0)
+CVAR(String, brg_load_path, "", 0)
+CVAR(String, brg_save_root, "", 0)
+
 namespace
 {
+using BridgePersistence = BrogueBridgeResult (*)(const BrogueBridgePersistenceRequest *, BrogueBridgePersistenceState *);
 using BridgeInitialize = BrogueBridgeResult (*)();
 using BridgeStartGame = BrogueBridgeResult (*)(uint64_t);
 using BridgeGetState = BrogueBridgeResult (*)(BrogueBridgeState *);
@@ -76,6 +99,7 @@ struct BridgeApi
 	HMODULE module = nullptr;
 #endif
 	BridgeInitialize initialize = nullptr;
+    BridgePersistence persistence = nullptr;
 	BridgeStartGame startGame = nullptr;
 	BridgeGetState getState = nullptr;
 	BridgeGetMonsterCatalog getMonsterCatalog = nullptr;
@@ -91,6 +115,16 @@ struct BridgeApi
 };
 
 BridgeApi Api;
+BrogueBridgePersistenceState Persistence{};
+std::string RestoredMapPath;
+bool LoadingSave = false;
+bool FinalizeLoad = false;
+bool PendingDepthMap = false;
+uint64_t NextMapRetry = 0;
+int LastLoadTic = -1;
+bool ConfigureWorkingRecording();
+void ConfigureSearchBindings();
+bool PrepareRestoredMap();
 BrogueBridgeState State{};
 BrogueBridgeMonsterCatalog MonsterCatalog{};
 bool Loaded = false;
@@ -185,6 +219,8 @@ struct MonsterProxy
 	int maxHp = 0;
 	BrogueBridgeVisibility visibility = BROGUE_VISIBILITY_HIDDEN;
 	bool ally = false;
+	bool captive = false;
+	int attachedPoseTics = 0;
 	AActor *actor = nullptr;
 	DVector3 moveFrom{};
 	DVector3 moveTo{};
@@ -205,9 +241,11 @@ int LastLoggedMonsterCount = -1;
 int LastLoggedDirectMonsterCount = -1;
 BrogueBridgeAction BufferedAction = BROGUE_ACTION_WAIT;
 bool HasBufferedAction = false;
+HeldMovement ForwardHold;
 
 enum class WeaponUiMode { None, Equip, ThrowSelect, ThrowTarget, StaffTarget, WandTarget, Look };
 WeaponUiMode WeaponUi = WeaponUiMode::None;
+bool FullMapOpen = false;
 int WeaponSelection = 0;
 uint64_t ThrowItemId = 0;
 uint64_t TargetPreviewRevision = 0;
@@ -215,7 +253,11 @@ int TargetPreviewDepth = 0;
 int TargetX = 0;
 int TargetY = 0;
 AActor *TargetMarker = nullptr;
+AActor *TargetBeacon = nullptr;
+AActor *ImpactMarker = nullptr;
 std::vector<AActor *> PathMarkers;
+BrogueBridgeTargetPreview VisibleTargetPreview{};
+bool HasVisibleTargetPreview = false;
 BrogueBridgeLookResult LookResult{};
 
 struct ProjectileAnimation
@@ -256,14 +298,30 @@ bool ComparisonKeysDown[9]{};
 void CloseWeaponUi();
 void BeginTargeting(uint64_t itemId);
 void RefreshTargeting();
+const char *MonsterName(int kind);
+FString CellDescription(const BrogueBridgeCellState *cell);
 
 constexpr int BrogueMapWidth = 79;
+
+// Geometry proof is activated only by the explicit developer fixture command.
+double TerrainFixtureSupport[79 * 29] = {};
+bool TerrainFixtureActive = false;
+void TickTerrainGeometryFixture();
+void TickTerrainSyncProbe();
+extern bool TerrainReady;
+double TerrainSupport(int x, int y);
+bool ReconcileTerrain();
+void ClearTerrainBindings();
 
 DVector3 BrogueCellToWorld(int x, int y)
 {
 	const double worldX = x * 64.0 + 32.0;
 	const double worldY = (28 - y) * 64.0 + 32.0;
 	double worldZ = 0.0;
+	if (TerrainFixtureActive && x >= 0 && x < 79 && y >= 0 && y < 29)
+		return DVector3(worldX, worldY, TerrainFixtureSupport[y * 79 + x]);
+	if (TerrainReady && x >= 0 && x < 79 && y >= 0 && y < 29)
+		return DVector3(worldX, worldY, TerrainSupport(x, y));
 	if (primaryLevel != nullptr)
 	{
 		sector_t *sector = primaryLevel->PointInSector(worldX, worldY);
@@ -332,6 +390,7 @@ bool LoadBridge()
 		return false;
 	}
 
+	Api.persistence = GetBridgeProc<BridgePersistence>(Api.module, "brogue_bridge_persistence");
 	Api.initialize = GetBridgeProc<BridgeInitialize>(Api.module, "brogue_bridge_initialize");
 	Api.startGame = GetBridgeProc<BridgeStartGame>(Api.module, "brogue_bridge_start_game");
 	Api.getState = GetBridgeProc<BridgeGetState>(Api.module, "brogue_bridge_get_state");
@@ -350,7 +409,7 @@ bool LoadBridge()
 	return false;
 #endif
 
-	if (Api.initialize == nullptr || Api.startGame == nullptr || Api.getState == nullptr
+	if (Api.persistence == nullptr || Api.initialize == nullptr || Api.startGame == nullptr || Api.getState == nullptr
 		|| Api.getMonsterCatalog == nullptr
 		|| Api.performAction == nullptr || Api.performCommand == nullptr || Api.previewTarget == nullptr || Api.previewThrow == nullptr || Api.previewStaff == nullptr || Api.previewWand == nullptr
 		|| Api.inspectCell == nullptr
@@ -581,10 +640,22 @@ void ApplyMonsterVisibility(MonsterProxy &proxy)
 	else proxy.actor->flags &= ~MF_FRIENDLY;
 }
 
+// Pinned Brogue MB_CAPTIVE (Fl(8)) is already copied in API v20. This reads
+// returned state only; freeing still goes through playerMoves/freeCaptive.
+constexpr uint64_t CopiedCaptiveFlag = uint64_t(1) << 8;
+FString MonsterPresentationClassName(const BrogueBridgeCreatureState &creature)
+{
+	const int kind = creature.presentationKind >= 0 ? creature.presentationKind : creature.kind;
+	FString name = MonsterClassName(kind);
+	if (kind == creature.kind && (creature.bookkeepingFlags & CopiedCaptiveFlag))
+		for (const auto &profile : SkeletalPresentations)
+			if (name.Compare(profile.actorClass) == 0 && *profile.captiveClass) return FString(profile.captiveClass);
+	return name;
+}
+
 AActor *SpawnMonsterProxy(const BrogueBridgeCreatureState &creature)
 {
-	const int visualKind = creature.presentationKind >= 0 ? creature.presentationKind : creature.kind;
-	const FString className = MonsterClassName(visualKind);
+	const FString className = MonsterPresentationClassName(creature);
 	const DVector3 world = BrogueCellToWorld(creature.x, creature.y);
 	AActor *actor = Spawn(primaryLevel, className.GetChars(), world, NO_REPLACE);
 	if (actor == nullptr)
@@ -597,7 +668,7 @@ AActor *SpawnMonsterProxy(const BrogueBridgeCreatureState &creature)
 	return actor;
 }
 
-enum RatClip { RatIdle, RatScurry, RatBite, RatScratch, RatRecoil, RatDeath };
+enum RatClip { RatIdle, RatScurry, RatBite, RatScratch, RatRecoil, RatDeath, CaptiveIdle, CaptiveReleased };
 
 bool IsSkeletalRat(const MonsterProxy &proxy)
 {
@@ -605,18 +676,56 @@ bool IsSkeletalRat(const MonsterProxy &proxy)
 		&& (proxy.actor->flags9 & MF9_DECOUPLEDANIMATIONS);
 }
 
-void PlayRatClip(MonsterProxy &proxy, RatClip clip, int duration = 0, double rate = -1)
+const SkeletalPresentation *FindSkeletalPresentation(const MonsterProxy &proxy)
 {
-	if (!IsSkeletalRat(proxy) || (proxy.ratDeathTics > 0 && clip != RatDeath)) return;
-	static const char *names[] = {"idle", "scurry", "bite", "scratch", "recoil", "death"};
-	proxy.ratClip = clip;
-	proxy.ratPoseTics = duration;
-	// SAF_LOOP=2. IQM interpolation affects the mesh, never authoritative XY.
-	SetAnimationNative(proxy.actor, FName(names[clip]).GetIndex(), rate, -1, -1, -1, 2,
-		clip <= RatScurry ? 2 : 0);
-	if (brg_debug && clip != RatIdle)
-		Printf("Brogue rat animation: id=%llu clip=%s tics=%d rate=%.2f\n",
-			(unsigned long long)proxy.id, names[clip], duration, rate);
+    if (proxy.actor == nullptr || !(proxy.actor->flags9 & MF9_DECOUPLEDANIMATIONS)) return nullptr;
+    for (const auto &profile : SkeletalPresentations)
+        if (proxy.actor->GetClass()->TypeName == FName(profile.actorClass)
+            || (*profile.captiveClass && proxy.actor->GetClass()->TypeName == FName(profile.captiveClass))) return &profile;
+    return nullptr;
+}
+
+bool IsSkeletalMonster(const MonsterProxy &proxy) { return FindSkeletalPresentation(proxy) != nullptr; }
+
+void PlayMonsterClip(MonsterProxy &proxy, RatClip clip, int duration = 0, double rate = -1)
+{
+    const auto *profile = FindSkeletalPresentation(proxy);
+    if (!profile || (proxy.ratDeathTics > 0 && clip != RatDeath)) return;
+    const char *name = clip == CaptiveIdle ? profile->captiveClip
+        : clip == CaptiveReleased ? profile->releaseClip : profile->clips[clip];
+    if (!*name) return;
+    proxy.ratClip = clip;
+    if (proxy.actor->GetClass()->FindSymbol(FName("PresentationClip"), true))
+        proxy.actor->IntVar(FName("PresentationClip")) = clip;
+    proxy.ratPoseTics = duration > 0 ? duration : clip == CaptiveIdle ? 0
+        : clip == CaptiveReleased ? profile->releaseTics : profile->durations[clip];
+    SetAnimationNative(proxy.actor, FName(name).GetIndex(), rate, -1, -1, -1, 2,
+        clip <= RatScurry || clip == CaptiveIdle ? 2 : 0);
+    if (brg_debug && clip != RatIdle)
+        Printf("Brogue skeletal animation: id=%llu class=%s clip=%s tics=%d rate=%.2f\n",
+            (unsigned long long)proxy.id, profile->actorClass, name, proxy.ratPoseTics, rate);
+}
+
+// The camera can turn freely while Brogue is waiting for the next intent.
+// A conservative projected body bounds test includes partially visible enemies.
+bool EnemyInCamera(const DVector3 &point, int visibility)
+{
+    if (visibility != BROGUE_VISIBILITY_DIRECT) return false;
+    auto &player = players[consoleplayer];
+    AActor *camera = player.camera ? player.camera : player.mo;
+    if (!camera) return false;
+    DVector3 eye = camera->Pos();
+    eye.Z = camera == player.mo ? player.viewz : eye.Z + camera->CameraHeight;
+    const DVector3 delta = point + DVector3(0, 0, 24) - eye;
+    const double yaw = camera->Angles.Yaw.Radians(), pitch = camera->Angles.Pitch.Radians();
+    const double flat = delta.X * std::cos(yaw) + delta.Y * std::sin(yaw);
+    const double right = -delta.X * std::sin(yaw) + delta.Y * std::cos(yaw);
+    const double forward = flat * std::cos(pitch) - delta.Z * std::sin(pitch);
+    const double up = flat * std::sin(pitch) + delta.Z * std::cos(pitch);
+    const double aspect = twod ? double(twod->GetWidth()) / (std::max)(1, twod->GetHeight()) : 4.0 / 3;
+    const double horizontal = std::tan((std::clamp)(double(player.FOV), 5.0, 170.0) * 3.141592653589793 / 360)
+        * (std::max)(1.0, aspect / (4.0 / 3));
+    return EnemyMovement::InView(forward, right, up, horizontal, horizontal / aspect);
 }
 
 void BeginMonsterEventAnimations(const BrogueBridgeTurnResult *result)
@@ -632,14 +741,14 @@ void BeginMonsterEventAnimations(const BrogueBridgeTurnResult *result)
 			{
 				MonsterProxy &proxy = found->second;
 				proxy.pulseTics = 4;
-				if (IsSkeletalRat(proxy))
+				if (IsSkeletalMonster(proxy))
 				{
 					const double dx = event.toX - event.fromX, dy = event.fromY - event.toY;
 					if (dx != 0 || dy != 0) proxy.actor->Angles.Yaw = DAngle::fromDeg(std::atan2(dy, dx) * 57.29577951308232);
 					// No attack-verb field exists in the copied event. Both clips are
 					// cosmetic variants; do not parse messages or roll Brogue RNG.
 					const bool scratch = (event.sequence & 1) != 0;
-					PlayRatClip(proxy, scratch ? RatScratch : RatBite, scratch ? 18 : 16);
+					PlayMonsterClip(proxy, scratch ? RatScratch : RatBite);
 				}
 			}
 		}
@@ -649,7 +758,7 @@ void BeginMonsterEventAnimations(const BrogueBridgeTurnResult *result)
 			if (found != MonsterProxies.end())
 			{
 				found->second.pulseTics = 5;
-				PlayRatClip(found->second, RatRecoil, 12);
+				PlayMonsterClip(found->second, RatRecoil);
 			}
 		}
 		else if (event.type == BROGUE_EVENT_ENTITY_DIED)
@@ -658,7 +767,7 @@ void BeginMonsterEventAnimations(const BrogueBridgeTurnResult *result)
 			if (found != MonsterProxies.end())
 			{
 				found->second.deathTics = 7; // preserve existing input pacing
-				if (IsSkeletalRat(found->second))
+				if (IsSkeletalMonster(found->second))
 				{
 					if (event.eventFlags & BROGUE_EVENT_FLAG_ADMINISTRATIVE)
 					{
@@ -669,8 +778,8 @@ void BeginMonsterEventAnimations(const BrogueBridgeTurnResult *result)
 					}
 					else
 					{
-						PlayRatClip(found->second, RatDeath, 26);
-						found->second.ratDeathTics = 26;
+						PlayMonsterClip(found->second, RatDeath);
+						found->second.ratDeathTics = found->second.ratPoseTics;
 					}
 				}
 			}
@@ -702,44 +811,44 @@ void SyncMonsters(const BrogueBridgeTurnResult *result = nullptr)
 		auto inserted = MonsterProxies.emplace(creature.id, MonsterProxy{});
 		MonsterProxy &proxy = inserted.first->second;
 		if (inserted.second) proxy.id = creature.id;
-		if (proxy.actor != nullptr && proxy.presentationKind != visualKind)
+		const bool captive = (creature.bookkeepingFlags & CopiedCaptiveFlag) != 0;
+		const bool observedRelease = !inserted.second && result != nullptr && proxy.captive && !captive
+			&& creature.isAlly && visualKind == creature.kind && proxy.visibility == BROGUE_VISIBILITY_DIRECT
+			&& creature.visibility == BROGUE_VISIBILITY_DIRECT && proxy.presentationKind == visualKind;
+		const FString desiredClass = MonsterPresentationClassName(creature);
+		if (proxy.actor != nullptr && proxy.actor->GetClass()->TypeName != FName(desiredClass.GetChars()))
 		{
 			if (!(proxy.actor->ObjectFlags & OF_EuthanizeMe)) proxy.actor->Destroy();
 			proxy.actor = nullptr;
 			proxy.ratClip = -1;
 			proxy.ratPoseTics = proxy.ratDeathTics = 0;
 		}
-		if (proxy.actor == nullptr) proxy.actor = SpawnMonsterProxy(creature);
+		if (proxy.actor == nullptr) { proxy.actor = SpawnMonsterProxy(creature); proxy.attachedPoseTics = 2; }
 		if (!inserted.second && proxy.actor != nullptr && (proxy.x != creature.x || proxy.y != creature.y))
 		{
 			proxy.moveFrom = proxy.actor->Pos();
 			proxy.moveTo = BrogueCellToWorld(creature.x, creature.y);
-			proxy.moveTotal = proxy.moveTics = (std::max)(1, int(brg_monster_anim_tics));
-			const double dx = proxy.moveTo.X - proxy.moveFrom.X;
-			const double dy = proxy.moveTo.Y - proxy.moveFrom.Y;
-			const double distance = std::hypot(dx, dy);
-			// Only a visible, ordinary rat step gets the longer presentation.
-			// Unseen creatures retain existing pacing; do not animate a teleport
-			// as a long walk. Brogue's destination and turn count are untouched.
-			const bool ratWalk = IsSkeletalRat(proxy)
-				&& (creature.visibility != BROGUE_VISIBILITY_HIDDEN || brg_monster_omniscience)
-				&& distance > 0 && distance <= 64.0 * std::sqrt(2.0) + .01;
-			if (ratWalk)
-			{
-				const int tileTics = (std::clamp)(int(brg_rat_walk_tics), 5, 70);
-				proxy.moveTotal = proxy.moveTics = (std::max)(proxy.moveTotal,
-					int(std::ceil(tileTics * distance / 64.0)));
-			}
-			proxy.ratTravelStartTic = ratWalk ? primaryLevel->time : -1;
-			// Two cycles per cardinal tile, with the same cadence diagonally.
-			proxy.ratScurryRate = 16.0 * 35 / proxy.moveTotal * (ratWalk ? 2.0 * distance / 64.0 : 1.0);
-			// A new authoritative step supersedes any leftover cosmetic recoil
-			// or attack pose, so the feet move from the start of the crossing.
-			if (ratWalk || proxy.ratPoseTics == 0 || proxy.ratClip == RatScurry)
-				PlayRatClip(proxy, RatScurry, proxy.moveTotal, proxy.ratScurryRate);
-			if (ratWalk && brg_debug)
-				Printf("Brogue rat travel: id=%llu distance=%.2f tics=%d rate=%.2f\n",
-					(unsigned long long)proxy.id, distance, proxy.moveTotal, proxy.ratScurryRate);
+            const double dx = proxy.moveTo.X - proxy.moveFrom.X;
+            const double dy = proxy.moveTo.Y - proxy.moveFrom.Y;
+            const double distance = std::hypot(dx, dy);
+            const bool observed = proxy.visibility == BROGUE_VISIBILITY_DIRECT
+                && creature.visibility == BROGUE_VISIBILITY_DIRECT
+                && (EnemyInCamera(proxy.moveFrom, creature.visibility) || EnemyInCamera(proxy.moveTo, creature.visibility));
+            const int tileTics = IsSkeletalRat(proxy) ? int(brg_rat_walk_tics) : int(brg_enemy_walk_tics);
+            proxy.moveTotal = proxy.moveTics = EnemyMovement::Duration(observed, distance, tileTics);
+            proxy.ratTravelStartTic = proxy.moveTics ? primaryLevel->time : -1;
+            if (proxy.moveTics > 0) {
+                const auto *profile = FindSkeletalPresentation(proxy);
+                proxy.ratScurryRate = (profile ? profile->walkFrames : 16.0) * 35 / proxy.moveTotal
+                    * (IsSkeletalRat(proxy) ? 2.0 : 1.0) * distance / 64;
+                PlayMonsterClip(proxy, RatScurry, proxy.moveTotal, proxy.ratScurryRate);
+            } else {
+                proxy.actor->SetOrigin(proxy.moveTo, false);
+                proxy.ratPoseTics = 0;
+                PlayMonsterClip(proxy, proxy.captive ? CaptiveIdle : RatIdle);
+            }
+            if (brg_debug) Printf("Brogue enemy movement: id=%llu kind=%d observed=%d distance=%.2f tics=%d\n",
+                (unsigned long long)proxy.id, visualKind, observed, distance, proxy.moveTotal);
 			if (dx != 0.0 || dy != 0.0)
 				proxy.actor->Angles.Yaw = DAngle::fromDeg(std::atan2(dy, dx) * 57.29577951308232);
 		}
@@ -751,8 +860,16 @@ void SyncMonsters(const BrogueBridgeTurnResult *result = nullptr)
 		proxy.maxHp = creature.maxHp;
 		proxy.visibility = creature.visibility;
 		proxy.ally = creature.isAlly != 0;
+		proxy.captive = captive;
 		if (proxy.actor != nullptr) proxy.actor->health = creature.hp;
 		ApplyMonsterVisibility(proxy);
+		const auto *profile = FindSkeletalPresentation(proxy);
+		if (profile && *profile->captiveClip)
+		{
+			if (captive && visualKind == creature.kind && proxy.ratClip != CaptiveIdle)
+				PlayMonsterClip(proxy, CaptiveIdle);
+			else if (observedRelease) PlayMonsterClip(proxy, CaptiveReleased);
+		}
 	}
 
 	for (auto iterator = MonsterProxies.begin(); iterator != MonsterProxies.end();)
@@ -786,6 +903,15 @@ bool TickMonsterAnimations()
 			iterator = MonsterProxies.erase(iterator);
 			continue;
 		}
+        if (!EnemyInCamera(proxy.actor->Pos(), proxy.visibility)
+            && !(proxy.moveTics > 0 && EnemyInCamera(proxy.moveTo, proxy.visibility))) {
+            if (proxy.moveTics > 0 && brg_debug)
+                Printf("Brogue enemy settled off-camera: id=%llu remaining=%d\n",
+                    (unsigned long long)proxy.id, proxy.moveTics);
+            if (proxy.moveTics > 0) proxy.actor->SetOrigin(proxy.moveTo, false);
+            proxy.moveTics = proxy.pulseTics = proxy.deathTics = 0;
+            if (proxy.ratClip == RatScurry) { proxy.ratPoseTics = 0; PlayMonsterClip(proxy, RatIdle); }
+        }
 		if (proxy.moveTics > 0)
 		{
 			--proxy.moveTics;
@@ -793,7 +919,7 @@ bool TickMonsterAnimations()
 			const DVector3 position = proxy.moveFrom + (proxy.moveTo - proxy.moveFrom) * fraction;
 			proxy.actor->SetOrigin(position, false);
 			if (proxy.moveTics == 0 && proxy.ratTravelStartTic >= 0 && brg_debug)
-				Printf("Brogue rat arrived: id=%llu elapsed=%d expected=%d\n",
+				Printf("Brogue enemy arrived: id=%llu elapsed=%d expected=%d\n",
 					(unsigned long long)proxy.id, primaryLevel->time - proxy.ratTravelStartTic, proxy.moveTotal);
 			active = active || proxy.moveTics > 0;
 		}
@@ -801,15 +927,15 @@ bool TickMonsterAnimations()
 		{
 			--proxy.pulseTics;
 			const double scale = 1.0 + (proxy.pulseTics % 2 ? .12 : 0.0);
-			if (!IsSkeletalRat(proxy)) proxy.actor->Scale.X = proxy.actor->Scale.Y = scale;
+			if (!IsSkeletalMonster(proxy)) proxy.actor->Scale.X = proxy.actor->Scale.Y = scale;
 			active = active || proxy.pulseTics > 0;
 		}
 		else proxy.actor->Scale.X = proxy.actor->Scale.Y = 1.0;
 		if (proxy.deathTics > 0)
 		{
 			--proxy.deathTics;
-			if (!IsSkeletalRat(proxy)) proxy.actor->Scale.Y = (std::max)(.08, proxy.deathTics / 7.0);
-			active = true;
+			if (!IsSkeletalMonster(proxy)) proxy.actor->Scale.Y = (std::max)(.08, proxy.deathTics / 7.0);
+			active = active || proxy.deathTics > 0;
 			if (proxy.deathTics == 0 && proxy.ratDeathTics == 0)
 			{
 				proxy.actor->Destroy();
@@ -828,12 +954,19 @@ bool TickMonsterAnimations()
 				continue;
 			}
 		}
+		if (proxy.attachedPoseTics > 0 && --proxy.attachedPoseTics == 0 && proxy.ratClip >= 0)
+			PlayMonsterClip(proxy, RatClip(proxy.ratClip), proxy.ratPoseTics);
 		if (proxy.ratPoseTics > 0) --proxy.ratPoseTics;
-		if (IsSkeletalRat(proxy) && proxy.ratPoseTics == 0 && proxy.ratDeathTics == 0)
+		if (IsSkeletalMonster(proxy) && proxy.ratPoseTics == 0 && proxy.ratDeathTics == 0)
 		{
-			if (proxy.moveTics > 0 && proxy.ratClip != RatScurry)
-				PlayRatClip(proxy, RatScurry, proxy.moveTics, proxy.ratScurryRate);
-			else if (proxy.moveTics == 0 && proxy.ratClip != RatIdle) PlayRatClip(proxy, RatIdle);
+			if (proxy.captive && FindSkeletalPresentation(proxy)
+				&& proxy.actor->GetClass()->TypeName == FName(FindSkeletalPresentation(proxy)->captiveClass))
+			{
+				if (proxy.ratClip != CaptiveIdle) PlayMonsterClip(proxy, CaptiveIdle);
+			}
+			else if (proxy.moveTics > 0 && proxy.ratClip != RatScurry)
+				PlayMonsterClip(proxy, RatScurry, proxy.moveTics, proxy.ratScurryRate);
+			else if (proxy.moveTics == 0 && proxy.ratClip != RatIdle) PlayMonsterClip(proxy, RatIdle);
 		}
 		++iterator;
 	}
@@ -933,6 +1066,8 @@ const BrogueBridgeCellState *FindStateCell(int x, int y)
 	return cell->x == x && cell->y == y ? cell : nullptr;
 }
 
+#include "brogue_terrain_frontend.inc"
+
 CellFxKind CellEffectKind(const BrogueBridgeCellState &cell)
 {
 	if (cell.isFire) return CellFxKind::Fire;
@@ -962,6 +1097,7 @@ bool CellEffectSampled(const BrogueBridgeCellState &cell, CellFxKind kind, int q
 
 void SyncCellEffects()
 {
+	if (TerrainReady) return;
 	if (!Started || primaryLevel == nullptr) return;
 	if (CellFxProxyLevel != primaryLevel)
 	{
@@ -1060,6 +1196,7 @@ void SpawnBridgeEventEffects(const BrogueBridgeTurnResult &result)
 
 void SyncDoorMarkers()
 {
+	if (TerrainReady) return;
 	if (primaryLevel == nullptr) return;
 	PClassActor *type = PClass::FindActor("BrogueDoorMarker");
 	if (type == nullptr)
@@ -1163,6 +1300,7 @@ void SyncDoorMarkers()
 
 void SyncTerrainFeatures()
 {
+	if (TerrainReady) return;
 	if (primaryLevel == nullptr || primaryLevel->levelnum != State.depth) return;
 	if (FeatureProxyLevel != primaryLevel) {
 		FeatureProxies.clear(); FeatureProxyLevel = primaryLevel;
@@ -1350,6 +1488,9 @@ void ClearProjectile()
 // its virtual table has already been cleared.
 void DetachLevelPresentation()
 {
+	FullMapOpen = false;
+	ClearTerrainBindings();
+	TerrainFixtureActive = false;
 	ItemProxies.clear();
 	MonsterProxies.clear();
 	DoorProxies.clear();
@@ -1358,7 +1499,11 @@ void DetachLevelPresentation()
 	FallShaftLevel = nullptr;
 	Projectile = {};
 	TargetMarker = nullptr;
+	TargetBeacon = nullptr;
+	ImpactMarker = nullptr;
 	PathMarkers.clear();
+	VisibleTargetPreview = {};
+	HasVisibleTargetPreview = false;
 	ItemProxyLevel = nullptr;
 	MonsterProxyLevel = nullptr;
 	DoorProxyLevel = nullptr;
@@ -1372,6 +1517,7 @@ void DetachLevelPresentation()
 	LastLoggedDirectMonsterCount = -1;
 	HasBufferedAction = false;
 	BufferedAction = BROGUE_ACTION_WAIT;
+	ForwardHold.cancel();
 	WeaponUi = WeaponUiMode::None;
 	ThrowItemId = 0;
 	LookResult = {};
@@ -1390,6 +1536,17 @@ void DetachLevelPresentation()
 	CommandConfirmationCommand = {};
 	CommandConfirmationPrompt = "";
 	CommandConfirmationSource = "";
+}
+
+void OrientProjectile()
+{
+	if (Projectile.actor == nullptr || Projectile.point >= Projectile.points.size()) return;
+	const DVector3 direction = Projectile.points[Projectile.point] - Projectile.actor->Pos();
+	if (direction.X == 0 && direction.Y == 0) return;
+	// Pickup meshes have their tip along local +X. Follow the copied Brogue
+	// trajectory, never the camera (which may turn independently during flight).
+	Projectile.actor->Angles.Yaw = DAngle::fromDeg(std::atan2(direction.Y, direction.X) * 57.29577951308232);
+	Projectile.actor->PrevAngles.Yaw = Projectile.actor->Angles.Yaw;
 }
 
 void BeginProjectileAnimation(const BrogueBridgeTurnResult &result)
@@ -1418,6 +1575,7 @@ void BeginProjectileAnimation(const BrogueBridgeTurnResult &result)
 	Projectile.points = std::move(points);
 	Projectile.point = 1;
 	Projectile.tics = 2;
+	OrientProjectile();
 	if (first->itemCategory == 2 && first->itemKind >= 0 && first->itemKind < 15)
 	{
 		VisualThrowKind = first->itemKind;
@@ -1430,6 +1588,7 @@ void BeginProjectileAnimation(const BrogueBridgeTurnResult &result)
 bool TickProjectile()
 {
 	if (Projectile.actor == nullptr || Projectile.point >= Projectile.points.size()) return false;
+	OrientProjectile();
 	const DVector3 from = Projectile.actor->Pos();
 	const DVector3 to = Projectile.points[Projectile.point];
 	Projectile.actor->SetOrigin(from + (to - from) * 0.5, false);
@@ -1478,6 +1637,11 @@ bool SyncLevelEvent(const BrogueBridgeTurnResult &result)
 		FString destination;
 		destination.Format("BRG%02d", State.depth);
 		if (brg_debug) Printf("Brogue bridge: authoritative level change to %s.\n", destination.GetChars());
+		if (!PrepareRestoredMap()) {
+            PendingDepthMap = true;
+            Printf("Map preparation failed. Gameplay is paused; retrying. Save and Exit remains available.\n");
+            return true;
+        }
 		DetachLevelPresentation();
 		primaryLevel->ChangeLevel(destination.GetChars(), 0, 16 /* CHANGELEVEL_NOINTERMISSION */);
 		return true;
@@ -1498,7 +1662,12 @@ bool EnsureStarted()
 		return false;
 	}
 
-	const uint64_t seed = uint64_t((std::max)(1, int(brg_seed)));
+	if (!ConfigureWorkingRecording()) return false;
+    char *seedEnd = nullptr;
+    const char *seedText = brg_seed;
+    errno = 0;
+    const uint64_t seed = strtoull(seedText, &seedEnd, 10);
+    if (!seed || !seedEnd || *seedEnd || errno == ERANGE || seedText[0] == '-') return false;
 	result = Api.startGame(seed);
 	BrogueBridgeResult stateResult = Api.getState(&State);
 	if (result != BROGUE_BRIDGE_OK || stateResult != BROGUE_BRIDGE_OK)
@@ -1517,17 +1686,8 @@ bool EnsureStarted()
 	}
 
 	Started = true;
-	// defaultbind deliberately preserves Doom's saved +reload binding. Migrate
-	// that obsolete default once, without replacing a customized search binding.
-	if (int(brg_search_bindings_version) < 1) {
-		const char *binding = Bindings.GetBind("R");
-		if (binding && !strcmp(binding, "+reload")
-			&& Bindings.GetKeysForCommand("brg_search").Size() == 0) {
-			Bindings.DoBind("R", "brg_search");
-			Printf(PRINT_NONOTIFY, "Project Broom: migrated R from reload to Search.\n");
-		}
-		brg_search_bindings_version = 1;
-	}
+    ReconcileTerrain();
+    ConfigureSearchBindings();
 	Api.getMonsterCatalog(&MonsterCatalog);
 	if (brg_debug)
 		Printf("Brogue bridge: attached seed=%llu depth=%d levelSeed=%llu player=%d,%d.\n",
@@ -1545,6 +1705,7 @@ bool EnsureStarted()
 BrogueBridgeResult PerformCommandResult(BrogueBridgeCommand command, const char *source,
 	BrogueBridgeTurnResult &result, bool reportFailure)
 {
+	if (PendingDepthMap || LoadingSave || FinalizeLoad) return BROGUE_BRIDGE_INVALID_STATE;
 	if (!EnsureStarted()) return BROGUE_BRIDGE_GAME_NOT_STARTED;
 	if (command.expectedRevision == 0) command.expectedRevision = State.revision;
 
@@ -1574,6 +1735,8 @@ BrogueBridgeResult PerformCommandResult(BrogueBridgeCommand command, const char 
 	if (SyncLevelEvent(result)) return BROGUE_BRIDGE_OK;
 
 	SyncTerrainEvents(result);
+	ObserveTerrainAnimationEvents(result);
+    ReconcileTerrain();
 	SyncTerrainFeatures();
 	SyncDoorMarkers();
 	SyncCellEffects();
@@ -1710,6 +1873,8 @@ bool SubmitConfirmableCommand(BrogueBridgeCommand command, const char *source)
 		CommandConfirmationCommand = command;
 		CommandConfirmationPrompt = result.prompt;
 		CommandConfirmationSource = source;
+		if (brg_debug) Printf("Brogue confirmation: pending=%llu current=%llu prompt=%s\n",
+			(unsigned long long)command.expectedRevision, (unsigned long long)State.revision, result.prompt);
 		return true;
 	}
 	if (bridgeResult != BROGUE_BRIDGE_OK)
@@ -2103,10 +2268,34 @@ void ClearTargetMarkers()
 {
 	if (TargetMarker != nullptr && !(TargetMarker->ObjectFlags & OF_EuthanizeMe)) TargetMarker->Destroy();
 	TargetMarker = nullptr;
+	if (TargetBeacon != nullptr && !(TargetBeacon->ObjectFlags & OF_EuthanizeMe)) TargetBeacon->Destroy();
+	TargetBeacon = nullptr;
+	if (ImpactMarker != nullptr && !(ImpactMarker->ObjectFlags & OF_EuthanizeMe)) ImpactMarker->Destroy();
+	ImpactMarker = nullptr;
 	for (AActor *actor : PathMarkers)
 		if (actor != nullptr && !(actor->ObjectFlags & OF_EuthanizeMe)) actor->Destroy();
 	PathMarkers.clear();
 }
+
+void AnimateTargetingPresentation()
+{
+	if (!HasVisibleTargetPreview) return;
+	const double pulse = 0.5 + 0.5 * std::sin(double(gametic) * 0.24);
+	if (TargetMarker != nullptr && !(TargetMarker->ObjectFlags & OF_EuthanizeMe)) {
+		const double base = VisibleTargetPreview.reachesTarget ? 1.7 : 1.38;
+		TargetMarker->Scale.X = TargetMarker->Scale.Y = base + pulse * 0.22;
+	}
+	if (TargetBeacon != nullptr && !(TargetBeacon->ObjectFlags & OF_EuthanizeMe)) {
+		const double base = VisibleTargetPreview.reachesTarget ? 0.92 : 0.72;
+		TargetBeacon->Scale.X = TargetBeacon->Scale.Y = base + pulse * 0.28;
+		TargetBeacon->Alpha = (VisibleTargetPreview.reachesTarget ? 0.62 : 0.32) + pulse * 0.2;
+	}
+	if (ImpactMarker != nullptr && !(ImpactMarker->ObjectFlags & OF_EuthanizeMe))
+		ImpactMarker->Alpha = 0.72 + (1.0 - pulse) * 0.25;
+}
+
+FString TargetHeading, TargetDetail, UiNotice;
+uint64_t UiNoticeUntil = 0;
 
 void CloseWeaponUi()
 {
@@ -2116,7 +2305,9 @@ void CloseWeaponUi()
 	LastVisualWeaponId = 0;
 	ClearCommandConfirmation();
 	ClearTargetMarkers();
-	C_MidPrint(nullptr, nullptr);
+	VisibleTargetPreview = {};
+	HasVisibleTargetPreview = false;
+	TargetHeading = TargetDetail = UiNotice = "";
 }
 
 void ShowWeaponSelector(bool throwing)
@@ -2125,11 +2316,12 @@ void ShowWeaponSelector(bool throwing)
 	const int count = int(weapons.size()) + (throwing ? 0 : 1);
 	if (count <= 0)
 	{
-		C_MidPrint(nullptr, throwing ? "No throwable weapons." : "Empty hands");
+		UiNotice = throwing ? "No throwable weapons." : "Empty hands";
+		UiNoticeUntil = GetTickCount64() + 3500;
 		return;
 	}
 	WeaponSelection = (WeaponSelection % count + count) % count;
-	C_MidPrint(nullptr, nullptr);
+	TargetHeading = TargetDetail = UiNotice = "";
 }
 
 void BeginTargeting(uint64_t itemId)
@@ -2177,40 +2369,105 @@ void RefreshTargeting()
     const auto result = PreviewTarget(preview);
     ClearTargetMarkers();
     if (result != BROGUE_BRIDGE_OK) { CloseWeaponUi(); ClearCommandConfirmation(); return; }
+    VisibleTargetPreview = preview;
+    HasVisibleTargetPreview = true;
     TargetPreviewRevision = preview.aim.revision;
     const auto &aim = preview.aim;
     if (primaryLevel != nullptr)
     {
+        const DVector3 endpoint = BrogueCellToWorld(TargetX, TargetY);
         TargetMarker = Spawn(primaryLevel, "BrogueWeaponTargetMarker",
-            BrogueCellToWorld(TargetX, TargetY) + DVector3(0, 0, 4), NO_REPLACE);
+            endpoint + DVector3(0, 0, 5), NO_REPLACE);
         if (TargetMarker) {
-            TargetMarker->RenderStyle = STYLE_Translucent;
-            TargetMarker->Alpha = preview.reachesTarget ? 1.0 : 0.35;
+            TargetMarker->RenderStyle = preview.reachesTarget ? STYLE_Add : STYLE_Translucent;
+            TargetMarker->Alpha = preview.reachesTarget ? 1.0 : 0.62;
+            TargetMarker->Scale.X = TargetMarker->Scale.Y = preview.reachesTarget ? 1.8 : 1.45;
         }
+
+        // A second, elevated marker makes the selected cell readable above
+        // floor clutter and behind low scenery. It is purely presentational.
+        TargetBeacon = Spawn(primaryLevel, "BrogueWeaponTargetMarker",
+            endpoint + DVector3(0, 0, 34), NO_REPLACE);
+        if (TargetBeacon) {
+            TargetBeacon->RenderStyle = preview.reachesTarget ? STYLE_Add : STYLE_Translucent;
+            TargetBeacon->Alpha = preview.reachesTarget ? 0.78 : 0.42;
+            TargetBeacon->Scale.X = TargetBeacon->Scale.Y = preview.reachesTarget ? 1.05 : 0.8;
+        }
+
+        DVector3 previous = BrogueCellToWorld(preview.origin.x, preview.origin.y);
         for (uint32_t index = 0; index < aim.pathCount; ++index)
         {
-            AActor *marker = Spawn(primaryLevel, "BrogueWeaponPathMarker",
-                BrogueCellToWorld(aim.path[index].x, aim.path[index].y) + DVector3(0, 0, 3), NO_REPLACE);
-            if (marker != nullptr) PathMarkers.push_back(marker);
+            const DVector3 next = BrogueCellToWorld(aim.path[index].x, aim.path[index].y);
+            const DVector3 delta = next - previous;
+            const double yaw = std::atan2(delta.Y, delta.X) * 57.29577951308232;
+            // Two elongated diamonds per Brogue guide step read as one
+            // directional ribbon while remaining depth-tested world geometry.
+            for (double fraction : {0.34, 0.68}) {
+                AActor *marker = Spawn(primaryLevel, "BrogueWeaponPathMarker",
+                    previous + delta * fraction + DVector3(0, 0, 5), NO_REPLACE);
+                if (marker != nullptr) {
+                    marker->Angles.Yaw = DAngle::fromDeg(yaw);
+                    marker->Scale.X = 1.65;
+                    marker->Scale.Y = 0.48;
+                    marker->Alpha = preview.reachesTarget ? 0.78 : 0.48;
+                    PathMarkers.push_back(marker);
+                }
+            }
+            previous = next;
+        }
+
+        // When the selected cell is not reached, mark the actual end of the
+        // copied Brogue guide separately from the requested endpoint.
+        if (!preview.reachesTarget && aim.pathCount > 0) {
+            const auto &impact = aim.path[aim.pathCount - 1];
+            ImpactMarker = Spawn(primaryLevel, "BrogueWeaponTargetMarker",
+                BrogueCellToWorld(impact.x, impact.y) + DVector3(0, 0, 6), NO_REPLACE);
+            if (ImpactMarker) {
+                ImpactMarker->RenderStyle = STYLE_Add;
+                ImpactMarker->Alpha = 0.92;
+                ImpactMarker->Scale.X = ImpactMarker->Scale.Y = 1.15;
+            }
         }
     }
-    const char *end = "Guide reaches selected cell";
+    const char *end = preview.reachesTarget ? "Clear path" : "Path stops early";
     switch (preview.termination) {
-    case BROGUE_GUIDE_RANGE: end = "Guide ends at range limit"; break;
-    case BROGUE_GUIDE_MAP_EDGE: end = "Guide ends at map edge"; break;
-    case BROGUE_GUIDE_UNEXPLORED: end = "Guide continues into unexplored area"; break;
-    case BROGUE_GUIDE_TERRAIN: end = "Guide stops at terrain"; break;
-    case BROGUE_GUIDE_CREATURE: end = "Guide stops at creature"; break;
+    case BROGUE_GUIDE_RANGE: end = preview.reachesTarget ? "At range limit" : "Out of range"; break;
+    case BROGUE_GUIDE_MAP_EDGE: end = "Map edge"; break;
+    case BROGUE_GUIDE_UNEXPLORED: end = "Beyond explored area"; break;
+    case BROGUE_GUIDE_TERRAIN: end = "Blocked by terrain"; break;
+    case BROGUE_GUIDE_CREATURE: end = preview.reachesTarget ? "Target creature reached" : "Creature in path"; break;
     default: break;
     }
     const BrogueBridgeItemState *item = FindItem(ThrowItemId);
-    FString range, text;
+    FString subject;
+    uint64_t targetId = 0;
+    for (uint32_t index = 0; index < preview.targetCount; ++index) {
+        if (preview.targets[index].location.x == TargetX && preview.targets[index].location.y == TargetY) {
+            targetId = preview.targets[index].id;
+            break;
+        }
+    }
+    for (uint32_t index = 0; index < State.creatureCount && targetId; ++index) {
+        if (State.creatures[index].id == targetId) {
+            subject = MonsterName(State.creatures[index].presentationKind);
+            break;
+        }
+    }
+    if (subject.IsEmpty()) {
+        const BrogueBridgeCellState *cell = FindStateCell(TargetX, TargetY);
+        subject = cell && (cell->discovered || cell->currentlyVisible || cell->magicMapped)
+            ? CellDescription(cell) : FString("Unexplored cell");
+    }
+    const int distance = (std::max)(std::abs(TargetX - preview.origin.x), std::abs(TargetY - preview.origin.y));
+    FString range;
     if (preview.hasRange) range.Format("Range %d", aim.maxDistance);
-    else range = "No range supplied";
-    text.Format("%s %s -> %d,%d\n%s | %s\n%s%sMove cursor, Tab target, click/Enter confirm, Esc cancel",
-        device ? "USE" : "THROW", item ? item->displayName : "item", TargetX, TargetY,
-        range.GetChars(), aim.valid ? end : "Choose a different cell", aim.message, aim.message[0] ? "\n" : "");
-    C_MidPrint(nullptr, text.GetChars());
+    else range = "Unlimited range";
+    TargetHeading.Format("%s %s", device ? "Use" : "Throw", item ? item->displayName : "item");
+    TargetDetail.Format("%s  |  %d cell%s  |  %s  |  %s  |  Cell %d, %d%s%s",
+        subject.GetChars(), distance, distance == 1 ? "" : "s", range.GetChars(),
+        aim.valid ? end : "Invalid target", TargetX, TargetY,
+        aim.message[0] ? "\n" : "", aim.message);
+    UiNotice = "";
 }
 
 void CycleVisibleTarget()
@@ -2422,8 +2679,10 @@ bool HandleWeaponUiInput(const event_t *event)
             command.targetX = preview.aim.targetX;
             command.targetY = preview.aim.targetY;
             command.confirmed = 0;
-            CloseWeaponUi();
             SubmitConfirmableCommand(command, wand ? "wand-ui" : staff ? "staff-ui" : "throw-ui");
+            // Keep the copied guide visible while Brogue's confirmation is
+            // pending. Successful or rejected final submissions close it.
+            if (!CommandConfirmationOpen) CloseWeaponUi();
             return true;
         }
 		else
@@ -2538,8 +2797,8 @@ void TickThrowSmoke()
         BeginTargeting(State.player.equippedWeaponId); RefreshTargeting();
     } else if (ThrowSmokePhase == 3 || ThrowSmokePhase == 7) {
         HandleWeaponUiInput(&event);
-        if (!CommandConfirmationOpen || State.revision != ThrowSmokeRevision || !PathMarkers.empty() || TargetMarker) {
-            Printf("THROW_UI FAIL: approval/cleanup.\n"); ThrowSmokePhase = 0; return;
+		if (!CommandConfirmationOpen || State.revision != ThrowSmokeRevision || PathMarkers.empty() || !TargetMarker) {
+			Printf("THROW_UI FAIL: approval/preview persistence.\n"); ThrowSmokePhase = 0; return;
         }
     } else if (ThrowSmokePhase == 5) {
         ClearCommandConfirmation(); CloseWeaponUi(); SyncWeaponView();
@@ -2589,6 +2848,10 @@ int StatusRailWidth()
 
 FFont *GetBrogueMapFont()
 {
+	if (FullMapOpen) {
+		static FFont *fullMapFont = V_GetFont("BrogueFullMap");
+		if (fullMapFont != nullptr) return fullMapFont;
+	}
 	if (BrogueMapFont == nullptr) BrogueMapFont = V_GetFont("BrogueMap");
 	return BrogueMapFont != nullptr ? BrogueMapFont : SmallFont;
 }
@@ -2654,7 +2917,8 @@ FString CellDescription(const BrogueBridgeCellState *cell)
 	if (cell->isDeepWater) return "Deep water";
 	if (cell->isMud) return "Mud";
 	if (cell->isLiquid) return "Water";
-	if (cell->isChasm) return "Chasm";
+	if (cell->appearance.flags & BROGUE_APPEARANCE_HOLE) return "Chasm";
+	if (cell->isChasm) return "Chasm edge";
 	if (cell->isSolid) return "Cavern wall";
 	return "Cavern floor";
 }
@@ -2664,15 +2928,24 @@ void DrawBrogueMinimap()
 	// This is a compact rendering of Brogue's own final cell appearance, not a
 	// second semantic color scheme. The bridge obtains these glyphs and colors
 	// from getCellAppearance(), including memory, lighting and entities.
-	const int cellWidth = 5;
-	const int cellHeight = 8;
+	const int rail = StatusRailWidth();
+	const int availableWidth = (std::max)(1, twod->GetWidth() - rail - 24);
+	const int availableHeight = (std::max)(1, twod->GetHeight() - HudSize(54));
+	const int cellWidth = FullMapOpen ? (std::max)(1, (std::min)(availableWidth / State.width,
+		availableHeight * 5 / (State.height * 8))) : 5;
+	const int cellHeight = FullMapOpen ? (std::max)(1, cellWidth * 8 / 5) : 8;
 	const int mapWidth = State.width * cellWidth;
 	const int mapHeight = State.height * cellHeight;
 	const int margin = 9;
 	const int pad = 4;
 	const int frame = 2;
-	const int originX = twod->GetWidth() - mapWidth - margin;
-	const int originY = 8;
+	const int originX = FullMapOpen ? rail + (twod->GetWidth() - rail - mapWidth) / 2
+		: twod->GetWidth() - mapWidth - margin;
+	const int originY = FullMapOpen ? HudSize(24) + (availableHeight - mapHeight) / 2 : 8;
+	if (FullMapOpen) {
+		Dim(twod, 0x00000000, 1.f, rail, 0, twod->GetWidth() - rail, twod->GetHeight());
+		HudText(CR_GOLD, rail + HudSize(12), HudSize(8), "MAP  |  M / Esc Close");
+	}
 	const int frameX = originX - pad;
 	const int frameY = originY - pad;
 	const int frameWidth = mapWidth + pad * 2;
@@ -2714,8 +2987,60 @@ void DrawBrogueMinimap()
 		else if (glyph == 0x1f780) glyph = '<';
 		else if (glyph < 33 || glyph > 126) glyph = '?';
 		DrawChar(twod, font, CR_UNTRANSLATED, x, y, int(glyph),
+			DTA_DestWidth, cellWidth, DTA_DestHeight, cellHeight,
 			DTA_FillColor, foreground, DTA_BilinearFilter, false, TAG_DONE);
 	}
+
+	// Overlay only the knowledge-limited cells copied by Brogue's target
+	// preview. Symbols retain meaning when color discrimination is limited.
+	const bool targeting = WeaponUi == WeaponUiMode::ThrowTarget || IsDeviceTargeting();
+	if (targeting && HasVisibleTargetPreview) {
+		const PalEntry pathColor(255, 88, 184, 224);
+		const PalEntry endpointColor = VisibleTargetPreview.reachesTarget
+			? PalEntry(255, 244, 204, 74) : PalEntry(255, 224, 92, 82);
+		auto marker = [&](int cellX, int cellY, int glyph, const PalEntry &color, float alpha) {
+			if (cellX < 0 || cellY < 0 || cellX >= State.width || cellY >= State.height) return;
+			const int x = originX + cellX * cellWidth;
+			const int y = originY + cellY * cellHeight;
+			Dim(twod, color, alpha, x, y, cellWidth, cellHeight);
+			DrawChar(twod, font, CR_UNTRANSLATED, x, y, glyph,
+				DTA_DestWidth, cellWidth, DTA_DestHeight, cellHeight,
+				DTA_FillColor, color, DTA_BilinearFilter, false, TAG_DONE);
+		};
+		for (uint32_t index = 0; index < VisibleTargetPreview.aim.pathCount; ++index)
+			marker(VisibleTargetPreview.aim.path[index].x, VisibleTargetPreview.aim.path[index].y,
+				'+', pathColor, .36f);
+		if (!VisibleTargetPreview.reachesTarget && VisibleTargetPreview.aim.pathCount > 0) {
+			const auto &impact = VisibleTargetPreview.aim.path[VisibleTargetPreview.aim.pathCount - 1];
+			marker(impact.x, impact.y, '!', endpointColor, .62f);
+		}
+		marker(TargetX, TargetY, 'X', endpointColor, .72f);
+	}
+}
+
+void DrawTargetDirectionCue()
+{
+	const bool targeting = WeaponUi == WeaponUiMode::ThrowTarget || IsDeviceTargeting();
+	if (!targeting || !HasVisibleTargetPreview || twod == nullptr || FullMapOpen) return;
+	const DVector3 target = BrogueCellToWorld(TargetX, TargetY);
+	if (EnemyInCamera(target, BROGUE_VISIBILITY_DIRECT)) return;
+	auto &player = players[consoleplayer];
+	AActor *camera = player.camera ? player.camera : player.mo;
+	if (camera == nullptr) return;
+	const DVector3 delta = target - camera->Pos();
+	const double yaw = camera->Angles.Yaw.Radians();
+	const double forward = delta.X * std::cos(yaw) + delta.Y * std::sin(yaw);
+	const double right = -delta.X * std::sin(yaw) + delta.Y * std::cos(yaw);
+	const bool left = std::atan2(right, forward) < 0;
+	const char *label = left ? "<< TARGET" : "TARGET >>";
+	const int width = HudSize(116), height = HudSize(30);
+	const int x = left ? StatusRailWidth() + HudSize(10) : twod->GetWidth() - width - HudSize(10);
+	const int y = twod->GetHeight() / 2 - height / 2;
+	Dim(twod, 0x00000000, .86f, x, y, width, height);
+	Dim(twod, VisibleTargetPreview.reachesTarget ? PalEntry(255, 145, 109, 36)
+		: PalEntry(255, 168, 54, 48), 1.f, x, y, width, 2);
+	HudText(VisibleTargetPreview.reachesTarget ? CR_GOLD : CR_RED,
+		x + HudSize(8), y + HudSize(6), label);
 }
 
 void DrawStatusRail()
@@ -2836,6 +3161,55 @@ void DrawWrappedText(int color, int x, int &y, const char *text, int width, int 
 		HudText(color, x, y, line.c_str());
 		y += rowStep;
 	}
+}
+
+// Persistent targeting belongs to the HUD, not Doom's timed red midprint.
+// Layout uses local whole-pixel scaling so large HUD settings also fit small windows.
+void DrawIntentPanel()
+{
+    const bool targeting = WeaponUi == WeaponUiMode::ThrowTarget || IsDeviceTargeting();
+    if ((!targeting || TargetHeading.IsEmpty()) && (UiNotice.IsEmpty() || GetTickCount64() >= UiNoticeUntil)) return;
+    if (CommandConfirmationOpen || ApplyUi != ApplyUiMode::None || State.player.gameHasEnded) return;
+    const char *title = targeting ? TargetHeading.GetChars() : UiNotice.GetChars();
+    const char *detail = targeting ? TargetDetail.GetChars() : "";
+    const char *controls = targeting ? "Move cursor  |  Tab: target  |  Click / Enter: confirm  |  Esc: cancel" : "";
+    const int screenWidth = twod->GetWidth(), screenHeight = twod->GetHeight();
+    int scale = int(HudScale());
+    std::vector<std::string> heading, body, help;
+    int width, inset, row, height;
+    for (;;) {
+        width = (std::min)(screenWidth - 24, 920 * scale);
+        inset = 12 * scale; row = 23 * scale;
+        const int wrapWidth = int((width - inset * 2) * HudScale() / scale);
+        heading = WrapTextPixels(title, wrapWidth, 32);
+        body = WrapTextPixels(detail, wrapWidth, 32);
+        help = WrapTextPixels(controls, wrapWidth, 32);
+        height = int(heading.size() + body.size() + help.size()) * row + inset * 2 + (targeting ? 12 * scale : 0);
+        if (scale <= 1 || height < screenHeight / 2) break;
+        --scale;
+    }
+    const int x = (screenWidth - width) / 2;
+    // Leave the reticle and most of the trajectory visible above the card.
+    int y = (std::max)(12, screenHeight - height - 38 * scale);
+    Dim(twod, 0x00000000, .94f, x, y, width, height);
+    Dim(twod, 0x00916d24, 1.0f, x, y, width, 2);
+    y += inset;
+    auto draw = [&](const std::vector<std::string> &lines, int color) {
+        for (const auto &line : lines) {
+            DrawText(twod, GetBrogueUiFont(), CR_UNTRANSLATED, x + inset, y, line.c_str(),
+                DTA_ScaleX, double(scale), DTA_ScaleY, double(scale),
+                DTA_FillColor, HudColor(color), DTA_BilinearFilter, false, TAG_DONE);
+            y += row;
+        }
+    };
+    draw(heading, CR_GOLD);
+    draw(body, CR_WHITE);
+    if (targeting) {
+        y += 6 * scale;
+        Dim(twod, 0x00916d24, .65f, x + inset, y, width - inset * 2, 1);
+        y += 6 * scale;
+        draw(help, CR_TAN);
+    }
 }
 
 PalEntry LookSpanColor(const BrogueBridgeTextColorSpan &span)
@@ -2978,10 +3352,11 @@ void DrawApplyOverlay()
 void DrawCommandConfirmationOverlay()
 {
 	if (!CommandConfirmationOpen || twod == nullptr) return;
-	const int width = (std::min)(twod->GetWidth() - HudSize(80), HudSize(620));
+	const int width = (std::min)(twod->GetWidth() - HudSize(40), HudSize(760));
 	const int height = HudSize(112);
 	const int x = (twod->GetWidth() - width) / 2;
-	const int y = (twod->GetHeight() - height) / 2;
+	// Keep the center of the view and the copied trajectory unobstructed.
+	const int y = (std::max)(HudSize(12), twod->GetHeight() - height - HudSize(30));
 	const int inset = HudSize(14);
 	Dim(twod, 0x00000000, .97f, x, y, width, height);
 	Dim(twod, 0x00916d24, .95f, x, y, width, 2);
@@ -3163,6 +3538,110 @@ void DrawLookOverlay()
 	HudText(CR_LIGHTBLUE, x + inset, footerTop + HudSize(7),
 		"Move Cursor  |  Tab/Wheel Next  |  L/Space/Esc Close");
 }
+#include "brogue_persistence_frontend.inc"
+}
+
+
+void BrogueBridge_DrawPersistence()
+{
+    if ((!LoadingSave && !PendingDepthMap) || !twod || !SmallFont) return;
+    Dim(twod, 0x00000000, .85f, 0, 0, twod->GetWidth(), twod->GetHeight());
+    FString label; label.Format("Loading Brogue  %llu / %llu turns",
+        (unsigned long long)Persistence.completedTurns, (unsigned long long)Persistence.totalTurns);
+    if (PendingDepthMap) label = "Preparing the Brogue depth...";
+    const int width = int(GetBrogueUiFont()->StringWidth(label.GetChars()) * HudScale());
+    const int x = (std::max)(HudSize(12), (twod->GetWidth() - width) / 2);
+    const int y = twod->GetHeight() / 2;
+    HudText(CR_GOLD, x, y, label.GetChars());
+    HudText(CR_WHITE, x, y + HudSize(22), PendingDepthMap ? "Esc Menu / Save and Exit" : "Esc Cancel");
+}
+
+bool BrogueBridge_ConfirmNewGame()
+{
+    if (LoadingSave || FinalizeLoad) return false;
+    if (!Started || State.player.gameHasEnded) return true;
+    const int answer = MessageBoxW(nullptr,
+        L"Save the current game before starting a new one?\nYes: save. No: abandon. Cancel: return to the game.",
+        L"Project Broom", MB_YESNOCANCEL | MB_ICONQUESTION);
+    return answer == IDNO || (answer == IDYES && SaveAndExit(false));
+}
+
+bool BrogueBridge_UsesNativeSaves()
+{
+    return PClass::FindActor("BrogueViewWeaponK00") != nullptr;
+}
+
+bool BrogueBridge_SaveOnClose() { return SaveAndExit(false); }
+
+const char *BrogueBridge_MapOverride(const char *name)
+{
+    if (!Started || RestoredMapPath.empty()) return nullptr;
+    char expected[16]; snprintf(expected, sizeof(expected), "BRG%02d", State.depth);
+    if (stricmp(name, expected)) return nullptr;
+    // The external WAD is reconstructed from Brogue's current terrain/knowledge.
+    // A hub snapshot has an older checksum and may also contain obsolete proxies.
+    // Discard it before UZDoom attempts UnSnapshotLevel, including cached campaigns.
+    if (auto info = FindLevelInfo(name, false)) {
+        if (brg_debug && info->Snapshot.mCompressedSize)
+            Printf("Brogue map: discarded stale Doom hub snapshot for %s.\n", name);
+        info->Snapshot.Clean();
+    }
+    return RestoredMapPath.c_str();
+}
+
+void BrogueBridge_TickPersistence()
+{
+    const char *requested = brg_load_path;
+    if (requested && *requested) {
+        std::string path = requested;
+        brg_load_path = "";
+        BeginLoad(path, false);
+    }
+    if (!LoadingSave) return;
+    const int now = int(GetTickCount64() / 29);
+    if (now == LastLoadTic) return;
+    LastLoadTic = now;
+    if (!Persist(BROGUE_PERSIST_LOAD_STEP)) {
+        MessageBoxA(nullptr, Persistence.error, "Load failed - save retained", MB_OK | MB_ICONERROR);
+        Persist(BROGUE_PERSIST_LOAD_CANCEL); LoadingSave = false; return;
+    }
+    if (Persistence.phase != BROGUE_SESSION_LOAD_READY) return;
+    if (Api.getState(&State) != BROGUE_BRIDGE_OK || !PrepareRestoredMap()) {
+        MessageBoxW(nullptr, L"Could not prepare the restored level. Your save was retained.", L"Load failed", MB_OK | MB_ICONERROR);
+        Persist(BROGUE_PERSIST_LOAD_CANCEL); LoadingSave = false; return;
+    }
+    Api.getMonsterCatalog(&MonsterCatalog);
+    ConfigureSearchBindings();
+    Started = true;
+    LoadingSave = false;
+    FinalizeLoad = true;
+    M_ClearMenus();
+    FString command; command.Format("map BRG%02d", State.depth);
+    AddCommandString(command.GetChars());
+}
+
+#include "brogue_terrain_geometry_fixture.inc"
+#include "brogue_terrain_animation_probe.inc"
+#include "brogue_shoreline_probe.inc"
+
+CCMD(brg_save_exit) { if (Started && !State.player.gameHasEnded && !LoadingSave && !FinalizeLoad && SaveAndExit(true)) AddCommandString("quit"); }
+CCMD(brg_load_cancel) {
+    if (LoadingSave) { Persist(BROGUE_PERSIST_LOAD_CANCEL); LoadingSave = false; }
+}
+CCMD(brg_continue) {
+    try { BeginLoad(Utf8Path(LatestSave()), false); }
+    catch (const std::exception &error) { Printf("Cannot continue: %s\n", error.what()); }
+}
+CCMD(brg_load) {
+    if (Started || LoadingSave) { Printf("Save and exit before loading another game.\n"); return; }
+    if (argv.argc() > 1) { BeginLoad(argv[1], true); return; }
+    wchar_t path[32768] = {};
+    OPENFILENAMEW dialog{}; dialog.lStructSize = sizeof(dialog);
+    dialog.lpstrFile = path; dialog.nMaxFile = 32768;
+    dialog.lpstrTitle = L"Load or import a Brogue save";
+    dialog.lpstrFilter = L"Brogue saves\0*.broguesave\0\0";
+    dialog.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
+    if (GetOpenFileNameW(&dialog)) BeginLoad(Utf8Path(fs::path(path)), true);
 }
 
 // Development-only semantic smoke command. This exercises the same native
@@ -3235,6 +3714,11 @@ CCMD(brg_monsters)
 			(unsigned long long)creature.id, creature.kind, creature.presentationKind,
 			creature.x, creature.y, creature.hp, creature.maxHp, int(creature.visibility),
 			creature.isAlly ? "true" : "false");
+		const auto found = MonsterProxies.find(creature.id);
+		if (found != MonsterProxies.end() && found->second.actor)
+			Printf("    class=%s captive=%d clip=%d poseTics=%d\n",
+				found->second.actor->GetClass()->TypeName.GetChars(), found->second.captive,
+				found->second.ratClip, found->second.ratPoseTics);
 	}
 }
 
@@ -3243,6 +3727,17 @@ CCMD(brg_inventory)
 	InventoryOpen = !InventoryOpen;
 	InventorySelection = 0;
 }
+
+void ToggleFullMap()
+{
+	if (!Started || !IsBrogueMap() || LoadingSave || PendingDepthMap
+		|| InventoryOpen || WeaponUi != WeaponUiMode::None || CommandConfirmationOpen) return;
+	FullMapOpen = !FullMapOpen;
+	if (brg_debug) Printf("Brogue map: open=%d revision=%llu turn=%llu\n", FullMapOpen,
+		(unsigned long long)State.revision, (unsigned long long)State.absoluteTurn);
+}
+
+CCMD(brg_map) { ToggleFullMap(); }
 
 CCMD(brg_throw_smoke)
 {
@@ -3266,11 +3761,60 @@ CCMD(brg_wand_smoke)
 
 bool BrogueBridge_WantsSearchEscape(void)
 {
-	return Started && IsBrogueMap() && State.player.searchActive;
+	// D_ProcessEvents asks this before the console/menu responders. Keep an
+	// already-open engine UI in charge, but give Brogue modals their own Escape
+	// handler before the engine can open its main menu. Mandatory Brogue prompts
+	// still consume Escape without cancelling their committed action.
+	if (menuactive != MENU_Off || ConsoleState == c_down || ConsoleState == c_falling) return false;
+	return LoadingSave || (Started && IsBrogueMap()
+		&& (State.player.searchActive || FullMapOpen || InventoryOpen
+			|| WeaponUi != WeaponUiMode::None || CommandConfirmationOpen));
+}
+
+// Development input probe: traverse the real engine responder ordering rather
+// than calling a modal handler directly. Never submits a gameplay command.
+CCMD(brg_escape)
+{
+	if (!brg_debug) return;
+	event_t event{};
+	// The platform switches keyboard events to GUI form while engine UI owns
+	// focus, including its matching key-up event.
+	if (menuactive != MENU_Off || ConsoleState == c_down || ConsoleState == c_falling) {
+		event.type = EV_GUI_Event;
+		event.subtype = EV_GUI_KeyDown;
+		event.data1 = GK_ESCAPE;
+		D_PostEvent(&event);
+		event.subtype = EV_GUI_KeyUp;
+		D_PostEvent(&event);
+		return;
+	}
+	event.type = EV_KeyDown;
+	event.data1 = KEY_ESCAPE;
+	D_PostEvent(&event);
+	event.type = EV_KeyUp;
+	D_PostEvent(&event);
+}
+
+// Development-only held-W probe, entering through the normal event dispatcher.
+CCMD(brg_forward)
+{
+	if (!brg_debug || argv.argc() != 2
+		|| (strcmp(argv[1], "down") && strcmp(argv[1], "up"))) return;
+	event_t event{};
+	event.type = !strcmp(argv[1], "down") ? EV_KeyDown : EV_KeyUp;
+	event.data1 = 0x11;
+	event.data2 = 'w';
+	D_PostEvent(&event);
+	Printf("FORWARD_PROBE %s turn=%llu hash=%016llx\n", argv[1],
+		(unsigned long long)State.turn, (unsigned long long)State.stateHash);
+	Printf("FORWARD_CONTEXT level=%d depth=%d focus=%d menu=%d console=%d loading=%d finalizing=%d pending=%d\n",
+		primaryLevel ? primaryLevel->levelnum : -1, State.depth, SearchHasFocus(), int(menuactive),
+		int(ConsoleState), LoadingSave, FinalizeLoad, PendingDepthMap);
 }
 
 void BrogueBridge_CancelSearchForUi(void)
 {
+	ForwardHold.cancel();
 	if (Started && IsBrogueMap()) CancelSearch();
 	std::fill(std::begin(SearchKeyHeld), std::end(SearchKeyHeld), false);
 	SearchControlHeld = false;
@@ -3281,6 +3825,47 @@ bool BrogueBridge_OwnsPlayerPosition(void)
 	// Brogue commits input synchronously; rolling back its visual pawn would
 	// restore stale coordinates without rolling back the authoritative session.
 	return IsBrogueMap();
+}
+
+void BrogueBridge_PrepareScene(void)
+{
+    RecordTerrainFrame();
+    RecordShorelineFrame();
+    if (IsBrogueMap() && EnsureStarted() && primaryLevel->levelnum == State.depth) {
+        const bool attach = !TerrainReady;
+        ReconcileTerrain();
+        if (attach) { SyncPlayer(); SyncItems(); SyncMonsters(); }
+    }
+}
+
+void DrawEnemyMovementProgress()
+{
+    double remaining = 0;
+    for (const auto &entry : MonsterProxies) {
+        const auto &proxy = entry.second;
+        remaining = (std::max)(remaining, EnemyMovement::Remaining(proxy.moveTics, proxy.moveTotal,
+            proxy.pulseTics, proxy.deathTics));
+    }
+    if (remaining <= 0) return;
+    const double progress = (std::clamp)(1.0 - remaining, 0.0, 1.0);
+    const int radius = HudSize(11), cx = twod->GetWidth() / 2, cy = HudSize(20);
+    // Small scanline-filled pie: no texture or external asset, clockwise from top.
+    for (int y = -radius; y <= radius; ++y) {
+        const int width = int(std::sqrt(double(radius * radius - y * y)));
+        Dim(twod, 0x00101519, .95f, cx-width-1, cy+y, width*2+3, 1);
+        int start = -width;
+        bool last = false;
+        for (int x = -width; x <= width + 1; ++x) {
+            double angle = std::atan2(double(x), double(-y));
+            if (angle < 0) angle += 6.283185307179586;
+            const bool filled = x <= width && angle <= progress * 6.283185307179586;
+            if (x == -width) last = filled;
+            if (filled != last || x == width + 1) {
+                Dim(twod, last ? 0x00e7c76b : 0x00475460, 1.f, cx+start, cy+y, x-start, 1);
+                start = x; last = filled;
+            }
+        }
+    }
 }
 
 void BrogueBridge_DrawHud(void)
@@ -3313,6 +3898,9 @@ void BrogueBridge_DrawHud(void)
 		HudText(CR_TAN, StatusRailWidth() + HudSize(10), HudSize(82), searching.GetChars());
 	}
 	DrawBrogueMinimap();
+	if (FullMapOpen) return;
+	DrawTargetDirectionCue();
+	DrawEnemyMovementProgress();
 	const int railWidth = StatusRailWidth();
 	for (uint32_t line = 0; line < State.messageCount && line < 3; ++line)
 		HudText(line == 0 ? CR_WHITE : CR_TAN, railWidth + HudSize(10), HudSize(8) + int(line) * HudSize(23), State.messages[line]);
@@ -3329,6 +3917,7 @@ void BrogueBridge_DrawHud(void)
 	DrawApplyOverlay();
 	DrawWeaponMenu();
 	DrawLookOverlay();
+	DrawIntentPanel();
 	DrawCommandConfirmationOverlay();
 	DrawGameOverOverlay();
 }
@@ -3358,9 +3947,12 @@ bool HandleCommandConfirmationInput(const event_t *event)
 	{
 		BrogueBridgeCommand command = CommandConfirmationCommand;
 		const FString source = CommandConfirmationSource;
+		const bool targeted = command.type == BROGUE_COMMAND_THROW_ITEM
+			|| command.type == BROGUE_COMMAND_USE_STAFF || command.type == BROGUE_COMMAND_USE_WAND;
 		if (command.confirmed < 255) ++command.confirmed;
 		ClearCommandConfirmation();
 		SubmitConfirmableCommand(command, source.GetChars());
+		if (targeted && !CommandConfirmationOpen) CloseWeaponUi();
 	}
 	else if (event->data1 == KEY_ESCAPE || event->data1 == KEY_MOUSE2
 		|| event->data2 == 'n' || event->data2 == 'N')
@@ -3370,10 +3962,66 @@ bool HandleCommandConfirmationInput(const event_t *event)
 	return true;
 }
 
+// Semantic development counterpart to the existing brg_actions harness. It
+// uses the same pending revision and confirmation handler as keyboard input.
+CCMD(brg_confirm)
+{
+    if (argv.argc() != 2 || (strcmp(argv[1], "yes") && strcmp(argv[1], "no")))
+    { Printf("Usage: brg_confirm yes|no\n"); return; }
+    event_t event{}; event.type = EV_KeyDown;
+    event.data1 = !strcmp(argv[1], "yes") ? KEY_ENTER : KEY_ESCAPE;
+    if (brg_debug) Printf("Brogue confirmation response: %s open=%d pending=%llu current=%llu\n", argv[1],
+        CommandConfirmationOpen, (unsigned long long)CommandConfirmationCommand.expectedRevision,
+        (unsigned long long)State.revision);
+    HandleCommandConfirmationInput(&event);
+}
+
+bool ForwardInputAllowed()
+{
+	return Started && IsBrogueMap() && !LoadingSave && !FinalizeLoad && !PendingDepthMap
+		&& primaryLevel != nullptr && primaryLevel->levelnum == State.depth
+		&& !State.player.gameHasEnded && !State.player.searchActive
+		&& !FullMapOpen && !InventoryOpen && WeaponUi == WeaponUiMode::None
+		&& !CommandConfirmationOpen && menuactive == MENU_Off
+		&& ConsoleState != c_down && ConsoleState != c_falling && SearchHasFocus();
+}
+
+void TickForwardHold()
+{
+	if (!ForwardInputAllowed()) { ForwardHold.cancel(); return; }
+	if (!ForwardHold.ready(I_msTime(), MonsterAnimationsActive() || Projectile.actor != nullptr
+		|| HasBufferedAction || PendingWait || PendingActionIndex < PendingActions.size())) return;
+	BrogueBridgeAction action;
+	if (!MapFacingRelativeKeyToAction(0x11, action)) { ForwardHold.cancel(); return; }
+	// Every repeat is fresh camera-relative intent, validated against the latest
+	// bridge revision. A blocked move is still Brogue's decision.
+	const bool ok = PerformAction(action, "held-forward");
+	ForwardHold.completed(I_msTime());
+	if (!ok || !ForwardInputAllowed()) ForwardHold.cancel();
+}
+
 bool BrogueBridge_HandleInput(const event_t *event)
 {
+	// Observe release before any modal consumes it. Another key interrupts the
+	// hold; closing a modal never restarts movement without a fresh W press.
+	if (event && ((event->type == EV_KeyUp && event->data1 == 0x11)
+		|| (event->type == EV_KeyDown && event->data1 != 0x11))) ForwardHold.cancel();
+    if (PendingDepthMap) return event && event->data1 != 0x01;
+    if (LoadingSave) {
+        if (event && event->type == EV_KeyDown && event->data1 == 0x01) {
+            Persist(BROGUE_PERSIST_LOAD_CANCEL); LoadingSave = false;
+        }
+        return true;
+    }
 	if (event == nullptr || !IsBrogueMap()) return false;
 	if (!EnsureStarted()) return true;
+	if (FullMapOpen) {
+		const char *binding = event->data1 >= 0 && event->data1 < NUM_KEYS
+			? Bindings.GetBind(event->data1) : nullptr;
+		if (event->type == EV_KeyDown && (event->data1 == 0x32 || event->data1 == KEY_ESCAPE
+			|| (binding && !strcmp(binding, "brg_map")))) FullMapOpen = false;
+		return true;
+	}
 	if (event->data1 == 0x1d || event->data1 == 0x9d) {
 		if (event->type == EV_KeyDown) SearchControlHeld = true;
 		if (event->type == EV_KeyUp) SearchControlHeld = false;
@@ -3410,6 +4058,10 @@ bool BrogueBridge_HandleInput(const event_t *event)
 	}
 	if (HandleInventoryInput(event)) return true;
 	if (HandleWeaponUiInput(event)) return true;
+	if (event->data1 == 0x32) { // M, including profiles with an older automap binding.
+		if (event->type == EV_KeyDown) ToggleFullMap();
+		return true;
+	}
 #ifdef _WIN32
 	// Comparison mode samples numpad edges globally in PrepareTiccmd so one
 	// key drives both windows regardless of which one currently has focus.
@@ -3430,6 +4082,10 @@ bool BrogueBridge_HandleInput(const event_t *event)
 	// key-repeat events before they reach event_t.
 	if (event->type == EV_KeyUp) return true;
 	if (event->type != EV_KeyDown) return false;
+	if (event->data1 == 0x11) {
+		if (ForwardInputAllowed()) { ForwardHold.press(I_msTime()); TickForwardHold(); }
+		return true;
+	}
 
 	if (MonsterAnimationsActive() || Projectile.actor != nullptr)
 	{
@@ -3447,6 +4103,21 @@ bool BrogueBridge_HandleInput(const event_t *event)
 void BrogueBridge_PrepareTiccmd(usercmd_t *cmd)
 {
 	if (cmd == nullptr || !IsBrogueMap()) return;
+    if (PendingDepthMap) {
+        cmd->forwardmove = cmd->sidemove = cmd->upmove = cmd->buttons = 0;
+        const uint64_t now = GetTickCount64();
+        if (now >= NextMapRetry) {
+            NextMapRetry = now + 2000;
+            if (PrepareRestoredMap()) {
+                PendingDepthMap = false;
+                FString destination; destination.Format("BRG%02d", State.depth);
+                DetachLevelPresentation();
+                primaryLevel->ChangeLevel(destination.GetChars(), 0, 16);
+            }
+        }
+        return;
+    }
+    if (LoadingSave) { cmd->forwardmove = cmd->sidemove = cmd->upmove = cmd->buttons = 0; return; }
 	if (!EnsureStarted())
 	{
 		cmd->forwardmove = cmd->sidemove = cmd->upmove = 0;
@@ -3454,10 +4125,11 @@ void BrogueBridge_PrepareTiccmd(usercmd_t *cmd)
 		I_Error("Project Broom could not attach its Brogue bridge. See the engine log and rebuild matching components.");
 		return;
 	}
-    if (WeaponUi == WeaponUiMode::ThrowTarget || IsDeviceTargeting()) {
+	if (WeaponUi == WeaponUiMode::ThrowTarget || IsDeviceTargeting()) {
         const auto *item = FindItem(ThrowItemId);
         if (!item || !item->carried || TargetPreviewDepth != State.depth || State.player.gameHasEnded) CloseWeaponUi();
-        else if (TargetPreviewRevision != State.revision) RefreshTargeting();
+		else if (TargetPreviewRevision != State.revision) RefreshTargeting();
+		else AnimateTargetingPresentation();
     }
     if (CommandConfirmationOpen) {
         const auto &pending = CommandConfirmationCommand;
@@ -3469,12 +4141,28 @@ void BrogueBridge_PrepareTiccmd(usercmd_t *cmd)
 	// Project the authoritative landing coordinate as soon as that map is live.
 	if (primaryLevel->levelnum == State.depth)
 	{
+		TickTerrainGeometryFixture();
+		TickTerrainSyncProbe();
+		TickTerrainAnimationProbe();
+		TickShorelineProbe();
+		ReconcileTerrain();
+		TickTerrainAnimations();
 		SyncPlayer();
 		SyncFallShaftMarker();
 		SyncDoorMarkers();
 		SyncTerrainFeatures();
 		SyncItems();
 		SyncMonsters();
+        if (FinalizeLoad) {
+            if (!Persist(BROGUE_PERSIST_LOAD_FINISH, "", true)) {
+                Printf("Load finalization failed: %s. Save retained.\n", Persistence.error);
+                return;
+            }
+            FinalizeLoad = false;
+            Api.getState(&State);
+            Printf("LOAD_READY session=%llu turn=%llu depth=%d hash=%016llx\n",
+                (unsigned long long)State.session, (unsigned long long)State.turn, State.depth, (unsigned long long)State.stateHash);
+        }
 	}
 	// GZDoom's levelnum is not guaranteed to match MAPINFO during the first
 	// player setup tics. Weapon projection only depends on the live pawn and
@@ -3482,6 +4170,7 @@ void BrogueBridge_PrepareTiccmd(usercmd_t *cmd)
 	SyncWeaponView();
 	if (State.player.gameHasEnded)
 	{
+		ForwardHold.cancel();
 		PendingWait = false;
 		PendingActions.clear();
 		PendingActionIndex = 0;
@@ -3494,6 +4183,7 @@ void BrogueBridge_PrepareTiccmd(usercmd_t *cmd)
 	}
 	const bool animating = TickMonsterAnimations();
 	const bool projectileAnimating = TickProjectile();
+	TickForwardHold();
 	if (!CommandConfirmationOpen && !animating && !projectileAnimating && HasBufferedAction)
 	{
 		const BrogueBridgeAction action = BufferedAction;
@@ -3534,6 +4224,8 @@ void BrogueBridge_Shutdown(void)
 	if (Api.shutdown != nullptr && Started)
 		Api.shutdown();
 	Started = false;
+    LoadingSave = FinalizeLoad = PendingDepthMap = false;
+    RestoredMapPath.clear();
 	PendingWait = false;
 	PendingActions.clear();
 	PendingActionIndex = 0;
