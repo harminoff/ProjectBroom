@@ -39,7 +39,7 @@ jobs:
               'No native engine inputs changed; source and bridge CI cover this PR.');
       - uses: actions/checkout@v5
         if: steps.scope.outputs.build == 'true'
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         if: steps.scope.outputs.build == 'true'
         with:
           python-version: '3.11'
