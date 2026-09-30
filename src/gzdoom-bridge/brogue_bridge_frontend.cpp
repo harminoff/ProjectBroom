@@ -1977,16 +1977,6 @@ BrogueBridgeResult RespondInteraction(BrogueBridgeInteractionAnswerKind answer, 
 	response.targetY = targetY;
 	const BrogueBridgeCommand command = Interaction.command;
 	const FString source = Interaction.source;
-	if (answer == BROGUE_ANSWER_LOCATION)
-	{
-		// Retain the thrown item's appearance before Brogue can consume it.
-		if (const auto *item = FindItem(Interaction.interaction.itemId))
-		{
-			ThrownItemClass = PickupClassName(*item);
-			ThrownItemCategory = item->category;
-			ThrownScrollTitle = item->category == 16 ? item->appearance : "";
-		}
-	}
 	BrogueBridgeTurnResult result{};
 	const BrogueBridgeResult bridgeResult = Api.respond(&response, &result);
 	if (bridgeResult == BROGUE_BRIDGE_INVALID_ACTION || bridgeResult == BROGUE_BRIDGE_ITEM_NOT_FOUND)
@@ -2239,7 +2229,7 @@ void TickRun(bool advance)
 		return;
 	}
 	if (!advance || I_msTime() < RunNextMs || MonsterAnimationsActive() || Projectile.actor != nullptr
-		|| PendingLevelPresentation || PendingDepthMap || FallTransition != FallPhase::None) return;
+		|| PendingDepthMap) return;
 	BrogueBridgeCommand command{};
 	command.apiVersion = BROGUE_BRIDGE_API_VERSION;
 	command.type = BROGUE_COMMAND_RUN_CONTINUE;
