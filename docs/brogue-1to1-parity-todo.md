@@ -38,28 +38,28 @@ not include changes that would reproduce Brogue rules in GZDoom.
 - [ ] Add auto-rest.
 - [ ] Add auto-explore.
 - [ ] Add travel to a selected Brogue cell.
-- [ ] Add run-until-disturbed movement.
+- [x] Add run-until-disturbed movement (ABI v21; Shift + move).
 - [ ] Add explicit ascend and descend intents using Brogue's stair behavior.
-- [ ] Add rethrow-last-item.
-- [ ] Add swap-last-equipment.
-- [ ] Add item relabeling.
-- [ ] Add calling/naming unidentified item kinds.
+- [x] Add rethrow-last-item (ABI v21; V).
+- [x] Add swap-last-equipment (ABI v21; B).
+- [x] Add item relabeling (ABI v21; inventory R).
+- [x] Add calling/naming item kinds and inscriptions (ABI v21; inventory C).
 - [ ] Add authoritative easy-mode activation.
-- [ ] Add authoritative new-game, abandon-game, and quit commands.
+- [x] Add authoritative new-game (launcher-backed, optional seed), abandon-game and quit commands (ABI v21).
 
 ## P0: General prompt and interaction contract
 
-- [ ] Replace special-case targeting flows with one bridge-owned interaction
-  state machine.
-- [ ] Support yes/no confirmations without mutating state before approval.
-- [ ] Support stable-ID item selections for all Brogue selection prompts.
+- [x] Replace special-case targeting flows with one bridge-owned interaction
+  state machine (ABI v21: every question uses `brogue_bridge_respond`).
+- [x] Support yes/no confirmations without mutating state before approval.
+- [x] Support stable-ID item selections for all Brogue selection prompts.
 - [ ] Support location and creature targeting prompts.
-- [ ] Support text entry for call and relabel commands.
+- [x] Support text entry for call and relabel commands.
 - [ ] Support nested and sequential prompts while retaining the original
   command, expected revision, and approvals.
 - [ ] Make cancel behavior match Brogue and consume no turn when Brogue does
   not consume one.
-- [ ] Ensure one frontend confirmation executes exactly one Brogue command.
+- [x] Ensure one frontend confirmation executes exactly one Brogue command.
 
 ## P1: Expand the copied state contract
 

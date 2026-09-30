@@ -60,6 +60,8 @@ void SetAnimationNative(AActor *, int, double, int, int, int, int, int);
 #endif
 
 CVAR(String, brg_seed, "1", CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+// Set by the Project Broom launcher so new dungeons can be prepared by it.
+CVAR(String, brg_launcher, "", 0)
 CVAR(Int, brg_monster_anim_tics, 5, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Int, brg_rat_walk_tics, 28, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Int, brg_enemy_walk_tics, 28, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
@@ -86,6 +88,8 @@ using BridgeGetState = BrogueBridgeResult (*)(BrogueBridgeState *);
 using BridgeGetMonsterCatalog = BrogueBridgeResult (*)(BrogueBridgeMonsterCatalog *);
 using BridgePerformAction = BrogueBridgeResult (*)(BrogueBridgeAction, BrogueBridgeTurnResult *);
 using BridgePerformCommand = BrogueBridgeResult (*)(const BrogueBridgeCommand *, BrogueBridgeTurnResult *);
+using BridgeGetInteraction = BrogueBridgeResult (*)(BrogueBridgeInteraction *);
+using BridgeRespond = BrogueBridgeResult (*)(const BrogueBridgeInteractionResponse *, BrogueBridgeTurnResult *);
 using BridgePreviewTarget = BrogueBridgeResult (*)(const BrogueBridgeTargetRequest *, BrogueBridgeTargetPreview *);
 using BridgePreviewThrow = BrogueBridgeResult (*)(uint64_t, int32_t, int32_t, BrogueBridgeThrowPreview *);
 using BridgePreviewStaff = BrogueBridgeResult (*)(uint64_t, int32_t, int32_t, BrogueBridgeStaffPreview *);
@@ -105,6 +109,8 @@ struct BridgeApi
 	BridgeGetMonsterCatalog getMonsterCatalog = nullptr;
 	BridgePerformAction performAction = nullptr;
 	BridgePerformCommand performCommand = nullptr;
+	BridgeGetInteraction getInteraction = nullptr;
+	BridgeRespond respond = nullptr;
 	BridgePreviewTarget previewTarget = nullptr;
 	BridgePreviewThrow previewThrow = nullptr;
 	BridgePreviewStaff previewStaff = nullptr;
@@ -279,16 +285,31 @@ uint64_t VisualDeviceId = 0;
 
 bool InventoryOpen = false;
 int InventorySelection = 0;
-enum class ApplyUiMode { None, Confirm, SelectItem };
-ApplyUiMode ApplyUi = ApplyUiMode::None;
-uint64_t ApplyItemId = 0;
-std::vector<uint64_t> ApplyChoiceIds;
-int ApplyChoiceSelection = 0;
-FString ApplyPrompt;
-bool CommandConfirmationOpen = false;
-BrogueBridgeCommand CommandConfirmationCommand{};
-FString CommandConfirmationPrompt;
-FString CommandConfirmationSource;
+
+// General Brogue interaction presenter state (ABI v24). One question at a time.
+struct InteractionUiState
+{
+	bool open = false;
+	bool targeting = false; // TARGET_LOCATION is answered by the targeting guide
+	BrogueBridgeInteraction interaction{};
+	BrogueBridgeCommand command{};
+	FString source;
+	std::vector<uint64_t> choices;
+	int selection = 0;
+	std::string text;
+};
+InteractionUiState Interaction;
+
+extern FString UiNotice;
+extern uint64_t UiNoticeUntil;
+int HudSize(int value);
+void HudText(int color, int x, int y, const char *text);
+void DrawWrappedText(int color, int x, int &y, const char *text, int width, int rowStep, size_t maxLines);
+void CloseInventory();
+void OpenInteraction(const BrogueBridgeInteraction &descriptor, const BrogueBridgeCommand &command, const char *source);
+void HandleSessionChange(const BrogueBridgeTurnResult &result);
+BrogueBridgeResult ApplyCommandOutcome(const BrogueBridgeCommand &command, BrogueBridgeResult bridgeResult,
+	BrogueBridgeTurnResult &result, const char *source, bool reportFailure);
 
 #ifdef _WIN32
 HWND ComparisonWindow = nullptr;
@@ -397,6 +418,8 @@ bool LoadBridge()
 	Api.getMonsterCatalog = GetBridgeProc<BridgeGetMonsterCatalog>(Api.module, "brogue_bridge_get_monster_catalog");
 	Api.performAction = GetBridgeProc<BridgePerformAction>(Api.module, "brogue_bridge_perform_action");
 	Api.performCommand = GetBridgeProc<BridgePerformCommand>(Api.module, "brogue_bridge_perform_command");
+	Api.getInteraction = GetBridgeProc<BridgeGetInteraction>(Api.module, "brogue_bridge_get_interaction");
+	Api.respond = GetBridgeProc<BridgeRespond>(Api.module, "brogue_bridge_respond");
 	Api.previewTarget = GetBridgeProc<BridgePreviewTarget>(Api.module, "brogue_bridge_preview_target");
 	Api.previewThrow = GetBridgeProc<BridgePreviewThrow>(Api.module, "brogue_bridge_preview_throw");
 	Api.previewStaff = GetBridgeProc<BridgePreviewStaff>(Api.module, "brogue_bridge_preview_staff");
@@ -412,7 +435,7 @@ bool LoadBridge()
 	if (Api.persistence == nullptr || Api.initialize == nullptr || Api.startGame == nullptr || Api.getState == nullptr
 		|| Api.getMonsterCatalog == nullptr
 		|| Api.performAction == nullptr || Api.performCommand == nullptr || Api.previewTarget == nullptr || Api.previewThrow == nullptr || Api.previewStaff == nullptr || Api.previewWand == nullptr
-		|| Api.inspectCell == nullptr
+		|| Api.inspectCell == nullptr || Api.getInteraction == nullptr || Api.respond == nullptr
 		|| Api.shutdown == nullptr || Api.resultName == nullptr)
 	{
 		Printf("Brogue bridge: DLL is missing a required API export.\n");
@@ -500,11 +523,11 @@ void SyncWeaponView()
 	const bool equipped = weapon != nullptr && weapon->category == 2 && weapon->kind >= 0 && weapon->kind < 15;
 	int deviceKind = WeaponUi == WeaponUiMode::StaffTarget ? 15 : WeaponUi == WeaponUiMode::WandTarget ? 16 : -1;
 	uint64_t deviceId = ThrowItemId;
-	if (CommandConfirmationOpen && (CommandConfirmationCommand.type == BROGUE_COMMAND_USE_STAFF
-		|| CommandConfirmationCommand.type == BROGUE_COMMAND_USE_WAND))
+	if (Interaction.open && (Interaction.command.type == BROGUE_COMMAND_USE_STAFF
+		|| Interaction.command.type == BROGUE_COMMAND_USE_WAND))
 	{
-		deviceKind = CommandConfirmationCommand.type == BROGUE_COMMAND_USE_STAFF ? 15 : 16;
-		deviceId = CommandConfirmationCommand.itemId;
+		deviceKind = Interaction.command.type == BROGUE_COMMAND_USE_STAFF ? 15 : 16;
+		deviceId = Interaction.command.itemId;
 	}
 	if (deviceKind < 0 && primaryLevel->maptime < VisualDeviceUntilTic)
 	{
@@ -1529,13 +1552,6 @@ void DetachLevelPresentation()
 	VisualDeviceUntilTic = 0;
 	VisualDeviceId = 0;
 	InventoryOpen = false;
-	ApplyUi = ApplyUiMode::None;
-	ApplyItemId = 0;
-	ApplyChoiceIds.clear();
-	CommandConfirmationOpen = false;
-	CommandConfirmationCommand = {};
-	CommandConfirmationPrompt = "";
-	CommandConfirmationSource = "";
 }
 
 void OrientProjectile()
@@ -1711,6 +1727,17 @@ BrogueBridgeResult PerformCommandResult(BrogueBridgeCommand command, const char 
 
 	result = {};
 	BrogueBridgeResult bridgeResult = Api.performCommand(&command, &result);
+	return ApplyCommandOutcome(command, bridgeResult, result, source, reportFailure);
+}
+
+BrogueBridgeResult ApplyCommandOutcome(const BrogueBridgeCommand &command, BrogueBridgeResult bridgeResult,
+	BrogueBridgeTurnResult &result, const char *source, bool reportFailure)
+{
+	if (bridgeResult == BROGUE_BRIDGE_INTERACTION_REQUIRED)
+	{
+		OpenInteraction(result.interaction, command, source);
+		return bridgeResult;
+	}
 	if (bridgeResult != BROGUE_BRIDGE_OK)
 	{
 		if (reportFailure)
@@ -1754,15 +1781,17 @@ BrogueBridgeResult PerformCommandResult(BrogueBridgeCommand command, const char 
 		VisualDeviceUntilTic = primaryLevel->maptime + 20;
 		VisualThrowKind = -1;
 		SyncWeaponView();
-		PlayWeaponState(FName("BridgeUse"));
+				PlayWeaponState(FName("BridgeUse"));
 	}
+	HandleSessionChange(result);
 	return BROGUE_BRIDGE_OK;
 }
 
 bool PerformCommand(BrogueBridgeCommand command, const char *source)
 {
 	BrogueBridgeTurnResult result{};
-	return PerformCommandResult(command, source, result, true) == BROGUE_BRIDGE_OK;
+	const BrogueBridgeResult bridgeResult = PerformCommandResult(command, source, result, true);
+	return bridgeResult == BROGUE_BRIDGE_OK || bridgeResult == BROGUE_BRIDGE_INTERACTION_REQUIRED;
 }
 
 uint64_t SearchNextMs = 0;
@@ -1825,7 +1854,7 @@ bool SearchHasFocus()
 void SearchCommand(bool repeat)
 {
 	if (!EnsureStarted() || State.player.gameHasEnded || InventoryOpen
-		|| WeaponUi != WeaponUiMode::None || CommandConfirmationOpen || menuactive != MENU_Off) return;
+		|| WeaponUi != WeaponUiMode::None || Interaction.open || menuactive != MENU_Off) return;
 	CancelSearch();
 	BrogueBridgeCommand command{};
 	command.apiVersion = BROGUE_BRIDGE_API_VERSION;
@@ -1839,7 +1868,7 @@ void TickSearch(bool advance)
 {
 	if (!State.player.searchActive) return;
 	if (menuactive != MENU_Off || !SearchHasFocus() || InventoryOpen
-		|| WeaponUi != WeaponUiMode::None || CommandConfirmationOpen
+		|| WeaponUi != WeaponUiMode::None || Interaction.open
 		|| primaryLevel == nullptr || primaryLevel->levelnum != State.depth) {
 		CancelSearch();
 		std::fill(std::begin(SearchKeyHeld), std::end(SearchKeyHeld), false);
@@ -1855,35 +1884,484 @@ void TickSearch(bool advance)
 	}
 }
 
-void ClearCommandConfirmation()
-{
-	CommandConfirmationOpen = false;
-	CommandConfirmationCommand = {};
-	CommandConfirmationPrompt = "";
-	CommandConfirmationSource = "";
-}
-
+// Submits a command through the general interaction contract; any question Brogue
+// asks is presented by the single interaction presenter below.
 bool SubmitConfirmableCommand(BrogueBridgeCommand command, const char *source)
 {
 	BrogueBridgeTurnResult result{};
 	const BrogueBridgeResult bridgeResult = PerformCommandResult(command, source, result, false);
-	if (bridgeResult == BROGUE_BRIDGE_CONFIRMATION_REQUIRED)
-	{
-		CommandConfirmationOpen = true;
-		CommandConfirmationCommand = command;
-		CommandConfirmationPrompt = result.prompt;
-		CommandConfirmationSource = source;
-		if (brg_debug) Printf("Brogue confirmation: pending=%llu current=%llu prompt=%s\n",
-			(unsigned long long)command.expectedRevision, (unsigned long long)State.revision, result.prompt);
-		return true;
-	}
+	if (bridgeResult == BROGUE_BRIDGE_INTERACTION_REQUIRED) return true;
 	if (bridgeResult != BROGUE_BRIDGE_OK)
 	{
 		Printf("Brogue bridge: %s command failed: %s.\n", source, Api.resultName(bridgeResult));
 		return false;
 	}
-	ClearCommandConfirmation();
 	return true;
+}
+
+// ---------------------------------------------------------------------------
+// General Brogue interaction presenter (ABI v24). Brogue owns every question,
+// its validation and its cancellation rules; this code displays the copied
+// descriptor and returns exactly one answer per question.
+// ---------------------------------------------------------------------------
+void CloseInteractionUi()
+{
+	Interaction = {};
+}
+
+bool InteractionBlocksInput()
+{
+	return Interaction.open;
+}
+
+void NoticeForInteraction(const char *text)
+{
+	UiNotice = text;
+	UiNoticeUntil = GetTickCount64() + 3500;
+}
+
+void OpenInteraction(const BrogueBridgeInteraction &descriptor, const BrogueBridgeCommand &command, const char *source)
+{
+	Interaction = {};
+	Interaction.open = true;
+	Interaction.interaction = descriptor;
+	Interaction.command = command;
+	Interaction.source = source;
+	Interaction.choices.assign(descriptor.choiceItemIds, descriptor.choiceItemIds + descriptor.choiceCount);
+	if (brg_debug)
+		Printf("Brogue interaction: kind=%d token=%llu command=%d prompt=%s\n", int(descriptor.kind),
+			(unsigned long long)descriptor.token, int(command.type), descriptor.prompt);
+	if (descriptor.kind == BROGUE_INTERACTION_TARGET_LOCATION)
+	{
+		// The targeting guide answers this question. Nothing is thrown until
+		// Brogue receives the selected cell through respond().
+		CloseInventory();
+		Interaction.targeting = true;
+		BeginTargeting(descriptor.itemId);
+		RefreshTargeting();
+	}
+}
+
+// Re-reads Brogue's pending question after a disagreement so the presenter can
+// never show a question Brogue is no longer asking.
+void ResynchronizeInteraction()
+{
+	BrogueBridgeInteraction current{};
+	const BrogueBridgeCommand command = Interaction.command;
+	const FString source = Interaction.source;
+	const bool wasTargeting = Interaction.targeting;
+	Interaction.targeting = false;
+	if (wasTargeting) CloseWeaponUi();
+	CloseInteractionUi();
+	if (Api.getInteraction != nullptr && Api.getInteraction(&current) == BROGUE_BRIDGE_OK
+		&& current.kind != BROGUE_INTERACTION_NONE)
+		OpenInteraction(current, command, source.GetChars());
+	Api.getState(&State);
+}
+
+BrogueBridgeResult RespondInteraction(BrogueBridgeInteractionAnswerKind answer, uint64_t itemId = 0,
+	const char *text = nullptr, int targetX = 0, int targetY = 0)
+{
+	if (!Interaction.open || Api.respond == nullptr) return BROGUE_BRIDGE_INVALID_STATE;
+	if (brg_debug)
+		Printf("Brogue interaction answer: kind=%d answer=%d token=%llu\n", int(Interaction.interaction.kind),
+			int(answer), (unsigned long long)Interaction.interaction.token);
+	BrogueBridgeInteractionResponse response{};
+	response.apiVersion = BROGUE_BRIDGE_API_VERSION;
+	response.token = Interaction.interaction.token;
+	response.expectedRevision = State.revision;
+	response.answer = answer;
+	response.itemId = itemId;
+	if (text != nullptr) strncpy(response.text, text, sizeof(response.text) - 1);
+	response.targetX = targetX;
+	response.targetY = targetY;
+	const BrogueBridgeCommand command = Interaction.command;
+	const FString source = Interaction.source;
+	BrogueBridgeTurnResult result{};
+	const BrogueBridgeResult bridgeResult = Api.respond(&response, &result);
+	if (bridgeResult == BROGUE_BRIDGE_INVALID_ACTION || bridgeResult == BROGUE_BRIDGE_ITEM_NOT_FOUND)
+	{
+		// Brogue refused this answer and is still waiting for another one.
+		NoticeForInteraction("Brogue did not accept that answer.");
+		return bridgeResult;
+	}
+	if (bridgeResult == BROGUE_BRIDGE_INTERACTION_REQUIRED)
+	{
+		// The same native command asked a further question.
+		const bool wasTargeting = Interaction.targeting;
+		Interaction.targeting = false;
+		if (wasTargeting) CloseWeaponUi();
+		OpenInteraction(result.interaction, command, source.GetChars());
+		return bridgeResult;
+	}
+	if (bridgeResult == BROGUE_BRIDGE_STALE_REVISION || bridgeResult == BROGUE_BRIDGE_INVALID_STATE)
+	{
+		ResynchronizeInteraction();
+		return bridgeResult;
+	}
+	const bool wasTargeting = Interaction.targeting;
+	Interaction.targeting = false;
+	CloseInteractionUi();
+	if (wasTargeting) CloseWeaponUi();
+	if (bridgeResult != BROGUE_BRIDGE_OK)
+	{
+		Printf("Brogue bridge: interaction answer failed: %s.\n", Api.resultName(bridgeResult));
+		return bridgeResult;
+	}
+	const BrogueBridgeResult applied = ApplyCommandOutcome(command, bridgeResult, result, source.GetChars(), true);
+	if ((command.type == BROGUE_COMMAND_THROW_ITEM || command.type == BROGUE_COMMAND_USE_STAFF
+		|| command.type == BROGUE_COMMAND_USE_WAND) && (result.actionAccepted || result.consumedTurn))
+		CloseWeaponUi(); // A declined warning leaves the guide open for another target.
+	return applied;
+}
+
+// Characters typed into Brogue text prompts. Scan-code events carry the
+// unshifted US-layout character; Brogue accepts ASCII space through tilde.
+int TextCharacterForKey(int ascii, bool shift)
+{
+	if (ascii < 32 || ascii > 126) return 0;
+	if (!shift) return ascii;
+	if (ascii >= 'a' && ascii <= 'z') return ascii - 'a' + 'A';
+	static const char from[] = "1234567890-=[];'`\\,./";
+	static const char to[] = "!@#$%^&*()_+{}:\"~|<>?";
+	for (size_t index = 0; from[index]; ++index)
+		if (ascii == from[index]) return to[index];
+	return ascii;
+}
+
+bool HandleInteractionInput(const event_t *event)
+{
+	if (!Interaction.open) return false;
+	const auto &descriptor = Interaction.interaction;
+	if (descriptor.kind == BROGUE_INTERACTION_TARGET_LOCATION)
+	{
+		// The weapon-targeting UI owns input; cancelling it answers Brogue.
+		return false;
+	}
+	if (event->type == EV_KeyUp) return true;
+	if (event->type != EV_KeyDown) return true;
+	const int key = event->data1;
+	const bool escape = key == KEY_ESCAPE || key == KEY_MOUSE2;
+	if (descriptor.kind == BROGUE_INTERACTION_CONFIRM)
+	{
+		if (key == KEY_ENTER || event->data2 == 'y' || event->data2 == 'Y')
+			RespondInteraction(BROGUE_ANSWER_YES);
+		else if (event->data2 == 'n' || event->data2 == 'N')
+			RespondInteraction(BROGUE_ANSWER_NO);
+		else if (escape)
+			RespondInteraction(BROGUE_ANSWER_CANCEL);
+		return true;
+	}
+	if (descriptor.kind == BROGUE_INTERACTION_ITEM_CHOICE)
+	{
+		if (escape)
+		{
+			if (descriptor.cancelAllowed) RespondInteraction(BROGUE_ANSWER_CANCEL);
+			else NoticeForInteraction("Brogue requires a choice.");
+			return true;
+		}
+		if (Interaction.choices.empty()) return true;
+		const int count = int(Interaction.choices.size());
+		if (key == 0xc8 || key == KEY_MWHEELUP) --Interaction.selection;
+		else if (key == 0xd0 || key == KEY_MWHEELDOWN) ++Interaction.selection;
+		else
+		{
+			for (int index = 0; index < count; ++index)
+			{
+				const BrogueBridgeItemState *choice = FindItem(Interaction.choices[index]);
+				if (choice != nullptr && choice->inventoryLetter != 0 && event->data2 == choice->inventoryLetter)
+				{
+					// Brogue's own prompt chooses the item directly by its letter.
+					Interaction.selection = index;
+					RespondInteraction(BROGUE_ANSWER_ITEM, Interaction.choices[index]);
+					return true;
+				}
+			}
+		}
+		Interaction.selection = (Interaction.selection % count + count) % count;
+		if (key == KEY_ENTER)
+			RespondInteraction(BROGUE_ANSWER_ITEM, Interaction.choices[Interaction.selection]);
+		return true;
+	}
+	if (descriptor.kind == BROGUE_INTERACTION_TEXT)
+	{
+		if (escape) { RespondInteraction(BROGUE_ANSWER_CANCEL); return true; }
+		const int typed = TextCharacterForKey(event->data2, (event->data3 & GKM_SHIFT) != 0);
+		if (descriptor.textIsSingleLetter)
+		{
+			// Brogue's relabel prompt takes one keypress.
+			if (typed != 0)
+			{
+				const char single[2] = { char(typed), 0 };
+				RespondInteraction(BROGUE_ANSWER_TEXT, 0, single);
+			}
+			return true;
+		}
+		if (key == KEY_ENTER) RespondInteraction(BROGUE_ANSWER_TEXT, 0, Interaction.text.c_str());
+		else if (key == KEY_BACKSPACE) { if (!Interaction.text.empty()) Interaction.text.pop_back(); }
+		else if (typed != 0 && Interaction.text.size() < descriptor.textLimit) Interaction.text.push_back(char(typed));
+		return true;
+	}
+	return true;
+}
+
+void DrawInteractionOverlay()
+{
+	if (!Interaction.open || twod == nullptr) return;
+	const auto &descriptor = Interaction.interaction;
+	if (descriptor.kind == BROGUE_INTERACTION_TARGET_LOCATION) return;
+	const int width = (std::min)(twod->GetWidth() - HudSize(80), HudSize(680));
+	const int rowStep = HudSize(23);
+	const int choiceRows = descriptor.kind == BROGUE_INTERACTION_ITEM_CHOICE
+		? (std::min)(int(Interaction.choices.size()), 12) : 0;
+	const int height = HudSize(112) + choiceRows * rowStep
+		+ (descriptor.kind == BROGUE_INTERACTION_TEXT ? HudSize(30) : 0);
+	const int x = (twod->GetWidth() - width) / 2;
+	// Keep the centre of the view and the copied trajectory unobstructed while aiming.
+	const int y = WeaponUi != WeaponUiMode::None
+		? (std::max)(HudSize(12), twod->GetHeight() - height - HudSize(30)) : (twod->GetHeight() - height) / 2;
+	const int inset = HudSize(14);
+	Dim(twod, 0x00000000, .97f, x, y, width, height);
+	Dim(twod, 0x00916d24, .95f, x, y, width, 2);
+	Dim(twod, 0x00916d24, .95f, x, y + height - 2, width, 2);
+	int textY = y + HudSize(12);
+	DrawWrappedText(CR_GOLD, x + inset, textY, descriptor.prompt[0] ? descriptor.prompt : "Brogue asks",
+		width - inset * 2, rowStep, 3);
+	textY = (std::max)(textY, y + HudSize(40));
+	if (descriptor.kind == BROGUE_INTERACTION_CONFIRM)
+	{
+		HudText(CR_LIGHTBLUE, x + inset, y + height - HudSize(30), "Y / Enter: yes    N / Esc: no");
+	}
+	else if (descriptor.kind == BROGUE_INTERACTION_ITEM_CHOICE)
+	{
+		for (int index = 0; index < choiceRows; ++index)
+		{
+			const BrogueBridgeItemState *choice = FindItem(Interaction.choices[index]);
+			if (choice == nullptr) continue;
+			if (index == Interaction.selection)
+				Dim(twod, 0x00634a27, .75f, x + HudSize(6), textY - HudSize(1), width - HudSize(12), rowStep);
+			FString line;
+			line.Format("%c) %s%s", choice->inventoryLetter ? choice->inventoryLetter : '?',
+				choice->displayName, choice->equipped ? " (equipped)" : "");
+			HudText(index == Interaction.selection ? CR_WHITE : CR_TAN, x + inset, textY, line.GetChars());
+			textY += rowStep;
+		}
+		HudText(CR_LIGHTBLUE, x + inset, y + height - HudSize(30),
+			descriptor.cancelAllowed ? "Letter / Enter: choose    Arrows / Wheel: select    Esc: cancel"
+			                         : "Letter / Enter: choose    Arrows / Wheel: select");
+	}
+	else if (descriptor.kind == BROGUE_INTERACTION_TEXT)
+	{
+		FString line;
+		if (descriptor.textIsSingleLetter) line = "Press a letter (a-z)";
+		else line.Format("%s_", Interaction.text.c_str());
+		Dim(twod, 0x00241a0c, .9f, x + inset, textY, width - inset * 2, rowStep + HudSize(4));
+		HudText(CR_WHITE, x + inset + HudSize(6), textY + HudSize(3), line.GetChars());
+		if (!descriptor.textIsSingleLetter)
+		{
+			FString count;
+			count.Format("%d / %u", int(Interaction.text.size()), descriptor.textLimit);
+			HudText(CR_DARKGRAY, x + width - inset - HudSize(90), textY + HudSize(3), count.GetChars());
+		}
+		HudText(CR_LIGHTBLUE, x + inset, y + height - HudSize(30),
+			descriptor.textIsSingleLetter ? "Esc: cancel" : "Enter: accept    Backspace: erase    Esc: cancel");
+	}
+}
+
+bool ModalInputBusy()
+{
+	return InventoryOpen || WeaponUi != WeaponUiMode::None || Interaction.open
+		|| menuactive != MENU_Off;
+}
+
+// Shared entry for commands that Brogue may answer with a question.
+bool SubmitInteractiveCommand(BrogueBridgeCommandType type, const char *source, uint64_t itemId = 0,
+	const char *rejectedNotice = nullptr)
+{
+	if (!EnsureStarted() || State.player.gameHasEnded || Interaction.open || LoadingSave || FinalizeLoad) return false;
+	BrogueBridgeCommand command{};
+	command.apiVersion = BROGUE_BRIDGE_API_VERSION;
+	command.type = type;
+	command.action = BROGUE_ACTION_WAIT;
+	command.expectedRevision = State.revision;
+	command.itemId = itemId;
+	BrogueBridgeTurnResult result{};
+	const BrogueBridgeResult bridgeResult = PerformCommandResult(command, source, result, true);
+	if (bridgeResult == BROGUE_BRIDGE_INTERACTION_REQUIRED) return true;
+	if (bridgeResult == BROGUE_BRIDGE_OK && !result.actionAccepted && !result.consumedTurn && rejectedNotice != nullptr)
+		NoticeForInteraction(rejectedNotice);
+	return bridgeResult == BROGUE_BRIDGE_OK;
+}
+
+uint64_t RunNextMs = 0;
+
+void CancelRun()
+{
+	if (!State.player.runActive || State.player.gameHasEnded) return;
+	BrogueBridgeCommand command{};
+	command.apiVersion = BROGUE_BRIDGE_API_VERSION;
+	command.type = BROGUE_COMMAND_RUN_CANCEL;
+	PerformCommand(command, "run-cancel");
+	RunNextMs = 0;
+}
+
+bool StartRun(BrogueBridgeAction action)
+{
+	if (!EnsureStarted() || State.player.gameHasEnded || ModalInputBusy()) return false;
+	CancelSearch();
+	CancelRun();
+	BrogueBridgeCommand command{};
+	command.apiVersion = BROGUE_BRIDGE_API_VERSION;
+	command.type = BROGUE_COMMAND_RUN_START;
+	command.action = action;
+	command.expectedRevision = State.revision;
+	const bool ok = PerformCommand(command, "run-input");
+	RunNextMs = I_msTime() + 40; // Schedule from completion, never accumulate catch-up steps.
+	return ok;
+}
+
+void TickRun(bool advance)
+{
+	if (!State.player.runActive) return;
+	if (ModalInputBusy() || !SearchHasFocus() || primaryLevel == nullptr || primaryLevel->levelnum != State.depth)
+	{
+		CancelRun();
+		return;
+	}
+	if (!advance || I_msTime() < RunNextMs || MonsterAnimationsActive() || Projectile.actor != nullptr
+		|| PendingDepthMap) return;
+	BrogueBridgeCommand command{};
+	command.apiVersion = BROGUE_BRIDGE_API_VERSION;
+	command.type = BROGUE_COMMAND_RUN_CONTINUE;
+	command.expectedRevision = State.revision;
+	PerformCommand(command, "run-continue");
+	RunNextMs = I_msTime() + 40;
+}
+
+bool SkipSaveOnClose = false;
+
+// Starting a different dungeon needs a new prepared campaign, so the launcher
+// (which owns campaign generation) is asked for it. The current Brogue session
+// is left untouched unless the launcher really started.
+bool RelaunchLauncher(uint64_t seed)
+{
+	const char *launcher = brg_launcher;
+	if (launcher == nullptr || !*launcher)
+	{
+		Printf("Brogue: starting a new dungeon needs the Project Broom launcher.\n");
+		NoticeForInteraction("New games need the Project Broom launcher.");
+		return false;
+	}
+#ifdef _WIN32
+	std::string command = std::string("\"") + launcher + "\"";
+	if (seed != 0) command += " --seed " + std::to_string(seed);
+	else command += " --new-game";
+	const int needed = MultiByteToWideChar(CP_UTF8, 0, command.c_str(), -1, nullptr, 0);
+	if (needed <= 0) return false;
+	std::wstring wide(size_t(needed), L'\0');
+	MultiByteToWideChar(CP_UTF8, 0, command.c_str(), -1, wide.data(), needed);
+	STARTUPINFOW startup{};
+	startup.cb = sizeof(startup);
+	PROCESS_INFORMATION process{};
+	if (!CreateProcessW(nullptr, wide.data(), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &startup, &process))
+	{
+		Printf("Brogue: could not start the launcher (error %lu).\n", GetLastError());
+		NoticeForInteraction("Could not start the launcher.");
+		return false;
+	}
+	CloseHandle(process.hThread);
+	CloseHandle(process.hProcess);
+	SkipSaveOnClose = true;
+	AddCommandString("quit");
+	return true;
+#else
+	return false;
+#endif
+}
+
+// The launcher owns the seed dialog. It is asked before anything is committed,
+// so cancelling it leaves the running Brogue game untouched.
+uint64_t PickSeedWithLauncher()
+{
+	const char *launcher = brg_launcher;
+	if (launcher == nullptr || !*launcher)
+	{
+		Printf("Brogue: choosing a seed needs the Project Broom launcher.\n");
+		NoticeForInteraction("Seeded games need the Project Broom launcher.");
+		return 0;
+	}
+#ifdef _WIN32
+	char temporary[MAX_PATH] = {};
+	char file[MAX_PATH] = {};
+	if (!GetTempPathA(MAX_PATH, temporary) || !GetTempFileNameA(temporary, "brg", 0, file)) return 0;
+	std::string command = std::string("\"") + launcher + "\" --pick-seed \"" + file + "\"";
+	const int needed = MultiByteToWideChar(CP_UTF8, 0, command.c_str(), -1, nullptr, 0);
+	if (needed <= 0) return 0;
+	std::wstring wide(size_t(needed), L'\0');
+	MultiByteToWideChar(CP_UTF8, 0, command.c_str(), -1, wide.data(), needed);
+	STARTUPINFOW startup{};
+	startup.cb = sizeof(startup);
+	PROCESS_INFORMATION process{};
+	if (!CreateProcessW(nullptr, wide.data(), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &startup, &process))
+	{
+		DeleteFileA(file);
+		return 0;
+	}
+	WaitForSingleObject(process.hProcess, INFINITE);
+	DWORD status = 1;
+	GetExitCodeProcess(process.hProcess, &status);
+	CloseHandle(process.hThread);
+	CloseHandle(process.hProcess);
+	uint64_t seed = 0;
+	if (status == 0)
+	{
+		if (FILE *handle = fopen(file, "rb"))
+		{
+			char text[64] = {};
+			const size_t length = fread(text, 1, sizeof(text) - 1, handle);
+			fclose(handle);
+			char *end = nullptr;
+			errno = 0;
+			const uint64_t parsed = strtoull(text, &end, 10);
+			if (length > 0 && end != text && errno != ERANGE && text[0] != '-') seed = parsed;
+		}
+	}
+	DeleteFileA(file);
+	return seed;
+#else
+	return 0;
+#endif
+}
+
+void HandleSessionChange(const BrogueBridgeTurnResult &result)
+{
+	if (result.sessionChange == BROGUE_SESSION_CHANGE_NEW_GAME)
+		RelaunchLauncher(result.requestedSeed);
+}
+
+void BeginNewGame(bool seeded)
+{
+	if (Interaction.open || LoadingSave || FinalizeLoad) return;
+	uint64_t seed = 0;
+	if (seeded)
+	{
+		seed = PickSeedWithLauncher();
+		if (seed == 0) return;
+	}
+	if (Started && !State.player.gameHasEnded)
+	{
+		// Brogue asks its own confirmation when the game is far enough along.
+		BrogueBridgeCommand command{};
+		command.apiVersion = BROGUE_BRIDGE_API_VERSION;
+		command.type = BROGUE_COMMAND_NEW_GAME;
+		command.action = BROGUE_ACTION_WAIT;
+		command.expectedRevision = State.revision;
+		command.seed = seed;
+		BrogueBridgeTurnResult result{};
+		PerformCommandResult(command, "new-game", result, true);
+		return;
+	}
+	RelaunchLauncher(seed);
 }
 
 bool PerformAction(BrogueBridgeAction action, const char *source)
@@ -1929,55 +2407,6 @@ void CloseInventory()
 {
 	InventoryOpen = false;
 	InventorySelection = 0;
-	ApplyUi = ApplyUiMode::None;
-	ApplyItemId = 0;
-	ApplyChoiceIds.clear();
-	ApplyChoiceSelection = 0;
-	ApplyPrompt = "";
-	ClearCommandConfirmation();
-}
-
-void SetApplyPrompt(const BrogueBridgeTurnResult &result, ApplyUiMode mode)
-{
-	ApplyUi = mode;
-	ApplyPrompt = result.prompt;
-	ApplyChoiceIds.assign(result.choiceItemIds, result.choiceItemIds + result.choiceCount);
-	ApplyChoiceSelection = 0;
-}
-
-bool SubmitApply(uint64_t itemId, uint64_t secondaryItemId, bool confirmed)
-{
-	BrogueBridgeCommand command{};
-	command.apiVersion = BROGUE_BRIDGE_API_VERSION;
-	command.type = BROGUE_COMMAND_APPLY_ITEM;
-	command.action = BROGUE_ACTION_WAIT;
-	command.expectedRevision = State.revision;
-	command.itemId = itemId;
-	command.secondaryItemId = secondaryItemId;
-	command.confirmed = confirmed ? 1 : 0;
-	BrogueBridgeTurnResult result{};
-	const BrogueBridgeResult bridgeResult = PerformCommandResult(command, "inventory-apply", result, false);
-	if (bridgeResult == BROGUE_BRIDGE_CONFIRMATION_REQUIRED)
-	{
-		ApplyItemId = itemId;
-		SetApplyPrompt(result, ApplyUiMode::Confirm);
-		return true;
-	}
-	if (bridgeResult == BROGUE_BRIDGE_SELECTION_REQUIRED)
-	{
-		ApplyItemId = itemId;
-		SetApplyPrompt(result, ApplyUiMode::SelectItem);
-		return true;
-	}
-	if (bridgeResult != BROGUE_BRIDGE_OK)
-	{
-		Printf("Brogue bridge: inventory apply failed: %s.\n", Api.resultName(bridgeResult));
-		return false;
-	}
-	ApplyUi = ApplyUiMode::None;
-	ApplyItemId = 0;
-	ApplyChoiceIds.clear();
-	return true;
 }
 
 bool HandleInventoryInput(const event_t *event)
@@ -1987,11 +2416,7 @@ bool HandleInventoryInput(const event_t *event)
 	{
 		if (event->type == EV_KeyDown)
 		{
-			// Brogue does not permit cancelling the mandatory identify/enchant
-			// choice after a scroll has been read. Keep that contract here even
-			// though the bridge performs the choice as an atomic command.
-			if (ApplyUi == ApplyUiMode::SelectItem) return true;
-			if (WeaponUi != WeaponUiMode::None) CloseWeaponUi();
+if (WeaponUi != WeaponUiMode::None) CloseWeaponUi();
 			if (InventoryOpen) CloseInventory();
 			else { InventoryOpen = true; InventorySelection = 0; }
 		}
@@ -2000,38 +2425,6 @@ bool HandleInventoryInput(const event_t *event)
 	if (!InventoryOpen) return false;
 	if (event->type == EV_KeyUp) return true;
 	if (event->type != EV_KeyDown) return true;
-	if (ApplyUi == ApplyUiMode::Confirm)
-	{
-		if (key == KEY_ENTER || event->data2 == 'y' || event->data2 == 'Y')
-			SubmitApply(ApplyItemId, 0, true);
-		else if (key == KEY_ESCAPE || key == KEY_MOUSE2 || event->data2 == 'n' || event->data2 == 'N')
-		{
-			ApplyUi = ApplyUiMode::None;
-			ApplyItemId = 0;
-		}
-		return true;
-	}
-	if (ApplyUi == ApplyUiMode::SelectItem)
-	{
-		if (ApplyChoiceIds.empty()) return true;
-		if (key == 0xc8 || key == KEY_MWHEELUP) --ApplyChoiceSelection;
-		else if (key == 0xd0 || key == KEY_MWHEELDOWN) ++ApplyChoiceSelection;
-		else
-		{
-			for (size_t index = 0; index < ApplyChoiceIds.size(); ++index)
-			{
-				const BrogueBridgeItemState *choice = FindItem(ApplyChoiceIds[index]);
-				if (choice != nullptr && choice->inventoryLetter != 0
-					&& event->data2 == choice->inventoryLetter)
-					ApplyChoiceSelection = int(index);
-			}
-		}
-		ApplyChoiceSelection = (ApplyChoiceSelection % int(ApplyChoiceIds.size())
-			+ int(ApplyChoiceIds.size())) % int(ApplyChoiceIds.size());
-		if (key == KEY_ENTER || key == 0x16) // Enter or U: apply to selection
-			SubmitApply(ApplyItemId, ApplyChoiceIds[ApplyChoiceSelection], true);
-		return true;
-	}
 	const std::vector<uint32_t> inventory = CarriedInventoryIndices();
 	if (inventory.empty())
 	{
@@ -2061,7 +2454,7 @@ bool HandleInventoryInput(const event_t *event)
 		RefreshTargeting();
 	}
 	else if ((key == KEY_ENTER || key == 0x16) && (item.actionFlags & BROGUE_ITEM_ACTION_APPLY)) // Enter or U: use
-		SubmitApply(item.id, 0, false);
+		SubmitInteractiveCommand(BROGUE_COMMAND_APPLY_ITEM, "inventory-apply", item.id);
 	else if (key == KEY_ENTER || key == 0x12) // Enter or E: equip/remove
 	{
 		if (item.actionFlags & BROGUE_ITEM_ACTION_UNEQUIP)
@@ -2069,6 +2462,10 @@ bool HandleInventoryInput(const event_t *event)
 		else if (item.actionFlags & BROGUE_ITEM_ACTION_EQUIP)
 			PerformItemCommand(BROGUE_COMMAND_EQUIP_ITEM, item.id);
 	}
+	else if (key == 0x2e) // C: call (name the kind, or inscribe)
+		SubmitInteractiveCommand(BROGUE_COMMAND_CALL_ITEM, "inventory-call", item.id);
+	else if (key == 0x13) // R: relabel
+		SubmitInteractiveCommand(BROGUE_COMMAND_RELABEL_ITEM, "inventory-relabel", item.id);
 	else if (key == 0x20 && (item.actionFlags & BROGUE_ITEM_ACTION_DROP)) // D
 		PerformItemCommand(BROGUE_COMMAND_DROP_ITEM, item.id);
 	else if (key == 0x14 && (item.actionFlags & BROGUE_ITEM_ACTION_THROW)) // T
@@ -2299,11 +2696,16 @@ uint64_t UiNoticeUntil = 0;
 
 void CloseWeaponUi()
 {
+	if (Interaction.open && Interaction.targeting)
+	{
+		// Closing the guide is Brogue's cancel for a target question.
+		Interaction.targeting = false;
+		RespondInteraction(BROGUE_ANSWER_CANCEL);
+	}
 	WeaponUi = WeaponUiMode::None;
 	ThrowItemId = 0;
 	LookResult = {};
 	LastVisualWeaponId = 0;
-	ClearCommandConfirmation();
 	ClearTargetMarkers();
 	VisibleTargetPreview = {};
 	HasVisibleTargetPreview = false;
@@ -2368,7 +2770,7 @@ void RefreshTargeting()
     BrogueBridgeTargetPreview preview{};
     const auto result = PreviewTarget(preview);
     ClearTargetMarkers();
-    if (result != BROGUE_BRIDGE_OK) { CloseWeaponUi(); ClearCommandConfirmation(); return; }
+    if (result != BROGUE_BRIDGE_OK) { CloseWeaponUi(); return; }
     VisibleTargetPreview = preview;
     HasVisibleTargetPreview = true;
     TargetPreviewRevision = preview.aim.revision;
@@ -2671,6 +3073,11 @@ bool HandleWeaponUiInput(const event_t *event)
             BrogueBridgeTargetPreview preview{};
             if (PreviewTarget(preview) != BROGUE_BRIDGE_OK) { CloseWeaponUi(); return true; }
             if (!preview.aim.valid) { RefreshTargeting(); return true; }
+            if (Interaction.open && Interaction.targeting)
+            {
+                RespondInteraction(BROGUE_ANSWER_LOCATION, 0, nullptr, preview.aim.targetX, preview.aim.targetY);
+                return true;
+            }
             BrogueBridgeCommand command{};
             command.apiVersion = BROGUE_BRIDGE_API_VERSION;
             command.type = preview.type;
@@ -2682,7 +3089,7 @@ bool HandleWeaponUiInput(const event_t *event)
             SubmitConfirmableCommand(command, wand ? "wand-ui" : staff ? "staff-ui" : "throw-ui");
             // Keep the copied guide visible while Brogue's confirmation is
             // pending. Successful or rejected final submissions close it.
-            if (!CommandConfirmationOpen) CloseWeaponUi();
+            if (!Interaction.open) CloseWeaponUi();
             return true;
         }
 		else
@@ -2797,16 +3204,14 @@ void TickThrowSmoke()
         BeginTargeting(State.player.equippedWeaponId); RefreshTargeting();
     } else if (ThrowSmokePhase == 3 || ThrowSmokePhase == 7) {
         HandleWeaponUiInput(&event);
-		if (!CommandConfirmationOpen || State.revision != ThrowSmokeRevision || PathMarkers.empty() || !TargetMarker) {
+		if (!Interaction.open || State.revision != ThrowSmokeRevision || PathMarkers.empty() || !TargetMarker) {
 			Printf("THROW_UI FAIL: approval/preview persistence.\n"); ThrowSmokePhase = 0; return;
         }
     } else if (ThrowSmokePhase == 5) {
-        ClearCommandConfirmation(); CloseWeaponUi(); SyncWeaponView();
+        RespondInteraction(BROGUE_ANSWER_NO); CloseWeaponUi(); SyncWeaponView();
         Printf("THROW_UI cancel unchanged=%s\n", State.revision == ThrowSmokeRevision && State.absoluteTurn == ThrowSmokeTurn ? "true" : "false");
     } else if (ThrowSmokePhase == 9) {
-        BrogueBridgeCommand command = CommandConfirmationCommand;
-        ClearCommandConfirmation(); ++command.confirmed;
-        SubmitConfirmableCommand(command, "throw-ui-smoke");
+        RespondInteraction(BROGUE_ANSWER_YES);
         Printf("THROW_UI %s\n", State.revision == ThrowSmokeRevision+1 && State.absoluteTurn > ThrowSmokeTurn ? "PASS" : "FAIL");
     } else {
         Printf("THROW_UI capture phase=%d revision=%llu turn=%llu\n", ThrowSmokePhase,
@@ -3169,7 +3574,7 @@ void DrawIntentPanel()
 {
     const bool targeting = WeaponUi == WeaponUiMode::ThrowTarget || IsDeviceTargeting();
     if ((!targeting || TargetHeading.IsEmpty()) && (UiNotice.IsEmpty() || GetTickCount64() >= UiNoticeUntil)) return;
-    if (CommandConfirmationOpen || ApplyUi != ApplyUiMode::None || State.player.gameHasEnded) return;
+    if (Interaction.open || State.player.gameHasEnded) return;
     const char *title = targeting ? TargetHeading.GetChars() : UiNotice.GetChars();
     const char *detail = targeting ? TargetDetail.GetChars() : "";
     const char *controls = targeting ? "Move cursor  |  Tab: target  |  Click / Enter: confirm  |  Esc: cancel" : "";
@@ -3306,68 +3711,9 @@ void DrawInventory()
 	if (selected.actionFlags & (BROGUE_ITEM_ACTION_APPLY | BROGUE_ITEM_ACTION_TARGET_STAFF | BROGUE_ITEM_ACTION_TARGET_WAND)) actions += "  |  Enter/U Use";
 	if (selected.actionFlags & BROGUE_ITEM_ACTION_DROP) actions += "  |  D Drop";
 	if (selected.actionFlags & BROGUE_ITEM_ACTION_THROW) actions += "  |  T Throw";
+	actions += "  |  C Call  |  R Label";
 	actions += "  |  I/Esc Close";
 	HudText(CR_LIGHTBLUE, x + inset, footerTop + HudSize(7), actions.GetChars());
-}
-
-void DrawApplyOverlay()
-{
-	if (ApplyUi == ApplyUiMode::None || twod == nullptr) return;
-	const int width = (std::min)(twod->GetWidth() - HudSize(80), HudSize(620));
-	const int rowStep = HudSize(23);
-	const int choiceRows = ApplyUi == ApplyUiMode::SelectItem
-		? (std::min)(int(ApplyChoiceIds.size()), 10) : 0;
-	const int height = HudSize(100) + choiceRows * rowStep;
-	const int x = (twod->GetWidth() - width) / 2;
-	const int y = (twod->GetHeight() - height) / 2;
-	const int inset = HudSize(12);
-	Dim(twod, 0x00000000, .97f, x, y, width, height);
-	Dim(twod, 0x00916d24, .95f, x, y, width, 2);
-	Dim(twod, 0x00916d24, .95f, x, y + height - 2, width, 2);
-	HudText(CR_GOLD, x + inset, y + HudSize(10),
-		ApplyPrompt.IsEmpty() ? "Use item?" : ApplyPrompt.GetChars());
-	if (ApplyUi == ApplyUiMode::Confirm)
-	{
-		HudText(CR_LIGHTBLUE, x + inset, y + height - HudSize(31),
-			"Y / Enter: confirm    N / Esc: cancel");
-		return;
-	}
-	int rowY = y + HudSize(39);
-	for (int index = 0; index < choiceRows; ++index)
-	{
-		const BrogueBridgeItemState *choice = FindItem(ApplyChoiceIds[index]);
-		if (choice == nullptr) continue;
-		if (index == ApplyChoiceSelection)
-			Dim(twod, 0x00634a27, .75f, x + HudSize(6), rowY - HudSize(1), width - HudSize(12), rowStep);
-		FString line;
-		line.Format("%c) %s%s", choice->inventoryLetter ? choice->inventoryLetter : '?',
-			choice->displayName, choice->equipped ? " (equipped)" : "");
-		HudText(index == ApplyChoiceSelection ? CR_WHITE : CR_TAN, x + inset, rowY, line.GetChars());
-		rowY += rowStep;
-	}
-	HudText(CR_LIGHTBLUE, x + inset, y + height - HudSize(31),
-		"Arrows / Wheel / Letter: select    Enter / U: use (selection required)");
-}
-
-void DrawCommandConfirmationOverlay()
-{
-	if (!CommandConfirmationOpen || twod == nullptr) return;
-	const int width = (std::min)(twod->GetWidth() - HudSize(40), HudSize(760));
-	const int height = HudSize(112);
-	const int x = (twod->GetWidth() - width) / 2;
-	// Keep the center of the view and the copied trajectory unobstructed.
-	const int y = (std::max)(HudSize(12), twod->GetHeight() - height - HudSize(30));
-	const int inset = HudSize(14);
-	Dim(twod, 0x00000000, .97f, x, y, width, height);
-	Dim(twod, 0x00916d24, .95f, x, y, width, 2);
-	Dim(twod, 0x00916d24, .95f, x, y + height - 2, width, 2);
-	HudText(CR_GOLD, x + inset, y + HudSize(12), "CONFIRM ACTION");
-	int textY = y + HudSize(40);
-	DrawWrappedText(CR_TAN, x + inset, textY,
-		CommandConfirmationPrompt.IsEmpty() ? "Proceed?" : CommandConfirmationPrompt.GetChars(),
-		width - inset * 2, HudSize(23), 2);
-	HudText(CR_LIGHTBLUE, x + inset, y + height - HudSize(28),
-		"Y / Enter: yes    N / Esc: no");
 }
 
 void DrawGameOverOverlay()
@@ -3571,7 +3917,12 @@ bool BrogueBridge_UsesNativeSaves()
     return PClass::FindActor("BrogueViewWeaponK00") != nullptr;
 }
 
-bool BrogueBridge_SaveOnClose() { return SaveAndExit(false); }
+bool BrogueBridge_SaveOnClose()
+{
+	// A new dungeon was handed to the launcher; the abandoned game is not saved.
+	if (SkipSaveOnClose) return true;
+	return SaveAndExit(false);
+}
 
 const char *BrogueBridge_MapOverride(const char *name)
 {
@@ -3660,6 +4011,30 @@ CCMD(brg_wait)
 
 CCMD(brg_search) { SearchCommand(false); }
 CCMD(brg_search_repeat) { SearchCommand(true); }
+// Brogue commands that may pause for a question. Brogue decides every outcome.
+CCMD(brg_rethrow)
+{
+	if (ModalInputBusy()) return;
+	SubmitInteractiveCommand(BROGUE_COMMAND_RETHROW_LAST, "rethrow", 0,
+		State.player.lastThrownItemId ? nullptr : "You have nothing to rethrow.");
+}
+CCMD(brg_swap)
+{
+	if (ModalInputBusy()) return;
+	SubmitInteractiveCommand(BROGUE_COMMAND_SWAP_LAST_EQUIPMENT, "swap", 0, "You have nothing to swap.");
+}
+CCMD(brg_call) { if (!ModalInputBusy()) SubmitInteractiveCommand(BROGUE_COMMAND_CALL_ITEM, "call"); }
+CCMD(brg_relabel) { if (!ModalInputBusy()) SubmitInteractiveCommand(BROGUE_COMMAND_RELABEL_ITEM, "relabel"); }
+CCMD(brg_new_game) { BeginNewGame(false); }
+CCMD(brg_new_game_seeded) { BeginNewGame(true); }
+CCMD(brg_abandon) { SubmitInteractiveCommand(BROGUE_COMMAND_ABANDON_GAME, "abandon"); }
+CCMD(brg_run)
+{
+	BrogueBridgeAction action;
+	if (argv.argc() != 2 || !ParseActionName(argv[1], action) || action == BROGUE_ACTION_WAIT || action == BROGUE_ACTION_SEARCH)
+	{ Printf("Usage: brg_run N|NE|E|SE|S|SW|W|NW\n"); return; }
+	StartRun(action);
+}
 CCMD(brg_reveal_material_smoke) { RevealMaterialSmoke = 1; }
 
 // Deterministic in-engine bridge smoke harness. It is intentionally semantic
@@ -3731,7 +4106,7 @@ CCMD(brg_inventory)
 void ToggleFullMap()
 {
 	if (!Started || !IsBrogueMap() || LoadingSave || PendingDepthMap
-		|| InventoryOpen || WeaponUi != WeaponUiMode::None || CommandConfirmationOpen) return;
+		|| InventoryOpen || WeaponUi != WeaponUiMode::None || Interaction.open) return;
 	FullMapOpen = !FullMapOpen;
 	if (brg_debug) Printf("Brogue map: open=%d revision=%llu turn=%llu\n", FullMapOpen,
 		(unsigned long long)State.revision, (unsigned long long)State.absoluteTurn);
@@ -3743,6 +4118,287 @@ CCMD(brg_throw_smoke)
 {
     ThrowSmokePhase = 1;
     ThrowSmokeNextTic = 0;
+}
+
+// Development-only UI regression for the general interaction contract. It uses
+// an existing carried dagger and darts, drives the real key-event routing, and
+// never creates items, changes terrain or bypasses Brogue's command path.
+int InteractionSmokePhase = 0;
+int InteractionSmokeNextTic = 0;
+uint64_t InteractionSmokeRevision = 0;
+uint64_t InteractionSmokeTurn = 0;
+uint64_t InteractionSmokeItem = 0;
+int InteractionSmokeDarts = 0;
+int InteractionSmokeX = 0, InteractionSmokeY = 0;
+int InteractionSmokeRunTry = 0;
+
+void InteractionSmokeKey(int key, int ascii)
+{
+	event_t event{};
+	event.type = EV_KeyDown;
+	event.data1 = key;
+	event.data2 = ascii;
+	BrogueBridge_HandleInput(&event);
+}
+
+bool InteractionSmokeFail(const char *reason)
+{
+	Printf("INTERACTION_UI FAIL: %s (phase %d)\n", reason, InteractionSmokePhase);
+	InteractionSmokePhase = 0;
+	return false;
+}
+
+const BrogueBridgeItemState *InteractionSmokeDagger()
+{
+	for (uint32_t index = 0; index < State.itemCount; ++index)
+		if (State.items[index].id == InteractionSmokeItem && State.items[index].carried) return &State.items[index];
+	return nullptr;
+}
+
+int InteractionSmokeDartCount()
+{
+	for (uint32_t index = 0; index < State.itemCount; ++index)
+		if (State.items[index].carried && State.items[index].category == 2 && State.items[index].quantity > 1
+			&& (State.items[index].actionFlags & BROGUE_ITEM_ACTION_THROW)) return State.items[index].quantity;
+	return 0;
+}
+
+uint64_t InteractionSmokeDartId()
+{
+	for (uint32_t index = 0; index < State.itemCount; ++index)
+		if (State.items[index].carried && State.items[index].category == 2 && State.items[index].quantity > 1
+			&& (State.items[index].actionFlags & BROGUE_ITEM_ACTION_THROW)) return State.items[index].id;
+	return 0;
+}
+
+void TickInteractionSmoke()
+{
+	if (!InteractionSmokePhase || primaryLevel == nullptr || !PendingActions.empty() || !Started
+		|| MonsterAnimationsActive() || Projectile.actor != nullptr || LoadingSave || FinalizeLoad
+		|| primaryLevel->maptime < InteractionSmokeNextTic) return;
+	InteractionSmokeNextTic = primaryLevel->maptime + 10;
+	const auto *dagger = InteractionSmokeDagger();
+	switch (InteractionSmokePhase)
+	{
+	case 1: // Call/Inscribe: Brogue asks for text; type "hi" and accept.
+	{
+		const auto inventory = CarriedInventoryIndices();
+		for (uint32_t index : inventory)
+			if (State.items[index].category == 2 && (State.items[index].actionFlags & (BROGUE_ITEM_ACTION_EQUIP | BROGUE_ITEM_ACTION_UNEQUIP))
+				&& State.items[index].quantity == 1) { InteractionSmokeItem = State.items[index].id; break; }
+		if (!InteractionSmokeItem) { InteractionSmokeFail("no carried melee weapon"); return; }
+		InteractionSmokeRevision = State.revision;
+		InteractionSmokeTurn = State.absoluteTurn;
+		if (!SubmitInteractiveCommand(BROGUE_COMMAND_CALL_ITEM, "smoke-call", InteractionSmokeItem)) { InteractionSmokeFail("call refused"); return; }
+		if (!Interaction.open || Interaction.interaction.kind != BROGUE_INTERACTION_TEXT || Interaction.interaction.token == 0)
+		{ InteractionSmokeFail("call did not ask for text"); return; }
+		if (State.revision != InteractionSmokeRevision) { InteractionSmokeFail("pending call changed the revision"); return; }
+		Printf("INTERACTION_UI call prompt ok limit=%u\n", Interaction.interaction.textLimit);
+		break;
+	}
+	case 2: InteractionSmokeKey(0x23, 'h'); break;
+	case 3: InteractionSmokeKey(0x17, 'i'); C_DoCommand("screenshot"); break;
+	case 4:
+		InteractionSmokeKey(KEY_ENTER, 0);
+		dagger = InteractionSmokeDagger();
+		if (dagger != nullptr) Printf("INTERACTION_UI call result name=[%s] detail=[%.90s]\n", dagger->displayName, dagger->detailText);
+		if (Interaction.open || dagger == nullptr
+			|| (!strstr(dagger->displayName, "hi") && !strstr(dagger->detailText, "hi")))
+		{ InteractionSmokeFail("inscription was not applied by Brogue"); return; }
+		if (State.absoluteTurn != InteractionSmokeTurn || State.revision != InteractionSmokeRevision + 1)
+		{ InteractionSmokeFail("call consumed a turn or skipped a revision"); return; }
+		Printf("INTERACTION_UI call ok\n");
+		break;
+	case 5: // Relabel: single-letter prompt, cancel first, then relabel to z.
+		if (dagger == nullptr) { InteractionSmokeFail("dagger missing"); return; }
+		InteractionSmokeRevision = State.revision;
+		if (!SubmitInteractiveCommand(BROGUE_COMMAND_RELABEL_ITEM, "smoke-relabel", InteractionSmokeItem)
+			|| !Interaction.open || !Interaction.interaction.textIsSingleLetter)
+		{ InteractionSmokeFail("relabel did not ask for a letter"); return; }
+		InteractionSmokeKey(KEY_ESCAPE, 0);
+		if (Interaction.open || InteractionSmokeDagger() == nullptr) { InteractionSmokeFail("relabel cancel left a prompt"); return; }
+		break;
+	case 6:
+		dagger = InteractionSmokeDagger();
+		InteractionSmokeX = dagger ? dagger->inventoryLetter : 0;
+		if (!SubmitInteractiveCommand(BROGUE_COMMAND_RELABEL_ITEM, "smoke-relabel", InteractionSmokeItem) || !Interaction.open)
+		{ InteractionSmokeFail("relabel did not reopen"); return; }
+		InteractionSmokeTurn = State.absoluteTurn;
+		InteractionSmokeKey(0x2c, 'z');
+		dagger = InteractionSmokeDagger();
+		if (Interaction.open || dagger == nullptr || dagger->inventoryLetter != 'z' || State.absoluteTurn != InteractionSmokeTurn)
+		{ InteractionSmokeFail("relabel did not apply without a turn"); return; }
+		Printf("INTERACTION_UI relabel ok from=%c to=%c\n", InteractionSmokeX, dagger->inventoryLetter);
+		break;
+	case 7: // Swap with nothing to swap is Brogue's own refusal.
+		InteractionSmokeTurn = State.absoluteTurn;
+		UiNotice = "";
+		C_DoCommand("brg_swap");
+		if (State.absoluteTurn != InteractionSmokeTurn || UiNotice.IsEmpty())
+		{ InteractionSmokeFail("swap with nothing to swap consumed time"); return; }
+		Printf("INTERACTION_UI swap ok notice=%s\n", UiNotice.GetChars());
+		break;
+	case 8: // Run: Shift + movement is Brogue's run; try directions until Brogue accepts one.
+	{
+		static const BrogueBridgeAction tries[] = {BROGUE_ACTION_MOVE_N, BROGUE_ACTION_MOVE_E, BROGUE_ACTION_MOVE_S,
+			BROGUE_ACTION_MOVE_W, BROGUE_ACTION_MOVE_NE, BROGUE_ACTION_MOVE_SE, BROGUE_ACTION_MOVE_SW, BROGUE_ACTION_MOVE_NW};
+		if (!State.player.runActive)
+		{
+			// Each finished run is Brogue's own stop. Prefer a run of several steps.
+			const uint64_t turns = State.absoluteTurn - InteractionSmokeTurn;
+			if (InteractionSmokeRunTry > 0 && (turns >= 3 || InteractionSmokeRunTry >= 8))
+			{
+				if (turns == 0) { InteractionSmokeFail("no direction accepted a run"); return; }
+				Printf("INTERACTION_UI run ok turns=%llu try=%d\n", (unsigned long long)turns, InteractionSmokeRunTry);
+				break;
+			}
+			InteractionSmokeTurn = State.absoluteTurn;
+			StartRun(tries[InteractionSmokeRunTry++]);
+		}
+		InteractionSmokeNextTic = primaryLevel->maptime + 4;
+		return; // Stay in this phase until the run has ended.
+	}
+	case 9: // Rethrow: throw once, then rethrow through Brogue's own target rule.
+	{
+		InteractionSmokeDarts = InteractionSmokeDartCount();
+		const uint64_t darts = InteractionSmokeDartId();
+		if (!darts) { InteractionSmokeFail("no darts"); return; }
+		InteractionSmokeX = (std::clamp)(State.player.x + 2, 0, State.width - 1);
+		InteractionSmokeY = State.player.y;
+		BrogueBridgeTurnResult result{};
+		BrogueBridgeCommand command{};
+		command.apiVersion = BROGUE_BRIDGE_API_VERSION;
+		command.type = BROGUE_COMMAND_THROW_ITEM;
+		command.expectedRevision = State.revision;
+		command.itemId = darts;
+		command.targetX = InteractionSmokeX;
+		command.targetY = InteractionSmokeY;
+		command.confirmed = 1;
+		if (PerformCommandResult(command, "smoke-throw", result, true) != BROGUE_BRIDGE_OK || !result.actionAccepted)
+		{ InteractionSmokeFail("initial throw was refused"); return; }
+		if (InteractionSmokeDartCount() != InteractionSmokeDarts - 1) { InteractionSmokeFail("throw did not use one dart"); return; }
+		InteractionSmokeDarts = InteractionSmokeDartCount();
+		break;
+	}
+	case 10:
+		if (!State.player.lastThrownItemId) { InteractionSmokeFail("bridge did not export the last thrown item"); return; }
+		SubmitInteractiveCommand(BROGUE_COMMAND_RETHROW_LAST, "smoke-rethrow");
+		if (Interaction.open)
+		{
+			if (Interaction.interaction.kind != BROGUE_INTERACTION_TARGET_LOCATION || !Interaction.targeting
+				|| WeaponUi != WeaponUiMode::ThrowTarget)
+			{ InteractionSmokeFail("rethrow asked the wrong question"); return; }
+			Printf("INTERACTION_UI rethrow asks for a target\n");
+			C_DoCommand("screenshot");
+		}
+		break;
+	case 11: // Escape is Brogue's cancel; nothing is thrown.
+		if (!Interaction.open) break;
+		InteractionSmokeKey(KEY_ESCAPE, 0);
+		if (Interaction.open || WeaponUi != WeaponUiMode::None || InteractionSmokeDartCount() != InteractionSmokeDarts)
+		{ InteractionSmokeFail("cancelling the target changed state"); return; }
+		Printf("INTERACTION_UI rethrow cancel unchanged=true\n");
+		break;
+	case 12:
+		SubmitInteractiveCommand(BROGUE_COMMAND_RETHROW_LAST, "smoke-rethrow");
+		if (!Interaction.open) break; // Brogue repeated the previous target by itself.
+		break;
+	case 13:
+		if (Interaction.open)
+		{
+			InteractionSmokeKey(KEY_ENTER, 0);
+			if (Interaction.open) { InteractionSmokeFail("target confirmation did not answer Brogue"); return; }
+		}
+		if (InteractionSmokeDartCount() != InteractionSmokeDarts - 1) { InteractionSmokeFail("rethrow did not use one dart"); return; }
+		Printf("INTERACTION_UI rethrow ok darts=%d\n", InteractionSmokeDartCount());
+		break;
+	case 14: // Apply food while not hungry: Brogue's confirmation, declined first.
+	{
+		InteractionSmokeItem = 0;
+		for (uint32_t index = 0; index < State.itemCount; ++index)
+			if (State.items[index].carried && State.items[index].category == 1) { InteractionSmokeItem = State.items[index].id; break; }
+		if (!InteractionSmokeItem) { InteractionSmokeFail("no carried food"); return; }
+		InteractionSmokeTurn = State.absoluteTurn;
+		InteractionSmokeRevision = State.revision;
+		if (!SubmitInteractiveCommand(BROGUE_COMMAND_APPLY_ITEM, "smoke-apply", InteractionSmokeItem)
+			|| !Interaction.open || Interaction.interaction.kind != BROGUE_INTERACTION_CONFIRM)
+		{ InteractionSmokeFail("eating while not hungry did not ask Brogue's confirmation"); return; }
+		if (State.revision != InteractionSmokeRevision) { InteractionSmokeFail("pending apply mutated the revision"); return; }
+		C_DoCommand("screenshot");
+		break;
+	}
+	case 15:
+		InteractionSmokeKey(0x31, 'n');
+		if (Interaction.open || State.absoluteTurn != InteractionSmokeTurn || State.revision != InteractionSmokeRevision)
+		{ InteractionSmokeFail("declining the apply confirmation changed state"); return; }
+		if (!SubmitInteractiveCommand(BROGUE_COMMAND_APPLY_ITEM, "smoke-apply", InteractionSmokeItem) || !Interaction.open)
+		{ InteractionSmokeFail("apply confirmation did not reopen"); return; }
+		InteractionSmokeKey(0x15, 'y');
+		if (Interaction.open || State.absoluteTurn == InteractionSmokeTurn)
+		{ InteractionSmokeFail("confirmed apply did not consume the food turn"); return; }
+		Printf("INTERACTION_UI apply ok declined-then-confirmed\n");
+		break;
+	case 16: // New game needs the launcher; without it the session is untouched.
+		InteractionSmokeTurn = State.absoluteTurn;
+		UiNotice = "";
+		C_DoCommand("brg_new_game");
+		if (State.player.gameHasEnded || State.absoluteTurn != InteractionSmokeTurn)
+		{ InteractionSmokeFail("new game damaged the running session"); return; }
+		Printf("INTERACTION_UI newgame ok retained=%s\n", UiNotice.GetChars());
+		break;
+	case 17: // Abandon: confirmation, refuse, then accept.
+		C_DoCommand("brg_abandon");
+		if (!Interaction.open || Interaction.interaction.kind != BROGUE_INTERACTION_CONFIRM)
+		{ InteractionSmokeFail("abandon did not ask for confirmation"); return; }
+		C_DoCommand("screenshot");
+		break;
+	case 18:
+		InteractionSmokeKey(0x31, 'n');
+		if (Interaction.open || State.player.gameHasEnded) { InteractionSmokeFail("declining abandon ended the game"); return; }
+		break;
+	case 19:
+		C_DoCommand("brg_abandon");
+		if (!Interaction.open) { InteractionSmokeFail("abandon did not reopen"); return; }
+		InteractionSmokeKey(0x15, 'y');
+		if (Interaction.open || !State.player.gameHasEnded || State.gameResult.outcome != BROGUE_GAME_OUTCOME_QUIT)
+		{ InteractionSmokeFail("confirmed abandon did not end the game as Quit"); return; }
+		Printf("INTERACTION_UI abandon ok outcome=quit\n");
+		Printf("INTERACTION_UI PASS\n");
+		C_DoCommand("screenshot");
+		InteractionSmokePhase = 0;
+		return;
+	}
+	++InteractionSmokePhase;
+}
+
+CCMD(brg_interaction_smoke)
+{
+	InteractionSmokePhase = 1;
+	InteractionSmokeNextTic = 0;
+	InteractionSmokeItem = 0;
+	InteractionSmokeRunTry = 0;
+}
+
+// Semantic development counterpart to the keyboard presenter: answer the pending
+// Brogue question without synthesizing key events.
+CCMD(brg_interact)
+{
+	if (!Interaction.open) { Printf("No Brogue question is pending.\n"); return; }
+	const char *word = argv.argc() > 1 ? argv[1] : "";
+	if (!strcmp(word, "yes")) RespondInteraction(BROGUE_ANSWER_YES);
+	else if (!strcmp(word, "no")) RespondInteraction(BROGUE_ANSWER_NO);
+	else if (!strcmp(word, "cancel")) RespondInteraction(BROGUE_ANSWER_CANCEL);
+	else if (!strcmp(word, "item") && argv.argc() == 3)
+	{
+		for (uint64_t id : Interaction.choices)
+			if (const auto *item = FindItem(id))
+				if (item->inventoryLetter == argv[2][0]) { RespondInteraction(BROGUE_ANSWER_ITEM, id); return; }
+		Printf("No such choice.\n");
+	}
+	else if (!strcmp(word, "text")) RespondInteraction(BROGUE_ANSWER_TEXT, 0, argv.argc() > 2 ? argv[2] : "");
+	else if (!strcmp(word, "location") && argv.argc() == 4)
+		RespondInteraction(BROGUE_ANSWER_LOCATION, 0, nullptr, atoi(argv[2]), atoi(argv[3]));
+	else Printf("Usage: brg_interact yes|no|cancel|item <letter>|text <text>|location <x> <y>\n");
 }
 
 CCMD(brg_staff_smoke)
@@ -3768,7 +4424,7 @@ bool BrogueBridge_WantsSearchEscape(void)
 	if (menuactive != MENU_Off || ConsoleState == c_down || ConsoleState == c_falling) return false;
 	return LoadingSave || (Started && IsBrogueMap()
 		&& (State.player.searchActive || FullMapOpen || InventoryOpen
-			|| WeaponUi != WeaponUiMode::None || CommandConfirmationOpen));
+			|| WeaponUi != WeaponUiMode::None || Interaction.open));
 }
 
 // Development input probe: traverse the real engine responder ordering rather
@@ -3892,6 +4548,7 @@ void BrogueBridge_DrawHud(void)
 	}
 	DrawStatusRail();
 	TickSearch(false);
+	TickRun(false);
 	if (State.player.searchActive) {
 		FString searching;
 		searching.Format("Searching %d/%d  |  Esc Cancel", State.player.searchProgress, State.player.searchMaximum);
@@ -3914,11 +4571,10 @@ void BrogueBridge_DrawHud(void)
 	Dim(twod, 0x00000000, .62f, railWidth, twod->GetHeight() - footerHeight, twod->GetWidth() - railWidth, footerHeight);
 	HudText(CR_TAN, railWidth + HudSize(10), twod->GetHeight() - HudSize(24), footer.GetChars());
 	DrawInventory();
-	DrawApplyOverlay();
 	DrawWeaponMenu();
 	DrawLookOverlay();
 	DrawIntentPanel();
-	DrawCommandConfirmationOverlay();
+	DrawInteractionOverlay();
 	DrawGameOverOverlay();
 }
 
@@ -3934,46 +4590,16 @@ bool HandleGameOverInput(const event_t *event)
 	return true;
 }
 
-bool HandleCommandConfirmationInput(const event_t *event)
-{
-    if (!CommandConfirmationOpen) return false;
-    const auto &pending = CommandConfirmationCommand;
-    const auto *pendingItem = pending.itemId ? FindItem(pending.itemId) : nullptr;
-    if (pending.expectedRevision != State.revision || (pending.itemId && (!pendingItem || !pendingItem->carried)))
-    { ClearCommandConfirmation(); CloseWeaponUi(); return true; }
-	if (event->type == EV_KeyUp) return true;
-	if (event->type != EV_KeyDown) return true;
-	if (event->data1 == KEY_ENTER || event->data2 == 'y' || event->data2 == 'Y')
-	{
-		BrogueBridgeCommand command = CommandConfirmationCommand;
-		const FString source = CommandConfirmationSource;
-		const bool targeted = command.type == BROGUE_COMMAND_THROW_ITEM
-			|| command.type == BROGUE_COMMAND_USE_STAFF || command.type == BROGUE_COMMAND_USE_WAND;
-		if (command.confirmed < 255) ++command.confirmed;
-		ClearCommandConfirmation();
-		SubmitConfirmableCommand(command, source.GetChars());
-		if (targeted && !CommandConfirmationOpen) CloseWeaponUi();
-	}
-	else if (event->data1 == KEY_ESCAPE || event->data1 == KEY_MOUSE2
-		|| event->data2 == 'n' || event->data2 == 'N')
-	{
-		ClearCommandConfirmation();
-	}
-	return true;
-}
-
-// Semantic development counterpart to the existing brg_actions harness. It
-// uses the same pending revision and confirmation handler as keyboard input.
+// Semantic development counterpart to the keyboard presenter: answers the pending
+// Brogue confirmation through the same respond path.
 CCMD(brg_confirm)
 {
-    if (argv.argc() != 2 || (strcmp(argv[1], "yes") && strcmp(argv[1], "no")))
-    { Printf("Usage: brg_confirm yes|no\n"); return; }
-    event_t event{}; event.type = EV_KeyDown;
-    event.data1 = !strcmp(argv[1], "yes") ? KEY_ENTER : KEY_ESCAPE;
-    if (brg_debug) Printf("Brogue confirmation response: %s open=%d pending=%llu current=%llu\n", argv[1],
-        CommandConfirmationOpen, (unsigned long long)CommandConfirmationCommand.expectedRevision,
-        (unsigned long long)State.revision);
-    HandleCommandConfirmationInput(&event);
+	if (argv.argc() != 2 || (strcmp(argv[1], "yes") && strcmp(argv[1], "no")))
+	{ Printf("Usage: brg_confirm yes|no\n"); return; }
+	if (!Interaction.open || Interaction.interaction.kind != BROGUE_INTERACTION_CONFIRM)
+	{ Printf("No Brogue confirmation is pending.\n"); return; }
+	if (brg_debug) Printf("Brogue confirmation response: %s\n", argv[1]);
+	RespondInteraction(!strcmp(argv[1], "yes") ? BROGUE_ANSWER_YES : BROGUE_ANSWER_NO);
 }
 
 bool ForwardInputAllowed()
@@ -3982,7 +4608,7 @@ bool ForwardInputAllowed()
 		&& primaryLevel != nullptr && primaryLevel->levelnum == State.depth
 		&& !State.player.gameHasEnded && !State.player.searchActive
 		&& !FullMapOpen && !InventoryOpen && WeaponUi == WeaponUiMode::None
-		&& !CommandConfirmationOpen && menuactive == MENU_Off
+		&& !Interaction.open && !State.player.runActive && menuactive == MENU_Off
 		&& ConsoleState != c_down && ConsoleState != c_falling && SearchHasFocus();
 }
 
@@ -4049,8 +4675,13 @@ bool BrogueBridge_HandleInput(const event_t *event)
 		CancelSearch();
 		if (event->data1 == KEY_ESCAPE) return true;
 	}
+	if (State.player.runActive && event->type == EV_KeyDown && event->data1 != 0x2a && event->data1 != 0x36
+		&& event->data1 != 0x1d && event->data1 != 0x9d) {
+		CancelRun();
+		if (event->data1 == KEY_ESCAPE) return true;
+	}
 	if (HandleGameOverInput(event)) return true;
-	if (HandleCommandConfirmationInput(event)) return true;
+	if (HandleInteractionInput(event)) return true;
 	if (event->data1 == KEY_MOUSE2 && WeaponUi != WeaponUiMode::None)
 	{
 		if (event->type == EV_KeyDown) CloseWeaponUi();
@@ -4082,6 +4713,11 @@ bool BrogueBridge_HandleInput(const event_t *event)
 	// key-repeat events before they reach event_t.
 	if (event->type == EV_KeyUp) return true;
 	if (event->type != EV_KeyDown) return false;
+	if ((event->data3 & GKM_SHIFT) && action != BROGUE_ACTION_WAIT) {
+		// Shift + movement is Brogue's run-until-disturbed command.
+		if (!MonsterAnimationsActive() && Projectile.actor == nullptr && !HasBufferedAction) StartRun(action);
+		return true;
+	}
 	if (event->data1 == 0x11) {
 		if (ForwardInputAllowed()) { ForwardHold.press(I_msTime()); TickForwardHold(); }
 		return true;
@@ -4131,12 +4767,9 @@ void BrogueBridge_PrepareTiccmd(usercmd_t *cmd)
 		else if (TargetPreviewRevision != State.revision) RefreshTargeting();
 		else AnimateTargetingPresentation();
     }
-    if (CommandConfirmationOpen) {
-        const auto &pending = CommandConfirmationCommand;
-        const auto *item = pending.itemId ? FindItem(pending.itemId) : nullptr;
-        if (pending.expectedRevision != State.revision || (pending.itemId && (!item || !item->carried))) ClearCommandConfirmation();
-    }
-	if (!InventoryOpen && WeaponUi == WeaponUiMode::None && !CommandConfirmationOpen) PollComparisonInput();
+    if (Interaction.open && !Interaction.targeting && Interaction.interaction.revision != State.revision)
+        ResynchronizeInteraction();
+	if (!InventoryOpen && WeaponUi == WeaponUiMode::None && !Interaction.open) PollComparisonInput();
 	// A Brogue-driven map change is applied by GZDoom after the action returns.
 	// Project the authoritative landing coordinate as soon as that map is live.
 	if (primaryLevel->levelnum == State.depth)
@@ -4184,15 +4817,15 @@ void BrogueBridge_PrepareTiccmd(usercmd_t *cmd)
 	const bool animating = TickMonsterAnimations();
 	const bool projectileAnimating = TickProjectile();
 	TickForwardHold();
-	if (!CommandConfirmationOpen && !animating && !projectileAnimating && HasBufferedAction)
+	if (!Interaction.open && !animating && !projectileAnimating && HasBufferedAction)
 	{
 		const BrogueBridgeAction action = BufferedAction;
 		HasBufferedAction = false;
 		BufferedAction = BROGUE_ACTION_WAIT;
 		PerformAction(action, "buffered-input");
 	}
-	if (!CommandConfirmationOpen && !MonsterAnimationsActive() && Projectile.actor == nullptr) PerformQueuedWait();
-	if (!CommandConfirmationOpen && !MonsterAnimationsActive() && Projectile.actor == nullptr && PendingActionIndex < PendingActions.size())
+	if (!Interaction.open && !MonsterAnimationsActive() && Projectile.actor == nullptr) PerformQueuedWait();
+	if (!Interaction.open && !MonsterAnimationsActive() && Projectile.actor == nullptr && PendingActionIndex < PendingActions.size())
 	{
 		PerformAction(PendingActions[PendingActionIndex++], "brg_actions");
 		if (PendingActionIndex == PendingActions.size())
@@ -4204,8 +4837,10 @@ void BrogueBridge_PrepareTiccmd(usercmd_t *cmd)
 	}
 
 	TickStaffSmoke();
+		TickInteractionSmoke();
 	TickRevealMaterialSmoke();
 	TickSearch(true);
+		TickRun(true);
 	TickThrowSmoke();
 
 	// View angle/pitch remain GZDoom presentation controls. Prevent every
@@ -4235,12 +4870,7 @@ void BrogueBridge_Shutdown(void)
 	LookResult = {};
 	InventoryOpen = false;
 	InventorySelection = 0;
-	ApplyUi = ApplyUiMode::None;
-	ApplyItemId = 0;
-	ApplyChoiceIds.clear();
-	ApplyChoiceSelection = 0;
-	ApplyPrompt = "";
-	ClearCommandConfirmation();
+	CloseInteractionUi();
 #ifdef _WIN32
 	ComparisonWindow = nullptr;
 	std::fill(std::begin(ComparisonKeysDown), std::end(ComparisonKeysDown), false);

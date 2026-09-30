@@ -2,6 +2,8 @@ EXPORTS
     brogue_bridge_initialize
     brogue_bridge_start_game
     brogue_bridge_get_state
+    brogue_bridge_get_interaction
+    brogue_bridge_respond
     brogue_bridge_get_monster_catalog
     brogue_bridge_perform_action
     brogue_bridge_perform_command

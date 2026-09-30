@@ -116,7 +116,9 @@ bool PrepareRestoredMap()
 bool SaveAndExit(bool confirm)
 {
     if (!Started || State.player.gameHasEnded || FinalizeLoad || LoadingSave) return true;
-    CancelSearch(); CloseWeaponUi(); ClearCommandConfirmation();
+    CancelSearch(); CancelRun();
+    if (Interaction.open && !Interaction.targeting) RespondInteraction(BROGUE_ANSWER_CANCEL);
+    CloseWeaponUi();
     PendingActions.clear(); PendingWait = HasBufferedAction = false;
     if (confirm && MessageBoxW(nullptr, L"Save this game and exit?", L"Project Broom",
                               MB_YESNO | MB_ICONQUESTION) != IDYES) return false;

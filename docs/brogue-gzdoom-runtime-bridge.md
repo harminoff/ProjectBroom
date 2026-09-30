@@ -1,5 +1,13 @@
 # Brogue CE → UZDoom runtime bridge
 
+Current ABI: **v21** adds the general interaction contract: commands that ask a question
+(Call, Relabel, Equip's ring replacement, Rethrow, Apply, throw/staff/wand and movement
+warnings, New Game and Abandon) return `BROGUE_BRIDGE_INTERACTION_REQUIRED` with a copied
+`BrogueBridgeInteraction`; `brogue_bridge_respond()` answers it. It also adds the run stepper
+(`RUN_START/CONTINUE/CANCEL`), `RETHROW_LAST`, `SWAP_LAST_EQUIPMENT`, `CALL_ITEM`,
+`RELABEL_ITEM`, `NEW_GAME` and `ABANDON_GAME`. See
+[general interaction contract](general-interaction-contract.md).
+
 Status: bridge API v20 adds copied terrain appearance and settled snapshot reconciliation; see [terrain implementation and acceptance](dynamic-terrain-foundation.md). API v19 remains reserved for the interaction migration. The earlier search integration adds shared single/repeated search and knowledge-limited discovery presentation. See [search behavior and acceptance evidence](search-and-discovery.md). Native UZDoom monster presentation, authoritative weapon, consumable, and targeted staff/wand commands, generalized Brogue confirmation forwarding, an authoritative loss screen, fall-source/landing events, and visual-only first-person weapon models are built from the official UZDoom 5.0.0 source checkout.
 
 ## Chasms and fall shafts

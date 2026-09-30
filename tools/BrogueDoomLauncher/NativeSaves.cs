@@ -8,7 +8,7 @@ internal sealed record LaunchSelection(ulong? Seed, string? SavePath);
 
 internal static class NativeSaves
 {
-    internal const uint BridgeApiVersion = 20;
+    internal const uint BridgeApiVersion = 21;
     internal static string DirectoryPath => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ProjectBroom", "saves");
 
@@ -120,6 +120,8 @@ internal static class NativeSaves
         window.ShowDialog();
         return selection;
     }
+
+    internal static ulong? PickSeed() => PromptForSeed(null!);
 
     private static ulong? PromptForSeed(IWin32Window owner)
     {

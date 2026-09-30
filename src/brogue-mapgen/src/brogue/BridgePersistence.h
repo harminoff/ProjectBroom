@@ -41,11 +41,13 @@ BrogueBridgeResult brogue_bridge_persistence(const BrogueBridgePersistenceReques
             out->gameSeed = seed; out->totalTurns = turns; out->mode = mode;
             break;
         case BROGUE_PERSIST_SAVE:
-            if (bridgePhase != BROGUE_SESSION_LIVE || rogue.gameHasEnded || !currentFilePath[0]) {
+            if (bridgePhase != BROGUE_SESSION_LIVE || rogue.gameHasEnded || !currentFilePath[0]
+                || pendingInteraction.stage != PENDING_NONE) {
                 result = BROGUE_BRIDGE_INVALID_STATE; break;
             }
             if (!saveGameToPath(request->path)) { result = BROGUE_BRIDGE_INTERNAL_BROGUE_ERROR; break; }
             finishRepeatedSearch();
+            finishPlayerRun();
             bridgePhase = BROGUE_SESSION_SUSPENDED;
             ++bridgeRevision;
             result = captureState(&bridgeState);

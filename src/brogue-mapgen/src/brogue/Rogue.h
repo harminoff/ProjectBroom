@@ -2448,6 +2448,9 @@ typedef struct playerCharacter {
     boolean justRested;                 // previous turn was a rest -- used in stealth
     boolean justSearched;               // previous turn was a search -- used in manual searches
     boolean repeatedSearchActive;       // synchronous shared search sequence
+    boolean runActive;                  // shared run-until-disturbed sequence
+    short runDirection;                 // direction retained by the shared run sequence
+    boolean runCardinalPassability[4];  // initial side-passage snapshot used to detect openings
     boolean cautiousMode;               // used to prevent careless deaths caused by holding down a key
     boolean receivedLevitationWarning;  // only warn you once when you're hovering dangerously over liquid
     boolean updatedSafetyMapThisTurn;   // so it's updated no more than once per turn
@@ -3075,6 +3078,10 @@ extern "C" {
     void printLocationDescription(short x, short y);
     void useKeyAt(item *theItem, short x, short y);
     void playerRuns(short direction);
+    void beginPlayerRun(short direction);
+    boolean stepPlayerRun(void);
+    void finishPlayerRun(void);
+    boolean rethrowTargetLocation(item *theItem, pos *targetLoc);
     void exposeCreatureToFire(creature *monst);
     void updateFlavorText(void);
     void updatePlayerUnderwaterness(void);

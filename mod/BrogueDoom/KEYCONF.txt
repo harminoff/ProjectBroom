@@ -23,8 +23,14 @@ addmenukey "Search (Ctrl: repeat)" brg_search
 addmenukey "Repeat search" brg_search_repeat
 addmenukey "Save and exit" brg_save_exit
 addmenukey "Map" brg_map
+addmenukey "Rethrow last item" brg_rethrow
+addmenukey "Swap last equipment" brg_swap
+addmenukey "Call item" brg_call
+addmenukey "Relabel item" brg_relabel
 defaultbind M brg_map
 defaultbind R brg_search
+defaultbind V brg_rethrow
+defaultbind B brg_swap
 
 addkeysection "Minimap Controls" UCMControls
 addmenukey "Toggle" UCM_TOGGLEALL

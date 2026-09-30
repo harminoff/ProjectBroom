@@ -59,7 +59,7 @@ class NativeSaveTests(unittest.TestCase):
         self.dll.brogue_bridge_shutdown()
         self.directory.cleanup()
 
-    def call(self, operation, path='', expected=0, consume=False, version=20, stale=False):
+    def call(self, operation, path='', expected=0, consume=False, version=21, stale=False):
         request = Request(version, operation, self.state.revision + int(stale),
                           self.state.session, consume, str(path).encode('utf-8'))
         result = self.dll.brogue_bridge_persistence(C.byref(request), C.byref(self.state))

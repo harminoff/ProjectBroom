@@ -178,10 +178,9 @@ static int runTargetActionSmoke(BrogueBridgeState *state) {
             command.expectedRevision = state->revision; command.itemId = id; command.targetX = 36; command.targetY = 12;
             if (!route) {
                 BrogueBridgeResult result = brogue_bridge_perform_command(&command, &turn);
-                if (result == BROGUE_BRIDGE_CONFIRMATION_REQUIRED) {
+                if (result == BROGUE_BRIDGE_INTERACTION_REQUIRED) {
                     ACTION_CHECK(turn.prompt[0] && rogue.absoluteTurnNumber == beforeTurn);
-                    command.confirmed = 1;
-                    result = brogue_bridge_perform_command(&command, &turn);
+                    result = answerPending(&turn, 1);
                 }
                 ACTION_CHECK(result == BROGUE_BRIDGE_OK);
                 ACTION_CHECK(turn.actionAccepted == (scenario != 2));
