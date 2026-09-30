@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `totem`.
-- Authored silhouette dimensions: 24 / 26 / 46 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-goblin_totem`.
+- Authored silhouette dimensions: 17.8834 / 30.2326 / 49.9077 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: wood, bone, shaman.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/11_goblin_totem.obj).
-- [Editable Blender source](../../assets/monsters/sources/11_goblin_totem.blend).
+- Visual construction cues: planted split timber, carved wooden mask, bone crown, hemp lashings, drilled bone charms, ragged ochre cloth, stone footing.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/11_goblin_totem.iqm).
+- [Editable Blender source](../../assets/monsters/goblin_totem/goblin-totem-animated.blend).
+- [Animation manifest](../../assets/monsters/goblin_totem/animation.json); 9 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Goblin totem authoring and actual verification](../goblin-totem-animation.md).
 
 ## Brogue encounter-table references
 
@@ -41,6 +44,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

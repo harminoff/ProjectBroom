@@ -106,26 +106,82 @@ def geometry(captive=False):
     from .connected_skin import attach
     parts=attach('monkey',build_parts(),weights)
     if captive:
+        # Author the complete restraint assembly in the actual bound pose.
+        # Fixed frame/chains use the root, so anchors cannot orbit with a wrist.
         s=Sculpt()
-        for side in ('L','R'):
-            c=REST[IDS[f'arm_{side}_end']]
-            for k in (-.45,.45):
-                points=[(*add(c,(1.5*math.cos(i*math.tau/16),1.5*math.sin(i*math.tau/16),k)),.48) for i in range(17)]
-                s.strand(f'binding_{side}_{k}',points,'glow',8,1)
-        # Individual alternating iron links remain visibly distinct from fur.
-        for link in range(11):
-            y=-7.5+link*1.5
-            points=[]
-            for i in range(17):
-                a=i*math.tau/16
-                points.append((5+(.8*math.cos(a) if link%2 else 0),y+1.05*math.sin(a),
-                               7.5+(.8*math.cos(a) if not link%2 else 0),.30))
-            s.strand('binding_link',points,'glow',8,1)
+        transforms=matrices(pose('captive',0))
+        for side,sign in (('L',1),('R',-1)):
+            bone=IDS[f'arm_{side}_end']; wrist=transforms[bone][0]
+            s.box(f'frame_{side}_foot',(-2,sign*13,1),(7,3,1),'wood')
+            s.box(f'frame_{side}_post',(-2,sign*13,19),(1.5,1.5,18),'wood')
+            s.box(f'frame_{side}_iron',(-2,sign*13,21),(1.7,1.7,.8),'glow')
+            # A broad cuff encircles the wrist, with a visible attachment eye.
+            for k in (-.45,0,.45):
+                c=REST[bone]
+                pts=[(*add(c,(1.4*math.cos(i*math.tau/20),1.4*math.sin(i*math.tau/20),k)),.4) for i in range(21)]
+                s.strand(f'binding_{side}_cuff',pts,'glow',8,1)
+            anchor=(-.3,sign*13,21)
+            delta=sub(anchor,wrist); length=math.dist(anchor,wrist)
+            from .rat import unit,cross,mul
+            along=unit(delta); across=unit(cross(along,(0,0,1))); other=cross(along,across)
+            count=math.ceil(length/1.25)
+            for link in range(count+1):
+                t=link/count
+                center=add(wrist,mul(delta,t))
+                # Slight slack, with both ends exactly at cuff and post.
+                center=add(center,(0,0,-1.2*math.sin(math.pi*t)))
+                plane=across if link%2 else other
+                pts=[(*add(center,add(mul(along,.9*math.cos(i*math.tau/16)),mul(plane,.55*math.sin(i*math.tau/16)))),.22) for i in range(17)]
+                s.strand(f'frame_{side}_link{link}',pts,'glow',8,1)
+        s.box('frame_crossbar',(-2,0,36),(1.7,15,1.6),'wood')
+        for part in s.parts:
+            if part.name.startswith('frame_'):
+                part.skin_weights=[[(IDS['root'],1)] for _ in part.vertices]
         parts+=s.parts
     return assemble(parts,weights)
 def matrices(frame):return RIG.matrices(frame)
 def deform(v,w,frame):return RIG.deform(v,w,frame)
 def animation_data(v,w):return sample_clips(RIG,CLIPS,pose,v,w)
+def restraint_geometry():
+    """Detached assembly starts exactly where the captive model left it."""
+    from .rat import Part
+    source=geometry(True)[0];parts=[]
+    for part in source:
+        if not part.name.startswith(('binding','frame_')):continue
+        influences=getattr(part,'skin_weights',None)
+        if influences is None:influences=[weights(part,v,u) for v,u in zip(part.vertices,part.uv)]
+        detached=Part(part.name,deform(part.vertices,influences,pose('captive',0)),part.uv,part.faces)
+        parts.append(detached)
+    for i,part in enumerate(parts):part.skin_weights=[[(i+1,1)] for _ in part.vertices]
+    return assemble(parts,lambda p,v,u:[(0,1)])
+
+def collapse_data(parts,v,w):
+    from .skeletal import rotate
+    collapse_rig=Rig.from_world([('root',None,(0,0,0))]+[(p.name+'_'+str(i),'root',(0,0,0)) for i,p in enumerate(parts)])
+    def falling(name,t):
+        progress=min(1,t/.85);progress=progress*progress
+        frame=[(0,0,0,0,0,0,1,1,1,1)]
+        for part in parts:
+            # Feet stay planted; boards and loose iron fall independently so
+            # the cuffs cannot remain suspended above the fallen frame.
+            angle=0 if part.name.endswith('_foot') else -math.pi/2*progress
+            q=axis((0,1,0),angle)
+            endq=axis((0,1,0),0 if part.name.endswith('_foot') else -math.pi/2)
+            final_min=min(rotate(endq,p)[2] for p in part.vertices)
+            height=-final_min*progress
+            height=max(height,-min(rotate(q,p)[2] for p in part.vertices))
+            frame.append((0,0,height,*q,1,1,1))
+        return frame
+    clips,bounds=sample_clips(collapse_rig,[('collapse',29,35,False)],falling,v,w)
+    return collapse_rig,clips,bounds
+
+def build_restraints():
+    parts,v,n,uv,tri,w=restraint_geometry()
+    rig,clips,bounds=collapse_data(parts,v,w)
+    payload=iqm.encode(v,n,uv,tri,w,rig.bones,clips,bounds,mesh_label='Released_monkey_restraints',material_path=monkey_materials.SKIN)
+    (ROOT/'mod/BrogueDoom/models/monsters/05_monkey_restraints.iqm').write_bytes(payload)
+    return {'model':'05_monkey_restraints.iqm','sha256':hashlib.sha256(payload).hexdigest(),'frames':29}
+
 def build():
     (ROOT/'mod/BrogueDoom'/monkey_materials.SKIN).write_bytes(monkey_materials.texture_bytes())
     variants={}
@@ -137,6 +193,7 @@ def build():
         variants['captive' if captive else 'normal']={'model':model,'sha256':hashlib.sha256(payload).hexdigest(),'vertices':len(v),'triangles':len(tri)}
         if not captive:
             manifest={'schemaVersion':1,'workId':'BRG-M05','format':'IQM v2','runtimeModel':'mod/BrogueDoom/models/monsters/'+model,'sha256':hashlib.sha256(payload).hexdigest(),'skin':monkey_materials.SKIN,'skinSha256':hashlib.sha256(monkey_materials.texture_bytes()).hexdigest(),'parts':len(parts),'vertices':len(v),'triangles':len(tri),'boneCount':len(BONES),'dimensions':[round(max(p[a] for p in v)-min(p[a] for p in v),4) for a in range(3)],'clips':[{k:v for k,v in c.items() if k!='frames'}|{'frameCount':len(c['frames'])} for c in clips],'bones':[{'name':n,'parent':p,'local':v} for n,p,v in BONES],'poseBounds':bounds,'authoringSource':'assets/monsters/monkey/monkey-animated.blend'}
+    manifest['restraints']=build_restraints()
     manifest['variants']=variants;out=ROOT/'assets/monsters/monkey';out.mkdir(exist_ok=True)
     (out/'animation.json').write_text(json.dumps(manifest,indent=2)+'\n');print('Monkey',variants);return manifest
 if __name__=='__main__':build()

@@ -21,6 +21,8 @@ from .compile import (
     OPEN_VOID_CEILING_Z,
     OPEN_VOID_SKY_FLAT,
     OPEN_VOID_SKY_TEXTURE,
+    EXPLORER_PROP_TYPES,
+    EXPLORER_SET_PIECES,
     PROP_RULES,
     TERRAIN_THEME_REGISTRY,
     boundary_material,
@@ -37,6 +39,7 @@ from .compile import (
     floor_height,
     floor_material,
     edge_texture_offset,
+    explorer_set_piece_placements,
     make_map_text,
     make_mapinfo,
     map_side_points,
@@ -333,8 +336,11 @@ class CompilerTests(unittest.TestCase):
             liquid["layers"]["liquid"] = {"id": 3, "symbol": symbol}
             layout = build_material_layout(cells, cells)
             material = transition_material(liquid, ground, "1", 1, cells, layout)
-            self.assertIn(material, {"BRGCAVE", "BRGWET", "BRGMASON"}, symbol)
-            self.assertNotIn(material, {"BRGWFALL", "BRGLFALL"}, symbol)
+            if symbol == "LAVA":
+                self.assertEqual(material, "BRGMLIP", symbol)
+            else:
+                self.assertIn(material, {"BRGCAVE", "BRGWET", "BRGMASON"}, symbol)
+                self.assertNotIn(material, {"BRGWFALL", "BRGLFALL", "BRGMLIP"}, symbol)
 
     def test_higher_liquid_surface_flows_down_the_exposed_edge(self) -> None:
         model = sample_model()
@@ -344,7 +350,7 @@ class CompilerTests(unittest.TestCase):
         for higher_symbol, lower_symbol, expected in (
             ("SHALLOW_WATER", "DEEP_WATER", "BRGWFALL"),
             ("MUD", "DEEP_WATER", "BRGSFALL"),
-            ("LAVA", "DEEP_WATER", "BRGLFALL"),
+            ("LAVA", "DEEP_WATER", "BRGMLIP"),
         ):
             higher["layers"]["liquid"] = {"id": 3, "symbol": higher_symbol}
             lower["layers"]["liquid"] = {"id": 3, "symbol": lower_symbol}
@@ -376,6 +382,9 @@ class CompilerTests(unittest.TestCase):
                     expected,
                     (higher_symbol, expected),
                 )
+        higher["layers"]["liquid"] = {"id": 3, "symbol": "LAVA"}
+        layout = build_material_layout(cells, cells)
+        self.assertEqual(transition_material(higher, lower, "1", 1, cells, layout), "BRGCLIFF")
 
     def test_lower_depth_boundaries_use_attached_upward_fade(self) -> None:
         model = sample_model()
@@ -389,6 +398,21 @@ class CompilerTests(unittest.TestCase):
         )
         map_text, _, _ = make_map_text(level, 79, 29)
         self.assertIn(f"heightceiling = {OPEN_VOID_CEILING_Z};", map_text)
+        self.assertIn('texturemiddle = "BRGCVUP";', map_text)
+
+    def test_addressable_solid_open_seams_restore_upper_fade(self) -> None:
+        model = sample_model()
+        level = model["levels"][0]
+        level["depth"] = 2
+        cells = {(cell["x"], cell["y"]): cell for cell in level["cells"]}
+        solid = cells[(10, 10)]
+        solid["layers"]["dungeon"] = {"id": 1, "symbol": "GRANITE"}
+        solid["semantic"] = {"isSolid": True}
+        solid["terrainFlags"] = 1
+        open_cell = cells[(11, 10)]
+        open_cell["semantic"] = {"isSolid": False}
+
+        map_text, _, _ = make_map_text(level, 79, 29, addressable=True)
         self.assertIn('texturemiddle = "BRGCVUP";', map_text)
 
     def test_closed_doors_receive_centered_door_faces_and_visible_markers(self) -> None:
@@ -532,6 +556,43 @@ class CompilerTests(unittest.TestCase):
         self.assertIn('texturefloor = "BRGMOSS";', map_text)
         cell["layers"]["liquid"] = {"id": 8, "symbol": "DEEP_WATER"}
         self.assertEqual(floor_material(cell), "BRGWATR")
+
+    def test_explorer_set_pieces_are_sparse_inert_and_deterministic(self) -> None:
+        model = sample_model()
+        level = model["levels"][0]
+        cells = {(cell["x"], cell["y"]): cell for cell in level["cells"]}
+        geometry = {position for position, cell in cells.items() if not cell_is_solid(cell)}
+        stairs = {
+            (level["upStairs"]["x"], level["upStairs"]["y"]),
+            (level["downStairs"]["x"], level["downStairs"]["y"]),
+        }
+        first = explorer_set_piece_placements(cells, geometry, "71", 1, 79, 29, stairs)
+        second = explorer_set_piece_placements(cells, geometry, "71", 1, 79, 29, stairs)
+        self.assertEqual(first, second)
+        self.assertTrue(first)
+        anchors = {placement["cell"] for placement in first}
+        self.assertLessEqual(len(anchors), 3)
+        self.assertTrue(all(placement["type"] in EXPLORER_PROP_TYPES.values() for placement in first))
+        self.assertTrue(all(placement["setPiece"] in EXPLORER_SET_PIECES for placement in first))
+        self.assertTrue(all(cell not in stairs for cell in anchors))
+        for x, y in anchors:
+            self.assertEqual(cells[(x, y)]["layers"]["dungeon"]["symbol"], "FLOOR")
+            self.assertTrue(any(
+                neighbor in cells and cell_is_solid(cells[neighbor])
+                for neighbor in ((x + 1, y), (x, y - 1), (x - 1, y), (x, y + 1))
+            ))
+
+    def test_explorer_set_pieces_do_not_occupy_hazards_or_special_terrain(self) -> None:
+        model = sample_model()
+        level = model["levels"][0]
+        cells = {(cell["x"], cell["y"]): cell for cell in level["cells"]}
+        geometry = {position for position, cell in cells.items() if not cell_is_solid(cell)}
+        first = explorer_set_piece_placements(cells, geometry, "19", 1, 79, 29)
+        self.assertTrue(first)
+        anchor = first[0]["cell"]
+        cells[anchor]["layers"]["liquid"] = {"id": 8, "symbol": "DEEP_WATER"}
+        changed = explorer_set_piece_placements(cells, geometry, "19", 1, 79, 29)
+        self.assertNotIn(anchor, {placement["cell"] for placement in changed})
 
     def test_material_variants_are_stable_within_a_topology_region(self) -> None:
         model = sample_model()

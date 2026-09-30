@@ -15,13 +15,15 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `humanoid`.
-- Authored silhouette dimensions: 24 / 32 / 40 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-goblin_conjurer`.
+- Authored silhouette dimensions: 11.8988 / 19.342 / 39.2134 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: primate, sigils, fur.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/09_goblin_conjurer.obj).
-- [Editable Blender source](../../assets/monsters/sources/09_goblin_conjurer.blend).
+- Visual construction cues: angular primate face, swept ears, ash-brown skin, free hands, skin-conforming violet sigils, cosmetic emissive pulse.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/09_goblin_conjurer.iqm).
+- [Editable Blender source](../../assets/monsters/goblin_conjurer/goblin-conjurer-animated.blend).
+- [Animation manifest](../../assets/monsters/goblin_conjurer/animation.json); 18 bones and six clips.
+- [Higgsfield authoring and actual engine evidence](../goblin-conjurer-animation.md).
 
 ## Brogue encounter-table references
 
@@ -45,8 +47,8 @@ These are nominal table ranges and weights, not guaranteed encounter depths or p
 Machine-readable results live in [bestiary-index.json](../../assets/monsters/bestiary-index.json). A generated asset is not automatically visually approved. These generated cards are not a hand-edited checklist: record later acceptance under the index entry’s `verification` object, which regeneration preserves.
 
 - [ ] Individual art/signature-feature approval.
-- [ ] Normal encounter at gameplay distance and lighting.
+- [x] Seed-8 normal encounter and Brogue-summoned blades captured in Vulkan and OpenGL; see report for scope.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Six skeletal clips, fresh Blender reopen, deterministic export and both renderer galleries verified.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

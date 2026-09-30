@@ -108,7 +108,8 @@ void PrepareTerrainAnimation(int key, const BrogueBridgeTerrainAppearance &old,
     const bool wallChange = ((old.flags^a.flags)&BROGUE_APPEARANCE_WALL) != 0;
     const bool groundChange = ((old.flags^a.flags)&BROGUE_APPEARANCE_HOLE) != 0;
     const bool deckChange = old.deck != a.deck;
-    if (wallChange || groundChange || deckChange || (old.ground && old.ground != a.ground && !oldPlant && !plant)) {
+    if (wallChange || groundChange || deckChange || (old.ground && old.ground != a.ground && !oldPlant && !plant
+        && !TerrainKeepsSubstrate(old.ground) && !TerrainKeepsSubstrate(a.ground))) {
         ClearTerrainFragments(key);
         if ((old.flags&BROGUE_APPEARANCE_WALL) && a.mechanism) {
             m.revealStart = now; SpawnTerrainFragments(key,"BrogueTerrainVeil",true);

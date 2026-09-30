@@ -17,12 +17,14 @@ try:
         CAVE_CEILING_Z,
         OPEN_VOID_CEILING_Z,
         OPEN_VOID_SKY_FLAT,
+        EXPLORER_PROP_TYPES,
         PROP_RULES,
         cell_center,
         cell_has_door_geometry,
         cell_door_is_closed,
         cell_has_geometry,
         cell_is_solid,
+        explorer_set_piece_placements,
         layer_symbol,
         map_side_points,
         prop_placement,
@@ -34,12 +36,14 @@ except ImportError:
         CAVE_CEILING_Z,
         OPEN_VOID_CEILING_Z,
         OPEN_VOID_SKY_FLAT,
+        EXPLORER_PROP_TYPES,
         PROP_RULES,
         cell_center,
         cell_has_door_geometry,
         cell_door_is_closed,
         cell_has_geometry,
         cell_is_solid,
+        explorer_set_piece_placements,
         layer_symbol,
         map_side_points,
         prop_placement,
@@ -384,6 +388,39 @@ def verify_things(level, width, height, sector_blocks, sector_cells, thing_block
     )
     if actual_props != sorted(expected_props):
         raise VerifyError(f"BRG{depth:02d}: semantic prop placement does not match Brogue surface layers")
+
+    expected_set_piece_props = sorted(
+        (
+            int(placement["type"]),
+            int(placement["x"]),
+            int(placement["y"]),
+            int(placement["z"]),
+            int(placement["angle"]),
+        )
+        for placement in explorer_set_piece_placements(
+            cells,
+            geometry_cells,
+            game_seed,
+            depth,
+            width,
+            height,
+            stair_positions,
+        )
+    )
+    set_piece_types = set(EXPLORER_PROP_TYPES.values())
+    actual_set_piece_props = sorted(
+        (
+            int_property(body, "type"),
+            int_property(body, "x"),
+            int_property(body, "y"),
+            int_property(body, "z"),
+            int_property(body, "angle"),
+        )
+        for body in thing_blocks
+        if int_property(body, "type") in set_piece_types
+    )
+    if actual_set_piece_props != expected_set_piece_props:
+        raise VerifyError(f"BRG{depth:02d}: explorer set-piece placement is not deterministic")
 
 def verify_package(input_path: Path, package_path: Path, depth: int | None = None, map_name: str | None = None, startup: bool = False) -> dict[str, Any]:
     if startup and (depth is not None or map_name is not None):

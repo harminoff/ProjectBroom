@@ -2227,6 +2227,11 @@
     ]
   ],
   "authoringSource": "assets/monsters/monkey/monkey-animated.blend",
+  "restraints": {
+    "model": "05_monkey_restraints.iqm",
+    "sha256": "8b0abab506c6d39babbe119ab9fce9e71fb77ab3f24fd845766830947e823188",
+    "frames": 29
+  },
   "variants": {
     "normal": {
       "model": "05_monkey.iqm",
@@ -2236,9 +2241,9 @@
     },
     "captive": {
       "model": "05_monkey_captive.iqm",
-      "sha256": "839953982a17b228b72665afbc31d1f85ea9defe2f99ab2385913f6e3ec6ab47",
-      "vertices": 8437,
-      "triangles": 14178
+      "sha256": "58c455a35ac8ef8247eafde51ed9a88fcf44c0e196872ffd5165eac2cb579276",
+      "vertices": 11654,
+      "triangles": 19814
     }
   }
 }

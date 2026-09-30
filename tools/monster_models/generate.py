@@ -233,7 +233,7 @@ def main() -> None:
         if kind["symbol"] in SKELETAL:
             base_class=SKELETAL[kind["symbol"]]["baseClass"]
             zscript.extend([f"class {class_name} : {base_class}", "{",
-                "    Default { +DECOUPLEDANIMATIONS; }",
+                "    Default { +DECOUPLEDANIMATIONS;"+(' RenderStyle "Add"; Alpha 0.65;' if SKELETAL[kind['symbol']].get('additiveFlame') else '')+" }",
                 '    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("'+SKELETAL[kind['symbol']]['clips'][0]+'", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }', "}"])
             captive=SKELETAL[kind['symbol']].get('captivity')
             if captive:
@@ -242,6 +242,13 @@ def main() -> None:
                     f'    Scale {visual_scale} {visual_scale} {visual_scale}', '    FrameIndex BRM0 A 0 0', '    BaseFrame', '}', ''))
                 zscript.extend([f'class {captive["class"]} : {class_name}', '{',
                     '    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("'+captive['idle']+'", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }', '}'])
+                if kind['symbol']=='MK_MONKEY':
+                    modeldef.extend(('Model BrogueMonkeyReleasedRestraints', '{', '    Path "models/monsters"',
+                        '    Model 0 "05_monkey_restraints.iqm"', f'    Skin 0 "{skin}"',
+                        '    Scale 1 1 1', '    FrameIndex BRM0 A 0 0', '    BaseFrame', '}', ''))
+                    zscript.extend(['class BrogueMonkeyReleasedRestraints : Actor', '{',
+                        '    Default { +NOBLOCKMAP; +NOGRAVITY; +NOINTERACTION; +NOTONAUTOMAP; +DECOUPLEDANIMATIONS; }',
+                        '    States { Spawn: BRM0 A 0; BRM0 A 29 A_SetAnimation("collapse", -1, -1, -1, -1, 1, 0); BRM0 A -1; Stop; }', '}'])
         else: zscript.append(f"class {class_name} : BrogueMonsterProxyBase {{}}")
     registry = {"schemaVersion": 1, "bridgeApiVersion": source["bridgeApiVersion"],
                 "catalogCount": len(kinds), "nonPlayerModelCount": len(kinds) - 1,

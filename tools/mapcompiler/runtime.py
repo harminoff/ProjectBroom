@@ -7,7 +7,9 @@ from pathlib import Path
 from tools.mapcompiler.compile import (COMPILER_VERSION, make_map_text, make_wad,
                                        resource_pack_hash, validate_model, DOOR_GEOMETRY_SYMBOLS)
 
-PROJECTION_VERSION = b'3'
+# Increment when the runtime WAD projection changes so restored-level caches
+# cannot reuse geometry compiled by an older presentation contract.
+PROJECTION_VERSION = b'4'
 
 
 def project_features(model):

@@ -1,5 +1,6 @@
 """Original CC-BY-SA-4.0 device viewmodels; generic shapes reveal no effect kind."""
 import json
+from tools.weapon_models.output import write_asset, write_asset_text
 from tools.weapon_models.viewmodel import build_parts, tube, md3_bytes, obj_text
 
 
@@ -23,8 +24,8 @@ def generate(root):
     for staff, name, sprite in ((True,'Staff','BDST'),(False,'Wand','BDWA')):
         frames = [device_parts(staff,i) for i in range(9)]
         filename = name.lower()
-        (directory/(filename+'.md3')).write_bytes(md3_bytes(frames))
-        (directory/(filename+'.obj')).write_text(obj_text(frames[0]),encoding='ascii')
+        write_asset(directory/(filename+'.md3'), md3_bytes(frames))
+        write_asset_text(directory/(filename+'.obj'), obj_text(frames[0]))
         cls = 'BrogueView'+name
         zs.extend([f'class {cls} : BrogueVisualWeaponBase', '{ States {',
             'Spawn: TNT1 A -1; Stop;', f'Select: {sprite} A 1 A_Raise; Loop;',

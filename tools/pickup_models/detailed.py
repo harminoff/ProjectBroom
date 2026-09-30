@@ -9,6 +9,13 @@ import math
 from tools.weapon_models import viewmodel as geo
 
 MATERIALS = (*geo.MATERIALS, 'paper', 'ink', 'glass', 'cork', 'ruby', 'jade', 'azure', 'fruit')
+POTION_COLORS = dict(zip(
+    ('crimson','scarlet','orange','yellow','green','blue','indigo','violet','puce','mauve',
+     'burgundy','turquoise','aquamarine','gray','pink','white','lavender','tan','brown','cyan','black'),
+    ((180,25,60),(235,48,35),(240,130,25),(240,215,45),(45,155,65),(40,85,205),
+     (65,40,135),(145,55,195),(155,85,110),(180,125,170),(100,25,50),(40,185,170),
+     (110,220,175),(125,125,125),(240,145,180),(230,230,220),(180,155,225),
+     (190,155,105),(110,65,35),(30,215,230),(18,20,24))))
 COLORS = (*geo.COLORS[:4], (94,65,43), *geo.COLORS[5:], (205,180,132), (62,45,37), (77,137,144), (131,93,53),
           (148,49,47), (59,119,73), (70,108,159), (207,141,39))
 
@@ -243,10 +250,11 @@ def obj_text(parts):
     return '\n'.join(lines)+'\n'
 
 
-def atlas_bytes():
+def atlas_bytes(potion_color=None):
     from PIL import Image
     image=Image.new('RGB',(1024,1024));pixels=image.load()
     for tile,(name,base) in enumerate(zip(MATERIALS,COLORS)):
+        if name=='glass' and potion_color is not None: base=POTION_COLORS[potion_color]
         for y in range(256):
             for x in range(256):
                 noise=((x*73856093 ^ y*19349663 ^ tile*83492791)&255)/255-.5

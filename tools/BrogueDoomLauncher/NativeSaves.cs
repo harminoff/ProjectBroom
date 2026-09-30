@@ -8,7 +8,7 @@ internal sealed record LaunchSelection(ulong? Seed, string? SavePath);
 
 internal static class NativeSaves
 {
-    internal const uint BridgeApiVersion = 21;
+    internal const uint BridgeApiVersion = 24;
     internal static string DirectoryPath => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ProjectBroom", "saves");
 

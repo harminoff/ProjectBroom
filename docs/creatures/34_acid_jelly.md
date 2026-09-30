@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `slime`.
-- Authored silhouette dimensions: 52 / 48 / 32 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-acid_jelly`.
+- Authored silhouette dimensions: 54.2353 / 47.8787 / 21.2939 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: goo, acid, lobes.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/34_acid_jelly.obj).
-- [Editable Blender source](../../assets/monsters/sources/34_acid_jelly.blend).
+- Visual construction cues: slumped heavy gel mass, three swollen lobes with deep valleys, overhanging skirt and budding blobs, acid runnels and hanging drips, painted gel depth and wet highlights, deep emerald gel with yellow-lime acid film, spent spreading puddle.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/34_acid_jelly.iqm).
+- [Editable Blender source](../../assets/monsters/acid_jelly/acid-jelly-animated.blend).
+- [Animation manifest](../../assets/monsters/acid_jelly/animation.json); 27 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Acidic jelly authoring and actual verification](../acid-jelly-animation.md).
 
 ## Brogue encounter-table references
 
@@ -38,6 +41,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

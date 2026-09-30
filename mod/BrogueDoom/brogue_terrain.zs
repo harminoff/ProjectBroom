@@ -15,6 +15,11 @@ class BrogueTerrainIce : BrogueTerrainStone {}
 class BrogueTerrainVeil : BrogueTerrainStone {}
 class BrogueTerrainCage : BrogueTerrainStone {}
 class BrogueTerrainGate : BrogueTerrainStone {}
+class BrogueTerrainSunRay : BrogueTerrainStone
+{
+    Default { Radius 18; Height 224; Alpha 0.42; RenderStyle "Add"; }
+    States { Spawn: BRGD A -1 Bright; Stop; }
+}
 class BrogueTerrainStatueMarble : BrogueTerrainStone {}
 class BrogueTerrainStatueCracked : BrogueTerrainStone {}
 class BrogueTerrainStatueBroken : BrogueTerrainStone {}

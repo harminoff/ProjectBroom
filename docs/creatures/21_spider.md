@@ -15,13 +15,15 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `spider`.
-- Authored silhouette dimensions: 52 / 58 / 24 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-spider`.
+- Authored silhouette dimensions: 44.8453 / 48.4549 / 19.0259 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: eight_legs, red_eyes, chitin.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/21_spider.obj).
-- [Editable Blender source](../../assets/monsters/sources/21_spider.blend).
+- Visual construction cues: eight articulated legs, connected abdomen and cephalothorax, eight red eyes, paired fangs, pedipalps, umber cuticle, curled rolled death.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/21_spider.iqm).
+- [Editable Blender source](../../assets/monsters/spider/spider-animated.blend).
+- [Animation manifest](../../assets/monsters/spider/animation.json); 31 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
 
 ## Brogue encounter-table references
 
@@ -38,6 +40,8 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.
+
+Detailed skeletal anatomy, final evidence and open gates: [spider report](../spider-animation.md).

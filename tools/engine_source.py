@@ -29,8 +29,11 @@ def build_record(root, engine):
               "src/gzdoom-bridge/brogue_terrain_animation_probe.inc",
               "src/gzdoom-bridge/brogue_shoreline_probe.inc",
               "src/gzdoom-bridge/terrain_presentation.generated.h",
+              "src/gzdoom-bridge/terrain_overlays.generated.h",
               "src/gzdoom-bridge/skeletal_presentation.generated.h",
               "src/gzdoom-bridge/enemy_movement.h",
+              "src/gzdoom-bridge/wall_mount.h",
+              "src/gzdoom-bridge/brogue_monster_visibility_fixture.inc",
               "src/gzdoom-bridge/held_movement.h",
               "src/brogue-mapgen/src/brogue/BrogueBridge.h")
     return {"schemaVersion": 1,

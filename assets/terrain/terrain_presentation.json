@@ -28,17 +28,17 @@
     "motion": 0
   },
   "CARPET": {
-    "floor": "BRGEARTH",
+    "floor": "BTCRPT",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "MARBLE_FLOOR": {
-    "floor": "BRGEARTH",
+    "floor": "BTMARB",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "WALL": {
@@ -72,15 +72,15 @@
   "LOCKED_DOOR": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "BrogueDoorMarker",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogIronDoor",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "OPEN_IRON_DOOR_INERT": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogOpenIronDoor",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "DOWN_STAIRS": {
@@ -101,14 +101,14 @@
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Existing exit ladder geometry; no decorative doors obscuring the ladder.",
     "motion": 0
   },
   "DUNGEON_PORTAL": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogCrystalPortal",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "TORCH_WALL": {
@@ -119,10 +119,10 @@
     "motion": 0
   },
   "CRYSTAL_WALL": {
-    "floor": "BRGEARTH",
-    "wall": "BRGCAVE",
+    "floor": "BTCRYST",
+    "wall": "BTCRYST",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "PORTCULLIS_CLOSED": {
@@ -149,15 +149,15 @@
   "PILOT_LIGHT_DORMANT": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueTerrainTorch",
+    "alias": "Existing matching physical model, now bound to the visible catalog form.",
     "motion": 0
   },
   "PILOT_LIGHT": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogFallenTorch",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "HAUNTED_TORCH_DORMANT": {
@@ -240,8 +240,8 @@
   "PORTAL": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogArch",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "TURRET_DORMANT": {
@@ -289,22 +289,22 @@
   "ALTAR_INERT": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogAltar",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "ALTAR_KEYHOLE": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogAltar",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "ALTAR_CAGE_OPEN": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogAltar",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "ALTAR_CAGE_CLOSED": {
@@ -317,15 +317,15 @@
   "ALTAR_SWITCH": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogAltar",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "ALTAR_SWITCH_RETRACTING": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogAltar",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "ALTAR_CAGE_RETRACTABLE": {
@@ -338,15 +338,15 @@
   "PEDESTAL": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogPedestal",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "MONSTER_CAGE_OPEN": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogOpenCage",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "MONSTER_CAGE_CLOSED": {
@@ -359,15 +359,15 @@
   "COFFIN_CLOSED": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogCoffin",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "COFFIN_OPEN": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogOpenCoffin",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "GAS_TRAP_POISON_HIDDEN": {
@@ -560,45 +560,45 @@
     "motion": 0
   },
   "MACHINE_GLYPH": {
-    "floor": "BRGEARTH",
+    "floor": "BTGLYPH",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "MACHINE_GLYPH_INACTIVE": {
-    "floor": "BRGEARTH",
+    "floor": "BTGLYPH",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "DEWAR_CAUSTIC_GAS": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogDewarCaustic",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "DEWAR_CONFUSION_GAS": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogDewarConfusion",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "DEWAR_PARALYSIS_GAS": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogDewarParalysis",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "DEWAR_METHANE_GAS": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogDewarMethane",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "DEEP_WATER": {
@@ -644,10 +644,10 @@
     "motion": 0
   },
   "MACHINE_COLLAPSE_EDGE_SPREADING": {
-    "floor": "BRGEARTH",
+    "floor": "BTCRUMB",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "LAVA": {
@@ -665,73 +665,73 @@
     "motion": 0
   },
   "LAVA_RETRACTING": {
-    "floor": "BRGMOLT",
+    "floor": "BTCOOL",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "SUNLIGHT_POOL": {
-    "floor": "BRGEARTH",
+    "floor": "BTSUN",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "DARKNESS_PATCH": {
-    "floor": "BRGEARTH",
+    "floor": "BTSHADE",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "ACTIVE_BRIMSTONE": {
-    "floor": "BRGEARTH",
+    "floor": "BTBRIM",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "INERT_BRIMSTONE": {
-    "floor": "BRGEARTH",
+    "floor": "BTBRIM",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "OBSIDIAN": {
-    "floor": "BRGEARTH",
+    "floor": "BTOBSD",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "BRIDGE": {
     "floor": "BRGBRID",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogRopeBridge",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "BRIDGE_FALLING": {
     "floor": "BRGBRID",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogRopeBridge",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 1
   },
   "BRIDGE_EDGE": {
     "floor": "BRGBRID",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogRopeBridge",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "STONE_BRIDGE": {
-    "floor": "BRGBRID",
+    "floor": "BTMARB",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "MACHINE_FLOOD_WATER_DORMANT": {
@@ -798,10 +798,10 @@
     "motion": 0
   },
   "HOLE_EDGE": {
-    "floor": "BRGEARTH",
+    "floor": "BTFADE",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "FLOOD_WATER_DEEP": {
@@ -835,8 +835,8 @@
   "GRAY_FUNGUS": {
     "floor": "BRGMOSS",
     "wall": "BRGCAVE",
-    "actor": "BrogueFungusProp",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogWitheredFungus",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "LUMINESCENT_FUNGUS": {
@@ -847,150 +847,150 @@
     "motion": 0
   },
   "LICHEN": {
-    "floor": "BRGEARTH",
+    "floor": "BTLICHN",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "HAY": {
-    "floor": "BRGEARTH",
+    "floor": "BTHAY",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "RED_BLOOD": {
-    "floor": "BRGEARTH",
+    "floor": "BTBLOOD",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "GREEN_BLOOD": {
-    "floor": "BRGEARTH",
+    "floor": "BTGREEN",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "PURPLE_BLOOD": {
-    "floor": "BRGEARTH",
+    "floor": "BTPURPL",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "ACID_SPLATTER": {
-    "floor": "BRGEARTH",
+    "floor": "BTACID",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "VOMIT": {
-    "floor": "BRGEARTH",
+    "floor": "BTVOMIT",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "URINE": {
-    "floor": "BRGEARTH",
+    "floor": "BTURINE",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "UNICORN_POOP": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogDroppings",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "WORM_BLOOD": {
-    "floor": "BRGEARTH",
+    "floor": "BTENTRL",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "ASH": {
-    "floor": "BRGEARTH",
+    "floor": "BTASH",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "BURNED_CARPET": {
-    "floor": "BRGEARTH",
+    "floor": "BTBURN",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "PUDDLE": {
-    "floor": "BRGEARTH",
+    "floor": "BTPUDDL",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "BONES": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogBones",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "RUBBLE": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogRubble",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "JUNK": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogJunk",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "BROKEN_GLASS": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogGlass",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "ECTOPLASM": {
-    "floor": "BRGEARTH",
+    "floor": "BTECTO",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "EMBERS": {
-    "floor": "BRGEARTH",
+    "floor": "BTEMBR",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "SPIDERWEB": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogWeb",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "NETTING": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogNet",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "FOLIAGE": {
@@ -1010,43 +1010,43 @@
   "TRAMPLED_FOLIAGE": {
     "floor": "BRGMOSS",
     "wall": "BRGCAVE",
-    "actor": "BrogueFoliageProp",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogTrampledLeaves",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "FUNGUS_FOREST": {
     "floor": "BRGMOSS",
     "wall": "BRGCAVE",
-    "actor": "BrogueFungusProp",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogFungalForest",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "TRAMPLED_FUNGUS_FOREST": {
     "floor": "BRGMOSS",
     "wall": "BRGCAVE",
-    "actor": "BrogueFungusProp",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogTrampledFungus",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "FORCEFIELD": {
-    "floor": "BRGEARTH",
-    "wall": "BRGCAVE",
+    "floor": "BTCRYST",
+    "wall": "BTCRYST",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "FORCEFIELD_MELT": {
-    "floor": "BRGEARTH",
-    "wall": "BRGCAVE",
+    "floor": "BTCRYST",
+    "wall": "BTCRYST",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "SACRED_GLYPH": {
-    "floor": "BRGEARTH",
+    "floor": "BTGLYPH",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "MANACLE_TL": {
@@ -1106,17 +1106,17 @@
     "motion": 0
   },
   "PORTAL_LIGHT": {
-    "floor": "BRGEARTH",
+    "floor": "BTSUN",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "GUARDIAN_GLOW": {
-    "floor": "BRGEARTH",
+    "floor": "BTGLOW",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "PLAIN_FIRE": {
@@ -1255,36 +1255,36 @@
   "HAVEN_BEDROLL": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogBedroll",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "DEEP_WATER_ALGAE_WELL": {
-    "floor": "BRGWATR",
+    "floor": "BRGEARTH",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Catalog says ground; algae water appears only after Brogue promotes this tile.",
     "motion": 0
   },
   "DEEP_WATER_ALGAE_1": {
     "floor": "BRGWATR",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogAlgae",
+    "alias": "Original CC0 luminous algae on the existing water surface and shader.",
     "motion": 0
   },
   "DEEP_WATER_ALGAE_2": {
     "floor": "BRGWATR",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogDenseAlgae",
+    "alias": "Original CC0 luminous algae on the existing water surface and shader.",
     "motion": 0
   },
   "ANCIENT_SPIRIT_VINES": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogVines",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "ANCIENT_SPIRIT_GRASS": {
@@ -1304,43 +1304,43 @@
   "COMMUTATION_ALTAR": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogCommuteAltar",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "COMMUTATION_ALTAR_INERT": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogScorchedAltar",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "PIPE_GLOWING": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogPipes",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "PIPE_INERT": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogBurntPipes",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "RESURRECTION_ALTAR": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogResurrectAltar",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "RESURRECTION_ALTAR_INERT": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogScorchedAltar",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "MACHINE_TRIGGER_FLOOR_REPEATING": {
@@ -1353,15 +1353,15 @@
   "SACRIFICE_ALTAR_DORMANT": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogSacrificeAltar",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "SACRIFICE_ALTAR": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogSacrificeAltar",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "SACRIFICE_LAVA": {
@@ -1374,8 +1374,8 @@
   "SACRIFICE_CAGE_DORMANT": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueTerrainCage",
+    "alias": "Existing matching physical model, now bound to the visible catalog form.",
     "motion": 0
   },
   "DEMONIC_STATUE": {
@@ -1400,17 +1400,17 @@
     "motion": 0
   },
   "CHASM_WITH_HIDDEN_BRIDGE": {
-    "floor": "BRGBRID",
+    "floor": "BRGVOID",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Dormant bridge remains visually a chasm; do not reveal its future form.",
     "motion": 0
   },
   "CHASM_WITH_HIDDEN_BRIDGE_ACTIVE": {
-    "floor": "BRGBRID",
+    "floor": "BTMARB",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "MACHINE_CHASM_EDGE": {
@@ -1429,7 +1429,7 @@
   },
   "RAT_TRAP_WALL_CRACKING": {
     "floor": "BRGEARTH",
-    "wall": "BRGCAVE",
+    "wall": "BTCRUMB",
     "actor": "",
     "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
     "motion": 0
@@ -1437,22 +1437,22 @@
   "ELECTRIC_CRYSTAL_OFF": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogCrystalOff",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "ELECTRIC_CRYSTAL_ON": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogCrystalOn",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "TURRET_LEVER": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueSearchLever",
+    "alias": "Existing matching physical model, now bound to the visible catalog form.",
     "motion": 0
   },
   "WORM_TUNNEL_MARKER_DORMANT": {
@@ -1479,29 +1479,29 @@
   "BRAZIER": {
     "floor": "BRGEARTH",
     "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "actor": "BrogueCatalogBrazier",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "MUD_FLOOR": {
-    "floor": "BRGEARTH",
+    "floor": "BTMUD",
     "wall": "BRGCAVE",
     "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "alias": "Original CC0 catalog-specific surface; tools/terrain_catalog_assets.py.",
     "motion": 0
   },
   "MUD_WALL": {
     "floor": "BRGEARTH",
-    "wall": "BRGCAVE",
+    "wall": "BTMUD",
     "actor": "",
     "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
     "motion": 0
   },
   "MUD_DOORWAY": {
     "floor": "BRGEARTH",
-    "wall": "BRGCAVE",
-    "actor": "",
-    "alias": "Existing Project Broom material and physical model; specialized artwork deferred.",
+    "wall": "BTMUD",
+    "actor": "BrogueCatalogSkins",
+    "alias": "Original CC0 catalog-specific physical model; tools/terrain_catalog_assets.py.",
     "motion": 0
   }
 }

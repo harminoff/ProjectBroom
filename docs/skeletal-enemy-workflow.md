@@ -1,6 +1,7 @@
 # Updating a skeletal enemy
 
-The shared pipeline now drives the rat, kobold, jackal and monkey. Adding an enemy does not
+The shared pipeline now drives the rat, kobold, jackal, eel, monkey, both early
+bloat forms, goblin, goblin conjurer and toad. Adding an enemy does not
 require another native animation switch or a separate IQM exporter.
 
 1. Start from the pinned creature card in `docs/creatures/`. Preserve its identity,
@@ -59,9 +60,15 @@ from the static reference. Keep dedicated skins separate from static generators;
 The [jackal implementation](jackal-animation.md) demonstrates adding another
 quadruped through the registry without new hand-written native enemy code.
 
+The [eel implementation](eel-animation.md) uses a continuous ring skin and the
+same exporter. In a dedicated Blender MCP session, `build(new_scene=True)`
+creates a separate scene while preserving existing scene data. The normal
+background export still uses an isolated document. Optional `previewCamera`
+and `previewTarget` profile values frame low aquatic bodies in source previews.
+
 ## Connected anatomy and scale
 
-The rat, kobold, jackal and monkey now use a connected skin cage. Separate overlapping
+The rat, kobold, jackal, monkey and goblin now use a connected skin cage. Separate overlapping
 primitives are only the blockout; `assemble()` alone does not join their skin.
 After editing their blockout or weights, run isolated Blender 5.2.1 with
 `--threads 1 --python tools/monster_models/blender_skin.py -- kobold`
@@ -107,3 +114,9 @@ tics. The [monkey report](monkey-animation.md) records concrete evidence.
 
 See [visible enemy movement](enemy-movement.md) for camera gating and the
 top-of-screen movement progress indicator.
+
+Use `review_skeletal --packaged --distances` to test the actual packed resources
+and add 64/128/192-unit camera views. The package is deterministically assembled
+and critical asset/binding bytes are checked against source. See the
+[bloat report](bloat-animation.md) for this workflow and a separate fixed-seed
+natural death/gas encounter, which uses only normal bridge intents.

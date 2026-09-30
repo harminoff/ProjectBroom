@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `humanoid`.
-- Authored silhouette dimensions: 42 / 50 / 70 map units. Clearance: 16 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-ifrit`.
+- Authored silhouette dimensions: 36.9518 / 57.1654 / 66.2329 map units. Clearance: 16 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: storm, twin_scimitars, ember_eyes.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/64_ifrit.obj).
-- [Editable Blender source](../../assets/monsters/sources/64_ifrit.blend).
+- Visual construction cues: very broad dark-violet storm-djinn: torso, neck, shoulders and arms are one fused connected skin with fan-shaped pecs, flat abdominal plate, lats, traps and tapering biceps and forearms, large fanged face under a heavy brow, swept-back horns, full moustache and beard, gold collar, armlets and bracers over a crimson sash, twin curved scimitars with dark spines and ember-forged edge strips, no legs: tapering vortex of layered, ragged smoke sheets around a dark core, sparked with embers, ember eyes, blade edges, crown flame and burst flecks fullbright; skin lighting baked with ember under-glow.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/64_ifrit.iqm).
+- [Editable Blender source](../../assets/monsters/ifrit/ifrit-animated.blend).
+- [Animation manifest](../../assets/monsters/ifrit/animation.json); 36 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Ifrit authoring and actual verification](../ifrit-animation.md).
 
 ## Brogue encounter-table references
 
@@ -38,6 +41,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

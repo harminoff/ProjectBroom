@@ -38,17 +38,28 @@ class CreatureTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             target=Path(folder)/'index.json'
             baseline=json.loads(INDEX.read_text(encoding='utf-8'))
-            baseline['creatures'][4]['verification']={'review':'accepted-for-test'}
+            # Every queue creature is now skeletal, so no real OBJ entry remains.
+            # Give a real row synthetic static-OBJ metrics in the temporary index,
+            # and hide its skeletal profile, to keep exercising the static path.
+            from . import skeletal_registry
+            fixture=next(c for c in baseline['creatures'] if c['kind']>1)
+            kind=fixture['kind'];symbol=fixture['symbol']
+            fixture['art']={key:value for key,value in fixture['art'].items() if key!='modelSha256'}
+            fixture['art'].update(triangles=1200,parts=12,bounds=[[-16.0,-16.0,0.0],[16.0,16.0,48.0]],
+                                  objSha256='synthetic-static-geometry',skinSha256='synthetic-static-skin')
+            fixture['verification']={'review':'accepted-for-test'}
             target.write_text(json.dumps(baseline),encoding='utf-8')
-            with patch.object(bestiary,'INDEX',target), patch.object(bestiary,'write_docs'):
+            static_rows=[row for row in skeletal_registry.profiles() if row['symbol']!=symbol]
+            with patch.object(bestiary,'INDEX',target), patch.object(bestiary,'write_docs'), \
+                 patch.object(skeletal_registry,'profiles',lambda: static_rows):
                 same=bestiary.write_index()
-                self.assertEqual(same['creatures'][4]['verification'],{'review':'accepted-for-test'})
-                original=baseline['creatures'][4]['art']
+                self.assertEqual(same['creatures'][kind]['verification'],{'review':'accepted-for-test'})
+                original=fixture['art']
                 changed={key:original[key] for key in ('triangles','parts','bounds','objSha256','skinSha256')}
                 changed['objSha256']='different-geometry'
-                result=bestiary.write_index({'MK_EEL':changed})
-                self.assertTrue(result['creatures'][4]['verification']['stale'])
-                self.assertEqual(result['creatures'][4]['verification']['previousAssetVerification'],
+                result=bestiary.write_index({symbol:changed})
+                self.assertTrue(result['creatures'][kind]['verification']['stale'])
+                self.assertEqual(result['creatures'][kind]['verification']['previousAssetVerification'],
                                  {'review':'accepted-for-test'})
 
     def test_horde_references_preserve_roles_and_expressions(self):

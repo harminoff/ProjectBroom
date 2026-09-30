@@ -15,13 +15,15 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `serpent`.
-- Authored silhouette dimensions: 54 / 22 / 9 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-eel`.
+- Authored silhouette dimensions: 54.8 / 7.3019 / 7.1643 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
 - Visual construction cues: eel, fins, scales.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/04_eel.obj).
-- [Editable Blender source](../../assets/monsters/sources/04_eel.blend).
+- [Runtime model](../../mod/BrogueDoom/models/monsters/04_eel.iqm).
+- [Editable Blender source](../../assets/monsters/eel/eel-animated.blend).
+- [Animation manifest](../../assets/monsters/eel/animation.json); 13 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
 
 ## Brogue encounter-table references
 
@@ -42,6 +44,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

@@ -46,7 +46,7 @@ CONTOUR_DEPTH = 8
 CONTOUR_SHOULDER = 12
 CONTOUR_MIN_RUN = 3
 CONTOUR_RUN_STRIDE = 4
-COMPILER_VERSION = "45"
+COMPILER_VERSION = "47"
 RENDER_MAPPING_PATH = Path(__file__).with_name("terrain_render_map.json")
 THEME_REGISTRY_PATH = PROJECT_ROOT / "assets" / "terrain" / "broguedoom_cave_registry.json"
 RESOURCE_GRAPHICS_DIR = PROJECT_ROOT / "mod" / "BrogueDoom" / "graphics"
@@ -59,6 +59,14 @@ RESOURCE_ASSET_FILES = (
     "BRGWATER.png",
     "BRGLAVA.png",
     "BRGLAVA_BM.png",
+    "PMLIP000.png",
+    "PMLIP001.png",
+    "PMLIP002.png",
+    "PMLIP003.png",
+    "PMLIP004.png",
+    "PMLIP005.png",
+    "PMLIP006.png",
+    "PMLIP007.png",
     "BRGVEG0.png",
     "BRGDOOR0.png",
     "BRGUSTA.png",
@@ -113,7 +121,7 @@ RESOURCE_PRESENTATION_FILES = (
     "models/stairs/down_void.obj",
     "models/stairs/fall_shaft.obj",
 )
-CUSTOM_TEXTURES = {"BRGCAVE", "BRGWET", "BRGMASON", "BRGCVUP", "BRGWTUP", "BRGMSUP", "BRGDOOR", "BRGWFALL", "BRGSFALL", "BRGWCLF", "BRGSCLF", "BRGLFALL", "BRGVOID", "BRGCLIFF", "BRGSKY"}
+CUSTOM_TEXTURES = {"BRGCAVE", "BRGWET", "BRGMASON", "BRGCVUP", "BRGWTUP", "BRGMSUP", "BRGDOOR", "BRGWFALL", "BRGSFALL", "BRGWCLF", "BRGSCLF", "BRGLFALL", "BRGMLIP", "BRGVOID", "BRGCLIFF", "BRGSKY"}
 CUSTOM_TEXTURES.update({'RRGCAVE', 'RRGWET', 'RRGMASON', 'RRGCVUP', 'RRGWTUP', 'RRGMSUP'})
 CUSTOM_FLATS = {"BRGEARTH", "BRGCEIL", "BRGMOSS", "BRGFLAG", "BRGBRID", "BRGWATR", "BRGSLDG", "BRGMOLT", "BRGCHASM", "BRGABYSS"}
 
@@ -138,6 +146,39 @@ PROP_RULES: dict[str, tuple[str, int, int]] = {
     "TRAMPLED_FOLIAGE": ("foliage", 15013, 4),
     "DEAD_GRASS": ("dead_vegetation", 15014, 5),
     "DEAD_FOLIAGE": ("dead_vegetation", 15014, 3),
+}
+
+# These actors are inert dungeon dressing, not Brogue terrain or item records.
+# Their layout uses a dedicated SHA-256 stream so it cannot advance Brogue RNG.
+EXPLORER_PROP_TYPES: dict[str, int] = {
+    "bedroll": 15030,
+    "bones": 15031,
+    "junk": 15032,
+    "fallen_torch": 15033,
+    "skins": 15034,
+    "rubble": 15035,
+}
+EXPLORER_SET_PIECES: dict[str, tuple[tuple[str, int, int, int], ...]] = {
+    # component, offset toward wall, offset along wall, relative angle
+    "abandoned_camp": (
+        ("bedroll", 10, -8, 90),
+        ("fallen_torch", 8, 17, 20),
+        ("junk", -13, 15, 45),
+    ),
+    "lost_explorer": (
+        ("bones", 5, -4, 0),
+        ("fallen_torch", 11, 19, 35),
+    ),
+    "discarded_supplies": (
+        ("skins", 9, 0, 90),
+        ("junk", -13, -17, 20),
+        ("rubble", -12, 17, 0),
+    ),
+    "creature_den": (
+        ("skins", 8, 1, 90),
+        ("bones", -11, -15, 45),
+        ("rubble", -13, 17, 0),
+    ),
 }
 VEGETATED_FLOOR_SURFACES = {
     "GRASS",
@@ -1021,7 +1062,10 @@ def transition_material(
     # the region theme here: dry ground adjacent to water is classified as
     # CAVE_WET for palette cohesion and would otherwise become a waterfall.
     higher_theme = terrain_theme(higher_cell, cells, include_adjacency=False)
-    if theme == "CHASM" and front_floor != back_floor:
+    lower_theme = terrain_theme(lower_cell, cells, include_adjacency=False)
+    if lower_theme != "CHASM" and "LAVA" in (higher_theme, lower_theme) and front_floor != back_floor:
+        return "BRGMLIP"
+    if lower_theme == "CHASM" and front_floor != back_floor:
         # A liquid beside the abyss still exposes a rock cliff. Composite
         # textures carry animated liquid ribbons over that cliff instead of
         # replacing the complete lower tier with an opaque waterfall panel.
@@ -1029,13 +1073,15 @@ def transition_material(
             return "BRGWCLF"
         if higher_theme == "SLUDGE":
             return "BRGSCLF"
+        if higher_theme == "LAVA":
+            return "BRGCLIFF"
     fall = TERRAIN_THEME_REGISTRY["themes"][higher_theme].get("fall")
     if fall and front_floor != back_floor:
         return str(fall)
 
     # Dry ground above a chasm exposes the dedicated cliff; every other dry
     # transition exposes the higher cell's structural bank material.
-    if theme == "CHASM" and front_floor != back_floor:
+    if lower_theme == "CHASM" and front_floor != back_floor:
         return "BRGCLIFF"
     return wall_material(higher_cell, seed, depth, cells, layout)
 
@@ -1086,6 +1132,77 @@ def prop_placement(cell: dict[str, Any], game_seed: Any, depth: int, width: int,
         "z": floor_height(cell),
         "angle": (digest[3] % 8) * 45,
     }
+
+
+def explorer_set_piece_placements(
+    cells: dict[tuple[int, int], dict[str, Any]],
+    geometry_cells: Collection[tuple[int, int]],
+    game_seed: Any,
+    depth: int,
+    width: int,
+    height: int,
+    excluded: Collection[tuple[int, int]] = (),
+) -> list[dict[str, Any]]:
+    """Lay out sparse, inert evidence of prior explorers and dungeon life."""
+    excluded_cells = set(excluded)
+    directions = ((1, 0, 0), (0, -1, 90), (-1, 0, 180), (0, 1, 270))
+    candidates: list[tuple[bytes, int, int, tuple[int, int, int]]] = []
+    for x, y in sorted(geometry_cells):
+        cell = cells[(x, y)]
+        if (
+            (x, y) in excluded_cells
+            or layer_symbol(cell, "dungeon") != "FLOOR"
+            or layer_symbol(cell, "liquid") != "NOTHING"
+            or layer_symbol(cell, "gas") != "NOTHING"
+            or layer_symbol(cell, "surface") != "NOTHING"
+            or int(cell.get("machine", 0)) != 0
+            or floor_height(cell) != 0
+        ):
+            continue
+        walls = tuple(
+            direction for direction in directions
+            if (x + direction[0], y + direction[1]) in cells
+            and cell_is_solid(cells[(x + direction[0], y + direction[1])])
+        )
+        if not walls:
+            continue
+        digest = hashlib.sha256(f"explorer-set:{game_seed}:{depth}:{x}:{y}".encode("ascii")).digest()
+        candidates.append((digest, x, y, walls[digest[0] % len(walls)]))
+
+    # Three readable vignettes on normal floors; tiny or fragmented maps stay sparse.
+    target = 3 if len(candidates) >= 24 else 2 if len(candidates) >= 12 else 1 if candidates else 0
+    chosen: list[tuple[bytes, int, int, tuple[int, int, int]]] = []
+    protected = set(excluded_cells)
+    for candidate in sorted(candidates, key=lambda entry: entry[0]):
+        _, x, y, _ = candidate
+        if any(abs(x - px) + abs(y - py) < 6 for px, py in protected):
+            continue
+        chosen.append(candidate)
+        protected.add((x, y))
+        if len(chosen) == target:
+            break
+
+    pattern_names = tuple(EXPLORER_SET_PIECES)
+    pattern_offset = hashlib.sha256(f"explorer-patterns:{game_seed}:{depth}".encode("ascii")).digest()[0]
+    placements: list[dict[str, Any]] = []
+    for index, (digest, x, y, (wall_dx, wall_dy, wall_angle)) in enumerate(chosen):
+        pattern_name = pattern_names[(pattern_offset + index) % len(pattern_names)]
+        center_x, center_y = cell_center(width, height, x, y)
+        # Brogue Y is inverted when exported to Doom world coordinates.
+        toward_x, toward_y = wall_dx, -wall_dy
+        along_x, along_y = -toward_y, toward_x
+        for component, toward, along, angle_offset in EXPLORER_SET_PIECES[pattern_name]:
+            placements.append({
+                "setPiece": pattern_name,
+                "component": component,
+                "cell": (x, y),
+                "type": EXPLORER_PROP_TYPES[component],
+                "x": center_x + toward_x * toward + along_x * along,
+                "y": center_y + toward_y * toward + along_y * along,
+                "z": floor_height(cells[(x, y)]),
+                "angle": (wall_angle + angle_offset + (digest[1] % 3 - 1) * 5) % 360,
+            })
+    return placements
 
 
 def sector_ceiling(
@@ -1357,10 +1474,20 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
                 upper_texture = wall_material(front_cell, game_seed, depth, cells, material_layout)
             else:
                 upper_texture = "-"
+            seam_texture = "-"
+            if addressable and not is_door_boundary and cell_is_solid(front_cell) != cell_is_solid(back_cell):
+                # Addressable maps retain solid cells as stable sectors. Their
+                # solid/open border is therefore two-sided, so restore the
+                # depth 2+ wall-to-sky fade explicitly on the shared seam.
+                open_cell = back_cell if cell_is_solid(front_cell) else front_cell
+                solid_cell = front_cell if cell_is_solid(front_cell) else back_cell
+                seam_texture = boundary_material(
+                    open_cell, solid_cell, game_seed, depth, cells, material_layout
+                )
             front_side = len(sidedefs)
-            sidedefs.append({"sector": edge["front"], "offsetx": texture_offset, "texturemiddle": "-", "texturetop": upper_texture, "texturebottom": lower_texture})
+            sidedefs.append({"sector": edge["front"], "offsetx": texture_offset, "texturemiddle": seam_texture, "texturetop": upper_texture, "texturebottom": lower_texture})
             back_side = len(sidedefs)
-            sidedefs.append({"sector": back, "offsetx": texture_offset, "texturemiddle": "-", "texturetop": upper_texture, "texturebottom": lower_texture})
+            sidedefs.append({"sector": back, "offsetx": texture_offset, "texturemiddle": seam_texture, "texturetop": upper_texture, "texturebottom": lower_texture})
             two_sided = True
         if back is None:
             two_sided = False
@@ -1524,6 +1651,25 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
                 int(placement["z"]),
             )
         )
+    set_piece_props = explorer_set_piece_placements(
+        cells,
+        geometry_cells,
+        game_seed,
+        depth,
+        width,
+        height,
+        stair_positions,
+    )
+    for placement in set_piece_props:
+        parts.append(
+            thing(
+                int(placement["x"]),
+                int(placement["y"]),
+                int(placement["type"]),
+                int(placement["angle"]),
+                int(placement["z"]),
+            )
+        )
     parts.append("\n")
     map_text = "".join(parts)
     theme_counts: dict[str, int] = {}
@@ -1538,6 +1684,11 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
     for prop in props:
         role = str(prop["role"])
         prop_counts[role] = prop_counts.get(role, 0) + 1
+    set_piece_counts: dict[str, int] = {}
+    for name in {str(prop["setPiece"]) for prop in set_piece_props}:
+        set_piece_counts[name] = len({
+            prop["cell"] for prop in set_piece_props if prop["setPiece"] == name
+        })
     metadata = {
         "name": map_name,
         "depth": depth,
@@ -1553,6 +1704,9 @@ def make_map_text(level: dict[str, Any], width: int, height: int, map_name: str 
         "chasmPortalCount": chasm_portal_count,
         "propCount": len(props),
         "propCounts": dict(sorted(prop_counts.items())),
+        "setPieceCount": len({prop["cell"] for prop in set_piece_props}),
+        "setPiecePropCount": len(set_piece_props),
+        "setPieceCounts": dict(sorted(set_piece_counts.items())),
         "lineCount": len(lines),
         "sidedefCount": len(sidedefs),
         "themeCounts": dict(sorted(theme_counts.items())),

@@ -27,7 +27,11 @@ class BrogueMonsterK03 : BrogueMonsterProxyBase
     Default { +DECOUPLEDANIMATIONS; }
     States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
 }
-class BrogueMonsterK04 : BrogueMonsterProxyBase {}
+class BrogueMonsterK04 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
 class BrogueMonsterK05 : BrogueMonsterProxyBase
 {
     Default { +DECOUPLEDANIMATIONS; }
@@ -37,65 +41,318 @@ class BrogueMonsterK05Captive : BrogueMonsterK05
 {
     States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("captive", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
 }
-class BrogueMonsterK06 : BrogueMonsterProxyBase {}
-class BrogueMonsterK07 : BrogueMonsterProxyBase {}
-class BrogueMonsterK08 : BrogueMonsterProxyBase {}
-class BrogueMonsterK09 : BrogueMonsterProxyBase {}
-class BrogueMonsterK10 : BrogueMonsterProxyBase {}
-class BrogueMonsterK11 : BrogueMonsterProxyBase {}
-class BrogueMonsterK12 : BrogueMonsterProxyBase {}
-class BrogueMonsterK13 : BrogueMonsterProxyBase {}
-class BrogueMonsterK14 : BrogueMonsterProxyBase {}
-class BrogueMonsterK15 : BrogueMonsterProxyBase {}
-class BrogueMonsterK16 : BrogueMonsterProxyBase {}
-class BrogueMonsterK17 : BrogueMonsterProxyBase {}
-class BrogueMonsterK18 : BrogueMonsterProxyBase {}
-class BrogueMonsterK19 : BrogueMonsterProxyBase {}
-class BrogueMonsterK20 : BrogueMonsterProxyBase {}
-class BrogueMonsterK21 : BrogueMonsterProxyBase {}
-class BrogueMonsterK22 : BrogueMonsterProxyBase {}
-class BrogueMonsterK23 : BrogueMonsterProxyBase {}
-class BrogueMonsterK24 : BrogueMonsterProxyBase {}
-class BrogueMonsterK25 : BrogueMonsterProxyBase {}
-class BrogueMonsterK26 : BrogueMonsterProxyBase {}
-class BrogueMonsterK27 : BrogueMonsterProxyBase {}
-class BrogueMonsterK28 : BrogueMonsterProxyBase {}
-class BrogueMonsterK29 : BrogueMonsterProxyBase {}
-class BrogueMonsterK30 : BrogueMonsterProxyBase {}
-class BrogueMonsterK31 : BrogueMonsterProxyBase {}
-class BrogueMonsterK32 : BrogueMonsterProxyBase {}
-class BrogueMonsterK33 : BrogueMonsterProxyBase {}
-class BrogueMonsterK34 : BrogueMonsterProxyBase {}
-class BrogueMonsterK35 : BrogueMonsterProxyBase {}
-class BrogueMonsterK36 : BrogueMonsterProxyBase {}
-class BrogueMonsterK37 : BrogueMonsterProxyBase {}
-class BrogueMonsterK38 : BrogueMonsterProxyBase {}
-class BrogueMonsterK39 : BrogueMonsterProxyBase {}
-class BrogueMonsterK40 : BrogueMonsterProxyBase {}
-class BrogueMonsterK41 : BrogueMonsterProxyBase {}
-class BrogueMonsterK42 : BrogueMonsterProxyBase {}
-class BrogueMonsterK43 : BrogueMonsterProxyBase {}
-class BrogueMonsterK44 : BrogueMonsterProxyBase {}
-class BrogueMonsterK45 : BrogueMonsterProxyBase {}
-class BrogueMonsterK46 : BrogueMonsterProxyBase {}
-class BrogueMonsterK47 : BrogueMonsterProxyBase {}
-class BrogueMonsterK48 : BrogueMonsterProxyBase {}
-class BrogueMonsterK49 : BrogueMonsterProxyBase {}
-class BrogueMonsterK50 : BrogueMonsterProxyBase {}
-class BrogueMonsterK51 : BrogueMonsterProxyBase {}
-class BrogueMonsterK52 : BrogueMonsterProxyBase {}
-class BrogueMonsterK53 : BrogueMonsterProxyBase {}
-class BrogueMonsterK54 : BrogueMonsterProxyBase {}
-class BrogueMonsterK55 : BrogueMonsterProxyBase {}
-class BrogueMonsterK56 : BrogueMonsterProxyBase {}
-class BrogueMonsterK57 : BrogueMonsterProxyBase {}
-class BrogueMonsterK58 : BrogueMonsterProxyBase {}
-class BrogueMonsterK59 : BrogueMonsterProxyBase {}
-class BrogueMonsterK60 : BrogueMonsterProxyBase {}
-class BrogueMonsterK61 : BrogueMonsterProxyBase {}
-class BrogueMonsterK62 : BrogueMonsterProxyBase {}
-class BrogueMonsterK63 : BrogueMonsterProxyBase {}
-class BrogueMonsterK64 : BrogueMonsterProxyBase {}
-class BrogueMonsterK65 : BrogueMonsterProxyBase {}
-class BrogueMonsterK66 : BrogueMonsterProxyBase {}
-class BrogueMonsterK67 : BrogueMonsterProxyBase {}
+class BrogueMonkeyReleasedRestraints : Actor
+{
+    Default { +NOBLOCKMAP; +NOGRAVITY; +NOINTERACTION; +NOTONAUTOMAP; +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A 29 A_SetAnimation("collapse", -1, -1, -1, -1, 1, 0); BRM0 A -1; Stop; }
+}
+class BrogueMonsterK06 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK07 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK08 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK09 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK10 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK11 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK12 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK13 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK14 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK15 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK16 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK17 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK18 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK19 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK20 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK21 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK22 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK23 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; RenderStyle "Add"; Alpha 0.65; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK24 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK25 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK26 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK27 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK28 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK29 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK30 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK31 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK32 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK33 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK34 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK35 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK36 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK37 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK38 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK39 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK40 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK41 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK42 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK43 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; RenderStyle "Add"; Alpha 0.65; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK44 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK45 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK46 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK47 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK48 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK49 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK50 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK51 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK52 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK53 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK54 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK55 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; RenderStyle "Add"; Alpha 0.65; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK56 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; RenderStyle "Add"; Alpha 0.65; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK57 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK58 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK59 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; RenderStyle "Add"; Alpha 0.65; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK60 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK61 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK62 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK63 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK64 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK65 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK66 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}
+class BrogueMonsterK67 : BrogueMonsterProxyBase
+{
+    Default { +DECOUPLEDANIMATIONS; }
+    States { Spawn: BRM0 A 0; BRM0 A -1 A_SetAnimation("idle", -1, -1, -1, -1, 1, SAF_LOOP); Stop; }
+}

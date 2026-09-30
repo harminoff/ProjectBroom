@@ -15,13 +15,15 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `bloat`.
-- Authored silhouette dimensions: 28 / 28 / 32 map units. Clearance: 16 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-bloat`.
+- Authored silhouette dimensions: 28 / 26.3268 / 32 map units. Clearance: 16 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
 - Visual construction cues: membrane, veins.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/06_bloat.obj).
-- [Editable Blender source](../../assets/monsters/sources/06_bloat.blend).
+- [Runtime model](../../mod/BrogueDoom/models/monsters/06_bloat.iqm).
+- [Editable Blender source](../../assets/monsters/bloat/bloat-animated.blend).
+- [Animation manifest](../../assets/monsters/bloat/animation.json); 7 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
 
 ## Brogue encounter-table references
 
@@ -37,8 +39,8 @@ These are nominal table ranges and weights, not guaranteed encounter depths or p
 Machine-readable results live in [bestiary-index.json](../../assets/monsters/bestiary-index.json). A generated asset is not automatically visually approved. These generated cards are not a hand-edited checklist: record later acceptance under the index entry’s `verification` object, which regeneration preserves.
 
 - [ ] Individual art/signature-feature approval.
-- [ ] Normal encounter at gameplay distance and lighting.
+- [x] Fixed-seed normal encounter captured; see verification object for limited scope.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `humanoid`.
-- Authored silhouette dimensions: 38 / 38 / 64 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-charm_guardian`.
+- Authored silhouette dimensions: 25.3744 / 44.0904 / 61.6279 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: spectral, knight, axe.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/59_charm_guardian.obj).
-- [Editable Blender source](../../assets/monsters/sources/59_charm_guardian.blend).
+- Visual construction cues: hovering spectral knight outline, translucent crimson spectral light with a bright rim and dim core, closed crested great helm with bright visor slits, great bearded battleaxe held at port, legs and cloak hem fading to nothing, diagonal reaping cut and spike jab, empty armour collapse.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/59_charm_guardian.iqm).
+- [Editable Blender source](../../assets/monsters/guardian_spirit/guardian-spirit-animated.blend).
+- [Animation manifest](../../assets/monsters/guardian_spirit/animation.json); 19 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Guardian spirit authoring and actual verification](../guardian-spirit-animation.md).
 
 ## Brogue encounter-table references
 
@@ -38,6 +41,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

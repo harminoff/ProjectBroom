@@ -5,7 +5,15 @@ import sys
 
 
 def main():
-    environment = {key.upper(): value for key, value in os.environ.items()}
+    # Windows environment blocks are case-insensitive, but .NET's
+    # ProcessStartInfo can still observe duplicate entries when a parent
+    # process supplies both `PATH` and `Path`. Keep one canonical spelling so
+    # MSBuild can construct its child environment without throwing on a
+    # duplicate dictionary key.
+    environment = {
+        key: value for key, value in os.environ.items() if key.lower() != "path"
+    }
+    environment["Path"] = os.environ.get("PATH", os.environ.get("Path", ""))
     environment["MSBUILDDISABLENODEREUSE"] = "1"
     return subprocess.call(sys.argv[1:], env=environment)
 

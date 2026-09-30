@@ -854,6 +854,17 @@ static BrogueBridgeResult appendItem(BrogueBridgeState *state,
         && coordinatesAreInMap(theItem->loc.x, theItem->loc.y)
         && playerCanSeeOrSense(theItem->loc.x, theItem->loc.y);
     kindTable = tableForItemCategory(theItem->category);
+    if (kindTable && (theItem->category & (POTION|SCROLL|STAFF|WAND|RING)))
+        copyPlainText(outItem->appearance,sizeof(outItem->appearance),kindTable[theItem->kind].flavor);
+    if (theItem->category == POTION) {
+        int colorIndex;
+        for (colorIndex=0; colorIndex<NUMBER_ITEM_COLORS; ++colorIndex) {
+            if (!strcmp(potionTable[theItem->kind].flavor, itemColorsRef[colorIndex])) {
+                outItem->potionColor=(uint16_t)(colorIndex+1);
+                break;
+            }
+        }
+    }
     outItem->kindKnown = (theItem->flags & ITEM_IDENTIFIED) != 0
         || (theItem->category & NEVER_IDENTIFIABLE) != 0
         || (kindTable != NULL && kindTable[theItem->kind].identified);
@@ -1154,6 +1165,7 @@ static uint64_t presentationHash(const BrogueBridgeState *state) {
         hash = hashU32(hash, a->gas); hash = hashU32(hash, a->gasVolume);
         hash = hashU32(hash, a->knowledge); hash = hashU32(hash, a->liquidKind);
         hash = hashU32(hash, a->bedKind);
+        for (int layer = 0; layer < 3; ++layer) hash = hashU32(hash, a->layers[layer]);
         hash = hashU32(hash, a->gasRed); hash = hashU32(hash, a->gasGreen); hash = hashU32(hash, a->gasBlue);
     }
     for (i = 0; i < state->creatureCount; i++) {

@@ -122,7 +122,7 @@ class BrogueBridgeTests(unittest.TestCase):
                 cwd=BRIDGE_DIR, check=True, capture_output=True, text=True,
             )
             catalog = __import__("json").loads(output.read_text(encoding="utf-8"))
-        self.assertEqual(catalog["bridgeApiVersion"], 21)
+        self.assertEqual(catalog["bridgeApiVersion"], 24)
         self.assertEqual(catalog["count"], 68)
         self.assertEqual(catalog["kinds"][0]["symbol"], "MK_YOU")
         self.assertEqual(catalog["kinds"][1]["symbol"], "MK_RAT")
@@ -154,9 +154,9 @@ class BrogueBridgeTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertEqual(
             hashlib.sha256(first.encode("utf-8")).hexdigest(),
-            # ABI v20 adds copied terrain appearance to the presentation hash.
+            # ABI v21 adds knowledge-safe layers to the presentation hash.
             # Gameplay/RNG parity is checked independently by terrain-smoke.
-            "27cca20f6d65346e2915a26b4480ac7152311674c46d02bf610da5eb2f694fc2",
+            "e8b199f9bc0570f8e4f402cffc7a8515e18752c89006fc794e100f01929830fa",
         )
         action_matches = lines_matching(first, ACTION_RE)
         self.assertEqual(len(action_matches), 6)

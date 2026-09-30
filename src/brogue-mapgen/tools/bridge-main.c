@@ -25,6 +25,8 @@
 #include "bridge-interaction-smoke.h"
 #include "bridge-save-smoke.h"
 #include "bridge-terrain-smoke.h"
+#include "bridge-potion-smoke.h"
+#include "bridge-flavor-smoke.h"
 #include "bridge-bloodwort-smoke.h"
 #ifndef BROGUE_BRIDGE_DLL
 #include "native-interaction-fixture.h"
@@ -565,6 +567,8 @@ int main(int argc, char **argv) {
     boolean searchSmoke = false;
     boolean interactionSmoke = false;
     boolean terrainSmoke = false;
+    boolean potionSmoke = false;
+    boolean flavorSmoke = false;
     boolean bloodwortSmoke = false;
     boolean saveSmoke = false;
     const char *nativeFixture = NULL;
@@ -632,6 +636,10 @@ int main(int argc, char **argv) {
             bloodwortSmoke = true;
         } else if (strcmp(argv[i], "--terrain-smoke") == 0) {
             terrainSmoke = true;
+        } else if (strcmp(argv[i], "--potion-smoke") == 0) {
+            potionSmoke = true;
+        } else if (strcmp(argv[i], "--flavor-smoke") == 0) {
+            flavorSmoke = true;
         } else if (strcmp(argv[i], "--wand-smoke") == 0) {
             wandSmoke = true;
         } else if (strcmp(argv[i], "--warning-smoke") == 0) {
@@ -689,6 +697,8 @@ int main(int argc, char **argv) {
     if (saveSmoke) return runSaveSmoke(seed, saveDepthSmoke);
     if (bloodwortSmoke) { exitCode = runBloodwortSmoke(&state); brogue_bridge_shutdown(); return exitCode; }
     if (terrainSmoke) { exitCode = runTerrainSmoke(&state); brogue_bridge_shutdown(); return exitCode; }
+    if (potionSmoke) { exitCode = runPotionSmoke(&state); brogue_bridge_shutdown(); return exitCode; }
+    if (flavorSmoke) { exitCode = runFlavorSmoke(&state); brogue_bridge_shutdown(); return exitCode; }
 
     if (interactionSmoke) {
         exitCode = runInteractionSmoke(&state);
@@ -805,6 +815,15 @@ int main(int argc, char **argv) {
                 fflush(stderr);
             }
             bridgeResult = brogue_bridge_perform_action(action, &turnResult);
+            if (bridgeResult == BROGUE_BRIDGE_INTERACTION_REQUIRED) {
+                /* The scripted walk never answers a Brogue prompt; declining leaves the simulation unchanged. */
+                BrogueBridgeInteractionResponse decline;
+                memset(&decline, 0, sizeof(decline));
+                decline.apiVersion = BROGUE_BRIDGE_API_VERSION;
+                decline.token = turnResult.interaction.token;
+                decline.answer = BROGUE_ANSWER_CANCEL;
+                bridgeResult = brogue_bridge_respond(&decline, &turnResult);
+            }
             if (bridgeResult != BROGUE_BRIDGE_OK) {
                 if (bridgeResult == BROGUE_BRIDGE_GAME_ENDED) {
                     break;

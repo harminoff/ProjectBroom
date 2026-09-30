@@ -1,0 +1,801 @@
+Model BrogueFlavorStaffteak
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_teak.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffteak
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_teak.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffoak
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_oak.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffoak
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_oak.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffredwood
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_redwood.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffredwood
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_redwood.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffrowan
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_rowan.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffrowan
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_rowan.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffwillow
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_willow.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffwillow
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_willow.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffmahogany
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_mahogany.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffmahogany
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_mahogany.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffpinewood
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_pinewood.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffpinewood
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_pinewood.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffmaple
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_maple.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffmaple
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_maple.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffbamboo
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_bamboo.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffbamboo
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_bamboo.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffironwood
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_ironwood.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffironwood
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_ironwood.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffpearwood
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_pearwood.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffpearwood
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_pearwood.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffbirch
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_birch.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffbirch
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_birch.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffcherry
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_cherry.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffcherry
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_cherry.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffeucalyptus
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_eucalyptus.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffeucalyptus
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_eucalyptus.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffwalnut
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_walnut.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffwalnut
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_walnut.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffcedar
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_cedar.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffcedar
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_cedar.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffrosewood
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_rosewood.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffrosewood
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_rosewood.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffyew
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_yew.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffyew
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_yew.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffsandalwood
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_sandalwood.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffsandalwood
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_sandalwood.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffhickory
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_hickory.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffhickory
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_hickory.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorStaffhemlock
+{ Path "models/pickups"
+ Model 0 "staff_generic.obj"
+ Skin 0 "graphics/BRGFL_Staff_hemlock.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewStaffhemlock
+{ Path "models/devices"
+ Model 0 "staff.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Staff_hemlock.png"
+ ScaleWeaponFOV
+ FrameIndex BDST A 0 0
+ FrameIndex BDST B 0 1
+ FrameIndex BDST C 0 2
+ FrameIndex BDST D 0 3
+ FrameIndex BDST E 0 4
+ FrameIndex BDST F 0 5
+ FrameIndex BDST G 0 6
+ FrameIndex BDST H 0 7
+ FrameIndex BDST I 0 8
+}
+Model BrogueFlavorWandbronze
+{ Path "models/pickups"
+ Model 0 "wand_generic.obj"
+ Skin 0 "graphics/BRGFL_Wand_bronze.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewWandbronze
+{ Path "models/devices"
+ Model 0 "wand.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Wand_bronze.png"
+ ScaleWeaponFOV
+ FrameIndex BDWA A 0 0
+ FrameIndex BDWA B 0 1
+ FrameIndex BDWA C 0 2
+ FrameIndex BDWA D 0 3
+ FrameIndex BDWA E 0 4
+ FrameIndex BDWA F 0 5
+ FrameIndex BDWA G 0 6
+ FrameIndex BDWA H 0 7
+ FrameIndex BDWA I 0 8
+}
+Model BrogueFlavorWandsteel
+{ Path "models/pickups"
+ Model 0 "wand_generic.obj"
+ Skin 0 "graphics/BRGFL_Wand_steel.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewWandsteel
+{ Path "models/devices"
+ Model 0 "wand.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Wand_steel.png"
+ ScaleWeaponFOV
+ FrameIndex BDWA A 0 0
+ FrameIndex BDWA B 0 1
+ FrameIndex BDWA C 0 2
+ FrameIndex BDWA D 0 3
+ FrameIndex BDWA E 0 4
+ FrameIndex BDWA F 0 5
+ FrameIndex BDWA G 0 6
+ FrameIndex BDWA H 0 7
+ FrameIndex BDWA I 0 8
+}
+Model BrogueFlavorWandbrass
+{ Path "models/pickups"
+ Model 0 "wand_generic.obj"
+ Skin 0 "graphics/BRGFL_Wand_brass.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewWandbrass
+{ Path "models/devices"
+ Model 0 "wand.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Wand_brass.png"
+ ScaleWeaponFOV
+ FrameIndex BDWA A 0 0
+ FrameIndex BDWA B 0 1
+ FrameIndex BDWA C 0 2
+ FrameIndex BDWA D 0 3
+ FrameIndex BDWA E 0 4
+ FrameIndex BDWA F 0 5
+ FrameIndex BDWA G 0 6
+ FrameIndex BDWA H 0 7
+ FrameIndex BDWA I 0 8
+}
+Model BrogueFlavorWandpewter
+{ Path "models/pickups"
+ Model 0 "wand_generic.obj"
+ Skin 0 "graphics/BRGFL_Wand_pewter.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewWandpewter
+{ Path "models/devices"
+ Model 0 "wand.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Wand_pewter.png"
+ ScaleWeaponFOV
+ FrameIndex BDWA A 0 0
+ FrameIndex BDWA B 0 1
+ FrameIndex BDWA C 0 2
+ FrameIndex BDWA D 0 3
+ FrameIndex BDWA E 0 4
+ FrameIndex BDWA F 0 5
+ FrameIndex BDWA G 0 6
+ FrameIndex BDWA H 0 7
+ FrameIndex BDWA I 0 8
+}
+Model BrogueFlavorWandnickel
+{ Path "models/pickups"
+ Model 0 "wand_generic.obj"
+ Skin 0 "graphics/BRGFL_Wand_nickel.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewWandnickel
+{ Path "models/devices"
+ Model 0 "wand.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Wand_nickel.png"
+ ScaleWeaponFOV
+ FrameIndex BDWA A 0 0
+ FrameIndex BDWA B 0 1
+ FrameIndex BDWA C 0 2
+ FrameIndex BDWA D 0 3
+ FrameIndex BDWA E 0 4
+ FrameIndex BDWA F 0 5
+ FrameIndex BDWA G 0 6
+ FrameIndex BDWA H 0 7
+ FrameIndex BDWA I 0 8
+}
+Model BrogueFlavorWandcopper
+{ Path "models/pickups"
+ Model 0 "wand_generic.obj"
+ Skin 0 "graphics/BRGFL_Wand_copper.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewWandcopper
+{ Path "models/devices"
+ Model 0 "wand.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Wand_copper.png"
+ ScaleWeaponFOV
+ FrameIndex BDWA A 0 0
+ FrameIndex BDWA B 0 1
+ FrameIndex BDWA C 0 2
+ FrameIndex BDWA D 0 3
+ FrameIndex BDWA E 0 4
+ FrameIndex BDWA F 0 5
+ FrameIndex BDWA G 0 6
+ FrameIndex BDWA H 0 7
+ FrameIndex BDWA I 0 8
+}
+Model BrogueFlavorWandaluminum
+{ Path "models/pickups"
+ Model 0 "wand_generic.obj"
+ Skin 0 "graphics/BRGFL_Wand_aluminum.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewWandaluminum
+{ Path "models/devices"
+ Model 0 "wand.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Wand_aluminum.png"
+ ScaleWeaponFOV
+ FrameIndex BDWA A 0 0
+ FrameIndex BDWA B 0 1
+ FrameIndex BDWA C 0 2
+ FrameIndex BDWA D 0 3
+ FrameIndex BDWA E 0 4
+ FrameIndex BDWA F 0 5
+ FrameIndex BDWA G 0 6
+ FrameIndex BDWA H 0 7
+ FrameIndex BDWA I 0 8
+}
+Model BrogueFlavorWandtungsten
+{ Path "models/pickups"
+ Model 0 "wand_generic.obj"
+ Skin 0 "graphics/BRGFL_Wand_tungsten.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewWandtungsten
+{ Path "models/devices"
+ Model 0 "wand.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Wand_tungsten.png"
+ ScaleWeaponFOV
+ FrameIndex BDWA A 0 0
+ FrameIndex BDWA B 0 1
+ FrameIndex BDWA C 0 2
+ FrameIndex BDWA D 0 3
+ FrameIndex BDWA E 0 4
+ FrameIndex BDWA F 0 5
+ FrameIndex BDWA G 0 6
+ FrameIndex BDWA H 0 7
+ FrameIndex BDWA I 0 8
+}
+Model BrogueFlavorWandtitanium
+{ Path "models/pickups"
+ Model 0 "wand_generic.obj"
+ Skin 0 "graphics/BRGFL_Wand_titanium.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewWandtitanium
+{ Path "models/devices"
+ Model 0 "wand.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Wand_titanium.png"
+ ScaleWeaponFOV
+ FrameIndex BDWA A 0 0
+ FrameIndex BDWA B 0 1
+ FrameIndex BDWA C 0 2
+ FrameIndex BDWA D 0 3
+ FrameIndex BDWA E 0 4
+ FrameIndex BDWA F 0 5
+ FrameIndex BDWA G 0 6
+ FrameIndex BDWA H 0 7
+ FrameIndex BDWA I 0 8
+}
+Model BrogueFlavorWandcobalt
+{ Path "models/pickups"
+ Model 0 "wand_generic.obj"
+ Skin 0 "graphics/BRGFL_Wand_cobalt.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewWandcobalt
+{ Path "models/devices"
+ Model 0 "wand.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Wand_cobalt.png"
+ ScaleWeaponFOV
+ FrameIndex BDWA A 0 0
+ FrameIndex BDWA B 0 1
+ FrameIndex BDWA C 0 2
+ FrameIndex BDWA D 0 3
+ FrameIndex BDWA E 0 4
+ FrameIndex BDWA F 0 5
+ FrameIndex BDWA G 0 6
+ FrameIndex BDWA H 0 7
+ FrameIndex BDWA I 0 8
+}
+Model BrogueFlavorWandchromium
+{ Path "models/pickups"
+ Model 0 "wand_generic.obj"
+ Skin 0 "graphics/BRGFL_Wand_chromium.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewWandchromium
+{ Path "models/devices"
+ Model 0 "wand.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Wand_chromium.png"
+ ScaleWeaponFOV
+ FrameIndex BDWA A 0 0
+ FrameIndex BDWA B 0 1
+ FrameIndex BDWA C 0 2
+ FrameIndex BDWA D 0 3
+ FrameIndex BDWA E 0 4
+ FrameIndex BDWA F 0 5
+ FrameIndex BDWA G 0 6
+ FrameIndex BDWA H 0 7
+ FrameIndex BDWA I 0 8
+}
+Model BrogueFlavorWandsilver
+{ Path "models/pickups"
+ Model 0 "wand_generic.obj"
+ Skin 0 "graphics/BRGFL_Wand_silver.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorViewWandsilver
+{ Path "models/devices"
+ Model 0 "wand.md3"
+ Skin 0 "graphics/VIEW_BRGFL_Wand_silver.png"
+ ScaleWeaponFOV
+ FrameIndex BDWA A 0 0
+ FrameIndex BDWA B 0 1
+ FrameIndex BDWA C 0 2
+ FrameIndex BDWA D 0 3
+ FrameIndex BDWA E 0 4
+ FrameIndex BDWA F 0 5
+ FrameIndex BDWA G 0 6
+ FrameIndex BDWA H 0 7
+ FrameIndex BDWA I 0 8
+}
+Model BrogueFlavorRingdiamond
+{ Path "models/pickups"
+ Model 0 "ring_generic.obj"
+ Skin 0 "graphics/BRGFL_Ring_diamond.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorRingopal
+{ Path "models/pickups"
+ Model 0 "ring_generic.obj"
+ Skin 0 "graphics/BRGFL_Ring_opal.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorRinggarnet
+{ Path "models/pickups"
+ Model 0 "ring_generic.obj"
+ Skin 0 "graphics/BRGFL_Ring_garnet.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorRingruby
+{ Path "models/pickups"
+ Model 0 "ring_generic.obj"
+ Skin 0 "graphics/BRGFL_Ring_ruby.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorRingamethyst
+{ Path "models/pickups"
+ Model 0 "ring_generic.obj"
+ Skin 0 "graphics/BRGFL_Ring_amethyst.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorRingtopaz
+{ Path "models/pickups"
+ Model 0 "ring_generic.obj"
+ Skin 0 "graphics/BRGFL_Ring_topaz.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorRingonyx
+{ Path "models/pickups"
+ Model 0 "ring_generic.obj"
+ Skin 0 "graphics/BRGFL_Ring_onyx.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorRingtourmaline
+{ Path "models/pickups"
+ Model 0 "ring_generic.obj"
+ Skin 0 "graphics/BRGFL_Ring_tourmaline.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorRingsapphire
+{ Path "models/pickups"
+ Model 0 "ring_generic.obj"
+ Skin 0 "graphics/BRGFL_Ring_sapphire.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorRingobsidian
+{ Path "models/pickups"
+ Model 0 "ring_generic.obj"
+ Skin 0 "graphics/BRGFL_Ring_obsidian.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorRingmalachite
+{ Path "models/pickups"
+ Model 0 "ring_generic.obj"
+ Skin 0 "graphics/BRGFL_Ring_malachite.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorRingaquamarine
+{ Path "models/pickups"
+ Model 0 "ring_generic.obj"
+ Skin 0 "graphics/BRGFL_Ring_aquamarine.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorRingemerald
+{ Path "models/pickups"
+ Model 0 "ring_generic.obj"
+ Skin 0 "graphics/BRGFL_Ring_emerald.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorRingjade
+{ Path "models/pickups"
+ Model 0 "ring_generic.obj"
+ Skin 0 "graphics/BRGFL_Ring_jade.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorRingalexandrite
+{ Path "models/pickups"
+ Model 0 "ring_generic.obj"
+ Skin 0 "graphics/BRGFL_Ring_alexandrite.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorRingagate
+{ Path "models/pickups"
+ Model 0 "ring_generic.obj"
+ Skin 0 "graphics/BRGFL_Ring_agate.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorRingbloodstone
+{ Path "models/pickups"
+ Model 0 "ring_generic.obj"
+ Skin 0 "graphics/BRGFL_Ring_bloodstone.png"
+ FrameIndex ITM0 A 0 0
+}
+Model BrogueFlavorRingjasper
+{ Path "models/pickups"
+ Model 0 "ring_generic.obj"
+ Skin 0 "graphics/BRGFL_Ring_jasper.png"
+ FrameIndex ITM0 A 0 0
+}

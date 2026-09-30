@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `tentacles`.
-- Authored silhouette dimensions: 60 / 60 / 106 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-tentacle_horror`.
+- Authored silhouette dimensions: 55.8764 / 56.3155 / 80.9514 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: tower, tentacles, suckers.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/48_tentacle_horror.obj).
-- [Editable Blender source](../../assets/monsters/sources/48_tentacle_horror.blend).
+- Visual construction cues: towering braided tentacle column, eyeless crown with a hooked sucking maw, irregular writhing crown of varied tentacles, bruised veined aubergine flesh, pale sucker-lined undersides, buckled heap death.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/48_tentacle_horror.iqm).
+- [Editable Blender source](../../assets/monsters/tentacle_horror/tentacle-horror-animated.blend).
+- [Animation manifest](../../assets/monsters/tentacle_horror/animation.json); 218 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Tentacle horror authoring and actual verification](../tentacle-horror-animation.md).
 
 ## Brogue encounter-table references
 
@@ -43,6 +46,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

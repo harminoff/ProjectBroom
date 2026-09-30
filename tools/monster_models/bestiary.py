@@ -88,6 +88,13 @@ ANCIENT_SPIRIT|dryad|48,58,84|bark,roots,branches
 '''.strip()
 
 
+# Work cards refined by hand after generation (report links, deliberately
+# unchecked encounter gates). Regeneration must never overwrite them; edit these
+# cards directly. New creatures should instead put `traits` and `report` in
+# their skeletal profile row so their generated card is already complete.
+HAND_MAINTAINED_CARDS = frozenset({9, 10, 11, 18, 20, 21, 27, 28, 29, 35})
+
+
 def profiles():
     result = {}
     for line in PROFILES.splitlines():
@@ -194,13 +201,77 @@ def write_index(metrics=None):
             skeletal_art={'runtimeModel':animated['runtimeModel'],'sourceBlend':animated['authoringSource'],
                           'format':animated['format'],'boneCount':animated['boneCount'],
                           'animationManifest':row['manifest'],
+                          **({'report':row['report']} if row.get('report') else {}),
                           'staticReference':f'mod/BrogueDoom/models/monsters/{k:02d}_{slug}.obj',
                           'dimensions':animated.get('dimensions',[51.12,18.44,15]),
                           'recipe':'weighted-'+slug}
             if k==1:
                 skeletal_art['traits']=['gray scavenger','articulated jaw','four-paw scurry','ear twitch','segmented tail']
+            if symbol=='MK_GOBLIN':
+                skeletal_art['traits']=['primate humanoid','angular face','recessed eyes','swept ears',
+                                        'dirty brown skin','sparse hair','ragged waist wrap','bound stone spear']
+            if symbol=='MK_GOBLIN_CONJURER':
+                skeletal_art['traits']=['primate humanoid','angular face','swept ears','ash-brown skin',
+                                        'free hands','skin-conforming violet sigils','cosmetic emissive pulse']
+            if symbol=='MK_GOBLIN_MYSTIC':
+                skeletal_art['traits']=['unarmed primate humanoid','golden sparkling eyes','swept ears','sparse scalp and shoulder fur','open palms','folded blue waist wrap']
+            if symbol=='MK_TOAD':
+                skeletal_art['traits']=['broad warty body','folded hind legs','splayed toes',
+                                        'horizontal pupils','parotoid glands','olive mottling','buff throat']
+            if symbol=='MK_ACID_MOUND':
+                skeletal_art['traits']=['low asymmetric connected mound','scalloped trailing skirt','offset folded shoulder','sunken pockets','acid-green film','dark olive gel']
+            if symbol=='MK_CENTIPEDE':
+                skeletal_art['traits']=['continuous flexible cuticle','fifteen chitin tergites','thirty articulated legs','paired antennae','lateral ocelli','curved forcipules','copper-edged violet chitin']
+            if symbol=='MK_SPIDER':
+                skeletal_art['traits']=['eight articulated legs','connected abdomen and cephalothorax','eight red eyes','paired fangs','pedipalps','umber cuticle','curled rolled death']
+            if symbol=='MK_OGRE':
+                skeletal_art['traits']=['barrel-chested brute','blunt brow and jaw','heavy bowed legs','closed club grip','knotted timber club','earth-red skin','ragged hide wrap']
+            if symbol=='MK_BOG_MONSTER':
+                skeletal_art['traits']=['connected buried mantle','six pale curling tentacles','fleshy gripping folds','mud-stained roots','mottled ivory tissue']
+            if symbol=='MK_EXPLOSIVE_BLOAT':
+                skeletal_art['traits']=['continuous thin membrane','orange amber pigment','fine dark vessels','pale taut pressure areas','asymmetric spent membrane collapse']
+            if symbol=='MK_PINK_JELLY':
+                skeletal_art['traits']=['connected viscous mass','lobed contact skirt','sagging folds',
+                                        'rose and wine marbling','embedded-looking pockets','wet surface sheen']
+            if symbol=='MK_GOBLIN_TOTEM':
+                skeletal_art['traits']=['planted split timber','carved wooden mask','bone crown',
+                                        'hemp lashings','drilled bone charms','ragged ochre cloth','stone footing']
+            if symbol=='MK_OGRE_TOTEM':
+                skeletal_art['traits']=['three split timber uprights','open bone arch','suspended engraved greenstone',
+                                        'aged bronze collar','leather bindings','scored bone tallies','fractured fixed foundation']
+            if symbol=='MK_VAMPIRE_BAT':
+                skeletal_art['traits']=['connected leathery wings','four elongated wing fingers','clawed thumbs','cupped ears and tragi','paired fangs','charcoal fur']
+            if symbol=='MK_DART_TURRET':
+                skeletal_art['traits']=['fixed diamond plate and forged yoke brackets','violet-enamelled trunnion launcher','twin exposed tension coil springs','sliding crosshead and striker','short open launching channel with spurred brass muzzle','slatted hopper of poison-tipped darts','wire-guarded violet poison vial and drip spout','ratchet, pawl and cocking lever']
+            if symbol=='MK_FLAME_TURRET':
+                skeletal_art['traits']=['fixed shield backplate and gusset brackets','riveted soot-black firebox','infernal horned furnace mask','ember slit eyes under iron lids','heat-tempered finned nozzle','twin hinged mouth shutters','banded fuel canisters and pressure dial','leather bellows','mesh-local pilot flame and attack blast']
+            if symbol=='MK_SPARK_TURRET':
+                skeletal_art['traits']=['fixed octagonal wall plaque','raised magical sigils','copper wound ceramic capacitors','embedded blue crystals','articulated electrodes','faceted focusing crystal']
+            if symbol=='MK_ARROW_TURRET':
+                skeletal_art['traits']=['fixed wall plate','braced oak crossbow','wound steel springs',
+                                        'brass ratchets','sliding bolt carriage','fletched arrow','spare bolt rack']
+            # Newer creatures keep traits in their own skeletal profile row, so
+            # authoring agents never edit this shared generator.
+            if row.get('traits'):
+                skeletal_art['traits']=list(row['traits'])
             metric={'modelSha256':animated['sha256'],'skinSha256':animated['skinSha256'],
                     'triangles':animated['triangles'],'parts':animated['parts']}
+        if symbol=='MK_DAR_BLADEMASTER' and skeletal_art:
+            skeletal_art['traits']=['lean deep elf','sculpted narrow face','swept pointed ears','dark swept hair','fitted charcoal armor','magenta sash','closed sword grip','narrow steel blade']
+        if symbol=='MK_ZOMBIE' and skeletal_art:
+            skeletal_art['traits']=['connected decaying corpse','eighteen hanging flesh shreds','exposed ribs and shin','milky eyes','slack hinged jaw','uneven teeth','ragged waist cloth']
+        if symbol=='MK_NAGA' and skeletal_art:
+            skeletal_art['traits']=['connected coiled serpent','tapered curling tail','articulated claw-bearing arms','olive dorsal scales','pale ventral scutes','reptilian head and jaw','collapsed slack death']
+        if symbol=='MK_ACID_JELLY' and skeletal_art:
+            skeletal_art['traits']=['slumped heavy gel mass','three swollen lobes with deep valleys','overhanging skirt and budding blobs','acid runnels and hanging drips','painted gel depth and wet highlights','deep emerald gel with yellow-lime acid film','spent spreading puddle']
+        if symbol=='MK_PIXIE' and skeletal_art:
+            skeletal_art['traits']=['tiny androgynous winged humanoid','enlarged heart-shaped face with swept pointed ears','large lidded green eyes and sly smirk','tousled silver-lilac pixie cut','four veined pearly membrane wings','teal petal bodice and violet petal skirt','limp grounded fall with stilled wings']
+        if symbol=='MK_TROLL' and skeletal_art:
+            skeletal_art['traits']=['uneven bulky hunch','low swollen face','huge misshapen hands','skin-seated irregular warts','attached phlegm strands','wet surface sheen']
+        if symbol=='MK_WRAITH' and skeletal_art:
+            skeletal_art['traits']=['emaciated grounded frame','skin-covered ribs and clavicles','hollow eye sockets','ten long stained nails','groping fingers','ragged waist covering']
+        if symbol=='MK_WILL_O_THE_WISP' and skeletal_art:
+            skeletal_art['traits']=['ethereal blue flame','transparent curved tongues','pale cyan heart','detached flickers','mesh-local emission','complete visual extinction']
         verification=existing.get(symbol,{})
         if verification and any(previous_art.get(symbol,{}).get(key)!=metric.get(key)
                                 for key in ('objSha256','modelSha256','skinSha256')):
@@ -234,7 +305,8 @@ def write_docs(index):
              'Stable work IDs are `BRG-M00` through `BRG-M67`; they match catalog kinds, not live entity IDs.', '',
              '## Scale and authority', '',
              'Brogue gives no meter/foot dimensions. `isLarge`, prose, color, anatomy and relative comparisons are facts; all numerical dimensions below are presentation decisions. Do not infer body size from HP. A cell is 64 map units; the humanoid art reference is about 58 units and the existing rat is about 15 units tall. Large coils and wings are posed compactly, not used to widen collision. The underworm is intentionally bulkier than the ogre. The mirrored totem is shoulder-high. Pixies are smaller than humanoids. Dar are elves, not flying creatures; the dragon has no flight flag and is not given wings.', '',
-             'Dimensions are rest-pose X/Y/Z mesh extents including equipment and appendages, before separate flight clearance. Runtime bindings remain scale 1. Feet touch the local floor; levitating meshes have a documented 16-unit visual gap. Existing bridge visibility/submersion behavior is unchanged. Most forms remain static OBJs; the rat and kobold use weighted IQMs with six clips. See their work cards and the shared skeletal workflow.', '',
+             'Dimensions are rest-pose X/Y/Z mesh extents including equipment and appendages, before separate flight clearance. Feet touch the local floor; levitating meshes have a documented 16-unit visual gap. Profile-specific visual scale is recorded in MODELDEF. Existing bridge visibility/submersion behavior is unchanged. Entries marked authored-skeletal use weighted IQMs; the other forms remain static references. See their work cards and the shared skeletal workflow.', '',
+             'Work IDs follow catalog order, not encounter order. Prioritize ordinary hostile horde ranges when choosing the next enemy; captive, machine and out-of-depth appearances can differ. The toad and pink jelly both begin at nominal depth 4, before regular goblin mystic groups at depth 6. See [the toad report](toad-animation.md) for this encounter-order review.', '',
              '## Work index', '', '| ID | Brogue kind | Recipe | Size X/Y/Z | State |', '| --- | --- | --- | --- | --- |']
     for item in index['creatures']:
         art = item['art']; symbol = item['symbol']; slug = symbol.removeprefix('MK_').lower()
@@ -259,6 +331,48 @@ def write_docs(index):
         if art.get('animationManifest'):
             doc.extend([f"- [Animation manifest](../../{art['animationManifest']}); {art['boneCount']} bones.",
                         '- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).'])
+        if symbol=='MK_TOAD':
+            doc.append('- [Toad authoring, encounter order and actual verification](../toad-animation.md).')
+        if symbol=='MK_ACID_MOUND':
+            doc.append('- [Acid mound authoring and actual verification](../acid-mound-animation.md).')
+        if symbol=='MK_CENTIPEDE':
+            doc.append('- [Centipede anatomy, grounded gait and actual verification](../centipede-animation.md).')
+        if symbol=='MK_PINK_JELLY':
+            doc.append('- [Pink jelly authoring and actual verification](../pink-jelly-animation.md).')
+        if symbol=='MK_ACID_JELLY':
+            doc.append('- [Acidic jelly authoring and actual verification](../acid-jelly-animation.md).')
+        if symbol=='MK_PIXIE':
+            doc.append('- [Pixie authoring and actual verification](../pixie-animation.md).')
+        if symbol=='MK_GOBLIN_TOTEM':
+            doc.append('- [Goblin totem authoring and actual verification](../goblin-totem-animation.md).')
+        if symbol=='MK_OGRE_TOTEM':
+            doc.append('- [Ogre totem authoring and actual verification](../ogre-totem-animation.md).')
+        if symbol=='MK_BOG_MONSTER':
+            doc.append('- [Bog monster authoring and actual verification](../bog-monster-animation.md).')
+        if symbol=='MK_DART_TURRET':
+            doc.append('- [Dart turret authoring, wall projection and actual verification](../dart-turret-animation.md).')
+        if symbol=='MK_FLAME_TURRET':
+            doc.append('- [Flame turret authoring, wall projection and actual verification](../flame-turret-animation.md).')
+        if symbol=='MK_SPARK_TURRET':
+            doc.append('- [Spark turret authoring, wall projection and actual verification](../spark-turret-animation.md).')
+        if symbol=='MK_ARROW_TURRET':
+            doc.append('- [Arrow turret authoring, wall projection and actual verification](../arrow-turret-animation.md).')
+        if symbol=='MK_VAMPIRE_BAT':
+            doc.append('- [Vampire bat authoring and actual verification](../vampire-bat-animation.md).')
+        if symbol=='MK_EXPLOSIVE_BLOAT':
+            doc.append('- [Explosive bloat authoring and actual verification](../explosive-bloat-animation.md).')
+        if symbol=='MK_DAR_BLADEMASTER':
+            doc.append('- [Dar blademaster authoring and actual verification](../dar-blademaster-animation.md).')
+        if symbol=='MK_ZOMBIE':
+            doc.append('- [Zombie anatomy and actual verification](../zombie-animation.md).')
+        if symbol=='MK_TROLL':
+            doc.append('- [Troll anatomy and actual verification](../troll-animation.md).')
+        if symbol=='MK_WRAITH':
+            doc.append('- [Wraith anatomy and actual verification](../wraith-animation.md).')
+        if symbol=='MK_WILL_O_THE_WISP':
+            doc.append('- [Wisp flame authoring and actual verification](../wisp-animation.md).')
+        if art.get('report'):
+            doc.append(f"- [{item['name'][:1].upper()+item['name'][1:]} authoring and actual verification](../{Path(art['report']).name}).")
         doc.extend(['', '## Brogue encounter-table references', '',
                     'These are nominal table ranges and weights, not guaranteed encounter depths or percentages. Summoning rows use level 0 and name a summoner; captive/machine/out-of-depth selection follows Brogue itself. Expressions such as `DEEPEST_LEVEL-1` are preserved rather than guessed. No spawn rules are changed.', '',
                     '| Source row | Role | Leader/summoner | Nominal range | Terrain | Flags |',
@@ -277,7 +391,10 @@ def write_docs(index):
                     ('- [x] Skeletal clips authored; see animation report for actual verification and approval scope.'
                      if art.get('format')=='IQM v2' else '- [ ] Animation refinement if later requested (current pose is static).'), '',
                     'Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.', ''])
-        (folder/filename).write_text('\n'.join(doc), encoding='utf-8')
+        card = folder/filename
+        if item['kind'] in HAND_MAINTAINED_CARDS and card.exists():
+            continue
+        card.write_text('\n'.join(doc), encoding='utf-8')
     lines.extend(['', '## Rebuild and verification', '',
                   'Run `python -m tools.monster_models.creatures`, then `python -m tools.monster_models.generate`. For a single work card use `python -m tools.monster_models.creatures --kind 2` (existing metrics for other kinds are retained). Build Blender sources with `tools/monster_models/blender_creatures.py` in Blender. The procedural Python definitions are the reproducible master; reconcile Blender hand edits before regeneration.', '',
                   'See [creature-model-rollout.md](creature-model-rollout.md) for actual verification evidence and remaining gates.', ''])

@@ -270,6 +270,13 @@ def main() -> None:
                 "art": next(m for m in models if m['category']==category.value and m['kind']==kind),
             })
 
+    from tools.pickup_models.detailed import POTION_COLORS
+    for color in POTION_COLORS:
+        skin=f'BRGPOTION_{color}.png'
+        (ROOT/'mod/BrogueDoom/graphics'/skin).write_bytes(atlas_bytes(potion_color=color))
+        cls=f'BroguePotion{color}'
+        zscript.append(f'class {cls} : BroguePickupProxyBase {{}}')
+        modeldef.append(f'Model {cls}\n{{\n Path "models/pickups"\n Model 0 "potion_generic.obj"\n Skin 0 "graphics/{skin}"\n Scale 1.0 1.0 1.0\n FrameIndex ITM0 A 0 0\n}}')
     registry = {
         "schemaVersion": 2,
         "source": "Brogue CE local Rogue.h and Globals.c item catalogs",
@@ -282,6 +289,9 @@ def main() -> None:
     REGISTRY_PATH.write_text(json.dumps(registry, indent=2) + "\n", encoding="utf-8")
     ZSCRIPT_PATH.write_text("\n".join(zscript), encoding="utf-8")
     MODELDEF_PATH.write_text("\n".join(modeldef), encoding="utf-8")
+    from tools.pickup_models import flavors, scroll_letters
+    flavors.generate(ROOT)
+    scroll_letters.generate(ROOT)
     print(json.dumps({"items": len(records), "models": len(list(MODEL_DIR.glob('*.obj'))), "registry": str(REGISTRY_PATH)}))
 
 

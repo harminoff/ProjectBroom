@@ -14,7 +14,7 @@ try {
     Invoke-ProjectBroomCommand $python -Arguments @("-m", "unittest", "tools.test_native_interactions")
     Invoke-ProjectBroomCommand $python -Arguments @("-m", "unittest", "tools.search_models.test_generate")
     Invoke-ProjectBroomCommand $python -Arguments @("-m", "unittest", "tools.mapcompiler.test_terrain_geometry")
-    Invoke-ProjectBroomCommand $python -Arguments @("-m", "unittest", "tools.test_terrain_sync")
+    Invoke-ProjectBroomCommand $python -Arguments @("-m", "unittest", "tools.test_terrain_sync", "tools.test_terrain_catalog", "tools.test_terrain_overlays", "tools.test_terrain_debris", "tools.test_potion_colors", "tools.test_item_flavors")
     Invoke-ProjectBroomCommand $python -Arguments @("-m", "unittest", "tools.test_terrain_animation", "tools.test_bloodwort")
     Invoke-ProjectBroomCommand $python -Arguments @("-m", "unittest", "tools.test_shoreline", "tools.test_gas_assets")
     if (-not $Quick) {

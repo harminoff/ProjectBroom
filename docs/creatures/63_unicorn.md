@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `quadruped`.
-- Authored silhouette dimensions: 60 / 30 / 70 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-unicorn`.
+- Authored silhouette dimensions: 57.7732 / 19.6421 / 66.7401 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: horse, horn, rainbow.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/63_unicorn.obj).
-- [Editable Blender source](../../assets/monsters/sources/63_unicorn.blend).
+- Visual construction cues: slender white equine, gilded spiral horn, rainbow-shaded flowing mane and tail, dark lashed eyes, feathered gilded hooves, limp side collapse.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/63_unicorn.iqm).
+- [Editable Blender source](../../assets/monsters/unicorn/unicorn-animated.blend).
+- [Animation manifest](../../assets/monsters/unicorn/animation.json); 37 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Unicorn authoring and actual verification](../unicorn-animation.md).
 
 ## Brogue encounter-table references
 
@@ -38,6 +41,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

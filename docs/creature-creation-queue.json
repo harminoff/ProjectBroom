@@ -1,0 +1,1016 @@
+{
+  "schemaVersion": 1,
+  "requestDate": "2026-09-26",
+  "mode": "one fresh agent per model, sequential",
+  "coordinator": "Claude Code session (2026-09-28 onward)",
+  "items": [
+    {
+      "symbol": "MK_PINK_JELLY",
+      "kind": 12,
+      "name": "pink jelly",
+      "workId": "BRG-M12",
+      "nominalDepth": 4,
+      "sourceOrder": 760,
+      "status": "verified",
+      "agent": "/root/model_12_pink_jelly",
+      "report": "docs/pink-jelly-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M12",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural death, standalone comparison and controlled frame-time benchmark not captured",
+        "release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_GOBLIN_TOTEM",
+      "kind": 11,
+      "name": "goblin totem",
+      "workId": "BRG-M11",
+      "nominalDepth": 5,
+      "sourceOrder": 761,
+      "status": "verified",
+      "agent": "/root/model_11_goblin_totem",
+      "report": "docs/goblin-totem-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M11",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural death, exhaustive bolt-event coverage, standalone comparison and controlled frame-time benchmark not verified",
+        "release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_ARROW_TURRET",
+      "kind": 15,
+      "name": "arrow turret",
+      "workId": "BRG-M15",
+      "nominalDepth": 5,
+      "sourceOrder": 762,
+      "status": "verified",
+      "agent": "/root/model_15_arrow_turret",
+      "report": "docs/arrow-turret-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M15",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural firing/death event coverage, standalone comparison and controlled frame-time measurement not verified",
+        "release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_VAMPIRE_BAT",
+      "kind": 14,
+      "name": "vampire bat",
+      "workId": "BRG-M14",
+      "nominalDepth": 6,
+      "sourceOrder": 764,
+      "status": "verified",
+      "agent": "/root/model_14_vampire_bat",
+      "report": "docs/vampire-bat-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M14",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural death/recoil, standalone comparison and controlled frame-time measurement not verified",
+        "release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_ACID_MOUND",
+      "kind": 16,
+      "name": "acid mound",
+      "workId": "BRG-M16",
+      "nominalDepth": 6,
+      "sourceOrder": 766,
+      "status": "verified",
+      "agent": "/root/model_16_acid_mound",
+      "report": "docs/acid-mound-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M16",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural movement/attack/corrosion/acid-blood/recoil/death, standalone comparison and controlled frame-time measurement not verified",
+        "release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_GOBLIN_MYSTIC",
+      "kind": 10,
+      "name": "goblin mystic",
+      "workId": "BRG-M10",
+      "nominalDepth": 6,
+      "sourceOrder": 767,
+      "status": "verified",
+      "agent": "/root/model_10_goblin_mystic",
+      "report": "docs/goblin-mystic-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M10",
+      "remainingAcceptance": [
+        "physical-input acceptance",
+        "dedicated captivity/release art and natural hostile shielding/attack/death not verified",
+        "standalone comparison, frame-time measurement and release distribution not performed",
+        "inherited family atlas boundaries visible close up"
+      ]
+    },
+    {
+      "symbol": "MK_CENTIPEDE",
+      "kind": 17,
+      "name": "centipede",
+      "workId": "BRG-M17",
+      "nominalDepth": 7,
+      "sourceOrder": 769,
+      "status": "verified",
+      "agent": "/root/model_17_centipede",
+      "report": "docs/centipede-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M17",
+      "remainingAcceptance": [
+        "manual/exhaustive acceptance",
+        "natural pure recoil/death and complete weakness lifecycle not verified",
+        "standalone comparison, controlled frame-time benchmark and release installer not performed"
+      ]
+    },
+    {
+      "symbol": "MK_BOG_MONSTER",
+      "kind": 19,
+      "name": "bog monster",
+      "workId": "BRG-M19",
+      "nominalDepth": 7,
+      "sourceOrder": 770,
+      "status": "verified",
+      "agent": "/root/model_19_bog_monster",
+      "report": "docs/bog-monster-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M19",
+      "remainingAcceptance": [
+        "manual acceptance; close-up mantle junction faceting remains",
+        "natural encounter and event coverage unresolved after bounded ordinary-intent searches",
+        "standalone comparison, controlled frame-time measurement and release installer not performed"
+      ]
+    },
+    {
+      "symbol": "MK_OGRE",
+      "kind": 18,
+      "name": "ogre",
+      "workId": "BRG-M18",
+      "nominalDepth": 7,
+      "sourceOrder": 771,
+      "status": "verified",
+      "agent": "/root/model_18_ogre",
+      "report": "docs/ogre-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M18",
+      "remainingAcceptance": [
+        "manual acceptance; subtle close-view skin banding remains",
+        "natural captive visibility verified; hostile lifecycle and release not verified",
+        "standalone comparison, controlled frame-time measurement and release installer not performed"
+      ]
+    },
+    {
+      "symbol": "MK_SPIDER",
+      "kind": 21,
+      "name": "spider",
+      "workId": "BRG-M21",
+      "nominalDepth": 9,
+      "sourceOrder": 774,
+      "status": "verified",
+      "agent": "/root/model_21_spider",
+      "report": "docs/spider-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M21",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and lifecycle unresolved after bounded ordinary-intent search",
+        "standalone comparison, controlled frame-time benchmark and release installer not performed"
+      ]
+    },
+    {
+      "symbol": "MK_EXPLOSIVE_BLOAT",
+      "kind": 30,
+      "name": "explosive bloat",
+      "workId": "BRG-M30",
+      "nominalDepth": 10,
+      "sourceOrder": 756,
+      "status": "verified",
+      "agent": "/root/model_30_explosive_bloat",
+      "report": "docs/explosive-bloat-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M30",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and explosion lifecycle unresolved after bounded ordinary-intent searches",
+        "full canonical command failed at launcher NuGet restore NU1301; standalone comparison, frame-time benchmark and release acceptance remain open"
+      ]
+    },
+    {
+      "symbol": "MK_DAR_BLADEMASTER",
+      "kind": 31,
+      "name": "dar blademaster",
+      "workId": "BRG-M31",
+      "nominalDepth": 10,
+      "sourceOrder": 775,
+      "status": "verified",
+      "agent": "/root/model_31_dar_blademaster",
+      "report": "docs/dar-blademaster-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M31",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle unresolved after bounded seeds 1-2000 search",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_WILL_O_THE_WISP",
+      "kind": 23,
+      "name": "wisp",
+      "workId": "BRG-M23",
+      "nominalDepth": 10,
+      "sourceOrder": 776,
+      "status": "verified",
+      "agent": "/root/model_23_wisp",
+      "report": "docs/wisp-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M23",
+      "remainingAcceptance": [
+        "manual acceptance; close views retain visible mesh layering",
+        "natural encounter and combat lifecycle unresolved after bounded seeds 1-2000 search",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_WRAITH",
+      "kind": 24,
+      "name": "wraith",
+      "workId": "BRG-M24",
+      "nominalDepth": 10,
+      "sourceOrder": 777,
+      "status": "verified",
+      "agent": "/root/model_24_wraith",
+      "report": "docs/wraith-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M24",
+      "remainingAcceptance": [
+        "manual acceptance; close polygon banding remains",
+        "natural encounter and combat lifecycle unresolved after bounded seeds 1-2000 search",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_SPARK_TURRET",
+      "kind": 22,
+      "name": "spark turret",
+      "workId": "BRG-M22",
+      "nominalDepth": 11,
+      "sourceOrder": 779,
+      "status": "verified",
+      "agent": "/root/model_22_spark_turret",
+      "report": "docs/spark-turret-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M22",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and firing/death unresolved; synthetic wall fixtures verified only",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_ZOMBIE",
+      "kind": 25,
+      "name": "zombie",
+      "workId": "BRG-M25",
+      "nominalDepth": 11,
+      "sourceOrder": 780,
+      "status": "verified",
+      "agent": "/root/model_22_spark_turret",
+      "report": "docs/zombie-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M25",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle unresolved after bounded seeds 1-2000 search",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_TROLL",
+      "kind": 26,
+      "name": "troll",
+      "workId": "BRG-M26",
+      "nominalDepth": 12,
+      "sourceOrder": 781,
+      "status": "verified",
+      "agent": "/root/model_24_wraith",
+      "report": "docs/troll-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M26",
+      "remainingAcceptance": [
+        "manual acceptance; close polygon banding and simplified facial/mucus contours remain",
+        "natural encounter, regeneration and combat lifecycle unresolved after bounded census",
+        "standalone comparison, controlled performance measurement and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_OGRE_TOTEM",
+      "kind": 20,
+      "name": "ogre totem",
+      "workId": "BRG-M20",
+      "nominalDepth": 12,
+      "sourceOrder": 782,
+      "status": "verified",
+      "agent": "/root/model_11_goblin_totem",
+      "report": "docs/ogre-totem-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M20",
+      "remainingAcceptance": [
+        "manual acceptance; close wood-grain repetition and distant small-detail loss remain",
+        "natural encounter, healing/slowing and hit/death timing unresolved after bounded census",
+        "standalone comparison, controlled performance measurement and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_NAGA",
+      "kind": 28,
+      "name": "naga",
+      "workId": "BRG-M28",
+      "nominalDepth": 13,
+      "sourceOrder": 784,
+      "status": "verified",
+      "agent": "/root/model_28_naga",
+      "report": "docs/naga-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M28",
+      "remainingAcceptance": [
+        "manual acceptance; residual close texture stretching/banding",
+        "natural encounter, submergence and combat lifecycle unresolved; water fixtures synthetic only",
+        "standalone comparison, controlled performance measurement and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_SALAMANDER",
+      "kind": 29,
+      "name": "salamander",
+      "workId": "BRG-M29",
+      "nominalDepth": 13,
+      "sourceOrder": 785,
+      "status": "verified",
+      "agent": "/root/model_29_salamander",
+      "report": "docs/salamander-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M29",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter, submergence, fire trails and combat lifecycle unresolved; lava fixtures are synthetic",
+        "close stylized flame volumes and scale stretching",
+        "standalone comparison, controlled performance and release packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_OGRE_SHAMAN",
+      "kind": 27,
+      "name": "ogre shaman",
+      "workId": "BRG-M27",
+      "nominalDepth": 14,
+      "sourceOrder": 786,
+      "status": "verified",
+      "agent": "/root/model_27_ogre_shaman",
+      "report": "docs/ogre-shaman-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M27",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and native haste/spark/summon event timing unresolved (2000-seed census has no kind27)",
+        "restrained in-cell staff attacks, rear mantle shell read, death hump/staff-haunch clipping, rigid hair and slightly green skin under engine light",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_CENTAUR",
+      "kind": 35,
+      "name": "centaur",
+      "workId": "BRG-M35",
+      "nominalDepth": 14,
+      "sourceOrder": 787,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/centaur-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M35",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and native shot/hit/death event timing and captive presentation unresolved (2000-seed census has no kind35; route reaches only depth 9)",
+        "broad shoulders with step into upper arm from low front view, simple face planes and row-like hair, overlapping fingers edge-on, one-frame arrow streak on release, trot hoof slide, crossed hind legs in death, subtle coat markings at long range",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_ACID_JELLY",
+      "kind": 34,
+      "name": "acidic jelly",
+      "workId": "BRG-M34",
+      "nominalDepth": 14,
+      "sourceOrder": 788,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/acid-jelly-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M34",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter, clone/corrosion event presentation and live hidden/sensed transitions unresolved (2000-seed census has no kind34; route reaches only depth 9)",
+        "engine light weakens dark gel edges, static painted gloss, faint close-up bubble rings, pillow-like death folds, foreshortened head-on burn slap, narrow front valley crease",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_PIXIE",
+      "kind": 42,
+      "name": "pixie",
+      "workId": "BRG-M42",
+      "nominalDepth": 14,
+      "sourceOrder": 790,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/pixie-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M42",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter, bolt/hit/death event timing, captive presentation and live hidden/sensed transitions unresolved (2000-seed census has no kind42; route reaches only depth 9)",
+        "tiny at 128-192 units (face only a hint), ~0.5% skin folds at akimbo shoulder/elbows, arm island speckles close up, helmet-like scalp from rear, opaque non-specular wings, open eyes when fallen, thin accessory contact in extreme poses",
+        "baseline was accidentally re-taken and then reconstructed from independent evidence (card 34 pre-task bytes not hash-verifiable)",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_FLAME_TURRET",
+      "kind": 44,
+      "name": "flame turret",
+      "workId": "BRG-M44",
+      "nominalDepth": 14,
+      "sourceOrder": 791,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/flame-turret-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M44",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter, fire-bolt timing, dormant activation and live kind44 wall placement unresolved (2000-seed census has no kind44; route reaches only depth 9)",
+        "foreshortened front attack plume reads as a spiky disc, small alternate-attack plume at gallery distance, near shutter partly hides pilot flame at 45 degrees, small fangs, dark plate and firebox merge at 192 units",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_DART_TURRET",
+      "kind": 38,
+      "name": "dart turret",
+      "workId": "BRG-M38",
+      "nominalDepth": 15,
+      "sourceOrder": 789,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/dart-turret-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M38",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter, poison-dart bolt sync, dormant activation and live hidden/sensed transitions unresolved (2000-seed census has no kind38; route reaches only depth 9)",
+        "attack clip changes the silhouette little from side and front (coordinator note), violet bead lost against violet lid, chamber dart mostly hidden, boxy chamfered breech/hopper, close plum/aubergine enamels, opened lid can look detached in death",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_DAR_PRIESTESS",
+      "kind": 32,
+      "name": "dar priestess",
+      "workId": "BRG-M32",
+      "nominalDepth": 15,
+      "sourceOrder": 792,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/dar-priestess-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M32",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "slice reads compact from the straight front view; back hair still slightly curtain-like; robe skinned to legs can shear slightly in the collapse; staff slides about 30 units while falling to lie inside the cell; relics can graze cloth during swings",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_KRAKEN",
+      "kind": 39,
+      "name": "kraken",
+      "workId": "BRG-M39",
+      "nominalDepth": 15,
+      "sourceOrder": 794,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/kraken-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M39",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter, deep-water submersion presentation and seize/hold lifecycle deferred to the deeper-route census; no water fixture run",
+        "two thick arm roots under the eyes read slightly like a moustache close up; beak dark on dark maroon and only a hooked shape at 192 units; beak and arm crown sit below the 24-unit deep-water surface; slight triangle stretch at arm roots in seize and death",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_PHANTOM",
+      "kind": 43,
+      "name": "phantom",
+      "workId": "BRG-M43",
+      "nominalDepth": 16,
+      "sourceOrder": 795,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/phantom-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M43",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter, invisibility/sensed presentation and combat lifecycle deferred to the deeper-route census",
+        "slender waist reads slightly mannequin-like; skirt tatters read as vertical fringe bars through the additive body; rim glow on thin claws and tatters outweighs the torso; lunge and dissipate reach near the 32-unit cell edge",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_IMP",
+      "kind": 45,
+      "name": "imp",
+      "workId": "BRG-M45",
+      "nominalDepth": 17,
+      "sourceOrder": 797,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/imp-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M45",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter, steal/blink presentation and combat lifecycle deferred to the deeper-route census",
+        "face does not resolve at 192 units; leg rim reads plum from the front; raking arm is a thin line at distance; one horn stands about 17 units in the prone death; no eyelid closure",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_DAR_BATTLEMAGE",
+      "kind": 33,
+      "name": "dar battlemage",
+      "workId": "BRG-M33",
+      "nominalDepth": 18,
+      "sourceOrder": 798,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/dar-battlemage-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M33",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "front-view cut sample (frame 9) is still in windup; death lifts off both feet mid-fall and ember hands settle 3-6 units above the floor; prone body about 15 units thick from collar, pauldrons and ears; coarse vein glow close up; tome can graze cloth",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_FURY",
+      "kind": 46,
+      "name": "fury",
+      "workId": "BRG-M46",
+      "nominalDepth": 18,
+      "sourceOrder": 799,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/fury-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M46",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter, flight and pack combat lifecycle deferred to the deeper-route census",
+        "lit feather edges still read strongly red under flat light; primary tips show individually along the trailing edge; regular mantle rows; bare ashen arms and midriff; painted, non-emissive eyes",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_REVENANT",
+      "kind": 47,
+      "name": "revenant",
+      "workId": "BRG-M47",
+      "nominalDepth": 19,
+      "sourceOrder": 800,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/revenant-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M47",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and weapon-immunity combat lifecycle deferred to the deeper-route census",
+        "binding strips read somewhat like hoops; smooth mantle mass; bright jaw; hands brightest after the skull; skull hidden face-down in the final death; hem fade is painted, not translucent; smash raise reaches the cell edge",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_GOLEM",
+      "kind": 49,
+      "name": "golem",
+      "workId": "BRG-M49",
+      "nominalDepth": 21,
+      "sourceOrder": 801,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/golem-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M49",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "simple peg nose and lozenge eye sockets; backhand foreshortens from the oblique camera; upside-down rubble shows dark undersides and pieces slightly interpenetrate; heavy mesh (57k vertices) and slow paint export",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_TENTACLE_HORROR",
+      "kind": 48,
+      "name": "tentacle horror",
+      "workId": "BRG-M48",
+      "nominalDepth": 22,
+      "sourceOrder": 802,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/tentacle-horror-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M48",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "very dark trunk front hides surface detail; 'towering' height reduced to 81 units to fit the review camera; some triangle stretch at crown and arm roots in big sweeps and the death heap; heavy asset (218 bones, 28k triangles) with no frame-time measurement; its previews froze under load during authoring",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_PHYLACTERY",
+      "kind": 41,
+      "name": "phylactery",
+      "workId": "BRG-M41",
+      "nominalDepth": 22,
+      "sourceOrder": 803,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/phylactery-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M41",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "static rest pose between actions; gem recoloured to the lich palette",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_DRAGON",
+      "kind": 50,
+      "name": "dragon",
+      "workId": "BRG-M50",
+      "nominalDepth": 24,
+      "sourceOrder": 804,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/dragon-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M50",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_UNDERWORM",
+      "kind": 36,
+      "name": "underworm",
+      "workId": "BRG-M36",
+      "nominalDepth": null,
+      "sourceOrder": 36,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/underworm-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M36",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_SENTINEL",
+      "kind": 37,
+      "name": "sentinel",
+      "workId": "BRG-M37",
+      "nominalDepth": null,
+      "sourceOrder": 37,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/sentinel-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M37",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "crystal and shards are small at 192 units; indigo stone is lower contrast; the shatter is a rigid scatter",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_LICH",
+      "kind": 40,
+      "name": "lich",
+      "workId": "BRG-M40",
+      "nominalDepth": null,
+      "sourceOrder": 40,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/lich-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M40",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "cage covers robe and sleeves only; incant reads best from the oblique camera",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_GOBLIN_CHIEFTAN",
+      "kind": 51,
+      "name": "goblin warlord",
+      "workId": "BRG-M51",
+      "nominalDepth": null,
+      "sourceOrder": 51,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/goblin-chieftan-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M51",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter, war-cry and summon lifecycle deferred to the deeper-route census",
+        "busy chest (harness, chevron, scars) with bright scar highlights at 64 units; cleave shaft held near horizontal rather than raised upright; narrow crest from straight front/rear; dead body rests about 1 unit above the floor on the mantle; 7.9 MB texture and slow (~60 s) export",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_BLACK_JELLY",
+      "kind": 52,
+      "name": "black jelly",
+      "workId": "BRG-M52",
+      "nominalDepth": null,
+      "sourceOrder": 52,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/black-jelly-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M52",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and split lifecycle deferred to the deeper-route census",
+        "living heap still partly reads as a dome from the thumbnail camera; slime pseudopod foreshortened from the straight front; drench curl proven by test rather than a side capture; rear views read more violet than black; painted highlights are view-independent (only the shader rim responds)",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_VAMPIRE",
+      "kind": 53,
+      "name": "vampire",
+      "workId": "BRG-M53",
+      "nominalDepth": null,
+      "sourceOrder": 53,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/vampire-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M53",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "cloak ribs visible from the rear; hands are close to the cloak edge",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_FLAMEDANCER",
+      "kind": 54,
+      "name": "flamedancer",
+      "workId": "BRG-M54",
+      "nominalDepth": null,
+      "sourceOrder": 54,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/flamedancer-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M54",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_SPECTRAL_BLADE",
+      "kind": 55,
+      "name": "spectral blade",
+      "workId": "BRG-M55",
+      "nominalDepth": null,
+      "sourceOrder": 55,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/spectral-blade-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M55",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "spectral blade: small at 192 units; additive blade reads as a glow streak rather than a sharp edge",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_SPECTRAL_IMAGE",
+      "kind": 56,
+      "name": "spectral sword",
+      "workId": "BRG-M56",
+      "nominalDepth": null,
+      "sourceOrder": 56,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/spectral-sword-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M56",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "Brogue reuses MK_SPECTRAL_IMAGE for armor-of-multiplicity clones; display/bridge follow-up needed",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_GUARDIAN",
+      "kind": 57,
+      "name": "stone guardian",
+      "workId": "BRG-M57",
+      "nominalDepth": null,
+      "sourceOrder": 57,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/stone-guardian-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M57",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "gauntlets are simple blocks; the helm reads as a kettle hat up close; the rigid cape swings as a slab; rubble undersides are dark",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_WINGED_GUARDIAN",
+      "kind": 58,
+      "name": "winged guardian",
+      "workId": "BRG-M58",
+      "nominalDepth": null,
+      "sourceOrder": 58,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/winged-guardian-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M58",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "hair reads as a hood at 128 units; the face is flat; the wing fan is modest to stay in the cell; the blue marble reads fairly dark",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_CHARM_GUARDIAN",
+      "kind": 59,
+      "name": "guardian spirit",
+      "workId": "BRG-M59",
+      "nominalDepth": null,
+      "sourceOrder": 59,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/guardian-spirit-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M59",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "front-facing plate overlaps still add light; the cloak is a slab from the side; fade dimming assumes the floor is near z=0; native visibility path for additive style not separately verified",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_WARDEN_OF_YENDOR",
+      "kind": 60,
+      "name": "Warden of Yendor",
+      "workId": "BRG-M60",
+      "nominalDepth": null,
+      "sourceOrder": 60,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/warden-of-yendor-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M60",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "mantle strips read mainly from rear and side; cuirass is a flat triangle straight on; narrow armour value range",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_ELDRITCH_TOTEM",
+      "kind": 61,
+      "name": "eldritch totem",
+      "workId": "BRG-M61",
+      "nominalDepth": null,
+      "sourceOrder": 61,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/eldritch-totem-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M61",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "static object; idle and rest are identical by design",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_MIRRORED_TOTEM",
+      "kind": 62,
+      "name": "mirrored totem",
+      "workId": "BRG-M62",
+      "nominalDepth": null,
+      "sourceOrder": 62,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/mirrored-totem-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M62",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "static object; idle and rest are identical by design",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_UNICORN",
+      "kind": 63,
+      "name": "unicorn",
+      "workId": "BRG-M63",
+      "nominalDepth": null,
+      "sourceOrder": 63,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/unicorn-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M63",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "coat still reads light overall at 192 units with form mainly from underside values; slightly lumpy barrel near the girth; mane locks read somewhat scalloped and shear slightly at extreme neck yaw; trot stance hooves slide in body space (centaur convention); legs overlap near the knees in the final fall pose",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_IFRIT",
+      "kind": 64,
+      "name": "ifrit",
+      "workId": "BRG-M64",
+      "nominalDepth": null,
+      "sourceOrder": 64,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/ifrit-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M64",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "gate reopen check caught duplicate part names (armbands renamed ringband_L/R; IQM bytes unchanged)",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_PHOENIX",
+      "kind": 65,
+      "name": "phoenix",
+      "workId": "BRG-M65",
+      "nominalDepth": null,
+      "sourceOrder": 65,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/phoenix-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M65",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "death heap is low and wide with the ash pool mostly under the folded wings; wing feathers dense at 128 units",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_PHOENIX_EGG",
+      "kind": 66,
+      "name": "phoenix egg",
+      "workId": "BRG-M66",
+      "nominalDepth": null,
+      "sourceOrder": 66,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/phoenix-egg-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M66",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "static egg between actions; burst shards are rigid",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    },
+    {
+      "symbol": "MK_ANCIENT_SPIRIT",
+      "kind": 67,
+      "name": "mangrove dryad",
+      "workId": "BRG-M67",
+      "nominalDepth": null,
+      "sourceOrder": 67,
+      "status": "verified",
+      "agent": null,
+      "report": "docs/mangrove-dryad-animation.md",
+      "evidence": "artifacts/creature-queue/BRG-M67",
+      "remainingAcceptance": [
+        "manual acceptance",
+        "natural encounter and combat lifecycle deferred to the deeper-route census",
+        "lash sweeps sideways (a vine toward the camera cannot fit the cell); death reads as a slumped heap; thick roots",
+        "standalone comparison, controlled frame-time benchmark and release installer packaging not performed"
+      ]
+    }
+  ],
+  "agentAllocationNote": "Fresh-agent allocation was exhausted after 15 verified models, so zombie, troll and ogre totem used focused reassignments to idle agents. Capacity became available again after model 18; naga starts in a fresh agent. Continue sequentially and prefer fresh agents when allocation permits.",
+  "userArtApproval": "The user approved all current model designs (the 57 queue models plus the pre-queue models) on 2026-09-30."
+}

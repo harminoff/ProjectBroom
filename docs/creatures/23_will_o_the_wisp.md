@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `flame`.
-- Authored silhouette dimensions: 20 / 20 / 30 map units. Clearance: 16 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-will_o_the_wisp`.
+- Authored silhouette dimensions: 17.2263 / 17.0042 / 34 map units. Clearance: 16 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: blue, flame.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/23_will_o_the_wisp.obj).
-- [Editable Blender source](../../assets/monsters/sources/23_will_o_the_wisp.blend).
+- Visual construction cues: ethereal blue flame, transparent curved tongues, pale cyan heart, detached flickers, mesh-local emission, complete visual extinction.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/23_will_o_the_wisp.iqm).
+- [Editable Blender source](../../assets/monsters/wisp/wisp-animated.blend).
+- [Animation manifest](../../assets/monsters/wisp/animation.json); 29 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Wisp flame authoring and actual verification](../wisp-animation.md).
 
 ## Brogue encounter-table references
 
@@ -38,6 +41,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

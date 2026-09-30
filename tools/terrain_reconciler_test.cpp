@@ -2,10 +2,11 @@
 #include <cassert>
 #include <iostream>
 #include <cstddef>
-static_assert(BROGUE_BRIDGE_API_VERSION == 20);
-static_assert(sizeof(BrogueBridgeTerrainAppearance) == 28);
+static_assert(BROGUE_BRIDGE_API_VERSION == 24);
+static_assert(offsetof(BrogueBridgeItemState, potionColor) + 2 == offsetof(BrogueBridgeItemState, actionFlags));
+static_assert(sizeof(BrogueBridgeTerrainAppearance) == 36);
 static_assert(offsetof(BrogueBridgeCellState, appearance) == 84);
-static_assert(sizeof(BrogueBridgeCellState) == 112);
+static_assert(sizeof(BrogueBridgeCellState) == 120);
 int main() {
     static BrogueBridgeState state{};
     state.apiVersion = BROGUE_BRIDGE_API_VERSION;
@@ -27,6 +28,12 @@ int main() {
     state.revision = 19;
     assert(reconciler.Prepare(state, 1, batch) == TerrainReconciler::Rejected);
     assert(reconciler.applied[80].flags == BROGUE_APPEARANCE_HOLE);
+    state.revision = 21;
+    state.cells[80].appearance.layers[1] = 96;
+    assert(reconciler.Prepare(state, 1, batch) == TerrainReconciler::Ready);
+    assert(batch.changed.size() == 1 && batch.changed[0] == 80);
+    // A coating beneath an unchanged top surface still requires reconciliation.
+    reconciler.Commit(state);
     state.revision = 21; state.cells[81].x = 0;
     assert(reconciler.Prepare(state, 1, batch) == TerrainReconciler::Rejected);
     state.cells[81].x = 2; state.cellCount = 1;

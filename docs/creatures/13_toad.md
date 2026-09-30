@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `toad`.
-- Authored silhouette dimensions: 38 / 35 / 25 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-toad`.
+- Authored silhouette dimensions: 37.6618 / 44.0596 / 22.7728 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: warts, slime.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/13_toad.obj).
-- [Editable Blender source](../../assets/monsters/sources/13_toad.blend).
+- Visual construction cues: broad warty body, folded hind legs, splayed toes, horizontal pupils, parotoid glands, olive mottling, buff throat.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/13_toad.iqm).
+- [Editable Blender source](../../assets/monsters/toad/toad-animated.blend).
+- [Animation manifest](../../assets/monsters/toad/animation.json); 17 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Toad authoring, encounter order and actual verification](../toad-animation.md).
 
 ## Brogue encounter-table references
 
@@ -36,8 +39,8 @@ These are nominal table ranges and weights, not guaranteed encounter depths or p
 Machine-readable results live in [bestiary-index.json](../../assets/monsters/bestiary-index.json). A generated asset is not automatically visually approved. These generated cards are not a hand-edited checklist: record later acceptance under the index entry’s `verification` object, which regeneration preserves.
 
 - [ ] Individual art/signature-feature approval.
-- [ ] Normal encounter at gameplay distance and lighting.
+- [x] Fixed-seed normal encounter captured; see verification object for limited scope.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

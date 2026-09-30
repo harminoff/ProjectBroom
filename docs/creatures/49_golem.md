@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `humanoid`.
-- Authored silhouette dimensions: 40 / 48 / 88 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-golem`.
+- Authored silhouette dimensions: 25.4562 / 50.1698 / 71.2235 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: stone, plates, cracks.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/49_golem.obj).
-- [Editable Blender source](../../assets/monsters/sources/49_golem.blend).
+- Visual construction cues: carved gray stone statue, bevelled chipped segments, dark ball joints, huge knuckled fists, boulder pauldrons, incised glyph bands, rubble collapse.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/49_golem.iqm).
+- [Editable Blender source](../../assets/monsters/golem/golem-animated.blend).
+- [Animation manifest](../../assets/monsters/golem/animation.json); 19 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Golem authoring and actual verification](../golem-animation.md).
 
 ## Brogue encounter-table references
 
@@ -44,6 +47,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

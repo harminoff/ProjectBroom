@@ -11,6 +11,12 @@ DoomEdNums
     15014 = BrogueDeadVegetationProp
     15020 = BrogueDoorMarker
     15021 = BrogueBarricadeMarker
+    15030 = BrogueExplorerBedroll
+    15031 = BrogueExplorerBones
+    15032 = BrogueExplorerJunk
+    15033 = BrogueExplorerFallenTorch
+    15034 = BrogueExplorerSkins
+    15035 = BrogueExplorerRubble
 }
 
 GameInfo

@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `humanoid`.
-- Authored silhouette dimensions: 38 / 36 / 51 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-goblin_chieftan`.
+- Authored silhouette dimensions: 30.5426 / 38.9821 / 54.7898 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: primate, spear, crest, fur.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/51_goblin_chieftan.obj).
-- [Editable Blender source](../../assets/monsters/sources/51_goblin_chieftan.blend).
+- Visual construction cues: primate, spear, crest, fur, helm, war cloak, pennant.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/51_goblin_chieftan.iqm).
+- [Editable Blender source](../../assets/monsters/goblin_chieftan/goblin-chieftan-animated.blend).
+- [Animation manifest](../../assets/monsters/goblin_chieftan/animation.json); 21 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Goblin warlord authoring and actual verification](../goblin-chieftan-animation.md).
 
 ## Brogue encounter-table references
 
@@ -39,6 +42,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `winged`.
-- Authored silhouette dimensions: 18 / 34 / 20 map units. Clearance: 16 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-pixie`.
+- Authored silhouette dimensions: 11.6068 / 29.0138 / 31.5074 map units. Clearance: 16 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: fairy, membrane.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/42_pixie.obj).
-- [Editable Blender source](../../assets/monsters/sources/42_pixie.blend).
+- Visual construction cues: tiny androgynous winged humanoid, enlarged heart-shaped face with swept pointed ears, large lidded green eyes and sly smirk, tousled silver-lilac pixie cut, four veined pearly membrane wings, teal petal bodice and violet petal skirt, limp grounded fall with stilled wings.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/42_pixie.iqm).
+- [Editable Blender source](../../assets/monsters/pixie/pixie-animated.blend).
+- [Animation manifest](../../assets/monsters/pixie/animation.json); 33 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Pixie authoring and actual verification](../pixie-animation.md).
 
 ## Brogue encounter-table references
 
@@ -41,6 +44,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

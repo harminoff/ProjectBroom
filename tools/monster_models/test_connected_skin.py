@@ -7,6 +7,10 @@ from .skeletal_registry import profiles, ROOT
 class ConnectedSkinTests(unittest.TestCase):
     def test_closed_connected_cages_and_animation_seams(self):
         for row in profiles():
+            # This suite checks the baked voxel cages. Eel and bloat have
+            # purpose-built surfaces covered by their own anatomy suites.
+            if row['symbol'] not in ('MK_RAT','MK_KOBOLD','MK_JACKAL','MK_MONKEY','MK_GOBLIN','MK_GOBLIN_CONJURER','MK_GOBLIN_MYSTIC','MK_TOAD'):
+                continue
             with self.subTest(enemy=row['symbol']):
                 rig=importlib.import_module('tools.monster_models.'+row['module'])
                 parts,v,n,uv,tri,w=rig.geometry();body=parts[0]
@@ -41,7 +45,7 @@ class ConnectedSkinTests(unittest.TestCase):
                         self.assertLess(max(math.dist(pose[a],pose[b]) for a,b in pairs),1e-10)
                 # The cage must actually span all four limb chains.
                 used={rig.BONES[b][0] for weights in w[:len(ids)] for b,weight in weights if weight>.01}
-                limbs=('Fore','Hind') if row['symbol']=='MK_RAT' else ('arm','leg') if row['symbol'] in ('MK_KOBOLD','MK_MONKEY') else ('fore','hind')
+                limbs=('Fore','Hind') if row['symbol']=='MK_RAT' else ('arm','leg') if row['symbol'] in ('MK_KOBOLD','MK_MONKEY','MK_GOBLIN','MK_GOBLIN_CONJURER','MK_GOBLIN_MYSTIC') else ('fore','hind')
                 for limb in limbs:
                     for side in ('L','R'):self.assertIn(f'{limb}_{side}_upper',used)
 

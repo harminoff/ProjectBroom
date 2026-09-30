@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `specter`.
-- Authored silhouette dimensions: 32 / 38 / 66 map units. Clearance: 16 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-phantom`.
+- Authored silhouette dimensions: 30.5833 / 27.7051 / 58.8536 map units. Clearance: 16 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: ectoplasm, ragged.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/43_phantom.obj).
-- [Editable Blender source](../../assets/monsters/sources/43_phantom.blend).
+- Visual construction cues: hovering legless apparition, luminous outline around a dim violet interior, rage-slanted hollow sockets and long gaping mouth, streaming hair tendrils, long spectral claws, ragged ectoplasm tail and tatters, hanging glowing ectoplasm droplets.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/43_phantom.iqm).
+- [Editable Blender source](../../assets/monsters/phantom/phantom-animated.blend).
+- [Animation manifest](../../assets/monsters/phantom/animation.json); 21 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Phantom authoring and actual verification](../phantom-animation.md).
 
 ## Brogue encounter-table references
 
@@ -39,6 +42,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

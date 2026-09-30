@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `humanoid`.
-- Authored silhouette dimensions: 44 / 48 / 92 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-warden_of_yendor`.
+- Authored silhouette dimensions: 21.7553 / 40.4183 / 69.1812 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: warden, armor, faceless.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/60_warden_of_yendor.obj).
-- [Editable Blender source](../../assets/monsters/sources/60_warden_of_yendor.blend).
+- Visual construction cues: towering faceless armoured hunter in dark aubergine-violet plate, tall blank helm with a narrow burning violet visor slit and a fan of crest blades, vast spiked pauldrons over a wasp-waisted plated body and long tassets, massive black-iron gauntlets with knuckle plates, Yendorian violet-magenta light in a chest seam, visor slit, forearm strips and rune lines, low two-handed overhead-to-forward hammer blow, collapses into broken armour and rubble as the light goes out.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/60_warden_of_yendor.iqm).
+- [Editable Blender source](../../assets/monsters/warden_of_yendor/warden-of-yendor-animated.blend).
+- [Animation manifest](../../assets/monsters/warden_of_yendor/animation.json); 39 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Warden of Yendor authoring and actual verification](../warden-of-yendor-animation.md).
 
 ## Brogue encounter-table references
 
@@ -38,6 +41,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

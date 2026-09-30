@@ -1,12 +1,26 @@
 # Brogue CE → UZDoom runtime bridge
 
-Current ABI: **v21** adds the general interaction contract: commands that ask a question
-(Call, Relabel, Equip's ring replacement, Rethrow, Apply, throw/staff/wand and movement
-warnings, New Game and Abandon) return `BROGUE_BRIDGE_INTERACTION_REQUIRED` with a copied
-`BrogueBridgeInteraction`; `brogue_bridge_respond()` answers it. It also adds the run stepper
+Current ABI: **v24** adds the general interaction contract: Brogue commands that
+ask a question (Call, Relabel, Equip's ring replacement, Rethrow, New Game and
+Abandon) pause inside the native command and return `BROGUE_BRIDGE_INTERACTION_REQUIRED`
+with a copied `BrogueBridgeInteraction`; `brogue_bridge_respond()` answers it and the
+same native frame resumes. It also adds the run-until-disturbed stepper
 (`RUN_START/CONTINUE/CANCEL`), `RETHROW_LAST`, `SWAP_LAST_EQUIPMENT`, `CALL_ITEM`,
 `RELABEL_ITEM`, `NEW_GAME` and `ABANDON_GAME`. See
 [general interaction contract](general-interaction-contract.md).
+
+ABI **v23** adds a 128-byte copied assigned appearance string to each
+item. All native consumers and the launcher use the current version. See
+[assigned item appearances](item-appearance-implementation.md).
+
+ABI **v22** adds a copied potion color index in the item record's former
+padding; item size and existing offsets are unchanged. The DLL, frontend and
+launcher were updated together. See [potion colors](potion-colors.md).
+
+ABI **v21** adds knowledge-safe dungeon/liquid/surface identities for
+[floor-preserving overlays](terrain-overlay-implementation.md). The v20 foundation
+described below is retained; the appearance record is now 36 bytes and a cell is
+120 bytes; those terrain layouts are unchanged in v22.
 
 Status: bridge API v20 adds copied terrain appearance and settled snapshot reconciliation; see [terrain implementation and acceptance](dynamic-terrain-foundation.md). API v19 remains reserved for the interaction migration. The earlier search integration adds shared single/repeated search and knowledge-limited discovery presentation. See [search behavior and acceptance evidence](search-and-discovery.md). Native UZDoom monster presentation, authoritative weapon, consumable, and targeted staff/wand commands, generalized Brogue confirmation forwarding, an authoritative loss screen, fall-source/landing events, and visual-only first-person weapon models are built from the official UZDoom 5.0.0 source checkout.
 
@@ -79,6 +93,45 @@ dark recessed shaft beneath the landing cell's open void. Stair transitions do
 not create this marker. The destination's collision and Brogue
 topology remain unchanged; independently generated depths are not falsely
 treated as vertically aligned maps.
+
+Chasm falls now have a frontend-only fade through black: an accelerating
+18-tic departure fade, a black hold during destination map preparation, and
+a smooth 21-tic arrival reveal. Only the copied `LEVEL_FALL` flag starts it;
+stairs and rejected/cancelled movement do not. Brogue has already resolved
+`playerMoves()` -> `playerTurnEnded()` -> `playerFalls()` -> `startLevel()`
+before this presentation begins. Destination HUD details stay hidden until
+the transition finishes. Gameplay commands are gated while the two maps are
+being presented; queued actions remain pending. Escape/menu and existing
+save/exit recovery remain available, including map-preparation failures.
+The transition retains no level-owned pointers and resets on shutdown.
+
+Stair and fall map attachment also retain a presentation barrier until UZDoom
+has applied its queued `ChangeLevel()` request. Its global level object is reused,
+so pointer identity cannot detect destroyed actor storage. No destination proxies
+or further queued intents are processed in the source map; pending queues resume
+on the destination. See [the queued-transition repair and native regression](creature-queue-transition-crash.md).
+
+September 8, 2026 verification: the frontend compiled and linked in the
+canonical `.build/uzdoom` directory, and its build fingerprint was refreshed.
+All 76 bridge/resource/map-compiler tests passed. A natural seed-1 route through
+the bridge at 29,7 falls from 29,6 to depth 2 cell 28,5. The pre-change and
+post-change runs both ended at hash `16b7f15d918ac047` (absolute turn 28;
+persistence turn 29), including the same fall injury. Vulkan and OpenGL runs
+passed with captures of the fade, black curtain and restored landing HUD.
+Capture filenames denote scheduled sample points; renderer buffering can shift
+the visible phase in an individual image. Cancellation
+was exercised before confirmation. The existing seed-208360664 stair
+round-trip regression also passed with hash `6550a30ebb2e5fb8`. All six engine
+source/fingerprint tests passed.
+Reproduce the fall with `python -m tools.test_chasm_transition --backend 1`
+(use `0` for OpenGL). Evidence is under `artifacts/chasm-transition/`.
+
+This is development-runtime verification, not full release-package or physical
+keyboard acceptance. The complete build script stopped while regenerating the
+existing `wand.md3` resource with an OS file-write error; the frontend was then
+built directly using `tools/run_native.py`. No bridge ABI, Brogue rules, map
+geometry, assets, or RNG were added for this transition. Standalone side-by-side
+comparison and map-compiler-failure recovery were not exercised for this change.
 
 ## Authority boundary
 
@@ -615,6 +668,26 @@ this does not complete the general-interaction TODOs.
 
 ## Camera-visible enemy movement
 
+The eel now uses the shared skeletal registry and a water-surface visual offset
+derived from copied visibility and known liquid appearance. Hidden actors remain
+hidden. See [eel assets, authority and verification](eel-animation.md).
+
 Enemy travel now uses shared camera-gated pacing and a filling circle while its
 existing movement input gate is active. Brogue coordinates remain authoritative;
 looking away settles presentation immediately. See [implementation and tests](enemy-movement.md).
+
+
+### Wall-mounted skeletal presentation
+
+A profile may opt into `wallMountBack`, the positive distance from model origin
+back to its fixed mounting plane. Arrow turrets use 13.1 units. Only the displayed
+identity, direct creature visibility and copied knowledge-safe appearance permit
+projection onto a wall face. Unknown or opaque neighbours are never treated as
+exposed. The exposed face toward the copied player cell wins; equal scores retain
+the prior face. Camera panning and attack target yaw do not swivel the plate.
+
+The actor origin projects 32 + mounting distance + 0.3 units from cell centre,
+with cardinal facing. No Brogue coordinate, wall, map collision, action, RNG or
+ABI data is changed. Unmounted, hidden or non-wall cases retain ordinary origins.
+This is a projection of an existing wall creature, not a line-of-sight test or
+new attack rule. See [arrow turret evidence](arrow-turret-animation.md).

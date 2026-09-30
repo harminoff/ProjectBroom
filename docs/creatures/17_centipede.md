@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `centipede`.
-- Authored silhouette dimensions: 56 / 35 / 13 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-centipede`.
+- Authored silhouette dimensions: 55.0156 / 25.4424 / 10.4787 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: segments, incisors, chitin.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/17_centipede.obj).
-- [Editable Blender source](../../assets/monsters/sources/17_centipede.blend).
+- Visual construction cues: continuous flexible cuticle, fifteen chitin tergites, thirty articulated legs, paired antennae, lateral ocelli, curved forcipules, copper-edged violet chitin.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/17_centipede.iqm).
+- [Editable Blender source](../../assets/monsters/centipede/centipede-animated.blend).
+- [Animation manifest](../../assets/monsters/centipede/animation.json); 115 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Centipede anatomy, grounded gait and actual verification](../centipede-animation.md).
 
 ## Brogue encounter-table references
 
@@ -36,8 +39,8 @@ These are nominal table ranges and weights, not guaranteed encounter depths or p
 Machine-readable results live in [bestiary-index.json](../../assets/monsters/bestiary-index.json). A generated asset is not automatically visually approved. These generated cards are not a hand-edited checklist: record later acceptance under the index entry’s `verification` object, which regeneration preserves.
 
 - [ ] Individual art/signature-feature approval.
-- [ ] Normal encounter at gameplay distance and lighting.
+- [x] Fixed-seed normal encounter captured; see verification object for limited scope.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

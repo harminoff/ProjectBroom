@@ -13,7 +13,7 @@ height are presentation choices, not a measurement specified by Brogue.
 - Original skin: `graphics/BRGMONKY.png`.
 
 Clips: idle, walk, bite, snatch, recoil, death, captive and released. The captive
-loop hunches forward with the wrists bound. Release removes the iron cuff and chain model and
+loop hunches forward with the wrists bound. Two alternating-link chains start at the iron cuffs and run down to floor anchors beside the monkey; release removes the cuffs and chains and
 stands up over 21 engine tics. A new authoritative movement can interrupt it.
 Initial attachment and unseen releases settle without replaying that transition.
 Cages belong to terrain; open-floor captives do not receive an invented cage.
@@ -31,3 +31,8 @@ Codex-assisted procedural modeling and Blender, under
 [CC-BY-SA-4.0](../../../ASSETS-LICENSE.md). No external artwork was imported.
 Brogue text retains upstream notices. User art approval remains pending.
 See [implementation evidence](../../../docs/monkey-animation.md).
+
+
+2026-09-09: captive source and IQM rebuilt as a complete two-post restraint assembly with fixed footings, crossbar, wrist cuffs and chains to iron post bands. This supersedes the floor-anchor description above. See the latest section of docs/monkey-animation.md for validation.
+
+Release now spawns 05_monkey_restraints.iqm with a 29-tic collapse and leaves the frame and cuffs on the floor. Geometry and per-piece animation are authored in monkey_animation.py under the same asset license. This supersedes descriptions of the frame disappearing on release.

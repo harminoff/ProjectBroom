@@ -35,9 +35,13 @@ def generate():
             for i,z in enumerate(range(44,height-2,4)):ring(v,f,(0,0,z),2,2.8,alternate=bool(i%2))
             ring(v,f,(0,0,38),4,4,1)
         else:
-            box(v,f,-5,-5,0,10,10,2)
-            for i in range(7):ring(v,f,(0,0,4+i*3.5),2,2.7,alternate=bool(i%2))
-            ring(v,f,(0,0,31),4,4,1)
+            # Discarded cuffs and slack links lie on the floor after release.
+            for i in range(7):
+                ring(v,f,(-6+i*2,math.sin(i*.7)*2,1),1,1.3,.3,alternate=bool(i%2))
+            ring(v,f,(-8,0,1),2,2,.45)
+            ring(v,f,(8,0,1),2,2,.45)
+            # Rotate each upright loop down into the floor plane.
+            v[:]=[(x,z-1,y*.12+1) for x,y,z in v]
         text='# Original Project Broom iron manacles, CC0-1.0\n'
         text+=''.join(f'v {x:.4f} {z:.4f} {-y:.4f}\n' for x,y,z in v)
         text+='vt 0 0\nvt 1 0\nvt 1 1\nvt 0 1\n'

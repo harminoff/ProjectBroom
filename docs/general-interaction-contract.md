@@ -1,11 +1,11 @@
 # General interaction migration
 
 Contribution category: Brogue parity and bridge work. Brogue CE owns every
-choice, mutation, recording event and turn. ABI v21 (below) delivers the general
-contract for the commands that ask questions; the remaining acceptance entries
-(physical-input, package and standalone comparison) are still open.
+choice, mutation, recording event and turn. This migration is in progress. ABI v24
+(below) delivers the general contract for the native-frame commands; the
+unmigrated commands keep their existing confirmation and selection paths.
 
-## ABI v21: the general interaction contract
+## ABI v24: the general interaction contract
 
 A Brogue command that asks a question no longer returns an ad-hoc result code that
 the frontend must answer by resubmitting the command. The bridge keeps the native
@@ -67,7 +67,6 @@ call/relabel the selected item, and the Saves menu abandons. New Game offers
 from a seed"; the latter two hand a fresh campaign to the launcher
 (`--new-game`, `--seed N`, and `--pick-seed FILE` for the seed dialog). Dev builds without
 a launcher report that a new dungeon needs it and keep playing.
-
 
 ## Independent baseline
 

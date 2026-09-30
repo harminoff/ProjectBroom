@@ -944,3 +944,172 @@ Model BroguePickupC4096K02
     Scale 1.0 1.0 1.0
     FrameIndex ITM0 A 0 0
 }
+
+Model BroguePotioncrimson
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_crimson.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotionscarlet
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_scarlet.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotionorange
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_orange.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotionyellow
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_yellow.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotiongreen
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_green.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotionblue
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_blue.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotionindigo
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_indigo.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotionviolet
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_violet.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotionpuce
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_puce.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotionmauve
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_mauve.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotionburgundy
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_burgundy.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotionturquoise
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_turquoise.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotionaquamarine
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_aquamarine.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotiongray
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_gray.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotionpink
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_pink.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotionwhite
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_white.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotionlavender
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_lavender.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotiontan
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_tan.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotionbrown
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_brown.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotioncyan
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_cyan.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}
+Model BroguePotionblack
+{
+ Path "models/pickups"
+ Model 0 "potion_generic.obj"
+ Skin 0 "graphics/BRGPOTION_black.png"
+ Scale 1.0 1.0 1.0
+ FrameIndex ITM0 A 0 0
+}

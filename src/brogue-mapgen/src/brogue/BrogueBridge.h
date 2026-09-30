@@ -15,7 +15,7 @@ extern "C" {
 #endif
 
 /* v19 is reserved by the independent interaction migration. */
-#define BROGUE_BRIDGE_API_VERSION 21u
+#define BROGUE_BRIDGE_API_VERSION 24u
 #define BROGUE_BRIDGE_PATH_LENGTH 4096u
 #define BROGUE_BRIDGE_MAX_CELLS 2291u
 #define BROGUE_BRIDGE_MAX_CREATURES 1024u
@@ -122,7 +122,7 @@ typedef enum BrogueBridgeInteractionKind {
     BROGUE_INTERACTION_ITEM_CHOICE,
     /* Enter text. Brogue validates length and characters. */
     BROGUE_INTERACTION_TEXT,
-    /* Choose a map cell. */
+    /* Choose a map cell. The frontend answers with an ordinary command. */
     BROGUE_INTERACTION_TARGET_LOCATION
 } BrogueBridgeInteractionKind;
 
@@ -322,9 +322,15 @@ typedef struct BrogueBridgeItemState {
     uint8_t inventoryLetter;
     uint8_t inventoryOrder;
     uint8_t equipmentSlot;
+    /* One-based index in Brogue's itemColorsRef (crimson through black).
+     * Zero means not a potion/unknown. Independent of effect identification. */
+    uint16_t potionColor;
     uint32_t actionFlags;
     char displayName[BROGUE_BRIDGE_ITEM_NAME_LENGTH];
     char detailText[BROGUE_BRIDGE_ITEM_DETAIL_LENGTH];
+    /* Assigned visible wood, metal, gemstone or scroll title, independent of
+     * identification and Call text. Empty for categories without a flavor. */
+    char appearance[128];
 } BrogueBridgeItemState;
 
 typedef struct BrogueBridgePoint {
@@ -502,9 +508,12 @@ typedef struct BrogueBridgeTerrainAppearance {
     uint8_t gasRed, gasGreen, gasBlue;
     uint8_t bedKind;
     uint8_t reserved[2];
+    /* Knowledge-safe dungeon, liquid and surface identities; never raw hidden layers.
+     * Remembered/mapped cells contain only rememberedTerrain in slot zero. */
+    uint16_t layers[3];
 } BrogueBridgeTerrainAppearance;
 
-typedef char BrogueTerrainAppearanceSizeCheck[sizeof(BrogueBridgeTerrainAppearance) == 28 ? 1 : -1];
+typedef char BrogueTerrainAppearanceSizeCheck[sizeof(BrogueBridgeTerrainAppearance) == 36 ? 1 : -1];
 
 typedef struct BrogueBridgeCellState {
     int32_t x;
@@ -546,7 +555,7 @@ typedef struct BrogueBridgeCellState {
     BrogueBridgeTerrainAppearance appearance;
 } BrogueBridgeCellState;
 
-typedef char BrogueCellStateSizeCheck[sizeof(BrogueBridgeCellState) == 112 ? 1 : -1];
+typedef char BrogueCellStateSizeCheck[sizeof(BrogueBridgeCellState) == 120 ? 1 : -1];
 
 typedef struct BrogueBridgeEvent {
     uint64_t sequence;
@@ -645,7 +654,8 @@ typedef struct BrogueBridgePersistenceState {
 BrogueBridgeResult brogue_bridge_persistence(const BrogueBridgePersistenceRequest *request,
                                               BrogueBridgePersistenceState *outState);
 
-/* One pending Brogue question. The token changes for every question. */
+/* One pending Brogue question. The token names this exact pause; it changes
+ * for every question and is never valid for a different revision. */
 typedef struct BrogueBridgeInteraction {
     uint32_t apiVersion;
     BrogueBridgeInteractionKind kind;

@@ -318,3 +318,35 @@ index 23ba8dbddfcd978d557a2e9c5df013882344b496..86d21ef2f9bf779d45042296e47d7635
  	if (gamestate != GS_LEVEL)
  		return;
  
+diff --git a/src/rendering/hwrenderer/scene/hw_drawinfo.cpp b/src/rendering/hwrenderer/scene/hw_drawinfo.cpp
+index f458e5665e8217b258bfb39a9037353bda1c26e0..f939b8a77924340981d4c89aec4daea018f1ba1d 100644
+--- a/src/rendering/hwrenderer/scene/hw_drawinfo.cpp
++++ b/src/rendering/hwrenderer/scene/hw_drawinfo.cpp
+@@ -16,6 +16,7 @@
+ */
+ 
+ #include "a_sharedglobal.h"
++#include "brogue_bridge_frontend.h"
+ #include "r_utility.h"
+ #include "r_sky.h"
+ #include "d_player.h"
+@@ -915,6 +916,19 @@ void HWDrawInfo::EndDrawScene(sector_t * viewsector, FRenderState &state)
+ 	}*/
+ 
+ 	// [BB] HUD models need to be rendered here.
++	// Project Broom's selection leader belongs above the world but below hands
++	// and weapons. Keep it out of the later, foreground HUD drawer.
++	F2DDrawer lookLeader;
++	if (BrogueBridge_DrawLookLeader(&lookLeader))
++	{
++		Draw2D(&lookLeader, state);
++		state.SetViewport(screen->mSceneViewport.left, screen->mSceneViewport.top,
++			screen->mSceneViewport.width, screen->mSceneViewport.height);
++		screen->mViewpoints->Bind(state, vpIndex);
++		state.EnableDepthTest(true);
++		state.EnableMultisampling(true);
++		state.SetDepthMask(true);
++	}
+ 	const bool renderHUDModel = IsHUDModelForPlayerAvailable(players[consoleplayer].camera->player);
+ 	if (renderHUDModel)
+ 	{

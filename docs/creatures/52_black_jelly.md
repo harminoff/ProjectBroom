@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `slime`.
-- Authored silhouette dimensions: 54 / 50 / 34 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-black_jelly`.
+- Authored silhouette dimensions: 53.2612 / 50.6634 / 25.2147 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: goo, black, lobes.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/52_black_jelly.obj).
-- [Editable Blender source](../../assets/monsters/sources/52_black_jelly.blend).
+- Visual construction cues: connected melting ink heap, curtain folds pooling into drips, glossy spill-pool apron, violet-depth inclusions, view-dependent gloss sheen.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/52_black_jelly.iqm).
+- [Editable Blender source](../../assets/monsters/black_jelly/black-jelly-animated.blend).
+- [Animation manifest](../../assets/monsters/black_jelly/animation.json); 58 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Black jelly authoring and actual verification](../black-jelly-animation.md).
 
 ## Brogue encounter-table references
 
@@ -38,6 +41,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

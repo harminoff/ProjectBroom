@@ -7,25 +7,25 @@ static constexpr TerrainStyle TerrainStyles[] = {
     {"BRGEARTH", "BRGCAVE", "", 0}, // GRANITE
     {"BRGEARTH", "BRGCAVE", "", 0}, // FLOOR
     {"BRGEARTH", "BRGCAVE", "", 0}, // FLOOR_FLOODABLE
-    {"BRGEARTH", "BRGCAVE", "", 0}, // CARPET
-    {"BRGEARTH", "BRGCAVE", "", 0}, // MARBLE_FLOOR
+    {"BTCRPT", "BRGCAVE", "", 0}, // CARPET
+    {"BTMARB", "BRGCAVE", "", 0}, // MARBLE_FLOOR
     {"BRGEARTH", "BRGCAVE", "", 0}, // WALL
     {"BRGEARTH", "BRGCAVE", "BrogueDoorMarker", 0}, // DOOR
     {"BRGEARTH", "BRGCAVE", "", 0}, // OPEN_DOOR
     {"BRGEARTH", "BRGCAVE", "", 0}, // SECRET_DOOR
-    {"BRGEARTH", "BRGCAVE", "BrogueDoorMarker", 0}, // LOCKED_DOOR
-    {"BRGEARTH", "BRGCAVE", "", 0}, // OPEN_IRON_DOOR_INERT
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogIronDoor", 0}, // LOCKED_DOOR
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogOpenIronDoor", 0}, // OPEN_IRON_DOOR_INERT
     {"BRGEARTH", "BRGCAVE", "", 0}, // DOWN_STAIRS
     {"BRGEARTH", "BRGCAVE", "", 0}, // UP_STAIRS
     {"BRGEARTH", "BRGCAVE", "", 0}, // DUNGEON_EXIT
-    {"BRGEARTH", "BRGCAVE", "", 0}, // DUNGEON_PORTAL
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogCrystalPortal", 0}, // DUNGEON_PORTAL
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainTorch", 0}, // TORCH_WALL
-    {"BRGEARTH", "BRGCAVE", "", 0}, // CRYSTAL_WALL
+    {"BTCRYST", "BTCRYST", "", 0}, // CRYSTAL_WALL
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainGate", 0}, // PORTCULLIS_CLOSED
     {"BRGEARTH", "BRGCAVE", "", 0}, // PORTCULLIS_DORMANT
     {"BRGEARTH", "BRGCAVE", "BrogueBarricadeMarker", 0}, // WOODEN_BARRICADE
-    {"BRGEARTH", "BRGCAVE", "", 0}, // PILOT_LIGHT_DORMANT
-    {"BRGEARTH", "BRGCAVE", "", 0}, // PILOT_LIGHT
+    {"BRGEARTH", "BRGCAVE", "BrogueTerrainTorch", 0}, // PILOT_LIGHT_DORMANT
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogFallenTorch", 0}, // PILOT_LIGHT
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainTorch", 0}, // HAUNTED_TORCH_DORMANT
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainTorch", 0}, // HAUNTED_TORCH_TRANSITIONING
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainTorch", 0}, // HAUNTED_TORCH
@@ -37,25 +37,25 @@ static constexpr TerrainStyle TerrainStyles[] = {
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainStatueMarble", 0}, // STATUE_DORMANT
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainStatueCracked", 0}, // STATUE_CRACKING
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainStatueMarble", 0}, // STATUE_INSTACRACK
-    {"BRGEARTH", "BRGCAVE", "", 0}, // PORTAL
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogArch", 0}, // PORTAL
     {"BRGEARTH", "BRGCAVE", "", 0}, // TURRET_DORMANT
     {"BRGEARTH", "BRGCAVE", "", 0}, // WALL_MONSTER_DORMANT
     {"BRGEARTH", "BRGCAVE", "", 0}, // DARK_FLOOR_DORMANT
     {"BRGEARTH", "BRGCAVE", "", 0}, // DARK_FLOOR_DARKENING
     {"BRGEARTH", "BRGCAVE", "", 0}, // DARK_FLOOR
     {"BRGEARTH", "BRGCAVE", "", 0}, // MACHINE_TRIGGER_FLOOR
-    {"BRGEARTH", "BRGCAVE", "", 0}, // ALTAR_INERT
-    {"BRGEARTH", "BRGCAVE", "", 0}, // ALTAR_KEYHOLE
-    {"BRGEARTH", "BRGCAVE", "", 0}, // ALTAR_CAGE_OPEN
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogAltar", 0}, // ALTAR_INERT
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogAltar", 0}, // ALTAR_KEYHOLE
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogAltar", 0}, // ALTAR_CAGE_OPEN
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainCage", 0}, // ALTAR_CAGE_CLOSED
-    {"BRGEARTH", "BRGCAVE", "", 0}, // ALTAR_SWITCH
-    {"BRGEARTH", "BRGCAVE", "", 0}, // ALTAR_SWITCH_RETRACTING
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogAltar", 0}, // ALTAR_SWITCH
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogAltar", 0}, // ALTAR_SWITCH_RETRACTING
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainCage", 0}, // ALTAR_CAGE_RETRACTABLE
-    {"BRGEARTH", "BRGCAVE", "", 0}, // PEDESTAL
-    {"BRGEARTH", "BRGCAVE", "", 0}, // MONSTER_CAGE_OPEN
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogPedestal", 0}, // PEDESTAL
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogOpenCage", 0}, // MONSTER_CAGE_OPEN
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainCage", 0}, // MONSTER_CAGE_CLOSED
-    {"BRGEARTH", "BRGCAVE", "", 0}, // COFFIN_CLOSED
-    {"BRGEARTH", "BRGCAVE", "", 0}, // COFFIN_OPEN
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogCoffin", 0}, // COFFIN_CLOSED
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogOpenCoffin", 0}, // COFFIN_OPEN
     {"BRGEARTH", "BRGCAVE", "", 0}, // GAS_TRAP_POISON_HIDDEN
     {"BRGEARTH", "BRGCAVE", "BrogueSearchPlate", 0}, // GAS_TRAP_POISON
     {"BRGEARTH", "BRGCAVE", "", 0}, // TRAP_DOOR_HIDDEN
@@ -83,31 +83,31 @@ static constexpr TerrainStyle TerrainStyles[] = {
     {"BRGEARTH", "BRGCAVE", "BrogueSearchVent", 0}, // STEAM_VENT
     {"BRGEARTH", "BRGCAVE", "BrogueSearchPlate", 0}, // MACHINE_PRESSURE_PLATE
     {"BRGEARTH", "BRGCAVE", "BrogueSearchPlate", 0}, // MACHINE_PRESSURE_PLATE_USED
-    {"BRGEARTH", "BRGCAVE", "", 0}, // MACHINE_GLYPH
-    {"BRGEARTH", "BRGCAVE", "", 0}, // MACHINE_GLYPH_INACTIVE
-    {"BRGEARTH", "BRGCAVE", "", 0}, // DEWAR_CAUSTIC_GAS
-    {"BRGEARTH", "BRGCAVE", "", 0}, // DEWAR_CONFUSION_GAS
-    {"BRGEARTH", "BRGCAVE", "", 0}, // DEWAR_PARALYSIS_GAS
-    {"BRGEARTH", "BRGCAVE", "", 0}, // DEWAR_METHANE_GAS
+    {"BTGLYPH", "BRGCAVE", "", 0}, // MACHINE_GLYPH
+    {"BTGLYPH", "BRGCAVE", "", 0}, // MACHINE_GLYPH_INACTIVE
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogDewarCaustic", 0}, // DEWAR_CAUSTIC_GAS
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogDewarConfusion", 0}, // DEWAR_CONFUSION_GAS
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogDewarParalysis", 0}, // DEWAR_PARALYSIS_GAS
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogDewarMethane", 0}, // DEWAR_METHANE_GAS
     {"BRGWATR", "BRGCAVE", "", 0}, // DEEP_WATER
     {"BRGWATR", "BRGCAVE", "", 0}, // SHALLOW_WATER
     {"BRGSLDG", "BRGCAVE", "", 0}, // MUD
     {"BRGVOID", "BRGCAVE", "", 0}, // CHASM
     {"BRGEARTH", "BRGCAVE", "", 0}, // CHASM_EDGE
     {"BRGEARTH", "BRGCAVE", "", 0}, // MACHINE_COLLAPSE_EDGE_DORMANT
-    {"BRGEARTH", "BRGCAVE", "", 0}, // MACHINE_COLLAPSE_EDGE_SPREADING
+    {"BTCRUMB", "BRGCAVE", "", 0}, // MACHINE_COLLAPSE_EDGE_SPREADING
     {"BRGMOLT", "BRGCAVE", "", 0}, // LAVA
     {"BRGMOLT", "BRGCAVE", "", 0}, // LAVA_RETRACTABLE
-    {"BRGMOLT", "BRGCAVE", "", 0}, // LAVA_RETRACTING
-    {"BRGEARTH", "BRGCAVE", "", 0}, // SUNLIGHT_POOL
-    {"BRGEARTH", "BRGCAVE", "", 0}, // DARKNESS_PATCH
-    {"BRGEARTH", "BRGCAVE", "", 0}, // ACTIVE_BRIMSTONE
-    {"BRGEARTH", "BRGCAVE", "", 0}, // INERT_BRIMSTONE
-    {"BRGEARTH", "BRGCAVE", "", 0}, // OBSIDIAN
-    {"BRGBRID", "BRGCAVE", "", 0}, // BRIDGE
-    {"BRGBRID", "BRGCAVE", "", 1}, // BRIDGE_FALLING
-    {"BRGBRID", "BRGCAVE", "", 0}, // BRIDGE_EDGE
-    {"BRGBRID", "BRGCAVE", "", 0}, // STONE_BRIDGE
+    {"BTCOOL", "BRGCAVE", "", 0}, // LAVA_RETRACTING
+    {"BTSUN", "BRGCAVE", "", 0}, // SUNLIGHT_POOL
+    {"BTSHADE", "BRGCAVE", "", 0}, // DARKNESS_PATCH
+    {"BTBRIM", "BRGCAVE", "", 0}, // ACTIVE_BRIMSTONE
+    {"BTBRIM", "BRGCAVE", "", 0}, // INERT_BRIMSTONE
+    {"BTOBSD", "BRGCAVE", "", 0}, // OBSIDIAN
+    {"BRGBRID", "BRGCAVE", "BrogueCatalogRopeBridge", 0}, // BRIDGE
+    {"BRGBRID", "BRGCAVE", "BrogueCatalogRopeBridge", 1}, // BRIDGE_FALLING
+    {"BRGBRID", "BRGCAVE", "BrogueCatalogRopeBridge", 0}, // BRIDGE_EDGE
+    {"BTMARB", "BRGCAVE", "", 0}, // STONE_BRIDGE
     {"BRGWATR", "BRGCAVE", "", 0}, // MACHINE_FLOOD_WATER_DORMANT
     {"BRGWATR", "BRGCAVE", "", 0}, // MACHINE_FLOOD_WATER_SPREADING
     {"BRGSLDG", "BRGCAVE", "", 0}, // MACHINE_MUD_DORMANT
@@ -117,42 +117,42 @@ static constexpr TerrainStyle TerrainStyles[] = {
     {"BRGICE", "BRGCAVE", "", 2}, // ICE_SHALLOW_MELT
     {"BRGVOID", "BRGCAVE", "", 0}, // HOLE
     {"BRGVOID", "BRGCAVE", "", 0}, // HOLE_GLOW
-    {"BRGEARTH", "BRGCAVE", "", 0}, // HOLE_EDGE
+    {"BTFADE", "BRGCAVE", "", 0}, // HOLE_EDGE
     {"BRGWATR", "BRGCAVE", "", 0}, // FLOOD_WATER_DEEP
     {"BRGWATR", "BRGCAVE", "", 0}, // FLOOD_WATER_SHALLOW
     {"BRGMOSS", "BRGCAVE", "BrogueGrassProp", 0}, // GRASS
     {"BRGMOSS", "BRGCAVE", "BrogueDeadVegetationProp", 0}, // DEAD_GRASS
-    {"BRGMOSS", "BRGCAVE", "BrogueFungusProp", 0}, // GRAY_FUNGUS
+    {"BRGMOSS", "BRGCAVE", "BrogueCatalogWitheredFungus", 0}, // GRAY_FUNGUS
     {"BRGMOSS", "BRGCAVE", "BrogueLuminousFungusProp", 0}, // LUMINESCENT_FUNGUS
-    {"BRGEARTH", "BRGCAVE", "", 0}, // LICHEN
-    {"BRGEARTH", "BRGCAVE", "", 0}, // HAY
-    {"BRGEARTH", "BRGCAVE", "", 0}, // RED_BLOOD
-    {"BRGEARTH", "BRGCAVE", "", 0}, // GREEN_BLOOD
-    {"BRGEARTH", "BRGCAVE", "", 0}, // PURPLE_BLOOD
-    {"BRGEARTH", "BRGCAVE", "", 0}, // ACID_SPLATTER
-    {"BRGEARTH", "BRGCAVE", "", 0}, // VOMIT
-    {"BRGEARTH", "BRGCAVE", "", 0}, // URINE
-    {"BRGEARTH", "BRGCAVE", "", 0}, // UNICORN_POOP
-    {"BRGEARTH", "BRGCAVE", "", 0}, // WORM_BLOOD
-    {"BRGEARTH", "BRGCAVE", "", 0}, // ASH
-    {"BRGEARTH", "BRGCAVE", "", 0}, // BURNED_CARPET
-    {"BRGEARTH", "BRGCAVE", "", 0}, // PUDDLE
-    {"BRGEARTH", "BRGCAVE", "", 0}, // BONES
-    {"BRGEARTH", "BRGCAVE", "", 0}, // RUBBLE
-    {"BRGEARTH", "BRGCAVE", "", 0}, // JUNK
-    {"BRGEARTH", "BRGCAVE", "", 0}, // BROKEN_GLASS
-    {"BRGEARTH", "BRGCAVE", "", 0}, // ECTOPLASM
-    {"BRGEARTH", "BRGCAVE", "", 0}, // EMBERS
-    {"BRGEARTH", "BRGCAVE", "", 0}, // SPIDERWEB
-    {"BRGEARTH", "BRGCAVE", "", 0}, // NETTING
+    {"BTLICHN", "BRGCAVE", "", 0}, // LICHEN
+    {"BTHAY", "BRGCAVE", "", 0}, // HAY
+    {"BTBLOOD", "BRGCAVE", "", 0}, // RED_BLOOD
+    {"BTGREEN", "BRGCAVE", "", 0}, // GREEN_BLOOD
+    {"BTPURPL", "BRGCAVE", "", 0}, // PURPLE_BLOOD
+    {"BTACID", "BRGCAVE", "", 0}, // ACID_SPLATTER
+    {"BTVOMIT", "BRGCAVE", "", 0}, // VOMIT
+    {"BTURINE", "BRGCAVE", "", 0}, // URINE
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogDroppings", 0}, // UNICORN_POOP
+    {"BTENTRL", "BRGCAVE", "", 0}, // WORM_BLOOD
+    {"BTASH", "BRGCAVE", "", 0}, // ASH
+    {"BTBURN", "BRGCAVE", "", 0}, // BURNED_CARPET
+    {"BTPUDDL", "BRGCAVE", "", 0}, // PUDDLE
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogBones", 0}, // BONES
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogRubble", 0}, // RUBBLE
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogJunk", 0}, // JUNK
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogGlass", 0}, // BROKEN_GLASS
+    {"BTECTO", "BRGCAVE", "", 0}, // ECTOPLASM
+    {"BTEMBR", "BRGCAVE", "", 0}, // EMBERS
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogWeb", 0}, // SPIDERWEB
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogNet", 0}, // NETTING
     {"BRGMOSS", "BRGCAVE", "BrogueFoliageProp", 0}, // FOLIAGE
     {"BRGMOSS", "BRGCAVE", "BrogueDeadVegetationProp", 0}, // DEAD_FOLIAGE
-    {"BRGMOSS", "BRGCAVE", "BrogueFoliageProp", 0}, // TRAMPLED_FOLIAGE
-    {"BRGMOSS", "BRGCAVE", "BrogueFungusProp", 0}, // FUNGUS_FOREST
-    {"BRGMOSS", "BRGCAVE", "BrogueFungusProp", 0}, // TRAMPLED_FUNGUS_FOREST
-    {"BRGEARTH", "BRGCAVE", "", 0}, // FORCEFIELD
-    {"BRGEARTH", "BRGCAVE", "", 0}, // FORCEFIELD_MELT
-    {"BRGEARTH", "BRGCAVE", "", 0}, // SACRED_GLYPH
+    {"BRGMOSS", "BRGCAVE", "BrogueCatalogTrampledLeaves", 0}, // TRAMPLED_FOLIAGE
+    {"BRGMOSS", "BRGCAVE", "BrogueCatalogFungalForest", 0}, // FUNGUS_FOREST
+    {"BRGMOSS", "BRGCAVE", "BrogueCatalogTrampledFungus", 0}, // TRAMPLED_FUNGUS_FOREST
+    {"BTCRYST", "BTCRYST", "", 0}, // FORCEFIELD
+    {"BTCRYST", "BTCRYST", "", 0}, // FORCEFIELD_MELT
+    {"BTGLYPH", "BRGCAVE", "", 0}, // SACRED_GLYPH
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainManacleCeiling", 0}, // MANACLE_TL
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainManacleFloor", 0}, // MANACLE_BR
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainManacleCeiling", 0}, // MANACLE_TR
@@ -161,8 +161,8 @@ static constexpr TerrainStyle TerrainStyles[] = {
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainManacleWall", 0}, // MANACLE_B
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainManacleWall", 0}, // MANACLE_L
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainManacleWall", 0}, // MANACLE_R
-    {"BRGEARTH", "BRGCAVE", "", 0}, // PORTAL_LIGHT
-    {"BRGEARTH", "BRGCAVE", "", 0}, // GUARDIAN_GLOW
+    {"BTSUN", "BRGCAVE", "", 0}, // PORTAL_LIGHT
+    {"BTGLOW", "BRGCAVE", "", 0}, // GUARDIAN_GLOW
     {"BRGEARTH", "BRGCAVE", "", 0}, // PLAIN_FIRE
     {"BRGEARTH", "BRGCAVE", "", 0}, // BRIMSTONE_FIRE
     {"BRGEARTH", "BRGCAVE", "", 0}, // FLAMEDANCER_FIRE
@@ -182,40 +182,40 @@ static constexpr TerrainStyle TerrainStyles[] = {
     {"BRGEARTH", "BRGCAVE", "", 0}, // HEALING_CLOUD
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainBloodwortStalk", 0}, // BLOODFLOWER_STALK
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainBloodwortPod", 0}, // BLOODFLOWER_POD
-    {"BRGEARTH", "BRGCAVE", "", 0}, // HAVEN_BEDROLL
-    {"BRGWATR", "BRGCAVE", "", 0}, // DEEP_WATER_ALGAE_WELL
-    {"BRGWATR", "BRGCAVE", "", 0}, // DEEP_WATER_ALGAE_1
-    {"BRGWATR", "BRGCAVE", "", 0}, // DEEP_WATER_ALGAE_2
-    {"BRGEARTH", "BRGCAVE", "", 0}, // ANCIENT_SPIRIT_VINES
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogBedroll", 0}, // HAVEN_BEDROLL
+    {"BRGEARTH", "BRGCAVE", "", 0}, // DEEP_WATER_ALGAE_WELL
+    {"BRGWATR", "BRGCAVE", "BrogueCatalogAlgae", 0}, // DEEP_WATER_ALGAE_1
+    {"BRGWATR", "BRGCAVE", "BrogueCatalogDenseAlgae", 0}, // DEEP_WATER_ALGAE_2
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogVines", 0}, // ANCIENT_SPIRIT_VINES
     {"BRGMOSS", "BRGCAVE", "BrogueGrassProp", 0}, // ANCIENT_SPIRIT_GRASS
     {"BRGEARTH", "BRGCAVE", "", 0}, // AMULET_SWITCH
-    {"BRGEARTH", "BRGCAVE", "", 0}, // COMMUTATION_ALTAR
-    {"BRGEARTH", "BRGCAVE", "", 0}, // COMMUTATION_ALTAR_INERT
-    {"BRGEARTH", "BRGCAVE", "", 0}, // PIPE_GLOWING
-    {"BRGEARTH", "BRGCAVE", "", 0}, // PIPE_INERT
-    {"BRGEARTH", "BRGCAVE", "", 0}, // RESURRECTION_ALTAR
-    {"BRGEARTH", "BRGCAVE", "", 0}, // RESURRECTION_ALTAR_INERT
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogCommuteAltar", 0}, // COMMUTATION_ALTAR
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogScorchedAltar", 0}, // COMMUTATION_ALTAR_INERT
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogPipes", 0}, // PIPE_GLOWING
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogBurntPipes", 0}, // PIPE_INERT
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogResurrectAltar", 0}, // RESURRECTION_ALTAR
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogScorchedAltar", 0}, // RESURRECTION_ALTAR_INERT
     {"BRGEARTH", "BRGCAVE", "", 0}, // MACHINE_TRIGGER_FLOOR_REPEATING
-    {"BRGEARTH", "BRGCAVE", "", 0}, // SACRIFICE_ALTAR_DORMANT
-    {"BRGEARTH", "BRGCAVE", "", 0}, // SACRIFICE_ALTAR
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogSacrificeAltar", 0}, // SACRIFICE_ALTAR_DORMANT
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogSacrificeAltar", 0}, // SACRIFICE_ALTAR
     {"BRGMOLT", "BRGCAVE", "", 0}, // SACRIFICE_LAVA
-    {"BRGEARTH", "BRGCAVE", "", 0}, // SACRIFICE_CAGE_DORMANT
+    {"BRGEARTH", "BRGCAVE", "BrogueTerrainCage", 0}, // SACRIFICE_CAGE_DORMANT
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainStatueDemon", 0}, // DEMONIC_STATUE
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainStatueBroken", 0}, // STATUE_INERT_DOORWAY
     {"BRGEARTH", "BRGCAVE", "BrogueTerrainStatueMarble", 0}, // STATUE_DORMANT_DOORWAY
-    {"BRGBRID", "BRGCAVE", "", 0}, // CHASM_WITH_HIDDEN_BRIDGE
-    {"BRGBRID", "BRGCAVE", "", 0}, // CHASM_WITH_HIDDEN_BRIDGE_ACTIVE
+    {"BRGVOID", "BRGCAVE", "", 0}, // CHASM_WITH_HIDDEN_BRIDGE
+    {"BTMARB", "BRGCAVE", "", 0}, // CHASM_WITH_HIDDEN_BRIDGE_ACTIVE
     {"BRGEARTH", "BRGCAVE", "", 0}, // MACHINE_CHASM_EDGE
     {"BRGEARTH", "BRGCAVE", "", 0}, // RAT_TRAP_WALL_DORMANT
-    {"BRGEARTH", "BRGCAVE", "", 0}, // RAT_TRAP_WALL_CRACKING
-    {"BRGEARTH", "BRGCAVE", "", 0}, // ELECTRIC_CRYSTAL_OFF
-    {"BRGEARTH", "BRGCAVE", "", 0}, // ELECTRIC_CRYSTAL_ON
-    {"BRGEARTH", "BRGCAVE", "", 0}, // TURRET_LEVER
+    {"BRGEARTH", "BTCRUMB", "", 0}, // RAT_TRAP_WALL_CRACKING
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogCrystalOff", 0}, // ELECTRIC_CRYSTAL_OFF
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogCrystalOn", 0}, // ELECTRIC_CRYSTAL_ON
+    {"BRGEARTH", "BRGCAVE", "BrogueSearchLever", 0}, // TURRET_LEVER
     {"BRGEARTH", "BRGCAVE", "", 0}, // WORM_TUNNEL_MARKER_DORMANT
     {"BRGEARTH", "BRGCAVE", "", 0}, // WORM_TUNNEL_MARKER_ACTIVE
     {"BRGEARTH", "BRGCAVE", "", 0}, // WORM_TUNNEL_OUTER_WALL
-    {"BRGEARTH", "BRGCAVE", "", 0}, // BRAZIER
-    {"BRGEARTH", "BRGCAVE", "", 0}, // MUD_FLOOR
-    {"BRGEARTH", "BRGCAVE", "", 0}, // MUD_WALL
-    {"BRGEARTH", "BRGCAVE", "", 0}, // MUD_DOORWAY
+    {"BRGEARTH", "BRGCAVE", "BrogueCatalogBrazier", 0}, // BRAZIER
+    {"BTMUD", "BRGCAVE", "", 0}, // MUD_FLOOR
+    {"BRGEARTH", "BTMUD", "", 0}, // MUD_WALL
+    {"BRGEARTH", "BTMUD", "BrogueCatalogSkins", 0}, // MUD_DOORWAY
 };

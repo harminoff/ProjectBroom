@@ -15,13 +15,17 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `serpent`.
-- Authored silhouette dimensions: 54 / 50 / 70 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-salamander`.
+- Authored silhouette dimensions: 43.6199 / 44.3444 / 62.7797 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
 - Visual construction cues: naga, lash, flame, scales.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/29_salamander.obj).
-- [Editable Blender source](../../assets/monsters/sources/29_salamander.blend).
+- [Runtime model](../../mod/BrogueDoom/models/monsters/29_salamander.iqm).
+- [Editable Blender source](../../assets/monsters/salamander/salamander-animated.blend).
+- [Animation manifest](../../assets/monsters/salamander/animation.json); 104 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+
+[Salamander authoring and actual verification](../salamander-animation.md).
 
 ## Brogue encounter-table references
 
@@ -42,6 +46,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

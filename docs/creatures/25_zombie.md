@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `humanoid`.
-- Authored silhouette dimensions: 32 / 36 / 62 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-zombie`.
+- Authored silhouette dimensions: 15.005 / 19.9326 / 60.9856 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: undead, ribs, torn_flesh.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/25_zombie.obj).
-- [Editable Blender source](../../assets/monsters/sources/25_zombie.blend).
+- Visual construction cues: connected decaying corpse, eighteen hanging flesh shreds, exposed ribs and shin, milky eyes, slack hinged jaw, uneven teeth, ragged waist cloth.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/25_zombie.iqm).
+- [Editable Blender source](../../assets/monsters/zombie/zombie-animated.blend).
+- [Animation manifest](../../assets/monsters/zombie/animation.json); 18 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Zombie anatomy and actual verification](../zombie-animation.md).
 
 ## Brogue encounter-table references
 
@@ -38,6 +41,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

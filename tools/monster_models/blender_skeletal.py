@@ -12,26 +12,60 @@ import bpy
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT))
 from importlib import import_module
-from tools.monster_models.skeletal_registry import profiles
+from tools.monster_models.skeletal_registry import find
 from mathutils import Vector
 key=sys.argv[sys.argv.index('--')+1] if '--' in sys.argv else 'MK_KOBOLD'
-profile=next(row for row in profiles() if row['symbol']==key)
+profile=find(key)
 rigdata=import_module('tools.monster_models.'+profile['module'])
 label=key.removeprefix('MK_').title()
 
 
-def build(render=False):
-    if not bpy.app.background: raise RuntimeError('Use isolated background Blender; live sessions are preserved')
-    bpy.ops.wm.read_factory_settings(use_empty=True)
-    scene=bpy.context.scene; scene.name='Project Broom - Animated '+label
+def build(render=False, new_scene=False):
+    if not bpy.app.background and not new_scene:
+        raise RuntimeError('Use isolated background Blender, or explicitly create a new MCP scene')
+    if new_scene:
+        # MCP authoring keeps every pre-existing scene and object intact.
+        scene=bpy.data.scenes.new('Project Broom - Animated '+label)
+        bpy.context.window.scene=scene
+    else:
+        bpy.ops.wm.read_factory_settings(use_empty=True)
+        scene=bpy.context.scene; scene.name='Project Broom - Animated '+label
     anatomy=bpy.data.collections.new(label+' anatomy');scene.collection.children.link(anatomy)
     material=bpy.data.materials.new(label+' original diffuse');material.use_nodes=True
     image=bpy.data.images.load(str(ROOT/'mod/BrogueDoom'/profile['skin']));image.pack()
     texture=material.node_tree.nodes.new('ShaderNodeTexImage');texture.image=image
-    bsdf=material.node_tree.nodes['Principled BSDF'];bsdf.inputs['Roughness'].default_value=.8
+    bsdf=material.node_tree.nodes['Principled BSDF'];bsdf.inputs['Roughness'].default_value=profile.get('roughness',.8)
     material.node_tree.links.new(texture.outputs['Color'],bsdf.inputs['Base Color'])
+    if profile.get('emissive'):
+        material.node_tree.links.new(texture.outputs['Color'],bsdf.inputs['Emission Color'])
+        bsdf.inputs['Emission Strength'].default_value=1.0
+        if profile.get('additiveFlame'):
+            material.surface_render_method='DITHERED'
+            bsdf.inputs['Alpha'].default_value=.45
+    if profile.get('sigilAtlas'):
+        # Same isolated atlas region as the runtime shader, with packed alpha.
+        material.surface_render_method='DITHERED'
+        material.node_tree.links.new(texture.outputs['Alpha'],bsdf.inputs['Alpha'])
+        texcoord=material.node_tree.nodes.new('ShaderNodeTexCoord')
+        separate=material.node_tree.nodes.new('ShaderNodeSeparateXYZ')
+        material.node_tree.links.new(texcoord.outputs['UV'],separate.inputs[0])
+        def compare(operation,socket,threshold):
+            node=material.node_tree.nodes.new('ShaderNodeMath');node.operation=operation
+            material.node_tree.links.new(socket,node.inputs[0]);node.inputs[1].default_value=threshold
+            return node.outputs[0]
+        # Blender V is bottom-up; IQM encoder flips V for UZDoom.
+        masks=[compare('GREATER_THAN',separate.outputs['X'],.25),
+               compare('LESS_THAN',separate.outputs['X'],.5),
+               compare('LESS_THAN',separate.outputs['Y'],1-682/1024)]
+        mask=masks[0]
+        for other in masks[1:]:
+            node=material.node_tree.nodes.new('ShaderNodeMath');node.operation='MULTIPLY'
+            material.node_tree.links.new(mask,node.inputs[0]);material.node_tree.links.new(other,node.inputs[1]);mask=node.outputs[0]
+        material.node_tree.links.new(texture.outputs['Color'],bsdf.inputs['Emission Color'])
+        material.node_tree.links.new(mask,bsdf.inputs['Emission Strength'])
     camera=bpy.data.objects.new('Review camera',bpy.data.cameras.new('Review camera'));scene.collection.objects.link(camera)
-    camera.location=(58,-76,43);camera.rotation_euler=(Vector((0,0,19))-camera.location).to_track_quat('-Z','Y').to_euler()
+    camera.location=profile.get('previewCamera',(58,-76,43))
+    camera.rotation_euler=(Vector(profile.get('previewTarget',(0,0,19)))-camera.location).to_track_quat('-Z','Y').to_euler()
     camera.data.lens=52;scene.camera=camera
     for name,location,power in [('Key',(25,-35,65),90000),('Fill',(-25,35,35),60000)]:
         light=bpy.data.lights.new(name,'AREA');light.energy=power;light.size=40
@@ -123,8 +157,9 @@ def build(render=False):
     scene['runtime_axes']='IQM X forward / Y lateral / Z up; not OBJ axes'
     for obj in bpy.context.selected_objects: obj.select_set(False)
     rig.select_set(True); bpy.context.view_layer.objects.active=rig
-    for img in bpy.data.images:
-        if img.packed_file: img.filepath='//../../../mod/BrogueDoom/'+profile['skin']
+    # A live MCP document can contain another enemy's packed skin. Only the
+    # image created for this scene receives this model's relative source path.
+    image.filepath='//../../../mod/BrogueDoom/'+profile['skin']
     bpy.context.preferences.filepaths.save_version=0
     destination=ROOT/profile['source']
     if captive:destination=destination.with_name(destination.stem+'-captive.blend')
@@ -134,7 +169,8 @@ def build(render=False):
     rig=bpy.data.objects[label+'_RIG']
     assert len(rig.data.bones)==len(rigdata.BONES)
     assert all(bpy.data.actions.get(label+'_'+n) for n,c,f,l in rigdata.CLIPS)
-    assert len([i for i in bpy.data.images if i.source=='FILE' and i.packed_file])==1
+    assert any(i.packed_file and Path(i.filepath).name==Path(profile['skin']).name
+               for i in bpy.data.images)
     assert len(bpy.data.libraries)==0
     result={'source':str(destination.relative_to(ROOT)).replace('\\','/'),'bones':len(rigdata.BONES),'parts':len(parts),
             'clips':list(actions),'freshReopen':True,'sampledPoseChecks':verification}
