@@ -90,15 +90,23 @@ static int runStaffSmoke(BrogueBridgeState *state) {
         STAFF_CHECK(staff->charges == chargesBefore && randomNumbersGenerated == rngBefore);
         result = brogue_bridge_perform_command(&command, &turn);
         if (scenario == 5) {
-            STAFF_CHECK(result == BROGUE_BRIDGE_CONFIRMATION_REQUIRED);
+            STAFF_CHECK(result == BROGUE_BRIDGE_INTERACTION_REQUIRED);
             STAFF_CHECK(strcmp(turn.prompt, "Blink across lava with unknown range?") == 0);
             STAFF_CHECK(staff->charges == chargesBefore && rogue.absoluteTurnNumber == before.absoluteTurn);
             STAFF_CHECK(randomNumbersGenerated == rngBefore);
             STAFF_CHECK(brogue_bridge_get_state(state) == BROGUE_BRIDGE_OK && state->revision == before.revision);
             // Reopening and cancelling the same warning must remain safe.
-            STAFF_CHECK(brogue_bridge_perform_command(&command, &turn) == BROGUE_BRIDGE_CONFIRMATION_REQUIRED);
-            command.confirmed = 1;
-            result = brogue_bridge_perform_command(&command, &turn);
+            STAFF_CHECK(brogue_bridge_perform_command(&command, &turn) == BROGUE_BRIDGE_INVALID_STATE);
+            {
+                BrogueBridgeInteraction pendingQuestion;
+                STAFF_CHECK(brogue_bridge_get_interaction(&pendingQuestion) == BROGUE_BRIDGE_OK);
+                STAFF_CHECK(pendingQuestion.kind == BROGUE_INTERACTION_CONFIRM);
+                turn.interaction = pendingQuestion;
+            }
+            STAFF_CHECK(answerPending(&turn, 0) == BROGUE_BRIDGE_OK && !turn.actionAccepted);
+            STAFF_CHECK(staff->charges == chargesBefore && rogue.absoluteTurnNumber == before.absoluteTurn);
+            STAFF_CHECK(brogue_bridge_perform_command(&command, &turn) == BROGUE_BRIDGE_INTERACTION_REQUIRED);
+            result = answerPending(&turn, 1);
         }
         STAFF_CHECK(result == BROGUE_BRIDGE_OK);
         STAFF_CHECK(turn.consumedTurn == (scenario != 3));

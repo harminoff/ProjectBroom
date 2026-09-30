@@ -31,13 +31,24 @@ internal static class Program
             CreateDiagnosticBundle();
             return;
         }
+        int pickIndex = Array.FindIndex(args, value => value.Equals("--pick-seed", StringComparison.OrdinalIgnoreCase));
+        if (pickIndex >= 0 && pickIndex + 1 < args.Length)
+        {
+            // Used by a running game: ask for a seed without starting anything.
+            ulong? picked = NativeSaves.PickSeed();
+            if (picked.HasValue) File.WriteAllText(args[pickIndex + 1], picked.Value.ToString());
+            else Environment.ExitCode = 1;
+            return;
+        }
         ulong? seed = ParseSeed(args);
+        bool newGame = args.Any(value => value.Equals("--new-game", StringComparison.OrdinalIgnoreCase));
         int loadIndex = Array.FindIndex(args, value => value == "--load-save");
         LaunchSelection? selection;
         try {
             selection = loadIndex >= 0 && loadIndex + 1 < args.Length
                 ? NativeSaves.FromFile(args[loadIndex + 1])
-                : seed.HasValue ? new LaunchSelection(seed, null) : NativeSaves.Choose();
+                : seed.HasValue ? new LaunchSelection(seed, null)
+                : newGame ? new LaunchSelection(null, null) : NativeSaves.Choose();
         } catch (Exception error) {
             MessageBox.Show(error.Message, "Cannot load save", MessageBoxButtons.OK, MessageBoxIcon.Error); return;
         }
@@ -357,7 +368,8 @@ internal sealed class PreparationWindow : Form
             "+logfile", $"engine-{DateTime.Now:yyyyMMdd-HHmmss-fff}",
             "-iwad", iwad, "-file", staticMod, package,
             "+set", "brg_map_compiler", compiler,
-            "+set", "brg_seed", seed.ToString(), "+set", "brg_hud_scale", "1",
+            "+set", "brg_seed", seed.ToString(), "+set", "brg_launcher", Environment.ProcessPath ?? string.Empty,
+            "+set", "brg_hud_scale", "1",
             "+set", "brg_debug", "false", "+ucm_hide", "true",
             "+ucm_drawmap", "false", "+ucm_mapshowall", "false",
             "+screenblocks", "12", "+menu_main"

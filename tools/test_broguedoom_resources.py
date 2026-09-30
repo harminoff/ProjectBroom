@@ -527,8 +527,8 @@ class BrogueDoomResourceTests(unittest.TestCase):
                       "DrawLookOverlay", "RefreshLook", "CycleLookTarget",
                       "WrapTextRanges", "DrawStyledLookText", "LookSpanColor",
                       "BROGUE_ITEM_ACTION_UNEQUIP", "BROGUE_ITEM_ACTION_APPLY",
-                      "DrawApplyOverlay", "SubmitApply", "Enter/U Use",
-                      "DrawCommandConfirmationOverlay", "SubmitConfirmableCommand",
+                      "SubmitInteractiveCommand", "Enter/U Use",
+                      "DrawInteractionOverlay", "SubmitConfirmableCommand",
                       "Damage %d-%d", "L Look"):
             self.assertIn(token, frontend)
         look_overlay = frontend[frontend.index("void DrawLookOverlay"):frontend.index("CCMD(brg_wait)")]
@@ -563,7 +563,7 @@ class BrogueDoomResourceTests(unittest.TestCase):
             self.assertIn(token, minimap)
         submit = frontend[frontend.index("else if (key == KEY_ENTER || key == KEY_MOUSE1)"):
                           frontend.index("return false;", frontend.index("else if (key == KEY_ENTER || key == KEY_MOUSE1)"))]
-        self.assertIn("if (!CommandConfirmationOpen) CloseWeaponUi();", submit)
+        self.assertIn("if (!Interaction.open) CloseWeaponUi();", submit)
         self.assertNotIn("CloseWeaponUi();\n            SubmitConfirmableCommand", submit)
 
     def test_executable_startup_prepares_random_seed_then_opens_brogue_menu(self) -> None:
@@ -580,7 +580,8 @@ class BrogueDoomResourceTests(unittest.TestCase):
         self.assertTrue((ROOT / "mod" / "BrogueDoom" / "graphics" / "TITLEPIC.png").is_file())
         for token in ('ListMenu "MainMenu"', "Size 640, 400", 'Font "BrogueMenu", "Untranslated", "Gold"',
                       'TextItem "NEW GAME"',
-                      '"PlayerclassMenu"', 'TextItem "OPTIONS"', 'TextItem "QUIT"'):
+                      '"BrogueNewGame"', 'openmenu PlayerclassMenu', 'brg_new_game_seeded', 'brg_abandon',
+                      'TextItem "OPTIONS"', 'TextItem "QUIT"'):
             self.assertIn(token, menudef)
         self.assertNotIn('TextItem "LOAD GAME"', menudef)
         for token in ("[switch]$RandomSeed", "RandomNumberGenerator", "--export-dungeon-json",

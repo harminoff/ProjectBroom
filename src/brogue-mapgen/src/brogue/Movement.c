@@ -25,21 +25,40 @@
 #include "GlobalsBase.h"
 #include "Globals.h"
 
-void playerRuns(short direction) {
-    boolean cardinalPassability[4];
-
+void beginPlayerRun(short direction) {
     rogue.disturbed = (player.status[STATUS_CONFUSED] ? true : false);
 
     for (int dir = 0; dir < 4; dir++) {
-        cardinalPassability[dir] = monsterAvoids(&player, posNeighborInDirection(player.loc, dir));
+        rogue.runCardinalPassability[dir] = monsterAvoids(&player, posNeighborInDirection(player.loc, dir));
+    }
+    rogue.runDirection = direction;
+    rogue.runActive = true;
+}
+
+void finishPlayerRun(void) {
+    if (!rogue.runActive) {
+        return;
+    }
+    rogue.runActive = false;
+    updateFlavorText();
+}
+
+// Performs one iteration of Brogue's run-until-disturbed loop. Returns true
+// while the run may continue.
+boolean stepPlayerRun(void) {
+    const short direction = rogue.runDirection;
+
+    if (!rogue.runActive) {
+        return false;
+    }
+    if (rogue.disturbed || rogue.gameHasEnded) {
+        finishPlayerRun();
+        return false;
     }
 
-    while (!rogue.disturbed) {
-        if (!playerMoves(direction)) {
-            rogue.disturbed = true;
-            break;
-        }
-
+    if (!playerMoves(direction)) {
+        rogue.disturbed = true;
+    } else {
         const pos newLoc = posNeighborInDirection(player.loc, direction);
         if (!isPosInMap(newLoc) || monsterAvoids(&player, newLoc)) {
             rogue.disturbed = true;
@@ -48,16 +67,25 @@ void playerRuns(short direction) {
             rogue.disturbed = true;
         } else if (direction < 4) {
             for (int dir = 0; dir < 4; dir++) {
-                const pos newLoc = posNeighborInDirection(player.loc, dir);
-                if (cardinalPassability[dir] != monsterAvoids(&player, newLoc)
-                    && !posEq(player.loc, posNeighborInDirection(newLoc, direction))) {
+                const pos sideLoc = posNeighborInDirection(player.loc, dir);
+                if (rogue.runCardinalPassability[dir] != monsterAvoids(&player, sideLoc)
+                    && !posEq(player.loc, posNeighborInDirection(sideLoc, direction))) {
                         // dir is not the x-opposite or y-opposite of direction
                     rogue.disturbed = true;
                 }
             }
         }
     }
-    updateFlavorText();
+    if (rogue.disturbed || rogue.gameHasEnded) {
+        finishPlayerRun();
+    }
+    return rogue.runActive;
+}
+
+void playerRuns(short direction) {
+    beginPlayerRun(direction);
+    while (stepPlayerRun()) {}
+    finishPlayerRun();
 }
 
 enum dungeonLayers highestPriorityLayer(short x, short y, boolean skipGas) {

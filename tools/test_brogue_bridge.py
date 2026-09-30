@@ -37,7 +37,8 @@ STATE_RE = re.compile(
 def run_bridge(*, seed: int, actions: str | None = None, long_run: int | None = None,
                weapon_smoke: bool = False, consumable_smoke: bool = False,
                warning_smoke: bool = False, look_smoke: bool = False,
-               verbose: bool = False, staff_smoke: bool = False, wand_smoke: bool = False) -> str:
+               verbose: bool = False, staff_smoke: bool = False, wand_smoke: bool = False,
+               interaction_smoke: bool = False) -> str:
     if not BRIDGE_EXE.is_file():
         raise AssertionError(
             f"missing {BRIDGE_EXE}; run scripts/build-bridge.ps1 before these tests"
@@ -59,6 +60,8 @@ def run_bridge(*, seed: int, actions: str | None = None, long_run: int | None = 
         args += ["--warning-smoke"]
     if look_smoke:
         args += ["--look-smoke"]
+    if interaction_smoke:
+        args += ["--interaction-smoke"]
     if verbose:
         args += ["--verbose"]
     completed = subprocess.run(
@@ -78,6 +81,12 @@ def lines_matching(output: str, pattern: re.Pattern[str]) -> list[re.Match[str]]
 
 
 class BrogueBridgeTests(unittest.TestCase):
+    def test_interaction_contract_and_new_commands_match_brogue(self) -> None:
+        for seed in (1, 2, 42, 12345, 99999):
+            with self.subTest(seed=seed):
+                output = run_bridge(seed=seed, interaction_smoke=True)
+                self.assertIn(f"INTERACTION_SMOKE ok seed={seed}", output)
+
     def test_general_target_preview_is_read_only(self) -> None:
         for seed in (1, 2, 42, 12345, 99999):
             with self.subTest(seed=seed):
@@ -113,7 +122,7 @@ class BrogueBridgeTests(unittest.TestCase):
                 cwd=BRIDGE_DIR, check=True, capture_output=True, text=True,
             )
             catalog = __import__("json").loads(output.read_text(encoding="utf-8"))
-        self.assertEqual(catalog["bridgeApiVersion"], 20)
+        self.assertEqual(catalog["bridgeApiVersion"], 21)
         self.assertEqual(catalog["count"], 68)
         self.assertEqual(catalog["kinds"][0]["symbol"], "MK_YOU")
         self.assertEqual(catalog["kinds"][1]["symbol"], "MK_RAT")
@@ -249,7 +258,7 @@ class BrogueBridgeTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertRegex(
             first,
-            r"CONSUMABLE phase=confirm revision=1 result=CONFIRMATION_REQUIRED prompt=You're not hungry enough to fully enjoy the food\. Eat it anyway\?",
+            r"CONSUMABLE phase=confirm revision=1 result=INTERACTION_REQUIRED prompt=You're not hungry enough to fully enjoy the food\. Eat it anyway\?",
         )
         self.assertRegex(
             first,
@@ -257,7 +266,7 @@ class BrogueBridgeTests(unittest.TestCase):
         )
         self.assertRegex(
             first,
-            r"CONSUMABLE phase=selection revision=3 result=SELECTION_REQUIRED type=1 choices=1 prompt=Identify what\?",
+            r"CONSUMABLE phase=selection revision=3 result=INTERACTION_REQUIRED type=1 choices=1 prompt=Identify what\?",
         )
         self.assertRegex(
             first,
@@ -270,7 +279,7 @@ class BrogueBridgeTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertRegex(
             first,
-            r"WARNING phase=prompt revision=1 result=CONFIRMATION_REQUIRED prompt=Dive into the depths\? player=38,26 hash=[0-9a-f]+",
+            r"WARNING phase=prompt revision=1 result=INTERACTION_REQUIRED prompt=Dive into the depths\? player=38,26 hash=[0-9a-f]+",
         )
         self.assertRegex(
             first,

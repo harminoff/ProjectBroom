@@ -13,7 +13,7 @@ ListMenu "MainMenu"
     StaticTextCentered 320, 120, "A RANDOM DUNGEON AWAITS", "Untranslated"
     Position 320, 188
     CenterText
-    TextItem "NEW GAME", "n", "PlayerclassMenu"
+    TextItem "NEW GAME", "n", "BrogueNewGame"
     TextItem "SAVES", "s", "BrogueSaves"
     TextItem "OPTIONS", "o", "OptionsMenu"
     TextItem "QUIT", "q", "QuitMenu"
@@ -441,6 +441,15 @@ OptionValue "SpecialAction"
 	280, "Ceiling_MoveToValueAndCrush"
 }
 
+OptionMenu "BrogueNewGame"
+{
+    Title "New Game"
+    // Brogue asks its own confirmation before ending a game in progress.
+    Command "Begin this dungeon", "openmenu PlayerclassMenu"
+    Command "New random dungeon", "brg_new_game"
+    Command "New dungeon from a seed", "brg_new_game_seeded"
+}
+
 OptionMenu "BrogueSaves"
 {
     Title "Brogue Saves"
@@ -448,4 +457,5 @@ OptionMenu "BrogueSaves"
     Command "Load / Import", "brg_load"
     Command "Save and Exit", "brg_save_exit"
     Command "Cancel Loading", "brg_load_cancel"
+    Command "Abandon Game", "brg_abandon"
 }

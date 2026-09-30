@@ -6216,6 +6216,15 @@ boolean throwItemAtTarget(item *theItem, pos zapTarget, boolean recordInput) {
     return true;
 }
 
+// The automatic target used by Brogue's rethrow command, when one remains valid.
+boolean rethrowTargetLocation(item *theItem, pos *targetLoc) {
+    if (theItem != NULL && canAutoTargetMonster(rogue.lastTarget, theItem, AUTOTARGET_MODE_THROW)) {
+        *targetLoc = rogue.lastTarget->loc;
+        return true;
+    }
+    return false;
+}
+
 void throwCommand(item *theItem, boolean autoThrow) {
     char buf[COLS], theName[COLS];
     short maxDistance, quantity;
@@ -6269,8 +6278,8 @@ void throwCommand(item *theItem, boolean autoThrow) {
     maxDistance = (12 + 2 * max(rogue.strength - player.weaknessAmount - 12, 2));
 
     pos zapTarget;
-    if (autoThrow && canAutoTargetMonster(rogue.lastTarget, theItem, AUTOTARGET_MODE_THROW)) {
-        zapTarget = rogue.lastTarget->loc;
+    if (autoThrow && rethrowTargetLocation(theItem, &zapTarget)) {
+        // Brogue's rethrow repeats the last target when it remains valid.
     } else if (!chooseTarget(&zapTarget, maxDistance, AUTOTARGET_MODE_THROW, theItem)) {
         // player doesn't choose a target? return
         return;

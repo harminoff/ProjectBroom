@@ -1,8 +1,73 @@
 # General interaction migration
 
 Contribution category: Brogue parity and bridge work. Brogue CE owns every
-choice, mutation, recording event and turn. This migration is in progress;
-none of the eight interaction acceptance entries is complete.
+choice, mutation, recording event and turn. ABI v21 (below) delivers the general
+contract for the commands that ask questions; the remaining acceptance entries
+(physical-input, package and standalone comparison) are still open.
+
+## ABI v21: the general interaction contract
+
+A Brogue command that asks a question no longer returns an ad-hoc result code that
+the frontend must answer by resubmitting the command. The bridge keeps the native
+`nativeItemCommandFrame` (or a small session continuation) alive, returns
+`BROGUE_BRIDGE_INTERACTION_REQUIRED`, and describes the question in a copied
+`BrogueBridgeInteraction`:
+
+| Kind | Brogue prompt | Answer |
+| --- | --- | --- |
+| `CONFIRM` | `confirm()`, inscription choice, throw/new-game/abandon confirmation | yes / no / cancel |
+| `ITEM_CHOICE` | `promptForItemOfType` (Call/Relabel/Equip ring replacement) | stable item ID, or cancel when `cancelAllowed` |
+| `TEXT` | `getInputTextString` (inscribe, call, relabel letter) | text (Brogue validates length and characters) or cancel |
+| `TARGET_LOCATION` | `chooseTarget` for rethrow | a map cell, or cancel |
+
+`brogue_bridge_respond()` validates the token, revision and answer shape, then steps
+the same native frame. Rejected answers (`INVALID_ACTION`) leave the question
+pending and change nothing; a completed command advances the revision exactly once.
+While a question is pending every other command, and saving, returns
+`INVALID_STATE`. `brogue_bridge_get_interaction()` re-reads the pending question.
+Commands whose Brogue prompts occur before any mutation (Apply's confirmation and
+mandatory identify/enchant choice, throw and staff/wand warnings, movement warnings such as
+"Dive into the depths?", sequential acid/discord warnings) use the same contract with
+a *safe re-run* continuation: the bridge answers Brogue's `confirm()` negatively, nothing
+changes, and the bridge returns an `INTERACTION_REQUIRED` question. An approving answer
+re-runs the untouched command with one more approval (or the chosen item); a decline
+changes nothing and advances no revision. The mandatory identify/enchant choice reports
+`cancelAllowed = 0`, so Escape is refused exactly as Brogue ignores it. The old
+`CONFIRMATION_REQUIRED`/`SELECTION_REQUIRED` results are no longer returned; the
+`confirmed`/`secondaryItemId` command fields remain only as the replay carrier.
+
+### Brogue entry points used
+
+- Call / Inscribe and Relabel: `beginNativeItemCommand/stepNativeItemCommand` for
+  `NATIVE_ITEM_CALL` and `NATIVE_ITEM_RELABEL`, the frames behind `call()`/`relabel()`.
+- Equip: the `NATIVE_ITEM_EQUIP` frame, so a third ring asks Brogue's own
+  replacement question instead of being silently refused.
+- Run: `playerRuns()` is now `beginPlayerRun/stepPlayerRun/finishPlayerRun` in
+  `Movement.c`; `playerRuns()` still loops over them, so standalone behavior is
+  unchanged and the bridge advances one native iteration per command.
+- Rethrow: `rethrowTargetLocation()` extracted from `throwCommand()` (the
+  `canAutoTargetMonster(rogue.lastTarget, ...)` test), then `throwItemAtTarget()`.
+- Swap: `swapLastEquipment()`.
+- Abandon: `recordKeystroke(QUIT_KEY)`, `rogue.quit`, `gameOver("Quit", true)`, after
+  Brogue's "Quit and abandon this game?" confirmation.
+- New game: Brogue's `NEW_GAME_KEY` rule (confirm unless fewer than 50 turns have been
+  played). Brogue starts dungeons from the main menu, so the bridge reports
+  `sessionChange = NEW_GAME` with the requested seed (0 = Brogue's clock seed)
+  and leaves the running game untouched; the frontend starts the next session.
+
+### Frontend
+
+`InteractionUiState` is the single presenter for these questions: confirmation,
+item list, text field (scan-code US layout, Brogue's length limit) and, for
+`TARGET_LOCATION`, the existing targeting guide, whose confirmation is sent as
+`BROGUE_ANSWER_LOCATION` and whose cancellation is Brogue's cancel. Shift + a
+movement key runs; any key interrupts. `V` rethrows, `B` swaps, inventory `C`/`R`
+call/relabel the selected item, and the Saves menu abandons. New Game offers
+"Begin this dungeon" (the prepared campaign), "New random dungeon" and "New dungeon
+from a seed"; the latter two hand a fresh campaign to the launcher
+(`--new-game`, `--seed N`, and `--pick-seed FILE` for the seed dialog). Dev builds without
+a launcher report that a new dungeon needs it and keep playing.
+
 
 ## Independent baseline
 

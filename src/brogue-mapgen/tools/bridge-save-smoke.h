@@ -29,13 +29,12 @@ static int saveSmokeTravel(void) {
         if (best < 0) { fprintf(stderr, "Travel route missing at turn %lu\n", rogue.playerTurnNumber); return 1; }
         BrogueBridgeTurnResult result;
         BrogueBridgeResult status = brogue_bridge_perform_action((BrogueBridgeAction)(best * 2), &result);
-        if (status == BROGUE_BRIDGE_CONFIRMATION_REQUIRED) {
-            BrogueBridgeCommand move = {0};
-            move.apiVersion = BROGUE_BRIDGE_API_VERSION;
-            move.type = BROGUE_COMMAND_ACTION;
-            move.action = (BrogueBridgeAction)(best * 2);
-            move.confirmed = 1;
-            status = brogue_bridge_perform_command(&move, &result);
+        if (status == BROGUE_BRIDGE_INTERACTION_REQUIRED) {
+            BrogueBridgeInteractionResponse yes = {0};
+            yes.apiVersion = BROGUE_BRIDGE_API_VERSION;
+            yes.token = result.interaction.token;
+            yes.answer = BROGUE_ANSWER_YES;
+            status = brogue_bridge_respond(&yes, &result);
         }
         if (status != BROGUE_BRIDGE_OK) {
             fprintf(stderr, "Travel command rejected: %s\n", brogue_bridge_result_name(status)); return 1;

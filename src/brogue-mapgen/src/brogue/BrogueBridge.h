@@ -15,7 +15,7 @@ extern "C" {
 #endif
 
 /* v19 is reserved by the independent interaction migration. */
-#define BROGUE_BRIDGE_API_VERSION 20u
+#define BROGUE_BRIDGE_API_VERSION 21u
 #define BROGUE_BRIDGE_PATH_LENGTH 4096u
 #define BROGUE_BRIDGE_MAX_CELLS 2291u
 #define BROGUE_BRIDGE_MAX_CREATURES 1024u
@@ -33,6 +33,7 @@ extern "C" {
 #define BROGUE_BRIDGE_MAX_PROJECTILE_PATH 128u
 #define BROGUE_BRIDGE_MAX_MONSTER_KINDS 128u
 #define BROGUE_BRIDGE_MAX_ITEM_CHOICES 26u
+#define BROGUE_BRIDGE_INTERACTION_TEXT_LENGTH 32u
 #define BROGUE_BRIDGE_GAME_OVER_CAUSE_LENGTH 128u
 #define BROGUE_BRIDGE_GAME_OVER_SUMMARY_LENGTH 256u
 #define BROGUE_BRIDGE_PLAYER_ENTITY_ID UINT64_C(1)
@@ -51,7 +52,10 @@ typedef enum BrogueBridgeResult {
     BROGUE_BRIDGE_STALE_REVISION,
     BROGUE_BRIDGE_ITEM_NOT_FOUND,
     BROGUE_BRIDGE_CONFIRMATION_REQUIRED,
-    BROGUE_BRIDGE_SELECTION_REQUIRED
+    BROGUE_BRIDGE_SELECTION_REQUIRED,
+    /* Brogue paused inside a command and is waiting for a response. The
+     * copied descriptor is in BrogueBridgeTurnResult::interaction. */
+    BROGUE_BRIDGE_INTERACTION_REQUIRED
 } BrogueBridgeResult;
 
 /* These are player intents, not keyboard scan codes. */
@@ -81,6 +85,21 @@ typedef enum BrogueBridgeCommandType {
     BROGUE_COMMAND_SEARCH_START,
     BROGUE_COMMAND_SEARCH_CONTINUE,
     BROGUE_COMMAND_SEARCH_CANCEL,
+    /* Brogue's run-until-disturbed movement. `action` is a movement direction.
+     * START takes the first step; CONTINUE takes one further step of the same
+     * native run; CANCEL ends it. Brogue decides every stop condition. */
+    BROGUE_COMMAND_RUN_START,
+    BROGUE_COMMAND_RUN_CONTINUE,
+    BROGUE_COMMAND_RUN_CANCEL,
+    /* Brogue's rethrow and swap-last-equipment commands. */
+    BROGUE_COMMAND_RETHROW_LAST,
+    BROGUE_COMMAND_SWAP_LAST_EQUIPMENT,
+    /* Naming and labeling. A zero itemId makes Brogue ask which item. */
+    BROGUE_COMMAND_CALL_ITEM,
+    BROGUE_COMMAND_RELABEL_ITEM,
+    /* Session commands. Both ask Brogue's own confirmation when it would. */
+    BROGUE_COMMAND_NEW_GAME,
+    BROGUE_COMMAND_ABANDON_GAME,
     BROGUE_COMMAND_COUNT
 } BrogueBridgeCommandType;
 
@@ -94,6 +113,40 @@ typedef enum BrogueBridgeItemActionFlags {
     BROGUE_ITEM_ACTION_TARGET_STAFF = 1u << 5,
     BROGUE_ITEM_ACTION_TARGET_WAND = 1u << 6
 } BrogueBridgeItemActionFlags;
+
+typedef enum BrogueBridgeInteractionKind {
+    BROGUE_INTERACTION_NONE = 0,
+    /* Brogue yes/no confirmation. */
+    BROGUE_INTERACTION_CONFIRM,
+    /* Choose one listed carried item by stable ID. */
+    BROGUE_INTERACTION_ITEM_CHOICE,
+    /* Enter text. Brogue validates length and characters. */
+    BROGUE_INTERACTION_TEXT,
+    /* Choose a map cell. */
+    BROGUE_INTERACTION_TARGET_LOCATION
+} BrogueBridgeInteractionKind;
+
+typedef enum BrogueBridgeInteractionAnswerKind {
+    BROGUE_ANSWER_YES = 0,
+    BROGUE_ANSWER_NO,
+    BROGUE_ANSWER_ITEM,
+    BROGUE_ANSWER_TEXT,
+    /* Answer to TARGET_LOCATION. */
+    BROGUE_ANSWER_LOCATION,
+    /* Escape/cancel. Brogue decides whether this is a refusal, a cancel, or
+     * ignored because the choice is mandatory. */
+    BROGUE_ANSWER_CANCEL
+} BrogueBridgeInteractionAnswerKind;
+
+/* Session command outcomes the frontend must act on. */
+typedef enum BrogueBridgeSessionChange {
+    BROGUE_SESSION_CHANGE_NONE = 0,
+    /* The current game was ended to begin another. The frontend starts it with
+     * BrogueBridgeTurnResult::requestedSeed (0 selects Brogue's clock seed). */
+    BROGUE_SESSION_CHANGE_NEW_GAME,
+    /* The game was abandoned; game-over state describes the outcome. */
+    BROGUE_SESSION_CHANGE_ABANDONED
+} BrogueBridgeSessionChange;
 
 typedef enum BrogueBridgeSelectionType {
     BROGUE_SELECTION_NONE = 0,
@@ -191,6 +244,10 @@ typedef struct BrogueBridgePlayerState {
     int32_t searchProgress;
     int32_t searchMaximum;
     uint8_t searchActive;
+    uint8_t runActive;
+    /* Brogue's rethrow/swap memory, copied without native pointers. */
+    uint64_t lastThrownItemId;
+    uint8_t canSwapEquipment;
 } BrogueBridgePlayerState;
 
 typedef struct BrogueBridgeCreatureState {
@@ -287,6 +344,8 @@ typedef struct BrogueBridgeCommand {
     /* Number of sequential Brogue confirmation prompts already approved for
      * this exact command/revision. Most commands need zero or one. */
     uint8_t confirmed;
+    /* NEW_GAME: requested dungeon seed. Zero asks Brogue for a clock seed. */
+    uint64_t seed;
 } BrogueBridgeCommand;
 
 typedef struct BrogueBridgeThrowPreview {
@@ -586,6 +645,39 @@ typedef struct BrogueBridgePersistenceState {
 BrogueBridgeResult brogue_bridge_persistence(const BrogueBridgePersistenceRequest *request,
                                               BrogueBridgePersistenceState *outState);
 
+/* One pending Brogue question. The token changes for every question. */
+typedef struct BrogueBridgeInteraction {
+    uint32_t apiVersion;
+    BrogueBridgeInteractionKind kind;
+    uint64_t token;
+    uint64_t revision;
+    BrogueBridgeCommandType commandType;
+    uint64_t itemId;
+    char prompt[BROGUE_BRIDGE_MESSAGE_LENGTH];
+    /* ITEM_CHOICE */
+    uint32_t choiceCount;
+    uint64_t choiceItemIds[BROGUE_BRIDGE_MAX_ITEM_CHOICES];
+    /* TEXT: longest accepted string, in bytes, and Brogue's character class. */
+    uint32_t textLimit;
+    uint8_t textIsSingleLetter;
+    char initialText[BROGUE_BRIDGE_INTERACTION_TEXT_LENGTH];
+    /* Escape is ignored by Brogue for mandatory choices. */
+    uint8_t cancelAllowed;
+    /* TARGET_LOCATION */
+    int32_t maxDistance;
+} BrogueBridgeInteraction;
+
+typedef struct BrogueBridgeInteractionResponse {
+    uint32_t apiVersion;
+    uint64_t token;
+    uint64_t expectedRevision;
+    BrogueBridgeInteractionAnswerKind answer;
+    uint64_t itemId;
+    char text[BROGUE_BRIDGE_INTERACTION_TEXT_LENGTH];
+    int32_t targetX;
+    int32_t targetY;
+} BrogueBridgeInteractionResponse;
+
 typedef struct BrogueBridgeTurnResult {
     uint32_t apiVersion;
     uint8_t success;
@@ -606,6 +698,9 @@ typedef struct BrogueBridgeTurnResult {
     uint32_t choiceCount;
     uint64_t choiceItemIds[BROGUE_BRIDGE_MAX_ITEM_CHOICES];
     char prompt[BROGUE_BRIDGE_MESSAGE_LENGTH];
+    BrogueBridgeInteraction interaction;
+    BrogueBridgeSessionChange sessionChange;
+    uint64_t requestedSeed;
     BrogueBridgeResult errorCode;
 } BrogueBridgeTurnResult;
 
@@ -617,6 +712,11 @@ BrogueBridgeResult brogue_bridge_perform_action(BrogueBridgeAction action,
                                                  BrogueBridgeTurnResult *outResult);
 BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *command,
                                                   BrogueBridgeTurnResult *outResult);
+/* Copies the pending interaction, or kind NONE. Read-only. */
+BrogueBridgeResult brogue_bridge_get_interaction(BrogueBridgeInteraction *outInteraction);
+/* Answers the pending interaction and resumes the same Brogue command. */
+BrogueBridgeResult brogue_bridge_respond(const BrogueBridgeInteractionResponse *response,
+                                          BrogueBridgeTurnResult *outResult);
 BrogueBridgeResult brogue_bridge_preview_throw(uint64_t itemId,
                                                 int32_t targetX,
                                                 int32_t targetY,

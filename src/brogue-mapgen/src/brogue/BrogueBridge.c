@@ -12,6 +12,7 @@
 #include "Globals.h"
 #include "BrogueBridge.h"
 #include "BrogueBridgeInternal.h"
+#include "ItemCommandFrame.h"
 #include "platform.h"
 
 #include <stdio.h>
@@ -54,8 +55,36 @@ static uint8_t confirmationApprovalsRemaining = 0;
 static boolean confirmationWasRequested = false;
 static char confirmationPrompt[BROGUE_BRIDGE_MESSAGE_LENGTH];
 static BrogueBridgeGameResult bridgeGameResult;
+typedef enum bridgePendingStage {
+    PENDING_NONE = 0,
+    PENDING_ITEM_FRAME,
+    PENDING_RETHROW_CONFIRM,
+    PENDING_RETHROW_TARGET,
+    PENDING_NEW_GAME_CONFIRM,
+    PENDING_ABANDON_CONFIRM,
+    /* Brogue asked before changing anything; an approved answer re-runs the
+     * untouched command with one more approval (or the chosen item). */
+    PENDING_REPLAY_CONFIRM,
+    PENDING_REPLAY_CHOICE
+} bridgePendingStage;
+
+/* One Brogue command paused for a response. The native frame is retained so
+ * the command continues from its execution position; nothing is replayed. */
+typedef struct bridgePending {
+    bridgePendingStage stage;
+    BrogueBridgeCommand command;
+    BrogueBridgeInteraction interaction;
+    nativeItemCommandFrame frame;
+    uint64_t oldAbsoluteTurn;
+    boolean itemWasEquipped;
+} bridgePending;
+
+static bridgePending pendingInteraction;
+static uint64_t interactionToken = 0;
 
 static uint64_t stateHash(const BrogueBridgeState *state);
+static void clearPendingInteraction(void);
+static item *itemForIdentity(uint64_t id);
 static uint64_t presentationHash(const BrogueBridgeState *state);
 static uint64_t identityForItem(item *pointer);
 static void copyText(char *destination, size_t destinationSize, const char *source);
@@ -336,6 +365,10 @@ static BrogueBridgePlayerState playerState(void) {
     state.searchProgress = player.status[STATUS_SEARCHING];
     state.searchMaximum = player.maxStatus[STATUS_SEARCHING];
     state.searchActive = rogue.repeatedSearchActive;
+    state.runActive = rogue.runActive;
+    state.lastThrownItemId = rogue.lastItemThrown != NULL && itemIsCarried(rogue.lastItemThrown)
+        ? identityForItem(rogue.lastItemThrown) : 0;
+    state.canSwapEquipment = rogue.swappedIn != NULL && rogue.swappedOut != NULL;
     return state;
 }
 
@@ -993,6 +1026,10 @@ static uint64_t hashPlayer(uint64_t hash, const BrogueBridgePlayerState *playerS
     hash = hashSigned(hash, playerStateValue->searchProgress);
     hash = hashSigned(hash, playerStateValue->searchMaximum);
     hash = hashU32(hash, playerStateValue->searchActive);
+    /* New fields mix in only when set so earlier state hashes are unchanged. */
+    if (playerStateValue->runActive) hash = hashU32(hash, 0x52554eu);
+    if (playerStateValue->lastThrownItemId) hash = hashU64(hash, playerStateValue->lastThrownItemId);
+    if (playerStateValue->canSwapEquipment) hash = hashU32(hash, 0x53574150u);
     return hashU32(hash, playerStateValue->gameHasEnded);
 }
 
@@ -1477,6 +1514,7 @@ BrogueBridgeResult brogue_bridge_start_game(uint64_t gameSeed) {
     endConfirmationBroker();
     confirmationWasRequested = false;
     confirmationPrompt[0] = '\0';
+    clearPendingInteraction();
     memset(&bridgeGameResult, 0, sizeof(bridgeGameResult));
     bridgeGameStarted = true;
 
@@ -1589,12 +1627,379 @@ static void populateApplyChoices(const item *source, BrogueBridgeTurnResult *out
     }
 }
 
+static boolean commandIsSearch(BrogueBridgeCommandType type) {
+    return type == BROGUE_COMMAND_SEARCH_START || type == BROGUE_COMMAND_SEARCH_CONTINUE
+        || type == BROGUE_COMMAND_SEARCH_CANCEL;
+}
+
+static boolean commandIsRun(BrogueBridgeCommandType type) {
+    return type == BROGUE_COMMAND_RUN_START || type == BROGUE_COMMAND_RUN_CONTINUE
+        || type == BROGUE_COMMAND_RUN_CANCEL;
+}
+
+static boolean commandNeedsCarriedItem(BrogueBridgeCommandType type) {
+    switch (type) {
+        case BROGUE_COMMAND_EQUIP_ITEM: case BROGUE_COMMAND_UNEQUIP_ITEM:
+        case BROGUE_COMMAND_THROW_ITEM: case BROGUE_COMMAND_DROP_ITEM:
+        case BROGUE_COMMAND_APPLY_ITEM: case BROGUE_COMMAND_USE_STAFF:
+        case BROGUE_COMMAND_USE_WAND:
+            return true;
+        default:
+            return false;
+    }
+}
+
+static void clearPendingInteraction(void) {
+    memset(&pendingInteraction, 0, sizeof(pendingInteraction));
+}
+
+static void describeFrameInteraction(BrogueBridgeInteraction *interaction, const nativeItemCommandFrame *frame) {
+    item *candidate;
+    copyText(interaction->prompt, sizeof(interaction->prompt), frame->prompt);
+    interaction->cancelAllowed = 1;
+    switch (frame->promptKind) {
+        case NATIVE_ITEM_CHOICE:
+            interaction->kind = BROGUE_INTERACTION_ITEM_CHOICE;
+            for (candidate = packItems->nextItem;
+                 candidate != NULL && interaction->choiceCount < BROGUE_BRIDGE_MAX_ITEM_CHOICES;
+                 candidate = candidate->nextItem) {
+                if ((candidate->category & frame->category)
+                    && !(~(candidate->flags) & frame->requiredFlags)
+                    && !(candidate->flags & frame->forbiddenFlags)) {
+                    interaction->choiceItemIds[interaction->choiceCount++] = identityForItem(candidate);
+                }
+            }
+            break;
+        case NATIVE_ITEM_CONFIRMATION:
+            interaction->kind = BROGUE_INTERACTION_CONFIRM;
+            break;
+        case NATIVE_ITEM_TEXT:
+            interaction->kind = BROGUE_INTERACTION_TEXT;
+            interaction->textLimit = (uint32_t) (frame->textLimit > 0 ? frame->textLimit : 0);
+            if (interaction->textLimit >= BROGUE_BRIDGE_INTERACTION_TEXT_LENGTH) {
+                interaction->textLimit = BROGUE_BRIDGE_INTERACTION_TEXT_LENGTH - 1;
+            }
+            interaction->textIsSingleLetter = frame->relabelLetter ? 1 : 0;
+            break;
+        default:
+            interaction->kind = BROGUE_INTERACTION_NONE;
+            break;
+    }
+}
+
+/* Leaves the native command paused. Nothing is committed to the bridge
+ * revision: the frontend owns the question until it answers. */
+static BrogueBridgeResult suspendCommand(BrogueBridgeTurnResult *outResult, bridgePendingStage stage,
+                                         const BrogueBridgeCommand *command,
+                                         const BrogueBridgeInteraction *descriptor, uint64_t oldAbsoluteTurn) {
+    pendingInteraction.stage = stage;
+    pendingInteraction.command = *command;
+    pendingInteraction.oldAbsoluteTurn = oldAbsoluteTurn;
+    pendingInteraction.interaction = *descriptor;
+    pendingInteraction.interaction.apiVersion = BROGUE_BRIDGE_API_VERSION;
+    pendingInteraction.interaction.token = ++interactionToken;
+    pendingInteraction.interaction.revision = bridgeRevision;
+    pendingInteraction.interaction.commandType = command->type;
+    endConfirmationBroker();
+    recordingActionEvents = false;
+    outResult->interaction = pendingInteraction.interaction;
+    copyText(outResult->prompt, sizeof(outResult->prompt), pendingInteraction.interaction.prompt);
+    return outResult->errorCode = BROGUE_BRIDGE_INTERACTION_REQUIRED;
+}
+
+static BrogueBridgeResult completeCommand(const BrogueBridgeCommand *command, BrogueBridgeTurnResult *outResult,
+                                          boolean accepted, uint64_t oldAbsoluteTurn) {
+    BrogueBridgeResult result;
+
+    clearPendingInteraction();
+    endConfirmationBroker();
+    recordingActionEvents = false;
+    if (confirmationWasRequested) {
+        /* Brogue's negative response path has cancelled the command without
+         * consuming a turn. Do not advance the bridge revision or publish
+         * transient cancellation messages; the frontend now owns the prompt. */
+        BrogueBridgeInteraction descriptor;
+        memset(&descriptor, 0, sizeof(descriptor));
+        descriptor.kind = BROGUE_INTERACTION_CONFIRM;
+        descriptor.itemId = command->itemId;
+        descriptor.cancelAllowed = 1;
+        copyText(descriptor.prompt, sizeof(descriptor.prompt), confirmationPrompt);
+        return suspendCommand(outResult, PENDING_REPLAY_CONFIRM, command, &descriptor, oldAbsoluteTurn);
+    }
+    bridgeRevision++;
+    if (command->type == BROGUE_COMMAND_SEARCH_CANCEL || command->type == BROGUE_COMMAND_RUN_CANCEL) {
+        /* A synchronous control-only cancellation cannot change terrain or
+         * entities. Reuse their complete copied snapshot, avoiding even
+         * cosmetic RNG calls in getCellAppearance()/hallucination capture. */
+        bridgeState.revision = bridgeRevision;
+        bridgeState.player.searchActive = 0;
+        bridgeState.player.runActive = 0;
+        bridgeState.stateHash = stateHash(&bridgeState);
+        bridgeState.presentationHash = presentationHash(&bridgeState);
+        result = BROGUE_BRIDGE_OK;
+    } else {
+        beginIdentityCapture();
+        result = captureState(&bridgeState);
+        pruneIdentities();
+    }
+    if (result != BROGUE_BRIDGE_OK) {
+        outResult->errorCode = result;
+        return result;
+    }
+
+    outResult->success = 1;
+    /* playerMoves() reports physical tile displacement. Taking stairs is a
+     * committed action that changes depth without setting playerMoved, so the
+     * bridge must also recognize Brogue's authoritative depth transition. */
+    outResult->actionAccepted = (accepted || bridgePreviousState.depth != bridgeState.depth) ? 1 : 0;
+    outResult->consumedTurn = (rogue.absoluteTurnNumber != oldAbsoluteTurn) ? 1 : 0;
+    outResult->currentTurn = rogue.absoluteTurnNumber;
+    outResult->previousTurn = oldAbsoluteTurn;
+    outResult->revision = bridgeRevision;
+    outResult->playerBefore = bridgePreviousState.player;
+    outResult->playerAfter = bridgeState.player;
+    if (bridgePreviousState.depth != bridgeState.depth) {
+        buildEvents(&bridgePreviousState, &bridgeState, outResult);
+    } else {
+        appendRecordedEvents(outResult);
+        buildEvents(&bridgePreviousState, &bridgeState, outResult);
+    }
+    return BROGUE_BRIDGE_OK;
+}
+
+/* Brogue's own rethrow sequence after its optional confirmation: repeat the
+ * last target when it remains valid, otherwise ask where to throw. */
+static BrogueBridgeResult resolveRethrow(const BrogueBridgeCommand *command, BrogueBridgeTurnResult *outResult,
+                                         item *thrown, uint64_t oldAbsoluteTurn) {
+    pos target;
+    BrogueBridgeInteraction descriptor;
+    if (rethrowTargetLocation(thrown, &target)) {
+        boolean accepted = throwItemAtTarget(thrown, target, true);
+        return completeCommand(command, outResult, accepted, oldAbsoluteTurn);
+    }
+    memset(&descriptor, 0, sizeof(descriptor));
+    descriptor.kind = BROGUE_INTERACTION_TARGET_LOCATION;
+    descriptor.itemId = identityForItem(thrown);
+    descriptor.maxDistance = playerThrowMaxDistance();
+    descriptor.cancelAllowed = 1;
+    copyText(descriptor.prompt, sizeof(descriptor.prompt), "Throw where?");
+    return suspendCommand(outResult, PENDING_RETHROW_TARGET, command, &descriptor, oldAbsoluteTurn);
+}
+
+/* Starts or resumes a native item-command frame. The frame retains its
+ * execution position between calls, so no stage is ever replayed. */
+static BrogueBridgeResult driveFrameCommand(const BrogueBridgeCommand *command, BrogueBridgeTurnResult *outResult,
+                                            uint64_t oldAbsoluteTurn, boolean applied) {
+    BrogueBridgeInteraction descriptor;
+    nativeItemCommandFrame *frame = &pendingInteraction.frame;
+
+    if (frame->promptKind == NATIVE_ITEM_CHOICE) {
+        memset(&descriptor, 0, sizeof(descriptor));
+        describeFrameInteraction(&descriptor, frame);
+        if (descriptor.choiceCount == 0) {
+            /* Brogue shows its own "nothing suitable" message and treats the
+             * prompt as cancelled. */
+            nativeItemAnswer escape;
+            memset(&escape, 0, sizeof(escape));
+            escape.kind = NATIVE_ITEM_ANSWER_ESCAPE;
+            numberOfMatchingPackItems(ALL_ITEMS, frame->requiredFlags, frame->forbiddenFlags, true);
+            stepNativeItemCommand(frame, &escape);
+        }
+    }
+    if (frame->promptKind == NATIVE_ITEM_COMPLETE) {
+        const boolean accepted = applied || rogue.absoluteTurnNumber != oldAbsoluteTurn;
+        return completeCommand(command, outResult, accepted, oldAbsoluteTurn);
+    }
+    memset(&descriptor, 0, sizeof(descriptor));
+    describeFrameInteraction(&descriptor, frame);
+    return suspendCommand(outResult, PENDING_ITEM_FRAME, command, &descriptor, oldAbsoluteTurn);
+}
+
+static BrogueBridgeResult beginFrameCommand(const BrogueBridgeCommand *command, BrogueBridgeTurnResult *outResult,
+                                            nativeItemCommandKind kind, item *selected, uint64_t oldAbsoluteTurn) {
+    beginNativeItemCommand(&pendingInteraction.frame, kind, selected);
+    pendingInteraction.itemWasEquipped = selected != NULL && (selected->flags & ITEM_EQUIPPED) != 0;
+    return driveFrameCommand(command, outResult, oldAbsoluteTurn, false);
+}
+
+BrogueBridgeResult brogue_bridge_get_interaction(BrogueBridgeInteraction *outInteraction) {
+    if (outInteraction == NULL) return BROGUE_BRIDGE_INVALID_STATE;
+    memset(outInteraction, 0, sizeof(*outInteraction));
+    outInteraction->apiVersion = BROGUE_BRIDGE_API_VERSION;
+    if (!bridgeInitialized) return BROGUE_BRIDGE_NOT_INITIALIZED;
+    if (!bridgeGameStarted) return BROGUE_BRIDGE_GAME_NOT_STARTED;
+    if (pendingInteraction.stage != PENDING_NONE) *outInteraction = pendingInteraction.interaction;
+    return BROGUE_BRIDGE_OK;
+}
+
+static boolean answerMatchesInteraction(const BrogueBridgeInteraction *interaction,
+                                        const BrogueBridgeInteractionResponse *response) {
+    uint32_t i;
+    switch (interaction->kind) {
+        case BROGUE_INTERACTION_CONFIRM:
+            return response->answer == BROGUE_ANSWER_YES || response->answer == BROGUE_ANSWER_NO
+                || response->answer == BROGUE_ANSWER_CANCEL;
+        case BROGUE_INTERACTION_ITEM_CHOICE:
+            if (response->answer == BROGUE_ANSWER_CANCEL) return interaction->cancelAllowed != 0;
+            if (response->answer != BROGUE_ANSWER_ITEM) return false;
+            for (i = 0; i < interaction->choiceCount; i++) {
+                if (interaction->choiceItemIds[i] == response->itemId) return true;
+            }
+            return false;
+        case BROGUE_INTERACTION_TEXT:
+            return response->answer == BROGUE_ANSWER_TEXT || response->answer == BROGUE_ANSWER_CANCEL;
+        case BROGUE_INTERACTION_TARGET_LOCATION:
+            return response->answer == BROGUE_ANSWER_CANCEL
+                || (response->answer == BROGUE_ANSWER_LOCATION
+                    && coordinatesAreInMap(response->targetX, response->targetY));
+        default:
+            return false;
+    }
+}
+
+BrogueBridgeResult brogue_bridge_respond(const BrogueBridgeInteractionResponse *response,
+                                          BrogueBridgeTurnResult *outResult) {
+    BrogueBridgeCommand command;
+    uint64_t oldAbsoluteTurn;
+    item *commandItem;
+    boolean accepted = false;
+
+    if (response == NULL || outResult == NULL) return BROGUE_BRIDGE_INVALID_STATE;
+    memset(outResult, 0, sizeof(*outResult));
+    outResult->apiVersion = BROGUE_BRIDGE_API_VERSION;
+    outResult->errorCode = BROGUE_BRIDGE_OK;
+    if (!bridgeInitialized) return outResult->errorCode = BROGUE_BRIDGE_NOT_INITIALIZED;
+    if (!bridgeGameStarted) return outResult->errorCode = BROGUE_BRIDGE_GAME_NOT_STARTED;
+    if (bridgePhase != BROGUE_SESSION_LIVE || pendingInteraction.stage == PENDING_NONE) {
+        return outResult->errorCode = BROGUE_BRIDGE_INVALID_STATE;
+    }
+    if (response->apiVersion != BROGUE_BRIDGE_API_VERSION
+        || response->token != pendingInteraction.interaction.token) {
+        return outResult->errorCode = BROGUE_BRIDGE_INVALID_ACTION;
+    }
+    if (response->expectedRevision != 0 && response->expectedRevision != bridgeRevision) {
+        return outResult->errorCode = BROGUE_BRIDGE_STALE_REVISION;
+    }
+    if (!answerMatchesInteraction(&pendingInteraction.interaction, response)) {
+        return outResult->errorCode = BROGUE_BRIDGE_INVALID_ACTION;
+    }
+
+    command = pendingInteraction.command;
+    oldAbsoluteTurn = pendingInteraction.oldAbsoluteTurn;
+    outResult->commandType = command.type;
+    outResult->action = command.action;
+    outResult->itemId = command.itemId;
+    recordingActionEvents = true;
+    beginConfirmationBroker(0);
+
+    switch (pendingInteraction.stage) {
+        case PENDING_ITEM_FRAME: {
+            nativeItemAnswer answer;
+            memset(&answer, 0, sizeof(answer));
+            if (response->answer == BROGUE_ANSWER_TEXT && !memchr(response->text, 0, sizeof(response->text))) {
+                endConfirmationBroker();
+                recordingActionEvents = false;
+                return outResult->errorCode = BROGUE_BRIDGE_INVALID_ACTION;
+            }
+            switch (response->answer) {
+                case BROGUE_ANSWER_YES: answer.kind = NATIVE_ITEM_ANSWER_YES; break;
+                case BROGUE_ANSWER_NO: answer.kind = NATIVE_ITEM_ANSWER_NO; break;
+                case BROGUE_ANSWER_CANCEL: answer.kind = NATIVE_ITEM_ANSWER_ESCAPE; break;
+                case BROGUE_ANSWER_ITEM:
+                    answer.kind = NATIVE_ITEM_ANSWER_CHOICE;
+                    answer.selected = itemForIdentity(response->itemId);
+                    if (answer.selected == NULL || !itemIsCarried(answer.selected)) {
+                        endConfirmationBroker();
+                        recordingActionEvents = false;
+                        return outResult->errorCode = BROGUE_BRIDGE_ITEM_NOT_FOUND;
+                    }
+                    break;
+                default:
+                    answer.kind = NATIVE_ITEM_ANSWER_TEXT;
+                    copyText(answer.text, sizeof(answer.text), response->text);
+                    break;
+            }
+            if (!stepNativeItemCommand(&pendingInteraction.frame, &answer)) {
+                /* Brogue rejected the answer before changing anything. */
+                endConfirmationBroker();
+                recordingActionEvents = false;
+                return outResult->errorCode = BROGUE_BRIDGE_INVALID_ACTION;
+            }
+            if (command.type == BROGUE_COMMAND_EQUIP_ITEM) {
+                commandItem = itemForIdentity(command.itemId);
+                accepted = commandItem != NULL && (commandItem->flags & ITEM_EQUIPPED)
+                    && !pendingInteraction.itemWasEquipped;
+            } else {
+                accepted = response->answer == BROGUE_ANSWER_TEXT;
+            }
+            return driveFrameCommand(&command, outResult, oldAbsoluteTurn, accepted);
+        }
+        case PENDING_RETHROW_CONFIRM:
+            if (response->answer != BROGUE_ANSWER_YES) {
+                return completeCommand(&command, outResult, false, oldAbsoluteTurn);
+            }
+            commandItem = rogue.lastItemThrown;
+            if (commandItem == NULL || !itemIsCarried(commandItem)) {
+                return completeCommand(&command, outResult, false, oldAbsoluteTurn);
+            }
+            return resolveRethrow(&command, outResult, commandItem, oldAbsoluteTurn);
+        case PENDING_RETHROW_TARGET:
+            commandItem = itemForIdentity(pendingInteraction.interaction.itemId);
+            if (response->answer != BROGUE_ANSWER_LOCATION || commandItem == NULL || !itemIsCarried(commandItem)) {
+                return completeCommand(&command, outResult, false, oldAbsoluteTurn);
+            }
+            accepted = throwItemAtTarget(commandItem,
+                                         (pos){ (short) response->targetX, (short) response->targetY }, true);
+            return completeCommand(&command, outResult, accepted, oldAbsoluteTurn);
+        case PENDING_NEW_GAME_CONFIRM:
+            if (response->answer != BROGUE_ANSWER_YES) {
+                return completeCommand(&command, outResult, false, oldAbsoluteTurn);
+            }
+            outResult->sessionChange = BROGUE_SESSION_CHANGE_NEW_GAME;
+            outResult->requestedSeed = command.seed;
+            return completeCommand(&command, outResult, true, oldAbsoluteTurn);
+        case PENDING_ABANDON_CONFIRM:
+            if (response->answer != BROGUE_ANSWER_YES) {
+                return completeCommand(&command, outResult, false, oldAbsoluteTurn);
+            }
+            recordKeystroke(QUIT_KEY, false, false);
+            rogue.quit = true;
+            gameOver("Quit", true);
+            outResult->sessionChange = BROGUE_SESSION_CHANGE_ABANDONED;
+            return completeCommand(&command, outResult, true, oldAbsoluteTurn);
+        case PENDING_REPLAY_CONFIRM:
+        case PENDING_REPLAY_CHOICE: {
+            /* Brogue asked before mutating anything, so the command is re-run
+             * from the same state with the answer applied. */
+            BrogueBridgeCommand replay = command;
+            const boolean choice = pendingInteraction.stage == PENDING_REPLAY_CHOICE;
+            endConfirmationBroker();
+            recordingActionEvents = false;
+            if (!choice && response->answer != BROGUE_ANSWER_YES) {
+                clearPendingInteraction();
+                outResult->success = 1;
+                outResult->revision = bridgeRevision;
+                outResult->currentTurn = outResult->previousTurn = rogue.absoluteTurnNumber;
+                outResult->playerBefore = outResult->playerAfter = bridgeState.player;
+                return BROGUE_BRIDGE_OK;
+            }
+            if (choice) replay.secondaryItemId = response->itemId;
+            else if (replay.confirmed < 255) replay.confirmed++;
+            clearPendingInteraction();
+            return brogue_bridge_perform_command(&replay, outResult);
+        }
+        default:
+            endConfirmationBroker();
+            recordingActionEvents = false;
+            return outResult->errorCode = BROGUE_BRIDGE_INVALID_STATE;
+    }
+}
+
 BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *command,
                                                   BrogueBridgeTurnResult *outResult) {
     enum directions direction;
     uint64_t oldAbsoluteTurn;
     boolean accepted = false;
-    BrogueBridgeResult result;
     item *commandItem = NULL;
     item *secondaryItem = NULL;
     BrogueBridgeAction action = BROGUE_ACTION_WAIT;
@@ -1628,6 +2033,11 @@ BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *comm
         outResult->errorCode = BROGUE_BRIDGE_INVALID_ACTION;
         return outResult->errorCode;
     }
+    if (pendingInteraction.stage != PENDING_NONE) {
+        /* Brogue is paused inside a command. Only brogue_bridge_respond() may
+         * continue or cancel it. */
+        return outResult->errorCode = BROGUE_BRIDGE_INVALID_STATE;
+    }
     if (command->expectedRevision != 0 && command->expectedRevision != bridgeRevision) {
         outResult->errorCode = BROGUE_BRIDGE_STALE_REVISION;
         return outResult->errorCode;
@@ -1644,12 +2054,28 @@ BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *comm
             outResult->errorCode = BROGUE_BRIDGE_INVALID_ACTION;
             return outResult->errorCode;
         }
-    } else if (command->type >= BROGUE_COMMAND_SEARCH_START) {
+    } else if (commandIsSearch(command->type)) {
         if ((command->type == BROGUE_COMMAND_SEARCH_START && rogue.repeatedSearchActive)
             || (command->type != BROGUE_COMMAND_SEARCH_START && !rogue.repeatedSearchActive)) {
             return outResult->errorCode = BROGUE_BRIDGE_INVALID_STATE;
         }
-    } else {
+    } else if (commandIsRun(command->type)) {
+        if (command->type == BROGUE_COMMAND_RUN_START) {
+            if (rogue.runActive) return outResult->errorCode = BROGUE_BRIDGE_INVALID_STATE;
+            if (actionDirection(command->action) == NO_DIRECTION) {
+                return outResult->errorCode = BROGUE_BRIDGE_INVALID_ACTION;
+            }
+        } else if (!rogue.runActive) {
+            return outResult->errorCode = BROGUE_BRIDGE_INVALID_STATE;
+        }
+    } else if (command->type == BROGUE_COMMAND_CALL_ITEM || command->type == BROGUE_COMMAND_RELABEL_ITEM) {
+        if (command->itemId != 0) {
+            commandItem = itemForIdentity(command->itemId);
+            if (commandItem == NULL || !itemIsCarried(commandItem)) {
+                return outResult->errorCode = BROGUE_BRIDGE_ITEM_NOT_FOUND;
+            }
+        }
+    } else if (commandNeedsCarriedItem(command->type)) {
         commandItem = itemForIdentity(command->itemId);
         if (commandItem == NULL || !itemIsCarried(commandItem)) {
             outResult->errorCode = BROGUE_BRIDGE_ITEM_NOT_FOUND;
@@ -1673,9 +2099,13 @@ BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *comm
         if (command->type == BROGUE_COMMAND_THROW_ITEM
             && itemRequiresThrowConfirmation(commandItem)
             && !command->confirmed) {
-            itemThrowConfirmationPrompt(commandItem, outResult->prompt, sizeof(outResult->prompt));
-            outResult->errorCode = BROGUE_BRIDGE_CONFIRMATION_REQUIRED;
-            return outResult->errorCode;
+            BrogueBridgeInteraction descriptor;
+            memset(&descriptor, 0, sizeof(descriptor));
+            descriptor.kind = BROGUE_INTERACTION_CONFIRM;
+            descriptor.itemId = command->itemId;
+            descriptor.cancelAllowed = 1;
+            itemThrowConfirmationPrompt(commandItem, descriptor.prompt, sizeof(descriptor.prompt));
+            return suspendCommand(outResult, PENDING_REPLAY_CONFIRM, command, &descriptor, rogue.absoluteTurnNumber);
         }
         if (command->type == BROGUE_COMMAND_APPLY_ITEM) {
             char prompt[BROGUE_BRIDGE_MESSAGE_LENGTH];
@@ -1685,17 +2115,33 @@ BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *comm
             }
             if (itemApplyConfirmationPrompt(commandItem, prompt, sizeof(prompt))
                 && !command->confirmed) {
-                copyText(outResult->prompt, sizeof(outResult->prompt), prompt);
-                outResult->errorCode = BROGUE_BRIDGE_CONFIRMATION_REQUIRED;
-                return outResult->errorCode;
+                BrogueBridgeInteraction descriptor;
+                memset(&descriptor, 0, sizeof(descriptor));
+                descriptor.kind = BROGUE_INTERACTION_CONFIRM;
+                descriptor.itemId = command->itemId;
+                descriptor.cancelAllowed = 1;
+                copyText(descriptor.prompt, sizeof(descriptor.prompt), prompt);
+                return suspendCommand(outResult, PENDING_REPLAY_CONFIRM, command, &descriptor,
+                                      rogue.absoluteTurnNumber);
             }
             if (applySelectionType(commandItem) != BROGUE_SELECTION_NONE) {
                 BrogueBridgeTurnResult choices = *outResult;
                 populateApplyChoices(commandItem, &choices);
                 if (choices.choiceCount > 0 && command->secondaryItemId == 0) {
-                    *outResult = choices;
-                    outResult->errorCode = BROGUE_BRIDGE_SELECTION_REQUIRED;
-                    return outResult->errorCode;
+                    BrogueBridgeInteraction descriptor;
+                    memset(&descriptor, 0, sizeof(descriptor));
+                    descriptor.kind = BROGUE_INTERACTION_ITEM_CHOICE;
+                    descriptor.itemId = command->itemId;
+                    /* Brogue does not let a read identify/enchant scroll be abandoned. */
+                    descriptor.cancelAllowed = 0;
+                    descriptor.choiceCount = choices.choiceCount;
+                    memcpy(descriptor.choiceItemIds, choices.choiceItemIds, sizeof(descriptor.choiceItemIds));
+                    copyText(descriptor.prompt, sizeof(descriptor.prompt), choices.prompt);
+                    outResult->selectionType = choices.selectionType;
+                    outResult->choiceCount = choices.choiceCount;
+                    memcpy(outResult->choiceItemIds, choices.choiceItemIds, sizeof(outResult->choiceItemIds));
+                    return suspendCommand(outResult, PENDING_REPLAY_CHOICE, command, &descriptor,
+                                          rogue.absoluteTurnNumber);
                 }
                 if (command->secondaryItemId != 0) {
                     secondaryItem = itemForIdentity(command->secondaryItemId);
@@ -1724,8 +2170,11 @@ BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *comm
     recordingActionEvents = true;
     beginConfirmationBroker(command->confirmed);
 
-    if (command->type < BROGUE_COMMAND_SEARCH_START && rogue.repeatedSearchActive) {
+    if (!commandIsSearch(command->type) && rogue.repeatedSearchActive) {
         finishRepeatedSearch();
+    }
+    if (!commandIsRun(command->type) && rogue.runActive) {
+        finishPlayerRun();
     }
 
     switch (command->type) {
@@ -1762,10 +2211,85 @@ BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *comm
             finishRepeatedSearch();
             accepted = true;
             break;
+        case BROGUE_COMMAND_RUN_START: {
+            /* Brogue's shift/control movement. Its first step can be refused
+             * exactly like an ordinary move. */
+            const pos before = player.loc;
+            considerCautiousMode();
+            beginPlayerRun(actionDirection(command->action));
+            stepPlayerRun();
+            accepted = !posEq(before, player.loc) || rogue.absoluteTurnNumber != oldAbsoluteTurn;
+            if (!accepted) finishPlayerRun();
+            break;
+        }
+        case BROGUE_COMMAND_RUN_CONTINUE: {
+            const pos before = player.loc;
+            stepPlayerRun();
+            accepted = !posEq(before, player.loc) || rogue.absoluteTurnNumber != oldAbsoluteTurn;
+            if (!accepted) finishPlayerRun();
+            break;
+        }
+        case BROGUE_COMMAND_RUN_CANCEL:
+            finishPlayerRun();
+            accepted = true;
+            break;
         case BROGUE_COMMAND_EQUIP_ITEM:
-            equip(commandItem);
-            accepted = rogue.weapon == commandItem
-                && bridgePreviousState.player.equippedWeaponId != command->itemId;
+            return beginFrameCommand(command, outResult, NATIVE_ITEM_EQUIP, commandItem, oldAbsoluteTurn);
+        case BROGUE_COMMAND_CALL_ITEM:
+            return beginFrameCommand(command, outResult, NATIVE_ITEM_CALL, commandItem, oldAbsoluteTurn);
+        case BROGUE_COMMAND_RELABEL_ITEM:
+            return beginFrameCommand(command, outResult, NATIVE_ITEM_RELABEL, commandItem, oldAbsoluteTurn);
+        case BROGUE_COMMAND_SWAP_LAST_EQUIPMENT:
+            swapLastEquipment();
+            accepted = rogue.absoluteTurnNumber != oldAbsoluteTurn;
+            break;
+        case BROGUE_COMMAND_RETHROW_LAST: {
+            item *thrown = rogue.lastItemThrown;
+            BrogueBridgeInteraction descriptor;
+            if (thrown == NULL || !itemIsCarried(thrown)) {
+                accepted = false;
+                break;
+            }
+            if (itemRequiresThrowConfirmation(thrown) && !command->confirmed) {
+                memset(&descriptor, 0, sizeof(descriptor));
+                descriptor.kind = BROGUE_INTERACTION_CONFIRM;
+                descriptor.itemId = identityForItem(thrown);
+                descriptor.cancelAllowed = 1;
+                itemThrowConfirmationPrompt(thrown, descriptor.prompt, sizeof(descriptor.prompt));
+                return suspendCommand(outResult, PENDING_RETHROW_CONFIRM, command, &descriptor, oldAbsoluteTurn);
+            }
+            return resolveRethrow(command, outResult, thrown, oldAbsoluteTurn);
+        }
+        case BROGUE_COMMAND_NEW_GAME:
+            if (rogue.playerTurnNumber < 50 || command->confirmed) {
+                outResult->sessionChange = BROGUE_SESSION_CHANGE_NEW_GAME;
+                outResult->requestedSeed = command->seed;
+                accepted = true;
+            } else {
+                BrogueBridgeInteraction descriptor;
+                memset(&descriptor, 0, sizeof(descriptor));
+                descriptor.kind = BROGUE_INTERACTION_CONFIRM;
+                descriptor.cancelAllowed = 1;
+                copyText(descriptor.prompt, sizeof(descriptor.prompt), "End this game and begin a new game?");
+                return suspendCommand(outResult, PENDING_NEW_GAME_CONFIRM, command, &descriptor, oldAbsoluteTurn);
+            }
+            break;
+        case BROGUE_COMMAND_ABANDON_GAME:
+            if (command->confirmed) {
+                recordKeystroke(QUIT_KEY, false, false);
+                rogue.quit = true;
+                gameOver("Quit", true);
+                outResult->sessionChange = BROGUE_SESSION_CHANGE_ABANDONED;
+                accepted = true;
+            } else {
+                BrogueBridgeInteraction descriptor;
+                memset(&descriptor, 0, sizeof(descriptor));
+                descriptor.kind = BROGUE_INTERACTION_CONFIRM;
+                descriptor.cancelAllowed = 1;
+                copyText(descriptor.prompt, sizeof(descriptor.prompt),
+                         "Quit and abandon this game? (The save will be deleted.)");
+                return suspendCommand(outResult, PENDING_ABANDON_CONFIRM, command, &descriptor, oldAbsoluteTurn);
+            }
             break;
         case BROGUE_COMMAND_UNEQUIP_ITEM:
             if (!(commandItem->flags & ITEM_EQUIPPED)) {
@@ -1800,52 +2324,7 @@ BrogueBridgeResult brogue_bridge_perform_command(const BrogueBridgeCommand *comm
             return outResult->errorCode;
     }
 
-    endConfirmationBroker();
-    recordingActionEvents = false;
-    if (confirmationWasRequested) {
-        /* Brogue's negative response path has cancelled the command without
-         * consuming a turn. Do not advance the bridge revision or publish
-         * transient cancellation messages; the frontend now owns the prompt. */
-        copyText(outResult->prompt, sizeof(outResult->prompt), confirmationPrompt);
-        outResult->errorCode = BROGUE_BRIDGE_CONFIRMATION_REQUIRED;
-        return outResult->errorCode;
-    }
-    bridgeRevision++;
-    if (command->type == BROGUE_COMMAND_SEARCH_CANCEL) {
-        /* A synchronous control-only cancellation cannot change terrain or
-         * entities. Reuse their complete copied snapshot, avoiding even
-         * cosmetic RNG calls in getCellAppearance()/hallucination capture. */
-        bridgeState.revision = bridgeRevision;
-        bridgeState.player.searchActive = 0;
-        bridgeState.stateHash = stateHash(&bridgeState);
-        bridgeState.presentationHash = presentationHash(&bridgeState);
-        result = BROGUE_BRIDGE_OK;
-    } else {
-        beginIdentityCapture();
-        result = captureState(&bridgeState);
-        pruneIdentities();
-    }
-    if (result != BROGUE_BRIDGE_OK) {
-        outResult->errorCode = result;
-        return result;
-    }
-
-    outResult->success = 1;
-    /* playerMoves() reports physical tile displacement. Taking stairs is a
-     * committed action that changes depth without setting playerMoved, so the
-     * bridge must also recognize Brogue's authoritative depth transition. */
-    outResult->actionAccepted = (accepted || bridgePreviousState.depth != bridgeState.depth) ? 1 : 0;
-    outResult->consumedTurn = (rogue.absoluteTurnNumber != oldAbsoluteTurn) ? 1 : 0;
-    outResult->currentTurn = rogue.absoluteTurnNumber;
-    outResult->revision = bridgeRevision;
-    outResult->playerAfter = bridgeState.player;
-    if (bridgePreviousState.depth != bridgeState.depth) {
-        buildEvents(&bridgePreviousState, &bridgeState, outResult);
-    } else {
-        appendRecordedEvents(outResult);
-        buildEvents(&bridgePreviousState, &bridgeState, outResult);
-    }
-    return BROGUE_BRIDGE_OK;
+    return completeCommand(command, outResult, accepted, oldAbsoluteTurn);
 }
 
 BrogueBridgeResult brogue_bridge_perform_action(BrogueBridgeAction action,
@@ -2055,6 +2534,7 @@ void brogue_bridge_shutdown(void) {
     endConfirmationBroker();
     confirmationWasRequested = false;
     confirmationPrompt[0] = '\0';
+    clearPendingInteraction();
 }
 
 const char *brogue_bridge_result_name(BrogueBridgeResult result) {
@@ -2073,6 +2553,7 @@ const char *brogue_bridge_result_name(BrogueBridgeResult result) {
         case BROGUE_BRIDGE_ITEM_NOT_FOUND: return "ITEM_NOT_FOUND";
         case BROGUE_BRIDGE_CONFIRMATION_REQUIRED: return "CONFIRMATION_REQUIRED";
         case BROGUE_BRIDGE_SELECTION_REQUIRED: return "SELECTION_REQUIRED";
+        case BROGUE_BRIDGE_INTERACTION_REQUIRED: return "INTERACTION_REQUIRED";
         default: return "UNKNOWN";
     }
 }
@@ -2105,7 +2586,8 @@ const char *brogue_bridge_event_name(BrogueBridgeEventType type) {
 const char *brogue_bridge_command_name(BrogueBridgeCommandType type) {
     static const char *names[BROGUE_COMMAND_COUNT] = {
         "ACTION", "EQUIP_ITEM", "UNEQUIP_ITEM", "THROW_ITEM", "DROP_ITEM", "APPLY_ITEM", "USE_STAFF", "USE_WAND",
-        "SEARCH_START", "SEARCH_CONTINUE", "SEARCH_CANCEL"
+        "SEARCH_START", "SEARCH_CONTINUE", "SEARCH_CANCEL", "RUN_START", "RUN_CONTINUE", "RUN_CANCEL",
+        "RETHROW_LAST", "SWAP_LAST_EQUIPMENT", "CALL_ITEM", "RELABEL_ITEM", "NEW_GAME", "ABANDON_GAME"
     };
     if (type < 0 || type >= BROGUE_COMMAND_COUNT) return "INVALID_COMMAND";
     return names[type];

@@ -17,10 +17,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "bridge-answer.h"
 #include "bridge-staff-smoke.h"
 #include "bridge-wand-smoke.h"
 #include "bridge-target-smoke.h"
 #include "bridge-search-smoke.h"
+#include "bridge-interaction-smoke.h"
 #include "bridge-save-smoke.h"
 #include "bridge-terrain-smoke.h"
 #include "bridge-bloodwort-smoke.h"
@@ -225,8 +227,8 @@ static int runConsumableSmoke(BrogueBridgeState *state, boolean verbose) {
     command.expectedRevision = state->revision;
     command.itemId = foodId;
     result = brogue_bridge_perform_command(&command, &turn);
-    if (result != BROGUE_BRIDGE_CONFIRMATION_REQUIRED
-        || turn.errorCode != BROGUE_BRIDGE_CONFIRMATION_REQUIRED
+    if (result != BROGUE_BRIDGE_INTERACTION_REQUIRED
+        || turn.interaction.kind != BROGUE_INTERACTION_CONFIRM
         || turn.prompt[0] == '\0'
         || brogue_bridge_get_state(&unchanged) != BROGUE_BRIDGE_OK
         || unchanged.revision != initialRevision
@@ -238,8 +240,7 @@ static int runConsumableSmoke(BrogueBridgeState *state, boolean verbose) {
            (unsigned long long) unchanged.revision,
            brogue_bridge_result_name(result), turn.prompt);
 
-    command.confirmed = true;
-    result = brogue_bridge_perform_command(&command, &turn);
+    result = answerPending(&turn, 1);
     if (result != BROGUE_BRIDGE_OK || !turn.actionAccepted || !turn.consumedTurn
         || brogue_bridge_get_state(state) != BROGUE_BRIDGE_OK
         || state->revision <= initialRevision) {
@@ -280,7 +281,9 @@ static int runConsumableSmoke(BrogueBridgeState *state, boolean verbose) {
     command.expectedRevision = selectionRevision;
     command.itemId = scrollId;
     result = brogue_bridge_perform_command(&command, &turn);
-    if (result != BROGUE_BRIDGE_SELECTION_REQUIRED
+    if (result != BROGUE_BRIDGE_INTERACTION_REQUIRED
+        || turn.interaction.kind != BROGUE_INTERACTION_ITEM_CHOICE
+        || turn.interaction.cancelAllowed
         || turn.selectionType != BROGUE_SELECTION_IDENTIFY_ITEM
         || !choiceContains(&turn, ringId)
         || brogue_bridge_get_state(&unchanged) != BROGUE_BRIDGE_OK
@@ -294,8 +297,21 @@ static int runConsumableSmoke(BrogueBridgeState *state, boolean verbose) {
            brogue_bridge_result_name(result), (int) turn.selectionType,
            turn.choiceCount, turn.prompt);
 
-    command.secondaryItemId = ringId;
-    result = brogue_bridge_perform_command(&command, &turn);
+    {
+        // Brogue does not allow abandoning a read identify scroll's choice.
+        BrogueBridgeInteractionResponse cancel;
+        memset(&cancel, 0, sizeof(cancel));
+        cancel.apiVersion = BROGUE_BRIDGE_API_VERSION;
+        cancel.token = turn.interaction.token;
+        cancel.answer = BROGUE_ANSWER_CANCEL;
+        if (brogue_bridge_respond(&cancel, &turn) != BROGUE_BRIDGE_INVALID_ACTION
+            || brogue_bridge_get_interaction(&turn.interaction) != BROGUE_BRIDGE_OK
+            || turn.interaction.kind != BROGUE_INTERACTION_ITEM_CHOICE) {
+            fputs("Mandatory identify choice accepted a cancel.\n", stderr);
+            return 1;
+        }
+    }
+    result = answerChoice(&turn, ringId);
     if (result != BROGUE_BRIDGE_OK || !turn.actionAccepted || !turn.consumedTurn
         || brogue_bridge_get_state(state) != BROGUE_BRIDGE_OK
         || findItemId(state, scrollId) != NULL) {
@@ -336,7 +352,7 @@ static int runWarningSmoke(BrogueBridgeState *state) {
     command.action = BROGUE_ACTION_MOVE_N;
     command.expectedRevision = initialRevision;
     result = brogue_bridge_perform_command(&command, &turn);
-    if (result != BROGUE_BRIDGE_CONFIRMATION_REQUIRED
+    if (result != BROGUE_BRIDGE_INTERACTION_REQUIRED
         || strcmp(turn.prompt, "Dive into the depths?") != 0
         || brogue_bridge_get_state(&unchanged) != BROGUE_BRIDGE_OK
         || unchanged.revision != initialRevision
@@ -351,8 +367,7 @@ static int runWarningSmoke(BrogueBridgeState *state) {
            turn.prompt, unchanged.player.x, unchanged.player.y,
            (unsigned long long) unchanged.stateHash);
 
-    command.confirmed = 1;
-    result = brogue_bridge_perform_command(&command, &turn);
+    result = answerPending(&turn, 1);
     if (result != BROGUE_BRIDGE_OK || !turn.actionAccepted
         || brogue_bridge_get_state(state) != BROGUE_BRIDGE_OK
         || state->revision <= initialRevision) {
@@ -548,6 +563,7 @@ int main(int argc, char **argv) {
     boolean wandSmoke = false;
     boolean targetSmoke = false;
     boolean searchSmoke = false;
+    boolean interactionSmoke = false;
     boolean terrainSmoke = false;
     boolean bloodwortSmoke = false;
     boolean saveSmoke = false;
@@ -608,6 +624,8 @@ int main(int argc, char **argv) {
             saveSmoke = saveDepthSmoke = true;
         } else if (strcmp(argv[i], "--save-smoke") == 0) {
             saveSmoke = true;
+        } else if (strcmp(argv[i], "--interaction-smoke") == 0) {
+            interactionSmoke = true;
         } else if (strcmp(argv[i], "--search-smoke") == 0) {
             searchSmoke = true;
         } else if (strcmp(argv[i], "--bloodwort-smoke") == 0) {
@@ -671,6 +689,12 @@ int main(int argc, char **argv) {
     if (saveSmoke) return runSaveSmoke(seed, saveDepthSmoke);
     if (bloodwortSmoke) { exitCode = runBloodwortSmoke(&state); brogue_bridge_shutdown(); return exitCode; }
     if (terrainSmoke) { exitCode = runTerrainSmoke(&state); brogue_bridge_shutdown(); return exitCode; }
+
+    if (interactionSmoke) {
+        exitCode = runInteractionSmoke(&state);
+        brogue_bridge_shutdown();
+        return exitCode;
+    }
 
     if (searchSmoke) {
         exitCode = runSearchSmoke(&state);
