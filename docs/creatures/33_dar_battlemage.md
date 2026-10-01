@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `humanoid`.
-- Authored silhouette dimensions: 28 / 34 / 57 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-dar_battlemage`.
+- Authored silhouette dimensions: 13.2144 / 21.7189 / 63.9787 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
 - Visual construction cues: elf, ember_eyes, hot_hands, robe.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/33_dar_battlemage.obj).
-- [Editable Blender source](../../assets/monsters/sources/33_dar_battlemage.blend).
+- [Runtime model](../../mod/BrogueDoom/models/monsters/33_dar_battlemage.iqm).
+- [Editable Blender source](../../assets/monsters/dar_battlemage/dar-battlemage-animated.blend).
+- [Animation manifest](../../assets/monsters/dar_battlemage/animation.json); 19 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Dar battlemage authoring and actual verification](../dar-battlemage-animation.md).
 
 ## Brogue encounter-table references
 
@@ -44,6 +47,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

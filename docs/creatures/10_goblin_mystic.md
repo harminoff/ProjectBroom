@@ -15,13 +15,15 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `humanoid`.
-- Authored silhouette dimensions: 24 / 32 / 40 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-goblin_mystic`.
+- Authored silhouette dimensions: 11.8644 / 19.342 / 39.2134 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: primate, golden_eyes, fur.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/10_goblin_mystic.obj).
-- [Editable Blender source](../../assets/monsters/sources/10_goblin_mystic.blend).
+- Visual construction cues: unarmed primate humanoid, golden sparkling eyes, swept ears, sparse scalp and shoulder fur, open palms, folded blue waist wrap.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/10_goblin_mystic.iqm).
+- [Editable Blender source](../../assets/monsters/goblin_mystic/goblin-mystic-animated.blend).
+- [Animation manifest](../../assets/monsters/goblin_mystic/animation.json); 18 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
 
 ## Brogue encounter-table references
 
@@ -48,6 +50,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

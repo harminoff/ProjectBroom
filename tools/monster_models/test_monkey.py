@@ -23,19 +23,46 @@ class MonkeyTests(unittest.TestCase):
  def test_bindings_are_only_on_captive_variant(self):
   a,b=self.normal,self.captive
   for i in (1,2,3,5):self.assertEqual(a[i],b[i][:len(a[i])])
-  self.assertEqual(len(b[0])-len(a[0]),15)
+  self.assertGreater(len(b[0])-len(a[0]),15)
   for part in b[0][len(a[0]):]:
-   self.assertTrue(part.name.startswith('binding'))
+   self.assertTrue(part.name.startswith(('binding','frame_')))
+   if part.name.startswith('frame_'):
+    self.assertTrue(all(w==[(rig.IDS['root'],1)] for w in part.skin_weights))
+    continue
    for v,uv in zip(part.vertices,part.uv):
     weights=rig.weights(part,v,uv)
     self.assertAlmostEqual(sum(w for _,w in weights),1)
     self.assertTrue(all(rig.BONES[i][0] in ('arm_L_end','arm_R_end') for i,_ in weights))
+ def test_restraint_frame_stays_grounded_through_bound_loop(self):
+  parts=self.captive[0]
+  for side in ('L','R'):
+   foot=next(p for p in parts if p.name==f'frame_{side}_foot')
+   for t in (0,.25,.5,.975):
+    points=rig.deform(foot.vertices,foot.skin_weights,rig.pose('captive',t))
+    self.assertLess(max(math.dist(p,q) for p,q in zip(points,foot.vertices)),1e-9)
+    self.assertEqual(min(p[2] for p in points),0)
+   link=next(p for p in parts if p.name==f'frame_{side}_link0')
+   wrist=rig.matrices(rig.pose('captive',0))[rig.IDS[f'arm_{side}_end']][0]
+   self.assertLess(min(math.dist(p,wrist) for p in link.vertices),1)
  def test_release_matches_bound_start_and_idle_finish(self):
   vertices=self.normal[1];weights=self.normal[5]
   for a,ta,b,tb in [('captive',0,'released',0),('released',1,'idle',0)]:
    x=rig.deform(vertices,weights,rig.pose(a,ta));y=rig.deform(vertices,weights,rig.pose(b,tb))
    self.assertLess(max(math.dist(p,q) for p,q in zip(x,y)),1e-9)
   self.assertTrue(31<max(v[2] for v in vertices)<34)
+ def test_detached_restraints_collapse_and_remain_on_floor(self):
+  from .skeletal import Rig,sample_clips
+  parts,v,n,uv,tri,w=rig.restraint_geometry()
+  root,clips,bounds=rig.collapse_data(parts,v,w)
+  first=root.deform(v,w,clips[0]['frames'][0])
+  last=root.deform(v,w,clips[0]['frames'][-1])
+  self.assertLess(max(math.dist(p,q) for p,q in zip(first,v)),.08)
+  self.assertGreater(max(p[2] for p in first),35)
+  self.assertLess(max(p[2] for p in last),5)
+  self.assertGreaterEqual(min(p[2] for p in last),0)
+  self.assertFalse(clips[0]['loop'])
+  payload=iqm.encode(v,n,uv,tri,w,root.bones,clips,bounds,mesh_label='Released_monkey_restraints',material_path=rig.monkey_materials.SKIN)
+  self.assertEqual(payload,(ROOT/'mod/BrogueDoom/models/monsters/05_monkey_restraints.iqm').read_bytes())
  def test_lower_arms_do_not_fuse_to_the_torso(self):
   body=self.normal[0][0]
   for point,weights in zip(body.vertices,self.normal[5]):

@@ -17,6 +17,15 @@ static int runTerrainSmoke(BrogueBridgeState *state) {
     TERRAIN_REFRESH();
     BrogueBridgeTerrainAppearance a = state->cells[y*DCOLS+x].appearance;
     TERRAIN_CHECK(a.knowledge == BROGUE_TERRAIN_VISIBLE && !a.mechanism && (a.flags & BROGUE_APPEARANCE_WALL));
+    TERRAIN_CHECK(a.layers[0] == WALL && !a.layers[1] && !a.layers[2]);
+    cell->layers[DUNGEON] = MARBLE_FLOOR;
+    cell->layers[LIQUID] = SUNLIGHT_POOL;
+    cell->layers[SURFACE] = RED_BLOOD;
+    cell->layers[GAS] = POISON_GAS;
+    TERRAIN_REFRESH();
+    a = state->cells[y*DCOLS+x].appearance;
+    TERRAIN_CHECK(a.layers[0] == MARBLE_FLOOR && a.layers[1] == SUNLIGHT_POOL
+        && a.layers[2] == RED_BLOOD && a.gas == POISON_GAS);
     cell->layers[DUNGEON] = FLOOR;
     cell->layers[SURFACE] = FLOOD_WATER_DEEP;
     cell->layers[LIQUID] = SHALLOW_WATER;
@@ -34,6 +43,7 @@ static int runTerrainSmoke(BrogueBridgeState *state) {
     TERRAIN_REFRESH();
     a = state->cells[y*DCOLS+x].appearance;
     TERRAIN_CHECK(a.knowledge == BROGUE_TERRAIN_REMEMBERED && a.structure == FLOOR && !a.gas && !a.liquid);
+    TERRAIN_CHECK(a.layers[0] == FLOOR && !a.layers[1] && !a.layers[2]);
     cell->flags = MAGIC_MAPPED;
     cell->rememberedTerrain = SHALLOW_WATER;
     TERRAIN_REFRESH();
@@ -44,6 +54,7 @@ static int runTerrainSmoke(BrogueBridgeState *state) {
     TERRAIN_REFRESH();
     a = state->cells[y*DCOLS+x].appearance;
     TERRAIN_CHECK(!a.knowledge && (a.flags & BROGUE_APPEARANCE_OPAQUE) && !a.gas && !a.structure);
+    TERRAIN_CHECK(!a.layers[0] && !a.layers[1] && !a.layers[2]);
     cell->flags = VISIBLE | DISCOVERED;
     cell->layers[DUNGEON] = FLOOR;
     cell->layers[LIQUID] = ICE_DEEP;
@@ -55,6 +66,25 @@ static int runTerrainSmoke(BrogueBridgeState *state) {
     TERRAIN_REFRESH();
     a = state->cells[y*DCOLS+x].appearance;
     TERRAIN_CHECK(a.mechanism == MACHINE_PRESSURE_PLATE_USED && (a.flags & BROGUE_APPEARANCE_DEPRESSED));
+    // Visible extending stone must not inherit the dormant chasm disguise.
+    cell->layers[DUNGEON] = FLOOR;
+    cell->layers[SURFACE] = NOTHING;
+    cell->layers[LIQUID] = CHASM_WITH_HIDDEN_BRIDGE;
+    cell->flags = VISIBLE | DISCOVERED;
+    TERRAIN_REFRESH();
+    a = state->cells[y*DCOLS+x].appearance;
+    TERRAIN_CHECK(!a.deck && (a.flags & BROGUE_APPEARANCE_HOLE));
+    cell->layers[LIQUID] = CHASM_WITH_HIDDEN_BRIDGE_ACTIVE;
+    TERRAIN_REFRESH();
+    a = state->cells[y*DCOLS+x].appearance;
+    TERRAIN_CHECK(a.deck == STONE_BRIDGE && (a.flags & BROGUE_APPEARANCE_BRIDGE));
+    cell->flags = DISCOVERED;
+    cell->rememberedTerrain = CHASM_WITH_HIDDEN_BRIDGE;
+    cell->rememberedTerrainFlags = T_AUTO_DESCENT;
+    cell->rememberedTMFlags = 0;
+    TERRAIN_REFRESH();
+    a = state->cells[y*DCOLS+x].appearance;
+    TERRAIN_CHECK(!a.deck && (a.flags & BROGUE_APPEARANCE_HOLE));
     unsigned long rng = randomNumbersGenerated;
     uint64_t turn = rogue.absoluteTurnNumber;
     for (int i = 0; i < 10; ++i) TERRAIN_REFRESH();

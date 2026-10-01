@@ -311,9 +311,9 @@ internal sealed class PreparationWindow : Form
         if (!File.Exists(engineConfig) && File.Exists(legacyConfig))
             File.Copy(legacyConfig, engineConfig);
         string json = Path.Combine(cache, "brogue-dungeon.json");
-        // Compiler v45 reserves every cell and both presentation planes and adds frost.
+        // Compiler v47 also adds deterministic, inert explorer set pieces.
         // Keep older topology separate so upgrades cannot reuse unaddressable maps.
-        string package = Path.Combine(cache, $"ProjectBroom-v45-startup-seed-{seed}.pk3");
+        string package = Path.Combine(cache, $"ProjectBroom-v47-startup-seed-{seed}.pk3");
 
         var combinedLog = new StringBuilder();
         if (!File.Exists(json))
@@ -363,7 +363,7 @@ internal sealed class PreparationWindow : Form
         };
         foreach (string argument in new[]
         {
-            "-width", "1280", "-height", "720", "-nosound",
+            "-width", "1280", "-height", "720",
             "-config", engineConfig,
             "+logfile", $"engine-{DateTime.Now:yyyyMMdd-HHmmss-fff}",
             "-iwad", iwad, "-file", staticMod, package,

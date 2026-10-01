@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `blade`.
-- Authored silhouette dimensions: 16 / 12 / 42 map units. Clearance: 16 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-spectral_image`.
+- Authored silhouette dimensions: 3.1231 / 19.6995 / 47.05 map units. Clearance: 16 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: spectral, sword, echo.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/56_spectral_image.obj).
-- [Editable Blender source](../../assets/monsters/sources/56_spectral_image.blend).
+- Visual construction cues: hovering point-down crimson broadsword image, straight double-edged blade with see-through fuller and engraved line, curved crossguard, front gem, wrapped grip and wheel pommel, projection scanlines, two fainter echo after-images that trail its motion, diagonal cleave leaves a fan of three swords, echoes fly apart and vanish as the sword drops flat on the floor.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/56_spectral_image.iqm).
+- [Editable Blender source](../../assets/monsters/spectral_sword/spectral-sword-animated.blend).
+- [Animation manifest](../../assets/monsters/spectral_sword/animation.json); 18 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Spectral sword authoring and actual verification](../spectral-sword-animation.md).
 
 ## Brogue encounter-table references
 
@@ -38,6 +41,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

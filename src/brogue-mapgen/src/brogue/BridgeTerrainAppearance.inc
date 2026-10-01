@@ -5,8 +5,9 @@ static enum tileType appearanceTile(enum tileType tile) {
         return tileCatalog[tile].displayChar == tileCatalog[GRANITE].displayChar
             || tileCatalog[tile].displayChar == tileCatalog[WALL].displayChar ? WALL : FLOOR;
     }
-    /* These catalog forms have identical visible chasm/ground presentation. */
-    if (tile == CHASM_WITH_HIDDEN_BRIDGE || tile == CHASM_WITH_HIDDEN_BRIDGE_ACTIVE) return CHASM;
+    /* The dormant bridge is secret; the active catalog form is visibly stone. */
+    if (tile == CHASM_WITH_HIDDEN_BRIDGE) return CHASM;
+    if (tile == CHASM_WITH_HIDDEN_BRIDGE_ACTIVE) return STONE_BRIDGE;
     return tile;
 }
 
@@ -56,8 +57,10 @@ static void captureTerrainAppearance(BrogueBridgeTerrainAppearance *out, int x, 
     memset(out, 0, sizeof(*out));
     if (playerCanSeeOrSense(x, y)) {
         out->knowledge = BROGUE_TERRAIN_VISIBLE;
-        for (int layer = 0; layer < NUMBER_TERRAIN_LAYERS; ++layer)
+        for (int layer = 0; layer < NUMBER_TERRAIN_LAYERS; ++layer) {
+            if (layer != GAS) out->layers[layer == SURFACE ? 2 : layer] = appearanceTile(cell->layers[layer]);
             appearanceAddTile(out, cell->layers[layer], layer, false);
+        }
         if (out->gas) {
             out->gasVolume = cell->volume;
             const color *gasColor = tileCatalog[out->gas].backColor;
@@ -71,6 +74,7 @@ static void captureTerrainAppearance(BrogueBridgeTerrainAppearance *out, int x, 
     } else if (cell->flags & (DISCOVERED | MAGIC_MAPPED)) {
         out->knowledge = cell->flags & DISCOVERED ? BROGUE_TERRAIN_REMEMBERED : BROGUE_TERRAIN_MAPPED;
         appearanceAddTile(out, cell->rememberedTerrain, DUNGEON, true);
+        out->layers[0] = appearanceTile(cell->rememberedTerrain);
         /* Memory flags recover support information without inspecting live layers. */
         if (!(out->flags & (BROGUE_APPEARANCE_BRIDGE | BROGUE_APPEARANCE_ICE))
             && !(cell->rememberedTMFlags & TM_IS_SECRET)

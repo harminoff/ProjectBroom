@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `blade`.
-- Authored silhouette dimensions: 12 / 10 / 34 map units. Clearance: 16 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-spectral_blade`.
+- Authored silhouette dimensions: 26.4946 / 48.2482 / 55.3674 map units. Clearance: 16 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: spectral, sword.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/55_spectral_blade.obj).
-- [Editable Blender source](../../assets/monsters/sources/55_spectral_blade.blend).
+- Visual construction cues: hovering hilt-less curved blade of conjured light, white-hot cutting edge and point, see-through fuller with flickering rune dashes, glowing base knot streaming three flame-wisps, three orbiting motes, slash and whirl light trails, shatters into shards that fall to the floor.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/55_spectral_blade.iqm).
+- [Editable Blender source](../../assets/monsters/spectral_blade/spectral-blade-animated.blend).
+- [Animation manifest](../../assets/monsters/spectral_blade/animation.json); 38 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Spectral blade authoring and actual verification](../spectral-blade-animation.md).
 
 ## Brogue encounter-table references
 
@@ -39,6 +42,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `humanoid`.
-- Authored silhouette dimensions: 32 / 60 / 66 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-winged_guardian`.
+- Authored silhouette dimensions: 34.5551 / 54.1001 / 69.7543 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: stone, angel, sword, wings.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/58_winged_guardian.obj).
-- [Editable Blender source](../../assets/monsters/sources/58_winged_guardian.blend).
+- Visual construction cues: white marble armoured angel statue, carved stone wings with feather vanes, serene carved face under a circlet, split robe over plate, blue-grey stone longsword, wing-flaring lunge thrust, rubble collapse.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/58_winged_guardian.iqm).
+- [Editable Blender source](../../assets/monsters/winged_guardian/winged-guardian-animated.blend).
+- [Animation manifest](../../assets/monsters/winged_guardian/animation.json); 26 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Winged guardian authoring and actual verification](../winged-guardian-animation.md).
 
 ## Brogue encounter-table references
 
@@ -38,6 +41,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

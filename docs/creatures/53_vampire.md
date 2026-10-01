@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `humanoid`.
-- Authored silhouette dimensions: 32 / 40 / 64 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-vampire`.
+- Authored silhouette dimensions: 19.6499 / 24.9548 / 62.0759 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: cloak, fangs, pale.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/53_vampire.obj).
-- [Editable Blender source](../../assets/monsters/sources/53_vampire.blend).
+- Visual construction cues: gaunt stooped aristocratic predator, bald bloodless head with long swept bat ears, two long fangs and blood at the mouth, oxblood frock coat with velvet lapels and silver buttons, blood-flecked white lace jabot, leathery low-collared cloak with bat-wing scallops and ribs, cloak opens like wings when he spreads it, long pale clawed hands, tall black riding boots.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/53_vampire.iqm).
+- [Editable Blender source](../../assets/monsters/vampire/vampire-animated.blend).
+- [Animation manifest](../../assets/monsters/vampire/animation.json); 19 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Vampire authoring and actual verification](../vampire-animation.md).
 
 ## Brogue encounter-table references
 
@@ -39,6 +42,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

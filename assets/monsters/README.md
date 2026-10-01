@@ -2,9 +2,9 @@
 
 Start at the [indexed roster](../../docs/creature-model-index.md), or select a
 stable `BRG-Mxx` entry in [bestiary-index.json](bestiary-index.json). There are 67
-non-player kinds plus the player reference. Kind 1 is the detailed, skeletal-animated rat;
-kinds 2–67 have individual static model replacements and editable Blender files
-under `sources/`. The player reference is not an enemy replacement.
+non-player kinds plus the player reference. The skeletal roster is recorded in
+`skeletal_profiles.json`; other kinds retain their individual static replacements
+and editable Blender files under `sources/`. The player reference is not an enemy replacement.
 
 Each entry includes exact pinned Brogue prose, catalog colors and large flag,
 source line references, horde-table membership and nominal depth expressions,
@@ -55,6 +55,26 @@ limitations, and follow-up acceptance gates.
 
 For new skeletal work, use the [shared enemy workflow](../../docs/skeletal-enemy-workflow.md) and `skeletal_profiles.json`.
 
+The [goblin conjurer](goblin_conjurer/README.md) now uses connected goblin anatomy,
+free hands, six skeletal clips and skin-conforming pulsing sigils; see its
+[Higgsfield and engine verification](../../docs/goblin-conjurer-animation.md).
+
+The [eel](eel/README.md) now has a continuous skin, swimming rig and dedicated
+water/distance renderer checks; see its [report](../../docs/eel-animation.md).
+
+The [bloat](bloat/README.md) has a veined hovering membrane, six skeletal clips
+and a captured natural death/gas sequence; see its [report](../../docs/bloat-animation.md).
+
+Its blue [pit-bloat subspecies](pit_bloat/README.md) shares the membrane rig;
+see the [descent-order update](../../docs/pit-bloat-animation.md).
+
+The [goblin](goblin/README.md) now has a connected primate body and animated
+stone spear; see its [verification report](../../docs/goblin-animation.md).
+
 The [monkey](monkey/README.md) now uses the shared skeletal pipeline, including
 original fur, a bound variant and a copied-state release animation. See the
 [verification report](../../docs/monkey-animation.md) for runtime scope.
+
+The [toad](toad/README.md) adds a connected, warty body, folded limbs, six clips
+and a subdued specular slime surface. It was selected by ordinary encounter
+depth rather than catalog ID; see the [report](../../docs/toad-animation.md).

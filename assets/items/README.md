@@ -13,9 +13,16 @@ models, textures or reference-game resources were imported. Exact Brogue prose
 in the index is extracted from the pinned upstream source, whose license remains
 unchanged. Numeric sizes, ornamental strokes and colors are artistic inference.
 
-The five hidden-identity categories retain a single generic model each. Known
-effect ornaments are not randomized Brogue flavor names, potion colors, wood
-species or gems. The existing bridge alone selects the safe known/generic class.
+Potions now use 21 color-specific skins on the generic bottle mesh, selected
+from Brogue's assigned color independently of identification and Call naming.
+These original procedural skins have the same CC-BY-SA-4.0 terms as the atlas.
+The Blender source retains the original generic atlas; regenerate runtime skins
+with `python -m tools.pickup_models.generate`.
+
+Staves, wands and rings use their assigned wood, metal and gemstone skins on
+generic geometry. Held devices share the same palette. Scrolls carry Brogue's
+assigned title in original glyph geometry. See
+[assigned appearances](../../docs/item-appearance-implementation.md).
 Glass and crystal are opaque diffuse approximations, not transparent/PBR assets.
 
 Rebuild runtime art and index:

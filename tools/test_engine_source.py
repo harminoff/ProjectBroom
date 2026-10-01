@@ -87,8 +87,11 @@ class EngineSourceTests(unittest.TestCase):
               "src/gzdoom-bridge/brogue_terrain_animation_probe.inc",
               "src/gzdoom-bridge/brogue_shoreline_probe.inc",
               "src/gzdoom-bridge/terrain_presentation.generated.h",
+              "src/gzdoom-bridge/terrain_overlays.generated.h",
               "src/gzdoom-bridge/skeletal_presentation.generated.h",
               "src/gzdoom-bridge/enemy_movement.h",
+              "src/gzdoom-bridge/wall_mount.h",
+              "src/gzdoom-bridge/brogue_monster_visibility_fixture.inc",
               "src/gzdoom-bridge/held_movement.h",
                      "src/brogue-mapgen/src/brogue/BrogueBridge.h"):
             path = self.root / name
@@ -101,7 +104,7 @@ class EngineSourceTests(unittest.TestCase):
         receipt = build_record(self.root, engine)
         (engine / "project-broom-build.json").write_text(json.dumps(receipt))
         validate_build(self.root, engine)
-        for name in ("shoreline.h", "brogue_shoreline_frontend.inc", "brogue_shoreline_probe.inc"):
+        for name in ("shoreline.h", "brogue_shoreline_frontend.inc", "brogue_shoreline_probe.inc", "terrain_overlays.generated.h", "brogue_monster_visibility_fixture.inc"):
             source = self.root / "src/gzdoom-bridge" / name
             source.write_text("changed shoreline")
             with self.assertRaises(ValueError):

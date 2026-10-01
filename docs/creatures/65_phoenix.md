@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `winged`.
-- Authored silhouette dimensions: 42 / 62 / 64 map units. Clearance: 16 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-phoenix`.
+- Authored silhouette dimensions: 41.2597 / 53.8743 / 56.4399 map units. Clearance: 16 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: bird, feathers, embers.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/65_phoenix.obj).
-- [Editable Blender source](../../assets/monsters/sources/65_phoenix.blend).
+- Visual construction cues: hawk-bodied fire bird with a heavy hooked bronze-tipped beak, dark scowling brow wedges and narrow glowing slit eyes, full-span cupped flame wings: feathered leading edge, nine fullbright flame primaries fanned from the wrist, crimson-to-gold plumage following Brogue's red-to-yellow phoenixColor, burning crest and long flowing flame tail, scaled talons, collapses prone with folded wings onto a wide ash pool with ember mounds and glints.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/65_phoenix.iqm).
+- [Editable Blender source](../../assets/monsters/phoenix/phoenix-animated.blend).
+- [Animation manifest](../../assets/monsters/phoenix/animation.json); 66 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Phoenix authoring and actual verification](../phoenix-animation.md).
 
 ## Brogue encounter-table references
 
@@ -38,6 +41,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

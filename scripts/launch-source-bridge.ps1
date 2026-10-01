@@ -15,6 +15,7 @@ param(
     [int]$ComparePid = 0,
     [ValidateRange(1.0, 3.0)]
     [double]$HudScale = 1.0,
+    [switch]$NoSound,
     [switch]$PassThru
 )
 
@@ -97,7 +98,7 @@ $needsPackage = $Force -or -not (Test-Path -LiteralPath $generated -PathType Lea
 if (-not $needsPackage) {
     try {
         $manifest = Get-Content -Raw -LiteralPath $packageManifest | ConvertFrom-Json
-        $needsPackage = $manifest.inputSha256 -ne $inputHash -or $manifest.compilerVersion -ne "45" -or $manifest.startupOnly -ne $true -or $manifest.resourcePack -ne "Project Broom Original Cave Textures"
+        $needsPackage = $manifest.inputSha256 -ne $inputHash -or $manifest.compilerVersion -ne "47" -or $manifest.startupOnly -ne $true -or $manifest.resourcePack -ne "Project Broom Original Cave Textures"
     } catch {
         $needsPackage = $true
     }
@@ -119,7 +120,6 @@ Copy-BrogueFileIfDifferent $bridge $engineBridge
 $arguments = @(
     "-width", $WindowWidth,
     "-height", $WindowHeight,
-    "-nosound",
     "-config", $engineConfig,
     "+logfile", $engineLog,
     "-iwad", $iwad,
@@ -136,6 +136,9 @@ $arguments = @(
     "+set", "brg_monster_anim_tics", "5",
     "+set", "brg_monster_omniscience", "false"
 )
+if ($NoSound) {
+    $arguments += @("-nosound")
+}
 if ($LoadSave) {
     $arguments += @("+set", "brg_load_path", $LoadSave, "+menu_main")
 } elseif ($Menu) {

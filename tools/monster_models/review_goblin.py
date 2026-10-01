@@ -1,0 +1,77 @@
+"""Natural seed-27 goblins after a Brogue-owned pit fall; no spawned fixtures."""
+import argparse
+import os
+import subprocess
+import sys
+import time
+from pathlib import Path
+from .rat import ROOT
+
+
+def main():
+    parser=argparse.ArgumentParser();parser.add_argument('--backend',choices=('0','1'),required=True)
+    parser.add_argument('--output',type=Path)
+    parser.add_argument('--package',type=Path)
+    args=parser.parse_args();out=(args.output or ROOT/'artifacts/goblin-encounter'/args.backend).resolve();out.mkdir(parents=True,exist_ok=True)
+    env={k.upper():v for k,v in os.environ.items()};env['PATH']=str(ROOT/'src/brogue-mapgen/bin')+';'+env['PATH']
+    exe=out/'route.exe'
+    subprocess.run(['g++','-std=c++17','-static',str(ROOT/'tools/monster_models/bloat_encounter.cpp'),
+        str(ROOT/'src/brogue-mapgen/bin/brogue-bridge.dll'),'-o',str(exe)],check=True)
+    cmd=[str(exe),'27','7','3'];first=subprocess.check_output(cmd,cwd=out,env=env,text=True)
+    assert first==subprocess.check_output(cmd,cwd=out,env=env,text=True)
+    expected='cc14f9d0bbb31e67';assert 'hash='+expected in first
+    (out/'bridge-route.log').write_text(first);actions=first.splitlines()[-1].split()
+    observer=out/'observer';observer.mkdir(exist_ok=True)
+    (observer/'MAPINFO').write_text('GameInfo { AddEventHandlers="GoblinReview" }\n')
+    (observer/'ZSCRIPT').write_text('''version "5.0"
+class GoblinCamera : Actor { Default { +NOINTERACTION; +NOBLOCKMAP; +NOGRAVITY; RenderStyle "None"; CameraHeight 0; } States { Spawn: TNT1 A -1; Stop; } }
+class GoblinReview : EventHandler {
+ Actor camera; bool seen;
+ override void WorldTick() {
+  let pawn=players[consoleplayer].mo;if(!pawn) return;
+  let it=ThinkerIterator.Create("BrogueMonsterK08");Actor candidate;Actor subject;double best=100000;
+  while(candidate=Actor(it.Next())) {
+   double d=(candidate.pos-pawn.pos).Length();
+   if(!candidate.bINVISIBLE && candidate.alpha>=1 && d<best) {best=d;subject=candidate;}
+  }
+  if(!subject) return;
+  vector3 eye=(pawn.pos.x,pawn.pos.y,players[consoleplayer].viewz);
+  if(!camera) camera=Actor.Spawn("GoblinCamera",eye);
+  camera.SetOrigin(eye,false);
+  vector3 delta=subject.pos+(0,0,24)-eye;
+  camera.angle=VectorAngle(delta.x,delta.y);camera.pitch=atan2(-delta.z,sqrt(delta.x*delta.x+delta.y*delta.y));
+  players[consoleplayer].camera=camera;pawn.bINVISIBLE=true;
+  if(!seen) {Console.Printf("GOBLIN_NATURAL_VISIBLE distance=%.2f alpha=%.2f",best,subject.alpha);seen=true;}
+ }
+}
+''')
+    cfg=['brg_debug true','screenblocks 12','con_notifytime 0','brg_enemy_walk_tics 5','brg_rat_walk_tics 5','wait 100',
+         'brg_actions '+' '.join(actions[:-1]),'wait 900','brg_monsters','screenshot encounter.png',
+         'brg_actions '+actions[-1],'wait 12','screenshot attack-early.png','wait 10','screenshot attack.png',
+         'wait 80','screenshot settled.png','brg_monsters','quit']
+    (out/'capture.cfg').write_text('; '.join(cfg)+'\n')
+    package=(args.package or ROOT/'artifacts/skeletal-review/MK_GOBLIN'/('vulkan' if args.backend=='1' else 'opengl')/'ProjectBroom-review.pk3').resolve()
+    cmd=[str(ROOT/'.build/uzdoom/Release/uzdoom.exe'),'-iwad',str(ROOT/'.deps/freedoom-0.13.0/freedoom2.wad'),
+        '-file',str(package),str(ROOT/'generated/seed-27/startup/ProjectBroom-seed-27.pk3'),str(observer),
+        '-config',str(out/'test.ini'),'-noautoload','-nosound','-window',
+        '+set','vid_preferbackend',args.backend,'+set','i_pauseinbackground','false',
+        '+set','brg_save_root',str(out/'saves'),'+set','brg_map_compiler',sys.executable,
+        '+set','brg_map_compiler_root',str(ROOT),'+set','brg_seed','27',
+        '+set','screenshot_dir',str(out),'+map','BRG01','+exec',str(out/'capture.cfg')]
+    logpath=out/'runtime.log'
+    with logpath.open('w') as log:
+        proc=subprocess.Popen(cmd,cwd=out,env=env,stdout=log,stderr=subprocess.STDOUT);deadline=time.monotonic()+100
+        while proc.poll() is None:
+            text=logpath.read_text(errors='replace')
+            if time.monotonic()>deadline or any(s in text for s in ('Script error','VM execution aborted')):
+                proc.kill();proc.wait();raise RuntimeError(text[-3000:])
+            time.sleep(.25)
+    text=logpath.read_text(errors='replace')
+    assert proc.returncode==0 and 'GOBLIN_NATURAL_VISIBLE' in text,text[-3000:]
+    assert 'hash='+expected in text,text[-3000:]
+    assert any('class=BrogueMonsterK08 clip='+c in text for c in ('thrust','cut')),text[-3000:]
+    assert all((out/(n+'.png')).exists() for n in ('encounter','attack-early','attack','settled'))
+    print('Natural seed-27 goblin encounter passed:',out)
+
+
+if __name__=='__main__':main()

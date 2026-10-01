@@ -1,0 +1,512 @@
+[
+  {
+    "category": "Staff",
+    "appearance": "teak",
+    "rgb": [
+      137,
+      95,
+      50
+    ],
+    "class": "BrogueFlavorStaffteak"
+  },
+  {
+    "category": "Staff",
+    "appearance": "oak",
+    "rgb": [
+      156,
+      117,
+      67
+    ],
+    "class": "BrogueFlavorStaffoak"
+  },
+  {
+    "category": "Staff",
+    "appearance": "redwood",
+    "rgb": [
+      145,
+      61,
+      39
+    ],
+    "class": "BrogueFlavorStaffredwood"
+  },
+  {
+    "category": "Staff",
+    "appearance": "rowan",
+    "rgb": [
+      168,
+      111,
+      77
+    ],
+    "class": "BrogueFlavorStaffrowan"
+  },
+  {
+    "category": "Staff",
+    "appearance": "willow",
+    "rgb": [
+      175,
+      151,
+      102
+    ],
+    "class": "BrogueFlavorStaffwillow"
+  },
+  {
+    "category": "Staff",
+    "appearance": "mahogany",
+    "rgb": [
+      99,
+      43,
+      29
+    ],
+    "class": "BrogueFlavorStaffmahogany"
+  },
+  {
+    "category": "Staff",
+    "appearance": "pinewood",
+    "rgb": [
+      200,
+      167,
+      108
+    ],
+    "class": "BrogueFlavorStaffpinewood"
+  },
+  {
+    "category": "Staff",
+    "appearance": "maple",
+    "rgb": [
+      209,
+      176,
+      120
+    ],
+    "class": "BrogueFlavorStaffmaple"
+  },
+  {
+    "category": "Staff",
+    "appearance": "bamboo",
+    "rgb": [
+      183,
+      170,
+      74
+    ],
+    "class": "BrogueFlavorStaffbamboo"
+  },
+  {
+    "category": "Staff",
+    "appearance": "ironwood",
+    "rgb": [
+      69,
+      51,
+      35
+    ],
+    "class": "BrogueFlavorStaffironwood"
+  },
+  {
+    "category": "Staff",
+    "appearance": "pearwood",
+    "rgb": [
+      171,
+      117,
+      74
+    ],
+    "class": "BrogueFlavorStaffpearwood"
+  },
+  {
+    "category": "Staff",
+    "appearance": "birch",
+    "rgb": [
+      221,
+      208,
+      174
+    ],
+    "class": "BrogueFlavorStaffbirch"
+  },
+  {
+    "category": "Staff",
+    "appearance": "cherry",
+    "rgb": [
+      167,
+      82,
+      57
+    ],
+    "class": "BrogueFlavorStaffcherry"
+  },
+  {
+    "category": "Staff",
+    "appearance": "eucalyptus",
+    "rgb": [
+      168,
+      152,
+      113
+    ],
+    "class": "BrogueFlavorStaffeucalyptus"
+  },
+  {
+    "category": "Staff",
+    "appearance": "walnut",
+    "rgb": [
+      87,
+      56,
+      40
+    ],
+    "class": "BrogueFlavorStaffwalnut"
+  },
+  {
+    "category": "Staff",
+    "appearance": "cedar",
+    "rgb": [
+      153,
+      81,
+      43
+    ],
+    "class": "BrogueFlavorStaffcedar"
+  },
+  {
+    "category": "Staff",
+    "appearance": "rosewood",
+    "rgb": [
+      95,
+      40,
+      41
+    ],
+    "class": "BrogueFlavorStaffrosewood"
+  },
+  {
+    "category": "Staff",
+    "appearance": "yew",
+    "rgb": [
+      179,
+      122,
+      61
+    ],
+    "class": "BrogueFlavorStaffyew"
+  },
+  {
+    "category": "Staff",
+    "appearance": "sandalwood",
+    "rgb": [
+      177,
+      132,
+      74
+    ],
+    "class": "BrogueFlavorStaffsandalwood"
+  },
+  {
+    "category": "Staff",
+    "appearance": "hickory",
+    "rgb": [
+      153,
+      117,
+      78
+    ],
+    "class": "BrogueFlavorStaffhickory"
+  },
+  {
+    "category": "Staff",
+    "appearance": "hemlock",
+    "rgb": [
+      162,
+      133,
+      88
+    ],
+    "class": "BrogueFlavorStaffhemlock"
+  },
+  {
+    "category": "Wand",
+    "appearance": "bronze",
+    "rgb": [
+      150,
+      98,
+      48
+    ],
+    "class": "BrogueFlavorWandbronze"
+  },
+  {
+    "category": "Wand",
+    "appearance": "steel",
+    "rgb": [
+      139,
+      151,
+      162
+    ],
+    "class": "BrogueFlavorWandsteel"
+  },
+  {
+    "category": "Wand",
+    "appearance": "brass",
+    "rgb": [
+      187,
+      148,
+      58
+    ],
+    "class": "BrogueFlavorWandbrass"
+  },
+  {
+    "category": "Wand",
+    "appearance": "pewter",
+    "rgb": [
+      132,
+      132,
+      123
+    ],
+    "class": "BrogueFlavorWandpewter"
+  },
+  {
+    "category": "Wand",
+    "appearance": "nickel",
+    "rgb": [
+      172,
+      168,
+      147
+    ],
+    "class": "BrogueFlavorWandnickel"
+  },
+  {
+    "category": "Wand",
+    "appearance": "copper",
+    "rgb": [
+      187,
+      104,
+      62
+    ],
+    "class": "BrogueFlavorWandcopper"
+  },
+  {
+    "category": "Wand",
+    "appearance": "aluminum",
+    "rgb": [
+      203,
+      210,
+      214
+    ],
+    "class": "BrogueFlavorWandaluminum"
+  },
+  {
+    "category": "Wand",
+    "appearance": "tungsten",
+    "rgb": [
+      80,
+      87,
+      92
+    ],
+    "class": "BrogueFlavorWandtungsten"
+  },
+  {
+    "category": "Wand",
+    "appearance": "titanium",
+    "rgb": [
+      116,
+      132,
+      147
+    ],
+    "class": "BrogueFlavorWandtitanium"
+  },
+  {
+    "category": "Wand",
+    "appearance": "cobalt",
+    "rgb": [
+      67,
+      94,
+      153
+    ],
+    "class": "BrogueFlavorWandcobalt"
+  },
+  {
+    "category": "Wand",
+    "appearance": "chromium",
+    "rgb": [
+      224,
+      228,
+      232
+    ],
+    "class": "BrogueFlavorWandchromium"
+  },
+  {
+    "category": "Wand",
+    "appearance": "silver",
+    "rgb": [
+      190,
+      196,
+      205
+    ],
+    "class": "BrogueFlavorWandsilver"
+  },
+  {
+    "category": "Ring",
+    "appearance": "diamond",
+    "rgb": [
+      224,
+      236,
+      244
+    ],
+    "class": "BrogueFlavorRingdiamond"
+  },
+  {
+    "category": "Ring",
+    "appearance": "opal",
+    "rgb": [
+      224,
+      198,
+      195
+    ],
+    "class": "BrogueFlavorRingopal"
+  },
+  {
+    "category": "Ring",
+    "appearance": "garnet",
+    "rgb": [
+      111,
+      27,
+      49
+    ],
+    "class": "BrogueFlavorRinggarnet"
+  },
+  {
+    "category": "Ring",
+    "appearance": "ruby",
+    "rgb": [
+      193,
+      27,
+      55
+    ],
+    "class": "BrogueFlavorRingruby"
+  },
+  {
+    "category": "Ring",
+    "appearance": "amethyst",
+    "rgb": [
+      133,
+      65,
+      178
+    ],
+    "class": "BrogueFlavorRingamethyst"
+  },
+  {
+    "category": "Ring",
+    "appearance": "topaz",
+    "rgb": [
+      224,
+      163,
+      36
+    ],
+    "class": "BrogueFlavorRingtopaz"
+  },
+  {
+    "category": "Ring",
+    "appearance": "onyx",
+    "rgb": [
+      20,
+      23,
+      27
+    ],
+    "class": "BrogueFlavorRingonyx"
+  },
+  {
+    "category": "Ring",
+    "appearance": "tourmaline",
+    "rgb": [
+      49,
+      128,
+      107
+    ],
+    "class": "BrogueFlavorRingtourmaline"
+  },
+  {
+    "category": "Ring",
+    "appearance": "sapphire",
+    "rgb": [
+      30,
+      68,
+      179
+    ],
+    "class": "BrogueFlavorRingsapphire"
+  },
+  {
+    "category": "Ring",
+    "appearance": "obsidian",
+    "rgb": [
+      35,
+      28,
+      40
+    ],
+    "class": "BrogueFlavorRingobsidian"
+  },
+  {
+    "category": "Ring",
+    "appearance": "malachite",
+    "rgb": [
+      45,
+      142,
+      75
+    ],
+    "class": "BrogueFlavorRingmalachite"
+  },
+  {
+    "category": "Ring",
+    "appearance": "aquamarine",
+    "rgb": [
+      88,
+      199,
+      213
+    ],
+    "class": "BrogueFlavorRingaquamarine"
+  },
+  {
+    "category": "Ring",
+    "appearance": "emerald",
+    "rgb": [
+      20,
+      161,
+      80
+    ],
+    "class": "BrogueFlavorRingemerald"
+  },
+  {
+    "category": "Ring",
+    "appearance": "jade",
+    "rgb": [
+      113,
+      172,
+      115
+    ],
+    "class": "BrogueFlavorRingjade"
+  },
+  {
+    "category": "Ring",
+    "appearance": "alexandrite",
+    "rgb": [
+      72,
+      119,
+      135
+    ],
+    "class": "BrogueFlavorRingalexandrite"
+  },
+  {
+    "category": "Ring",
+    "appearance": "agate",
+    "rgb": [
+      175,
+      143,
+      106
+    ],
+    "class": "BrogueFlavorRingagate"
+  },
+  {
+    "category": "Ring",
+    "appearance": "bloodstone",
+    "rgb": [
+      35,
+      78,
+      47
+    ],
+    "class": "BrogueFlavorRingbloodstone"
+  },
+  {
+    "category": "Ring",
+    "appearance": "jasper",
+    "rgb": [
+      162,
+      68,
+      41
+    ],
+    "class": "BrogueFlavorRingjasper"
+  }
+]

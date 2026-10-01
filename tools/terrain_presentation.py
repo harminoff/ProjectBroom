@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / 'assets/terrain/terrain_presentation.json'
 NATIVE = ROOT / 'src/gzdoom-bridge/terrain_presentation.generated.h'
 FALLING_VOID_SYMBOLS = {
-    'CHASM', 'CHASM_WITH_HIDDEN_BRIDGE', 'CHASM_WITH_HIDDEN_BRIDGE_ACTIVE',
+    'CHASM', 'CHASM_WITH_HIDDEN_BRIDGE',
     'HOLE', 'HOLE_GLOW', 'TRAP_DOOR',
 }
 

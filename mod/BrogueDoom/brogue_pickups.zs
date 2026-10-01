@@ -219,3 +219,25 @@ class BroguePickupC4096K00 : BroguePickupProxyBase {}
 class BroguePickupC4096K01 : BroguePickupProxyBase {}
 
 class BroguePickupC4096K02 : BroguePickupProxyBase {}
+
+class BroguePotioncrimson : BroguePickupProxyBase {}
+class BroguePotionscarlet : BroguePickupProxyBase {}
+class BroguePotionorange : BroguePickupProxyBase {}
+class BroguePotionyellow : BroguePickupProxyBase {}
+class BroguePotiongreen : BroguePickupProxyBase {}
+class BroguePotionblue : BroguePickupProxyBase {}
+class BroguePotionindigo : BroguePickupProxyBase {}
+class BroguePotionviolet : BroguePickupProxyBase {}
+class BroguePotionpuce : BroguePickupProxyBase {}
+class BroguePotionmauve : BroguePickupProxyBase {}
+class BroguePotionburgundy : BroguePickupProxyBase {}
+class BroguePotionturquoise : BroguePickupProxyBase {}
+class BroguePotionaquamarine : BroguePickupProxyBase {}
+class BroguePotiongray : BroguePickupProxyBase {}
+class BroguePotionpink : BroguePickupProxyBase {}
+class BroguePotionwhite : BroguePickupProxyBase {}
+class BroguePotionlavender : BroguePickupProxyBase {}
+class BroguePotiontan : BroguePickupProxyBase {}
+class BroguePotionbrown : BroguePickupProxyBase {}
+class BroguePotioncyan : BroguePickupProxyBase {}
+class BroguePotionblack : BroguePickupProxyBase {}

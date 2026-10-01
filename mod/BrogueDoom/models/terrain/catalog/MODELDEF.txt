@@ -1,0 +1,566 @@
+Model BrogueCatalogAlgae
+{
+ Path "models/terrain/catalog"
+ Model 0 "Algae.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogDenseAlgae
+{
+ Path "models/terrain/catalog"
+ Model 0 "DenseAlgae.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogWitheredFungus
+{
+ Path "models/terrain/catalog"
+ Model 0 "WitheredFungus.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogFungalForest
+{
+ Path "models/terrain/catalog"
+ Model 0 "FungalForest.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogIronDoor
+{
+ Path "models/terrain/catalog"
+ Model 0 "IronDoor.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogOpenIronDoor
+{
+ Path "models/terrain/catalog"
+ Model 0 "OpenIronDoor.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogAltar
+{
+ Path "models/terrain/catalog"
+ Model 0 "Altar.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogCommuteAltar
+{
+ Path "models/terrain/catalog"
+ Model 0 "CommuteAltar.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogResurrectAltar
+{
+ Path "models/terrain/catalog"
+ Model 0 "ResurrectAltar.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogSacrificeAltar
+{
+ Path "models/terrain/catalog"
+ Model 0 "SacrificeAltar.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogScorchedAltar
+{
+ Path "models/terrain/catalog"
+ Model 0 "ScorchedAltar.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogPedestal
+{
+ Path "models/terrain/catalog"
+ Model 0 "Pedestal.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogOpenCage
+{
+ Path "models/terrain/catalog"
+ Model 0 "OpenCage.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogCoffin
+{
+ Path "models/terrain/catalog"
+ Model 0 "Coffin.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogOpenCoffin
+{
+ Path "models/terrain/catalog"
+ Model 0 "OpenCoffin.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogDewarCaustic
+{
+ Path "models/terrain/catalog"
+ Model 0 "DewarCaustic.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogDewarConfusion
+{
+ Path "models/terrain/catalog"
+ Model 0 "DewarConfusion.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogDewarParalysis
+{
+ Path "models/terrain/catalog"
+ Model 0 "DewarParalysis.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogDewarMethane
+{
+ Path "models/terrain/catalog"
+ Model 0 "DewarMethane.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogBedroll
+{
+ Path "models/terrain/catalog"
+ Model 0 "Bedroll.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogBones
+{
+ Path "models/terrain/catalog"
+ Model 0 "Bones.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogRubble
+{
+ Path "models/terrain/catalog"
+ Model 0 "Rubble.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogJunk
+{
+ Path "models/terrain/catalog"
+ Model 0 "Junk.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogGlass
+{
+ Path "models/terrain/catalog"
+ Model 0 "Glass.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogDroppings
+{
+ Path "models/terrain/catalog"
+ Model 0 "Droppings.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogWeb
+{
+ Path "models/terrain/catalog"
+ Model 0 "Web.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogNet
+{
+ Path "models/terrain/catalog"
+ Model 0 "Net.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogVines
+{
+ Path "models/terrain/catalog"
+ Model 0 "Vines.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogArch
+{
+ Path "models/terrain/catalog"
+ Model 0 "Arch.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogCrystalPortal
+{
+ Path "models/terrain/catalog"
+ Model 0 "CrystalPortal.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogCrystalOff
+{
+ Path "models/terrain/catalog"
+ Model 0 "CrystalOff.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogCrystalOn
+{
+ Path "models/terrain/catalog"
+ Model 0 "CrystalOn.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogPipes
+{
+ Path "models/terrain/catalog"
+ Model 0 "Pipes.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogBurntPipes
+{
+ Path "models/terrain/catalog"
+ Model 0 "BurntPipes.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogBrazier
+{
+ Path "models/terrain/catalog"
+ Model 0 "Brazier.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogSkins
+{
+ Path "models/terrain/catalog"
+ Model 0 "Skins.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogFallenTorch
+{
+ Path "models/terrain/catalog"
+ Model 0 "FallenTorch.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogTrampledLeaves
+{
+ Path "models/terrain/catalog"
+ Model 0 "TrampledLeaves.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogTrampledFungus
+{
+ Path "models/terrain/catalog"
+ Model 0 "TrampledFungus.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueCatalogRopeBridge
+{
+ Path "models/terrain/catalog"
+ Model 0 "RopeBridge.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueExplorerBedroll
+{
+ Path "models/terrain/catalog"
+ Model 0 "Bedroll.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueExplorerBones
+{
+ Path "models/terrain/catalog"
+ Model 0 "Bones.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueExplorerJunk
+{
+ Path "models/terrain/catalog"
+ Model 0 "Junk.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueExplorerFallenTorch
+{
+ Path "models/terrain/catalog"
+ Model 0 "FallenTorch.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueExplorerSkins
+{
+ Path "models/terrain/catalog"
+ Model 0 "Skins.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+
+Model BrogueExplorerRubble
+{
+ Path "models/terrain/catalog"
+ Model 0 "Rubble.obj"
+ Skin 0 "graphics/BTATLAS.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+// BEGIN TERRAIN OVERLAYS
+Model BrogueOverlayBTLICHN
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTLICHNO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueOverlayBTHAY
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTHAYO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueOverlayBTBLOOD
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTBLOODO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueOverlayBTGREEN
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTGREENO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueOverlayBTPURPL
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTPURPLO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueOverlayBTACID
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTACIDO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueOverlayBTVOMIT
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTVOMITO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueOverlayBTURINE
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTURINEO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueOverlayBTENTRL
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTENTRLO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueOverlayBTPUDDL
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTPUDDLO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueOverlayBTECTO
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTECTOO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueOverlayBTASH
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTASHO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueOverlayBTEMBR
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTEMBRO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueOverlayBTGLYPH
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTGLYPHO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueOverlayBTSUN
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTSUNO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueOverlayBTSHADE
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTSHADEO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueOverlayBTGLOW
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTGLOWO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueOverlayBTCRUMB
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTCRUMBO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}
+Model BrogueOverlayBTFADE
+{
+ Path "models/terrain/catalog"
+ Model 0 "Overlay.obj"
+ Skin 0 "graphics/BTFADEO.png"
+ Scale 1 1 1
+ FrameIndex BRGD A 0 0
+}

@@ -52,6 +52,7 @@ static int runSaveSmoke(uint64_t seed, boolean travel) {
     unsigned long turns, rng;
     pos location;
     int hp, nutrition, progress;
+    char colors[sizeof(itemColors)],woods[sizeof(itemWoods)],metals[sizeof(itemMetals)],gems[sizeof(itemGems)],titles[sizeof(itemTitles)];
 #define SAVE_CHECK(c) do { if (!(c)) { fprintf(stderr, "Save line=%d: %s\n", __LINE__, recordingLastError()); return 1; } } while (0)
     brogue_bridge_shutdown();
     strcpy(currentFilePath, working);
@@ -91,6 +92,8 @@ static int runSaveSmoke(uint64_t seed, boolean travel) {
     hp = player.currentHP;
     nutrition = player.status[STATUS_NUTRITION];
     progress = player.status[STATUS_SEARCHING];
+    memcpy(colors,itemColors,sizeof(colors)); memcpy(woods,itemWoods,sizeof(woods));
+    memcpy(metals,itemMetals,sizeof(metals)); memcpy(gems,itemGems,sizeof(gems)); memcpy(titles,itemTitles,sizeof(titles));
     SAVE_CHECK(saveGameToPath(saved));
     rogue.gameHasEnded = false;
     currentFilePath[0] = '\0';
@@ -104,6 +107,8 @@ static int runSaveSmoke(uint64_t seed, boolean travel) {
     SAVE_CHECK(rogue.playerTurnNumber == turns && player.loc.x == location.x && player.loc.y == location.y);
     SAVE_CHECK(player.currentHP == hp && player.status[STATUS_NUTRITION] == nutrition && player.status[STATUS_SEARCHING] == progress);
     SAVE_CHECK(finishSavedGameLoad(resumed, false));
+    SAVE_CHECK(!memcmp(colors,itemColors,sizeof(colors)) && !memcmp(woods,itemWoods,sizeof(woods))
+        && !memcmp(metals,itemMetals,sizeof(metals)) && !memcmp(gems,itemGems,sizeof(gems)) && !memcmp(titles,itemTitles,sizeof(titles)));
     executeKeystroke(REST_KEY, false, false);
     SAVE_CHECK(rand_range(0, 1000000) == rng);
     freeEverything();

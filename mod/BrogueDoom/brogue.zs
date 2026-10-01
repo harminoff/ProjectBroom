@@ -293,9 +293,38 @@ class BrogueWorldHandler : EventHandler
     int Height;
     int ExpectedCells;
     int UDMFSector;
+    int LastMusicTrack;
 
     Array<Sector> CellSectors;
     bool MapIsValid;
+
+    override void OnRegister()
+    {
+        Super.OnRegister();
+        LastMusicTrack = -1;
+    }
+
+    void PlayRandomMusic()
+    {
+        // This named stream is presentation-only. It never crosses the bridge
+        // or consumes Brogue CE's authoritative gameplay RNG.
+        int track = Random[ProjectBroomMusic](0, 5);
+        if (track == LastMusicTrack)
+            track = (track + 1) % 6;
+        LastMusicTrack = track;
+
+        string musicName;
+        switch (track)
+        {
+            case 0: musicName = "PBMUS01"; break;
+            case 1: musicName = "PBMUS02"; break;
+            case 2: musicName = "PBMUS03"; break;
+            case 3: musicName = "PBMUS04"; break;
+            case 4: musicName = "PBMUS05"; break;
+            default: musicName = "PBMUS06"; break;
+        }
+        S_ChangeMusic(musicName);
+    }
 
     void ReportError(string message)
     {
@@ -395,6 +424,7 @@ class BrogueWorldHandler : EventHandler
 
     override void WorldLoaded(WorldEvent event)
     {
+        PlayRandomMusic();
         Width = 79;
         Height = 29;
         ExpectedCells = 79 * 29;

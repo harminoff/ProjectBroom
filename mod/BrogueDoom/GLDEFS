@@ -22,6 +22,15 @@ flickerlight BROGUE_HAUNTED_TORCH_LIGHT
 object BrogueTerrainTorchFlame { frame BRGDA { light BROGUE_TORCH_LIGHT } }
 object BrogueTerrainHauntedTorchFlame { frame BRGDA { light BROGUE_HAUNTED_TORCH_LIGHT } }
 
+pointlight BROGUE_SUNLIGHT
+{
+ color 0.55 0.44 0.28
+ size 28
+ attenuate 1
+ noshadowmap 1
+}
+object BrogueTerrainSunRay { frame BRGDA { light BROGUE_SUNLIGHT } }
+
 material texture RRGCAVE { shader "shaders/search-reveal.fp" disablealphatest }
 material texture RRGWET { shader "shaders/search-reveal.fp" disablealphatest }
 material texture RRGMASON { shader "shaders/search-reveal.fp" disablealphatest }
@@ -114,3 +123,234 @@ material flat RRGSLDG { shader "shaders/search-floor-reveal.fp" disablealphatest
 material flat RRGMOLT { shader "shaders/search-floor-reveal.fp" disablealphatest }
 
 #include "shaders/shoreline/gldefs.txt"
+// Sigils pulse independently of Brogue turns; no world light or gameplay state.
+material "graphics/BRGCONJ.png"
+{
+    shader "shaders/conjurer-sigils.fp"
+}
+
+// Source-described golden eyes; only the iris atlas tile is emissive.
+material "graphics/BRGMYST.png"
+{
+    shader "shaders/mystic-eyes.fp"
+}
+
+// Toad slime is a surface sheen lit by existing lights, never an emitted effect.
+material "graphics/BRGTOAD.png"
+{
+    normal "graphics/BRGTOAD_N.png"
+    specular "graphics/BRGTOAD_S.png"
+    glossiness 28
+    specularlevel 0.35
+}
+
+// Pink gel reflects existing scene light; it never emits light or a hazard.
+material "graphics/BRGPINKJ.png"
+{
+    normal "graphics/BRGPINKJ_N.png"
+    specular "graphics/BRGPINKJ_S.png"
+    glossiness 38
+    specularlevel 0.48
+}
+
+// Acid film uses scene light only; corrosion remains Brogue-owned.
+material "graphics/BRGACID.png"
+{
+    normal "graphics/BRGACID_N.png"
+    specular "graphics/BRGACID_S.png"
+    glossiness 38
+    specularlevel 0.48
+}
+
+// Acidic jelly film reflects scene light only; corrosion and cloning stay Brogue-owned.
+material "graphics/BRGACJLY.png"
+{
+    normal "graphics/BRGACJLY_N.png"
+    specular "graphics/BRGACJLY_S.png"
+    glossiness 42
+    specularlevel 0.52
+}
+
+// Centipede chitin uses existing scene light, never emitted venom.
+material "graphics/BRGCENT.png"
+{
+    normal "graphics/BRGCENT_N.png"
+    specular "graphics/BRGCENT_S.png"
+    glossiness 30
+    specularlevel 0.35
+}
+
+material "graphics/BRGSPID.png"
+{
+    normal "graphics/BRGSPID_N.png"
+    specular "graphics/BRGSPID_S.png"
+    glossiness 24
+    specularlevel 0.35
+}
+
+// Ethereal blue flame: mesh emission only, no dynamic light.
+material "graphics/BRGWISP.png"
+{
+    shader "shaders/wisp-flame.fp"
+}
+
+// Troll phlegm reflects existing lights; no regeneration or emitted effect.
+material "graphics/BRGTROLL.png"
+{
+    normal "graphics/BRGTROLL_N.png"
+    specular "graphics/BRGTROLL_S.png"
+    glossiness 32
+    specularlevel 0.42
+}
+
+// Salamander opaque scales and mesh-local flame emission.
+material "graphics/BRGSALM.png"
+{
+    shader "shaders/salamander-flame.fp"
+}
+
+// Flame turret opaque mechanism with mesh-local pilot, ember and blast emission.
+material "graphics/BRGFTUR.png"
+{
+    shader "shaders/flame-turret-fire.fp"
+}
+
+
+// Dar battlemage ember eyes and heated hands: painted-key fullbright only, no dynamic light.
+material "graphics/BRGDBMG.png"
+{
+    shader "shaders/dar-battlemage-embers.fp"
+}
+
+// Black jelly ink reflects existing scene light with a view-dependent sheen;
+// no emission. Its caustic attacks and cloning stay Brogue-owned.
+material "graphics/BRGBKJLY.png"
+{
+    shader "shaders/black-jelly-sheen.fp"
+    normal "graphics/BRGBKJLY_N.png"
+    specular "graphics/BRGBKJLY_S.png"
+    glossiness 64
+    specularlevel 1.1
+}
+
+// Phantom: additive fullbright ectoplasm with a view-dependent outline glow.
+material "graphics/BRGPHANT.png"
+{
+    shader "shaders/phantom-veil.fp"
+}
+
+// Golem carved stone reflects existing lights only; glyphs are incised, never emissive.
+material "graphics/BRGGOLEM.png"
+{
+    normal "graphics/BRGGOLEM_N.png"
+    specular "graphics/BRGGOLEM_S.png"
+    glossiness 10
+    specularlevel 0.22
+}
+
+// Spectral blade: additive fullbright conjured light with a view-dependent rim and sheen.
+material "graphics/BRGSBLAD.png"
+{
+    shader "shaders/spectral-blade-glow.fp"
+}
+
+// Spectral sword (spectral image): additive fullbright crimson projection with a rim glow.
+material "graphics/BRGSSWRD.png"
+{
+    shader "shaders/spectral-sword-glow.fp"
+}
+
+// Phylactery: fullbright lich-green soul gem only. Regeneration stays Brogue-owned.
+material "graphics/BRGPHYL.png"
+{
+    shader "shaders/phylactery-gem.fp"
+}
+
+// Eldritch totem: fullbright glyph channels, ichor core and spectral blades.
+// Summoning and the summoning circle stay Brogue-owned.
+material "graphics/BRGELDT.png"
+{
+    shader "shaders/eldritch-totem-glyphs.fp"
+}
+
+// Mirrored totem: view-dependent mirror glass and a fullbright flash crystal.
+// Reflection, beckoning and glyph reactions stay Brogue-owned.
+material "graphics/BRGMIRT.png"
+{
+    shader "shaders/mirrored-totem-mirror.fp"
+}
+
+// Phoenix egg: fullbright membrane, yolk and embers; ash and twigs lit.
+// Hatching and the newborn phoenix stay Brogue-owned.
+material "graphics/BRGPHEGG.png"
+{
+    shader "shaders/phoenix-egg-membrane.fp"
+}
+
+// Lich phylactery gem and eye pinpoints: painted-key fullbright only, no dynamic light.
+material "graphics/BRGLICH.png"
+{
+    shader "shaders/lich-phylactery.fp"
+}
+
+// Stone guardian: carved sandstone and basalt reflect existing lights only; no glow.
+material "graphics/BRGSGRD.png"
+{
+    normal "graphics/BRGSGRD_N.png"
+    specular "graphics/BRGSGRD_S.png"
+    glossiness 10
+    specularlevel 0.22
+}
+
+// Winged guardian: carved marble reflects existing lights only; no glow.
+material "graphics/BRGWGRD.png"
+{
+    normal "graphics/BRGWGRD_N.png"
+    specular "graphics/BRGWGRD_S.png"
+    glossiness 12
+    specularlevel 0.26
+}
+
+// Guardian spirit: fullbright additive spectral knight; Brogue keeps its own light. No dynamic light.
+material "graphics/BRGGSPR.png"
+{
+    shader "shaders/guardian-spirit-glow.fp"
+}
+
+// Sentinel: source-described gleaming warding crystal; only its atlas region is fullbright. No dynamic light.
+material "graphics/BRGSNTL.png"
+{
+    shader "shaders/sentinel-crystal.fp"
+}
+
+// Dragon breath flame cells: painted-region fullbright only, no dynamic light.
+material "graphics/BRGDRGN.png"
+{
+    shader "shaders/dragon-flame.fp"
+}
+
+// Flamedancer living fire: fullbright shader only, no dynamic light.
+material "graphics/BRGFDANC.png"
+{
+    shader "shaders/flamedancer-fire.fp"
+}
+
+// Ifrit: painted-key ember eyes, blade edges and storm embers only; no dynamic light.
+material "graphics/BRGIFRIT.png"
+{
+    shader "shaders/ifrit-embers.fp"
+}
+// Phoenix: fullbright flame plumes, wing-tip tongues, crest, embers and eyes;
+// body plumage, horn, talons and ash lit. Flight, fire immunity, the egg and
+// death outcomes stay Brogue-owned.
+material "graphics/BRGPHNX.png"
+{
+    shader "shaders/phoenix-fire.fp"
+}
+// Warden of Yendor: only texels inside the painted violet-magenta light key (chest seam,
+// visor slit, forearm strips, rune lines) render fullbright; the plate stays ordinarily
+// lit. No dynamic light, and invulnerability, hunt and damage stay Brogue-owned.
+material "graphics/BRGWRDN.png"
+{
+    shader "shaders/warden-yendor-light.fp"
+}

@@ -177,6 +177,9 @@ Texture "BRGLFALL", 1254, 1254
 	Patch "BRGLAVA", 0, 0
 }
 
+// Animated molten lip used where lava steps into a different floor family.
+Texture "BRGMLIP", 64, 128 { WorldPanning Patch "PMLIP000", 0, 0 }
+
 // Near-black world-panned shaft wall. It deliberately retains only a trace
 // of blue-gray grain so a deep chasm reads as volume rather than a missing
 // texture or an unlit rectangular sector.
@@ -219,6 +222,14 @@ Flat "BRGCEIL", 1254, 1254
 	XScale 9.796875
 	YScale 9.796875
 	Patch "BRGROCK", 0, 0
+}
+
+// Localized first-floor break above an authoritative SUNLIGHT_POOL patch.
+Flat "BRGSUNHO", 128, 128
+{
+	XScale 2.000000
+	YScale 2.000000
+	Patch "graphics/BRGSUNHO.png", 0, 0
 }
 
 Flat "BRGMOSS", 1254, 1254
@@ -1962,3 +1973,168 @@ Flat "RRGMOLT", 1254, 1254
 }
 
 #include "shaders/shoreline/textures.txt"
+
+// BEGIN TERRAIN CATALOG MATERIALS
+Texture "BTCRPT", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTCRPT.png", 0, 0
+}
+Texture "BTBURN", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTBURN.png", 0, 0
+}
+Texture "BTMARB", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTMARB.png", 0, 0
+}
+Texture "BTOBSD", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTOBSD.png", 0, 0
+}
+Texture "BTBRIM", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTBRIM.png", 0, 0
+}
+Texture "BTCOOL", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTCOOL.png", 0, 0
+}
+Texture "BTMUD", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTMUD.png", 0, 0
+}
+Texture "BTLICHN", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTLICHN.png", 0, 0
+}
+Texture "BTHAY", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTHAY.png", 0, 0
+}
+Texture "BTBLOOD", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTBLOOD.png", 0, 0
+}
+Texture "BTGREEN", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTGREEN.png", 0, 0
+}
+Texture "BTPURPL", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTPURPL.png", 0, 0
+}
+Texture "BTACID", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTACID.png", 0, 0
+}
+Texture "BTVOMIT", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTVOMIT.png", 0, 0
+}
+Texture "BTURINE", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTURINE.png", 0, 0
+}
+Texture "BTENTRL", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTENTRL.png", 0, 0
+}
+Texture "BTPUDDL", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTPUDDL.png", 0, 0
+}
+Texture "BTECTO", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTECTO.png", 0, 0
+}
+Texture "BTASH", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTASH.png", 0, 0
+}
+Texture "BTEMBR", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTEMBR.png", 0, 0
+}
+Texture "BTGLYPH", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTGLYPH.png", 0, 0
+}
+Texture "BTSUN", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTSUN.png", 0, 0
+}
+Texture "BTSHADE", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTSHADE.png", 0, 0
+}
+Texture "BTGLOW", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTGLOW.png", 0, 0
+}
+Texture "BTCRUMB", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTCRUMB.png", 0, 0
+}
+Texture "BTFADE", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTFADE.png", 0, 0
+}
+Texture "BTCRYST", 128, 128
+{
+ XScale 2
+ YScale 2
+ Patch "graphics/BTCRYST.png", 0, 0
+}
+// END TERRAIN CATALOG MATERIALS

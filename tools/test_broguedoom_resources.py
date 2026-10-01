@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import Counter
+import hashlib
 import json
 import re
 import struct
@@ -14,6 +15,7 @@ from PIL import Image, ImageChops, ImageStat
 ROOT = Path(__file__).resolve().parent.parent
 REGISTRY = ROOT / "assets" / "terrain" / "broguedoom_cave_registry.json"
 GRAPHICS = ROOT / "mod" / "BrogueDoom" / "graphics"
+MUSIC = ROOT / "mod" / "BrogueDoom" / "music"
 TEXTURES = ROOT / "mod" / "BrogueDoom" / "TEXTURES.txt"
 ANIMDEFS = ROOT / "mod" / "BrogueDoom" / "ANIMDEFS"
 MODELDEF = ROOT / "mod" / "BrogueDoom" / "MODELDEF"
@@ -39,6 +41,39 @@ FRONTEND = ROOT / "src" / "gzdoom-bridge" / "brogue_bridge_frontend.cpp"
 
 
 class BrogueDoomResourceTests(unittest.TestCase):
+    def test_cc0_music_is_packaged_and_randomized_cosmetically(self) -> None:
+        expected_hashes = {
+            "PBMUS01.ogg": "18da6d6c4492d744f5ebde5bb128a636770df4197d2d4a0b5e8d65df6e27f57b",
+            "PBMUS02.ogg": "3e364b94dc1fceff13d8d067af9f034f297cfa5d15ff9cecfbe02fd857801dce",
+            "PBMUS03.ogg": "d010bb0c3f9e9f855e0ce36486f30673db414739c02d62344398197927fdc24a",
+            "PBMUS04.ogg": "5c841ef1a7bacd2a038801ecee0741e200d1cf1cd08f36a6a89cce95bcfb6a8a",
+            "PBMUS05.ogg": "df491823e4877371c34dbda4e9321cd83a4a14fa7573cee0ebca1ae423b70e6e",
+            "PBMUS06.mp3": "631e2b916f5ae45923d589f45dd63fbaa8f23d7344d2bc5e76ea0be94e478b34",
+        }
+        self.assertEqual(
+            sorted(path.name for path in MUSIC.glob("PBMUS*.*")),
+            sorted(expected_hashes),
+        )
+        for name, expected_hash in expected_hashes.items():
+            data = (MUSIC / name).read_bytes()
+            self.assertGreater(len(data), 1_000_000, name)
+            self.assertEqual(hashlib.sha256(data).hexdigest(), expected_hash, name)
+
+        credits = (MUSIC / "CREDITS.md").read_text(encoding="utf-8")
+        self.assertEqual(credits.count("| CC0-1.0 |"), 6)
+        zscript = BROGUE_ZSCRIPT.read_text(encoding="utf-8")
+        self.assertIn("Random[ProjectBroomMusic](0, 5)", zscript)
+        self.assertIn("track == LastMusicTrack", zscript)
+        for index in range(1, 7):
+            self.assertIn(f'"PBMUS{index:02d}"', zscript)
+
+        source_launcher = (ROOT / "scripts" / "launch-source-bridge.ps1").read_text(encoding="utf-8")
+        legacy_launcher = (ROOT / "scripts" / "launch-seed.ps1").read_text(encoding="utf-8")
+        player_launcher = (ROOT / "tools" / "BrogueDoomLauncher" / "Program.cs").read_text(encoding="utf-8")
+        self.assertIn("if ($NoSound)", source_launcher)
+        self.assertIn("-NoSound:$NoSound", legacy_launcher)
+        self.assertNotIn('"-height", "720", "-nosound"', player_launcher)
+
     def test_sprite_declarations_are_unique(self) -> None:
         declarations = TEXTURES.read_text(encoding="utf-8")
         sprite_names = re.findall(r'^Sprite\s+"([A-Z0-9]+)"', declarations, re.MULTILINE | re.IGNORECASE)
@@ -138,6 +173,9 @@ class BrogueDoomResourceTests(unittest.TestCase):
         self.assertGreater((GRAPHICS / "PBRCVUP.png").stat().st_size, 1000, "PBRCVUP.png")
         self.assertGreater((GRAPHICS / "PBRMSUP.png").stat().st_size, 1000, "PBRMSUP.png")
         self.assertGreater((GRAPHICS / "BRGLAVA_BM.png").stat().st_size, 1000, "BRGLAVA_BM.png")
+        for frame in range(8):
+            name = f"PMLIP{frame:03d}.png"
+            self.assertGreater((GRAPHICS / name).stat().st_size, 1000, name)
         for prefix in ("PBWFL", "PBSFL"):
             for frame in range(8):
                 name = f"{prefix}{frame:03d}.png"
@@ -183,6 +221,9 @@ class BrogueDoomResourceTests(unittest.TestCase):
         self.assertIn("CVAR(Int, brg_fx_quality, 1", frontend)
         self.assertIn("void SyncCellEffects()", frontend)
         self.assertIn("void SpawnBridgeEventEffects", frontend)
+        self.assertIn("void DrawHitMarker", frontend)
+        self.assertIn("HitMarkerUntilTic", frontend)
+        self.assertIn("event.targetEntityId == 1", frontend)
         self.assertIn('Option "Effects Quality", "brg_fx_quality"', menu)
 
     def test_registry_assets_are_declared(self) -> None:
@@ -196,9 +237,11 @@ class BrogueDoomResourceTests(unittest.TestCase):
 
     def test_liquid_floors_warp_and_falls_animate_directionally(self) -> None:
         animdefs = ANIMDEFS.read_text(encoding="utf-8").upper()
-        for name in ("BRGWATR", "BRGSLDG", "BRGMOLT", "BRGLFALL"):
+        for name in ("BRGWATR", "BRGSLDG", "BRGMOLT", "BRGLFALL", "BRGMLIP"):
             self.assertIn(name, animdefs)
         self.assertNotIn("WARP TEXTURE BRGWFALL", animdefs)
+        for frame in range(1, 8):
+            self.assertIn(f"PIC PMLIP{frame:03d} TICS", animdefs)
         for base, frame_prefix in (
             ("BRGWFALL", "BRGWF"),
             ("BRGSFALL", "BRGSF"),
@@ -346,6 +389,31 @@ class BrogueDoomResourceTests(unittest.TestCase):
         self.assertEqual((min(ys), max(ys)), (0.0, 124.0))
         self.assertEqual((min(zs), max(zs)), (-30.0, 30.0))
 
+    def test_explorer_set_pieces_are_inert_original_dressing(self) -> None:
+        mapinfo = (ROOT / "mod" / "BrogueDoom" / "MAPINFO").read_text(encoding="utf-8")
+        catalog_zscript = (ROOT / "mod" / "BrogueDoom" / "brogue_terrain_catalog.zs").read_text(encoding="utf-8")
+        terrain_zscript = (ROOT / "mod" / "BrogueDoom" / "brogue_terrain.zs").read_text(encoding="utf-8")
+        catalog_modeldef = (ROOT / "mod" / "BrogueDoom" / "models" / "terrain" / "catalog" / "MODELDEF.txt").read_text(encoding="utf-8")
+        classes = (
+            (15030, "BrogueExplorerBedroll", "Bedroll.obj"),
+            (15031, "BrogueExplorerBones", "Bones.obj"),
+            (15032, "BrogueExplorerJunk", "Junk.obj"),
+            (15033, "BrogueExplorerFallenTorch", "FallenTorch.obj"),
+            (15034, "BrogueExplorerSkins", "Skins.obj"),
+            (15035, "BrogueExplorerRubble", "Rubble.obj"),
+        )
+        for editor_number, class_name, model_name in classes:
+            self.assertIn(f"{editor_number} = {class_name}", mapinfo)
+            self.assertIn(f"class {class_name} : BrogueTerrainStone", catalog_zscript)
+            self.assertIn(f"Model {class_name}", catalog_modeldef)
+            self.assertIn(f'Model 0 "{model_name}"', catalog_modeldef)
+        base = terrain_zscript[terrain_zscript.index("class BrogueTerrainStone"):terrain_zscript.index("class BrogueTerrainWood")]
+        for flag in ("+NOINTERACTION", "+NOBLOCKMAP", "+NOGRAVITY"):
+            self.assertIn(flag, base)
+        license_text = (ROOT / "assets" / "terrain" / "CATALOG-LICENSE.md").read_text(encoding="utf-8")
+        self.assertIn("explorer set pieces", license_text)
+        self.assertIn("CC0-1.0", license_text)
+
         barricade = BARRICADE_MODEL.read_text(encoding="ascii")
         barricade_vertices = [
             tuple(float(value) for value in line.split()[1:])
@@ -420,7 +488,7 @@ class BrogueDoomResourceTests(unittest.TestCase):
         self.assertIn('#include "models/pickups/MODELDEF.txt"', MODELDEF.read_text(encoding="utf-8"))
         zscript = PICKUP_ZSCRIPT.read_text(encoding="utf-8")
         self.assertIn("class BroguePickupProxyBase : Actor", zscript)
-        self.assertEqual(zscript.count(" : BroguePickupProxyBase {}"), 105)
+        self.assertEqual(zscript.count(" : BroguePickupProxyBase {}"), 126)
         frontend = FRONTEND.read_text(encoding="utf-8")
         self.assertIn("return item.kind < 0 ? 0 : item.kind;", frontend)
         self.assertIn("if (!proxy->spawnAttempted)", frontend)
@@ -428,7 +496,7 @@ class BrogueDoomResourceTests(unittest.TestCase):
     def test_complete_brogue_monster_roster_is_generated(self) -> None:
         catalog = json.loads(MONSTER_CATALOG.read_text(encoding="utf-8"))
         registry = json.loads(MONSTER_REGISTRY.read_text(encoding="utf-8"))
-        self.assertEqual(catalog["bridgeApiVersion"], 20)
+        self.assertEqual(catalog["bridgeApiVersion"], 24)
         self.assertEqual(catalog["count"], 68)
         self.assertEqual(registry["nonPlayerModelCount"], 67)
         self.assertEqual(registry["presentationModelCount"], 68)
@@ -522,7 +590,7 @@ class BrogueDoomResourceTests(unittest.TestCase):
                       "describeLocation(buffer", "monsterDetails(buffer", "itemDetails(buffer",
                       "copyStyledLookText"):
             self.assertIn(token, adapter)
-        for token in ("DrawStatusRail", "DrawBrogueMinimap", "DrawInventory",
+        for token in ("DrawStatusRail", "DrawBrogueMinimap", "DrawEnemyDirectionIndicators", "DrawInventory",
                       "DrawWeaponMenu", "WrapTextPixels", "HandleInventoryInput",
                       "DrawLookOverlay", "RefreshLook", "CycleLookTarget",
                       "WrapTextRanges", "DrawStyledLookText", "LookSpanColor",
@@ -579,9 +647,8 @@ class BrogueDoomResourceTests(unittest.TestCase):
             self.assertIn(token, mapinfo)
         self.assertTrue((ROOT / "mod" / "BrogueDoom" / "graphics" / "TITLEPIC.png").is_file())
         for token in ('ListMenu "MainMenu"', "Size 640, 400", 'Font "BrogueMenu", "Untranslated", "Gold"',
-                      'TextItem "NEW GAME"',
-                      '"BrogueNewGame"', 'openmenu PlayerclassMenu', 'brg_new_game_seeded', 'brg_abandon',
-                      'TextItem "OPTIONS"', 'TextItem "QUIT"'):
+                      'TextItem "NEW GAME", "n", "BrogueNewGame"',
+                      'openmenu PlayerclassMenu', 'brg_new_game_seeded', 'brg_abandon', 'TextItem "OPTIONS"', 'TextItem "QUIT"'):
             self.assertIn(token, menudef)
         self.assertNotIn('TextItem "LOAD GAME"', menudef)
         for token in ("[switch]$RandomSeed", "RandomNumberGenerator", "--export-dungeon-json",

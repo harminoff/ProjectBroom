@@ -78,9 +78,20 @@ coordinate; they never affect collision or simulation. Use
 `scripts/launch-seed.ps1 -NoSound` on systems whose OpenAL device is not
 available during development.
 
+Dry rooms also receive a few deterministic, wall-side explorer traces:
+abandoned bedroll camps, skeletal remains, discarded supplies, and creature
+dens. These actors are decorative, non-blocking, non-interactive, and never
+represent loot. Their isolated hash-based layout does not consume Brogue RNG.
+
 Water, sludge, lava, and waterfall materials use presentation-only GZDoom
 warping declared in the root `ANIMDEFS`. Brogue CE remains authoritative for
 their identity, movement rules, and runtime state.
+
+Each dungeon floor starts one of six CC0 cave and dungeon ambience tracks at
+random. Immediate repeats are avoided while the event handler remains active.
+The named `ProjectBroomMusic` random stream is presentation-only and never
+feeds data into Brogue CE. Track provenance, source links, hashes, and license
+details are recorded in `music/CREDITS.md`.
 
 For parity testing, run `scripts\launch-comparison.cmd -Seed 1`. This opens an
 exact-commit graphical Brogue build beside GZDoom. Numpad 1-9 supplies the same

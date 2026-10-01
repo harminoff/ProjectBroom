@@ -41,11 +41,12 @@ class TerrainAnimationTests(unittest.TestCase):
 
     def test_assets_are_byte_identical_and_have_valid_faces(self):
         def hashes():
-            files=list((ROOT/'mod/BrogueDoom/models/terrain').glob('*'))
+            files=[p for p in (ROOT/'mod/BrogueDoom/models/terrain').rglob('*') if p.is_file()]
+            files += list((ROOT/'mod/BrogueDoom/graphics').glob('BT*.png'))
             files += [ROOT/'mod/BrogueDoom/graphics'/n for n in ('BRGICE.png','BRGTFLAM.png','BRGTCLOUD.png','BRGSTMAR.png','BRGSTCRK.png','BRGSTBRK.png','BRGSTOBS.png','BRGTORCH.png','BRGTORFL.png','BRGTHAFL.png','BRGIRON.png')]
             return {str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
         generate(); before=hashes(); generate(); self.assertEqual(before,hashes())
-        for path in (ROOT/'mod/BrogueDoom/models/terrain').glob('*.obj'):
+        for path in (ROOT/'mod/BrogueDoom/models/terrain').rglob('*.obj'):
             lines=path.read_text().splitlines()
             vertices=sum(line.startswith('v ') for line in lines)
             for line in lines:

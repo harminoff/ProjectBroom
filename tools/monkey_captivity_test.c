@@ -15,7 +15,8 @@ int main(int argc,char **argv) {
  BrogueBridgeResult (*get)(BrogueBridgeState*)=(void*)GetProcAddress(dll,"brogue_bridge_get_state");
  BrogueBridgeResult (*action)(BrogueBridgeAction,BrogueBridgeTurnResult*)=(void*)GetProcAddress(dll,"brogue_bridge_perform_action");
  BrogueBridgeResult (*command)(const BrogueBridgeCommand*,BrogueBridgeTurnResult*)=(void*)GetProcAddress(dll,"brogue_bridge_perform_command");
- assert(start&&get&&action&&command);assert(start(2)==BROGUE_BRIDGE_OK);
+ BrogueBridgeResult (*respond)(const BrogueBridgeInteractionResponse*,BrogueBridgeTurnResult*)=(void*)GetProcAddress(dll,"brogue_bridge_respond");
+ assert(start&&get&&action&&command&&respond);assert(start(2)==BROGUE_BRIDGE_OK);
  int path[]={6,6,7,7,7,7,0,0,0,0,0,0,0,0,0,6};
  for(int i=0;i<16;i++)assert(action(path[i],&result)==BROGUE_BRIDGE_OK);
  assert(get(&state)==BROGUE_BRIDGE_OK);uint64_t revision=state.revision,hash=state.stateHash,turn=state.turn;
@@ -35,7 +36,7 @@ int main(int argc,char **argv) {
  }
  assert(manacleCount>0);
  for(int retry=0;retry<2;retry++) {
-  assert(action(BROGUE_ACTION_MOVE_W,&result)==BROGUE_BRIDGE_CONFIRMATION_REQUIRED);
+  assert(action(BROGUE_ACTION_MOVE_W,&result)==BROGUE_BRIDGE_INTERACTION_REQUIRED);assert(result.interaction.kind==BROGUE_INTERACTION_CONFIRM);BrogueBridgeInteractionResponse no={0};no.apiVersion=BROGUE_BRIDGE_API_VERSION;no.token=result.interaction.token;no.expectedRevision=revision;no.answer=BROGUE_ANSWER_NO;assert(respond(&no,&result)==BROGUE_BRIDGE_OK);assert(!result.consumedTurn);
   assert(get(&state)==BROGUE_BRIDGE_OK);assert(state.revision==revision&&state.stateHash==hash&&state.turn==turn);
  }
  BrogueBridgeCommand c={0};c.apiVersion=BROGUE_BRIDGE_API_VERSION;c.type=BROGUE_COMMAND_ACTION;c.action=BROGUE_ACTION_MOVE_W;c.expectedRevision=revision-1;c.confirmed=1;

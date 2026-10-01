@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `dragon`.
-- Authored silhouette dimensions: 62 / 58 / 100 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-dragon`.
+- Authored silhouette dimensions: 55.3107 / 39.1386 / 50.5965 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: serpent, scales, jaws, claws.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/50_dragon.obj).
-- [Editable Blender source](../../assets/monsters/sources/50_dragon.blend).
+- Visual construction cues: winged four-legged emerald dragon, long swept-back horns and a hinged fanged jaw, amber slit-pupil eyes, tall S-curved neck carrying the horned head high, pale yellow-ochre belly plates and a ridge of dorsal spines, directional overlapping scales, dark green back and brighter flanks, olive membrane wings with bone fingers folded back beside the body, coiled tail ending in a blade, fullbright orange fire breath with a wide, low, wings-flared pose, slumped death with wings draped on the floor.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/50_dragon.iqm).
+- [Editable Blender source](../../assets/monsters/dragon/dragon-animated.blend).
+- [Animation manifest](../../assets/monsters/dragon/animation.json); 48 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Dragon authoring and actual verification](../dragon-animation.md).
 
 ## Brogue encounter-table references
 
@@ -42,6 +45,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `worm`.
-- Authored silhouette dimensions: 60 / 58 / 94 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-underworm`.
+- Authored silhouette dimensions: 55.6958 / 55.1619 / 62.1957 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: coil, segments, maw.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/36_underworm.obj).
-- [Editable Blender source](../../assets/monsters/sources/36_underworm.blend).
+- Visual construction cues: huge legless annulated worm coiled on the floor, about thirty painted ridge-and-groove segments with wet highlights, pale saddle band behind a blunt swollen head, round toothed maw: lip ring, outer and inner tooth rings, dark throat, hinged lower jaw that opens wide; no eyes, salmon-pink flanks, pale cream belly, dark mauve back.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/36_underworm.iqm).
+- [Editable Blender source](../../assets/monsters/underworm/underworm-animated.blend).
+- [Animation manifest](../../assets/monsters/underworm/animation.json); 40 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Underworm authoring and actual verification](../underworm-animation.md).
 
 ## Brogue encounter-table references
 
@@ -38,6 +41,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

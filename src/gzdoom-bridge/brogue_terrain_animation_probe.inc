@@ -113,7 +113,15 @@ void ApplyTerrainProbe(const BrogueBridgeTerrainAppearance &a) {
 }
 
 int TerrainProbeEnd = 23;
+void TickTerrainOverlayProbe();
+void TickWallFadeProbe();
+void TickPotionColorProbe();
+void TickFlavorProbe();
 void TickTerrainAnimationProbe() {
+    TickTerrainOverlayProbe();
+    TickWallFadeProbe();
+    TickPotionColorProbe();
+    TickFlavorProbe();
     if(TerrainProbeStage<0 || !TerrainReady || primaryLevel->maptime<35 || primaryLevel->maptime<TerrainProbeNext) return;
     const int now=primaryLevel->maptime;
     if(!TerrainProbeHash) {
@@ -248,4 +256,244 @@ CCMD(brg_bloodwort_benchmark) {
     TerrainProbePhase=0; TerrainProbeNext=0; TerrainProbeHash=0;
     TerrainFrameTimes.clear(); TerrainUpdateTimes.clear(); TerrainDenseTimes.clear();
     TerrainDense=false; TerrainPreviousFrame={};
+}
+
+// Explicit renderer-only catalog review. Builds copied presentation state in a
+// small gallery; the Brogue session and its terrain are never modified.
+CCMD(brg_catalog_tile) {
+    if (!Started || !TerrainReady || argv.argc()<3) return;
+    const int tile=atoi(argv[1]);
+    if (tile<=0 || tile>=int(std::size(TerrainStyles))) return;
+    BrogueBridgeTerrainAppearance a{};
+    a.knowledge=BROGUE_TERRAIN_VISIBLE; a.structure=TT_FLOOR;
+    if (!strcmp(argv[2],"deck")) { a.deck=tile; a.flags=BROGUE_APPEARANCE_BRIDGE; }
+    else if (!strcmp(argv[2],"pitdeck")) { a.deck=tile; a.ground=TT_CHASM; a.flags=BROGUE_APPEARANCE_BRIDGE|BROGUE_APPEARANCE_HOLE; }
+    else if (!strcmp(argv[2],"wall")) { a.structure=tile; a.flags=BROGUE_APPEARANCE_WALL|BROGUE_APPEARANCE_OPAQUE; }
+    else a.ground=tile;
+    const int px=State.player.x,py=State.player.y;
+    if(px<2 || px>76 || py<4) return;
+    static BrogueBridgeState checked;
+    Api.getState(&checked); const auto hash=checked.stateHash;
+    const auto turn=checked.absoluteTurn;
+    for(int dy=-3;dy<=0;++dy) for(int dx=-1;dx<=1;++dx) {
+        auto &cell=State.cells[(py+dy)*79+px+dx];
+        cell.appearance=TerrainProbeAppearance(-1);
+        if(dy==-2) cell.appearance=a;
+    }
+    ++State.revision;
+    ReconcileTerrain(); TickTerrainAnimations(true); SyncPlayer();
+    auto camera=players[consoleplayer].mo;
+    camera->Angles.Yaw=DAngle::fromDeg(90); camera->PrevAngles.Yaw=camera->Angles.Yaw;
+    camera->Angles.Pitch=DAngle::fromDeg(10); camera->PrevAngles.Pitch=camera->Angles.Pitch;
+    Api.getState(&checked);
+    if(checked.stateHash!=hash || checked.absoluteTurn!=turn) I_Error("Catalog review changed Brogue");
+    Printf("CATALOG tile=%d role=%s unchangedHash=true turn=%llu\n",tile,argv[2],(unsigned long long)turn);
+}
+
+// Layered material gallery with an independent authoritative hash check.
+namespace {
+int OverlayProbeStage = -1, OverlayProbeNext = 0;
+bool OverlayProbeCapture = false;
+bool DebrisProbe = false;
+void ApplyOverlayProbe(unsigned tile, unsigned base, unsigned light = 0) {
+    const int px=State.player.x, py=State.player.y;
+    if (px<2 || px>76 || py<4) I_Error("Overlay gallery needs room around spawn");
+    static BrogueBridgeState checked;
+    Api.getState(&checked); const auto hash=checked.stateHash, turn=checked.absoluteTurn;
+    for (int dy=-3; dy<=0; ++dy) for (int dx=-1; dx<=1; ++dx) {
+        auto a=TerrainProbeAppearance(-1);
+        a.structure=base; a.layers[0]=base;
+        if (base==TT_BRIDGE) { a.deck=base; a.structure=TT_FLOOR; a.flags=BROGUE_APPEARANCE_BRIDGE; }
+        if (dy==-2) { a.ground=tile; a.layers[1]=light; a.layers[2]=tile; }
+        State.cells[(py+dy)*79+px+dx].appearance=a;
+    }
+    ++State.revision; ReconcileTerrain(); TickTerrainAnimations(true); SyncPlayer();
+    const int key=(py-2)*79+px;
+    unsigned expected = base==TT_BRIDGE ? TT_FLOOR : base;
+    if (TerrainSubstrate(TerrainState.applied[key])!=expected) I_Error("Overlay replaced substrate");
+    if (!tile && !light) for (auto actor:TerrainBindings[key].overlays)
+        if (actor) I_Error("Removed coating left a stale actor");
+    auto camera=players[consoleplayer].mo;
+    camera->Angles.Yaw=DAngle::fromDeg(90); camera->PrevAngles.Yaw=camera->Angles.Yaw;
+    camera->Angles.Pitch=DAngle::fromDeg(18); camera->PrevAngles.Pitch=camera->Angles.Pitch;
+    Api.getState(&checked);
+    if (checked.stateHash!=hash || checked.absoluteTurn!=turn) I_Error("Overlay gallery changed Brogue");
+    Printf("OVERLAY tile=%u base=%u light=%u unchangedHash=true\n",tile,base,light);
+}
+CCMD(brg_overlay_smoke) { OverlayProbeStage=0; OverlayProbeNext=0; OverlayProbeCapture=false; DebrisProbe=false; }
+CCMD(brg_debris_smoke) { OverlayProbeStage=0; OverlayProbeNext=0; OverlayProbeCapture=false; DebrisProbe=true; }
+void TickTerrainOverlayProbe() {
+    if (OverlayProbeStage<0 || !TerrainReady || primaryLevel->maptime<70
+        || primaryLevel->maptime<OverlayProbeNext) return;
+    static const unsigned cases[][3] = {
+        {TT_RED_BLOOD,TT_FLOOR,0}, {TT_SUNLIGHT_POOL,TT_FLOOR,0},
+        {TT_RED_BLOOD,TT_MARBLE_FLOOR,0}, {TT_RED_BLOOD,TT_CARPET,0},
+        {TT_SACRED_GLYPH,TT_MARBLE_FLOOR,0}, {TT_BONES,TT_CARPET,0},
+        {TT_DARKNESS_PATCH,TT_MARBLE_FLOOR,0}, {TT_SPIDERWEB,TT_CARPET,0},
+        {TT_EMBERS,TT_FLOOR,0}, {TT_HOLE_EDGE,TT_FLOOR,0},
+        {TT_RED_BLOOD,TT_BRIDGE,0}, {TT_RED_BLOOD,TT_MARBLE_FLOOR,TT_SUNLIGHT_POOL},
+        {0,TT_MARBLE_FLOOR,0}
+    };
+    static const unsigned debris[][3] = {
+        {TT_TRAMPLED_FOLIAGE,TT_FLOOR,0}, {TT_TRAMPLED_FUNGUS_FOREST,TT_FLOOR,0},
+        {TT_GRAY_FUNGUS,TT_FLOOR,0}, {TT_FUNGUS_FOREST,TT_FLOOR,0},
+        {TT_ANCIENT_SPIRIT_VINES,TT_FLOOR,0}, {TT_MUD_DOORWAY,TT_FLOOR,0},
+        {TT_JUNK,TT_FLOOR,0}, {TT_RUBBLE,TT_FLOOR,0}, {0,TT_FLOOR,0}
+    };
+    const size_t count=DebrisProbe ? std::size(debris) : std::size(cases);
+    if (OverlayProbeStage==int(count)) {
+        Printf("OVERLAY passed stages=%zu unchangedHash=true\n",count);
+        OverlayProbeStage=-1; AddCommandString("quit"); return;
+    }
+    if (!OverlayProbeCapture) {
+        const auto &c=DebrisProbe ? debris[OverlayProbeStage] : cases[OverlayProbeStage]; ApplyOverlayProbe(c[0],c[1],c[2]);
+        OverlayProbeCapture=true; OverlayProbeNext=primaryLevel->maptime+42;
+    } else {
+        FString command; command.Format("screenshot overlay-%02d.png",OverlayProbeStage);
+        AddCommandString(command.GetChars());
+        ++OverlayProbeStage; OverlayProbeCapture=false; OverlayProbeNext=primaryLevel->maptime+4;
+    }
+}
+} // namespace
+
+namespace {
+int PotionProbe=-1, PotionNext=0;
+std::vector<AActor*> PotionProbeActors;
+CCMD(brg_potion_color_smoke) { PotionProbe=0; PotionNext=0; }
+void TickPotionColorProbe() {
+    if (PotionProbe<0 || !TerrainReady || primaryLevel->maptime<70 || primaryLevel->maptime<PotionNext) return;
+    if (PotionProbe==6) { Printf("POTION_COLORS passed colors=21 unchangedHash=true\n"); PotionProbe=-1; AddCommandString("quit"); return; }
+    if (PotionProbe%2==0) {
+        for (auto actor:PotionProbeActors) actor->Destroy();
+        PotionProbeActors.clear();
+        ApplyOverlayProbe(0,TT_FLOOR);
+        auto camera=players[consoleplayer].mo;
+        const auto origin=BrogueCellToWorld(State.player.x,State.player.y);
+        camera->Angles.Pitch=DAngle::fromDeg(18); camera->PrevAngles.Pitch=camera->Angles.Pitch;
+        for(int i=0;i<7;++i) {
+            BrogueBridgeItemState item{}; item.category=8; item.kind=-1;
+            item.potionColor=1+PotionProbe/2*7+i;
+            const auto name=PickupClassName(item);
+            item.kindKnown=1; item.kind=7;
+            strcpy(item.displayName,"a potion called custom name");
+            if (name!=PickupClassName(item)) I_Error("Potion appearance changed on identification/call");
+            auto actor=Spawn(primaryLevel,name.GetChars(),origin+DVector3((i-3)*14,64,0),NO_REPLACE);
+            if (!actor) I_Error("Missing potion color model");
+            PotionProbeActors.push_back(actor);
+            Printf("POTION_COLOR index=%u class=%s stable=true\n",item.potionColor,name.GetChars());
+        }
+    } else {
+        FString cmd; cmd.Format("screenshot potion-colors-%d.png",PotionProbe/2); AddCommandString(cmd.GetChars());
+    }
+    ++PotionProbe; PotionNext=primaryLevel->maptime+24;
+}
+}
+
+// Explicit copied-state fixture for the runtime upper tier, including a second
+#include "flavor_cases.generated.h"
+namespace {
+int FlavorStage=-1,FlavorNext=0;
+std::vector<AActor*> FlavorActors;
+CCMD(brg_flavor_smoke) { FlavorStage=0; FlavorNext=0; }
+void TickFlavorProbe() {
+    if(FlavorStage<0 || !TerrainReady || primaryLevel->maptime<70 || primaryLevel->maptime<FlavorNext) return;
+    if(FlavorStage==42) { ClearProjectile(); FlavorStage++; FlavorNext=primaryLevel->maptime+5; return; }
+    if(FlavorStage==43) {
+        auto iterator=primaryLevel->GetThinkerIterator<AActor>();
+        auto ink=PClass::FindActor("BrogueScrollInk");
+        while(auto actor=iterator.Next()) if(actor->IsA(ink)) I_Error("Stale scroll lettering after projectile cleanup");
+        Printf("FLAVOR_RENDER passed materials=51 scrolls=3 held=2 projectile=1 cleanup=true unchangedHash=true\n"); FlavorStage=-1; AddCommandString("quit"); return;
+    }
+    if(FlavorStage%2==0) {
+        for(auto actor:FlavorActors) actor->Destroy(); FlavorActors.clear();
+        ApplyOverlayProbe(0,TT_FLOOR);
+        auto origin=BrogueCellToWorld(State.player.x,State.player.y);
+        if(FlavorStage<36) for(int i=0;i<3;++i) {
+            const auto &c=FlavorCases[FlavorStage/2*3+i];
+            BrogueBridgeItemState item{}; item.category=c.category; item.kind=-1;
+            strcpy(item.appearance,c.name);
+            auto cls=PickupClassName(item);
+            item.kindKnown=1; item.kind=0; strcpy(item.displayName,"custom name");
+            if(cls!=PickupClassName(item)) I_Error("Flavor changed after identification");
+            auto actor=Spawn(primaryLevel,cls.GetChars(),origin+DVector3((i-1)*48,64,0),NO_REPLACE);
+            if(!actor) I_Error("Missing flavored model");
+            if(item.category==16) AttachScrollTitle(actor,item.appearance);
+            FlavorActors.push_back(actor);
+            Printf("FLAVOR_RENDER appearance=%s class=%s\n",item.appearance,cls.GetChars());
+        }
+        else if(FlavorStage<40) {
+            auto &item=State.items[State.itemCount++]; item={}; item.id=900000+FlavorStage;
+            item.category=FlavorStage==36 ? 32 : 64; item.carried=1;
+            strcpy(item.appearance,FlavorStage==36 ? "birch" : "copper");
+            VisualDeviceId=item.id; VisualDeviceKind=FlavorStage==36 ? 15 : 16;
+            VisualDeviceUntilTic=primaryLevel->maptime+200; SyncWeaponView();
+        }
+        else {
+            VisualDeviceUntilTic=0; SyncWeaponView();
+            ThrownItemClass="BrogueFlavorScroll"; ThrownItemCategory=16; ThrownScrollTitle="ABRA KADABRA";
+            BrogueBridgeTurnResult result{}; result.eventCount=2;
+            for(int i=0;i<2;++i) {
+                auto &event=result.events[i]; event.type=BROGUE_EVENT_PROJECTILE_MOVED; event.itemCategory=16;
+                event.fromX=State.player.x; event.fromY=State.player.y;
+                event.toX=State.player.x; event.toY=State.player.y-1;
+            }
+            BeginProjectileAnimation(result); Projectile.tics=200;
+        }
+    } else { FString command; command.Format("screenshot flavors-%02d.png",FlavorStage/2); AddCommandString(command.GetChars()); }
+    ++FlavorStage; FlavorNext=primaryLevel->maptime+24;
+}
+}
+
+// Explicit copied-state fixture for the runtime upper tier, including a second
+// snapshot reconciliation. It never descends or edits the Brogue session.
+namespace {
+int WallFadeStage=-1, WallFadeNext=0;
+bool WallFallProbe=false;
+CCMD(brg_wall_fade_smoke) { WallFadeStage=0; WallFadeNext=0; }
+CCMD(brg_wall_fall_smoke) { WallFadeStage=0; WallFadeNext=0; WallFallProbe=true; }
+void TickWallFadeProbe() {
+    if (WallFadeStage<0 || !TerrainReady || primaryLevel->maptime<70 || primaryLevel->maptime<WallFadeNext) return;
+    static BrogueBridgeState original;
+    if (WallFadeStage==0) {
+        if (WallFallProbe) {
+            AddCommandString("brg_actions N N N N N N N N N W W W W W W N N N N N W N W W N N N N N");
+            WallFadeStage=1; WallFadeNext=primaryLevel->maptime+35; return;
+        }
+        Api.getState(&original);
+        State.depth=2; primaryLevel->levelnum=2;
+        ClearTerrainBindings();
+        ++State.revision; ReconcileTerrain(); SyncPlayer();
+        AddCommandString("changesky BRGSKY");
+        auto camera=players[consoleplayer].mo;
+        camera->Angles.Yaw=DAngle::fromDeg(90); camera->PrevAngles.Yaw=camera->Angles.Yaw;
+        camera->Angles.Pitch=DAngle::fromDeg(-40); camera->PrevAngles.Pitch=camera->Angles.Pitch;
+    } else if (WallFadeStage==1) {
+        if (WallFallProbe) {
+            if (State.depth!=2) {
+                if (PendingActionIndex>=PendingActions.size()) AddCommandString("brg_confirm yes");
+                WallFadeNext=primaryLevel->maptime+10; return;
+            }
+            auto camera=players[consoleplayer].mo;
+            camera->Angles.Yaw=DAngle::fromDeg(180); camera->PrevAngles.Yaw=camera->Angles.Yaw;
+            camera->Angles.Pitch=DAngle::fromDeg(-70); camera->PrevAngles.Pitch=camera->Angles.Pitch;
+            Api.getState(&original);
+        }
+        AddCommandString("screenshot wall-fade-initial.png");
+    }
+    else if (WallFadeStage==2) {
+        // Make every appearance dirty without changing topology.
+        if (WallFallProbe) PerformAction(BROGUE_ACTION_WAIT,"wall-fade-probe");
+        else {
+            for (auto &cell:State.cells) cell.appearance.gasRed ^= 1;
+            ++State.revision; ReconcileTerrain();
+        }
+    } else if (WallFadeStage==3) AddCommandString("screenshot wall-fade-reconciled.png");
+    else {
+        static BrogueBridgeState checked; Api.getState(&checked);
+        if (!WallFallProbe && (checked.stateHash!=original.stateHash || checked.absoluteTurn!=original.absoluteTurn)) I_Error("Wall fade fixture changed Brogue");
+        Printf("WALL_FADE passed depth=2 authoritativeFall=%d unchangedHash=%s\n", int(WallFallProbe), WallFallProbe ? "not-applicable" : "true");
+        WallFadeStage=-1; AddCommandString("quit"); return;
+    }
+    ++WallFadeStage; WallFadeNext=primaryLevel->maptime+35;
+}
 }

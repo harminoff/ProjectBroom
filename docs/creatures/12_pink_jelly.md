@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `slime`.
-- Authored silhouette dimensions: 50 / 46 / 30 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-pink_jelly`.
+- Authored silhouette dimensions: 51.3996 / 44.4528 / 30.8001 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: goo, lobes.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/12_pink_jelly.obj).
-- [Editable Blender source](../../assets/monsters/sources/12_pink_jelly.blend).
+- Visual construction cues: connected viscous mass, lobed contact skirt, sagging folds, rose and wine marbling, embedded-looking pockets, wet surface sheen.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/12_pink_jelly.iqm).
+- [Editable Blender source](../../assets/monsters/pink_jelly/pink-jelly-animated.blend).
+- [Animation manifest](../../assets/monsters/pink_jelly/animation.json); 18 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Pink jelly authoring and actual verification](../pink-jelly-animation.md).
 
 ## Brogue encounter-table references
 
@@ -37,8 +40,8 @@ These are nominal table ranges and weights, not guaranteed encounter depths or p
 Machine-readable results live in [bestiary-index.json](../../assets/monsters/bestiary-index.json). A generated asset is not automatically visually approved. These generated cards are not a hand-edited checklist: record later acceptance under the index entry’s `verification` object, which regeneration preserves.
 
 - [ ] Individual art/signature-feature approval.
-- [ ] Normal encounter at gameplay distance and lighting.
+- [x] Fixed-seed normal encounter captured; see verification object for limited scope.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

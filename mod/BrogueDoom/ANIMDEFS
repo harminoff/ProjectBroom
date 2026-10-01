@@ -5,6 +5,16 @@ warp flat BRGSLDG 0.65
 warp flat BRGMOLT 1.25
 warp texture BRGLFALL 1.25
 
+texture BRGMLIP
+	pic PMLIP000 tics 2
+	pic PMLIP001 tics 2
+	pic PMLIP002 tics 2
+	pic PMLIP003 tics 2
+	pic PMLIP004 tics 2
+	pic PMLIP005 tics 2
+	pic PMLIP006 tics 2
+	pic PMLIP007 tics 2
+
 // Explicit vertical frames move highlights downward. Warping the horizontal
 // floor artwork on a wall made the face swirl in every direction instead.
 texture BRGWFALL

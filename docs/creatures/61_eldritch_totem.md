@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `totem`.
-- Authored silhouette dimensions: 30 / 30 / 56 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-eldritch_totem`.
+- Authored silhouette dimensions: 27.7142 / 28.2752 / 57.9 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: stone, occult, sigils.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/61_eldritch_totem.obj).
-- [Editable Blender source](../../assets/monsters/sources/61_eldritch_totem.blend).
+- Visual construction cues: twisted pentagonal alien spire, glowing red glyph channels, stacked segments over a red ichor core, ring of spectral-blue blades, rooted tendril base.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/61_eldritch_totem.iqm).
+- [Editable Blender source](../../assets/monsters/eldritch_totem/eldritch-totem-animated.blend).
+- [Animation manifest](../../assets/monsters/eldritch_totem/animation.json); 12 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Eldritch totem authoring and actual verification](../eldritch-totem-animation.md).
 
 ## Brogue encounter-table references
 
@@ -39,6 +42,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

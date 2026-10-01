@@ -9,6 +9,8 @@ void BrogueBridge_CancelSearchForUi(void);
 bool BrogueBridge_OwnsPlayerPosition(void);
 void BrogueBridge_PrepareTiccmd(usercmd_t *cmd);
 void BrogueBridge_DrawHud(void);
+class F2DDrawer;
+bool BrogueBridge_DrawLookLeader(F2DDrawer *drawer);
 void BrogueBridge_PrepareScene(void);
 void BrogueBridge_Shutdown(void);
 

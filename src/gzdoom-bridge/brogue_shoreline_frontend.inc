@@ -25,8 +25,7 @@ void UpdateShorelines(const std::vector<int> &changed, bool force=false) {
         auto &b=TerrainBindings[key];
         const auto &a=TerrainState.applied[key];
         const auto masks=ShorelineEnabled ? Shoreline::Resolve(TerrainState.applied,key) : Shoreline::Masks{};
-        const char *ground=a.flags&BROGUE_APPEARANCE_HOLE ? "BRGVOID" : a.liquid || (a.flags&BROGUE_APPEARANCE_ICE) ? "BRGEARTH"
-            : TerrainStyleFor(a.ground ? a.ground : a.structure).floor;
+        const char *ground=TerrainGroundMaterial(a);
         b.shoreGround=ShorelineMaterial(ground,masks.ground);
         b.shoreDeck=ShorelineMaterial(TerrainStyleFor(a.deck).floor,masks.ground);
         b.shoreWater=ShorelineEnabled && Shoreline::Water(a) && !Shoreline::Deck(a)

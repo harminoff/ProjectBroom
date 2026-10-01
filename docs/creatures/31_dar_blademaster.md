@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `humanoid`.
-- Authored silhouette dimensions: 36 / 34 / 57 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-dar_blademaster`.
+- Authored silhouette dimensions: 12.2682 / 21.1153 / 60.6471 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: elf, sword, armor.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/31_dar_blademaster.obj).
-- [Editable Blender source](../../assets/monsters/sources/31_dar_blademaster.blend).
+- Visual construction cues: lean deep elf, sculpted narrow face, swept pointed ears, dark swept hair, fitted charcoal armor, magenta sash, closed sword grip, narrow steel blade.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/31_dar_blademaster.iqm).
+- [Editable Blender source](../../assets/monsters/dar_blademaster/dar-blademaster-animated.blend).
+- [Animation manifest](../../assets/monsters/dar_blademaster/animation.json); 18 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Dar blademaster authoring and actual verification](../dar-blademaster-animation.md).
 
 ## Brogue encounter-table references
 
@@ -49,6 +52,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

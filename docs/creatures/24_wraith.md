@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `humanoid`.
-- Authored silhouette dimensions: 30 / 32 / 65 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-wraith`.
+- Authored silhouette dimensions: 18.3375 / 20.1193 / 60.6976 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: gaunt, sockets, blood_nails.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/24_wraith.obj).
-- [Editable Blender source](../../assets/monsters/sources/24_wraith.blend).
+- Visual construction cues: emaciated grounded frame, skin-covered ribs and clavicles, hollow eye sockets, ten long stained nails, groping fingers, ragged waist covering.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/24_wraith.iqm).
+- [Editable Blender source](../../assets/monsters/wraith/wraith-animated.blend).
+- [Animation manifest](../../assets/monsters/wraith/animation.json); 17 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Wraith anatomy and actual verification](../wraith-animation.md).
 
 ## Brogue encounter-table references
 
@@ -42,6 +45,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

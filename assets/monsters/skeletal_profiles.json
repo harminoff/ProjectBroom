@@ -10,6 +10,162 @@
   ],
   "enemies": [
     {
+      "symbol": "MK_OGRE_TOTEM",
+      "roughness": 0.86,
+      "class": "BrogueMonsterK20",
+      "module": "ogre_totem_animation",
+      "model": "20_ogre_totem.iqm",
+      "skin": "graphics/BRGOGTOT.png",
+      "referenceSkin": "graphics/BRGM20.png",
+      "source": "assets/monsters/ogre_totem/ogre-totem-animated.blend",
+      "manifest": "assets/monsters/ogre_totem/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        89,
+        -108,
+        73
+      ],
+      "previewTarget": [
+        1,
+        0,
+        31
+      ],
+      "clips": [
+        "idle",
+        "rest",
+        "toll",
+        "tremor",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        22,
+        24,
+        14,
+        34
+      ],
+      "walkFrames": 20
+    },
+    {
+      "symbol": "MK_GOBLIN_TOTEM",
+      "roughness": 0.85,
+      "class": "BrogueMonsterK11",
+      "module": "goblin_totem_animation",
+      "model": "11_goblin_totem.iqm",
+      "skin": "graphics/BRGTOTEM.png",
+      "referenceSkin": "graphics/BRGM11.png",
+      "source": "assets/monsters/goblin_totem/goblin-totem-animated.blend",
+      "manifest": "assets/monsters/goblin_totem/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        75,
+        -90,
+        63
+      ],
+      "previewTarget": [
+        0,
+        0,
+        24
+      ],
+      "clips": [
+        "idle",
+        "rest",
+        "rattle",
+        "shudder",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        18,
+        22,
+        12,
+        30
+      ],
+      "walkFrames": 20
+    },
+    {
+      "symbol": "MK_PINK_JELLY",
+      "roughness": 0.26,
+      "class": "BrogueMonsterK12",
+      "module": "pink_jelly_animation",
+      "model": "12_pink_jelly.iqm",
+      "skin": "graphics/BRGPINKJ.png",
+      "referenceSkin": "graphics/BRGM12.png",
+      "source": "assets/monsters/pink_jelly/pink-jelly-animated.blend",
+      "manifest": "assets/monsters/pink_jelly/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        72,
+        -90,
+        59
+      ],
+      "previewTarget": [
+        0,
+        0,
+        14
+      ],
+      "clips": [
+        "idle",
+        "flow",
+        "smear",
+        "drench",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        20,
+        24,
+        14,
+        30
+      ],
+      "walkFrames": 28
+    },
+    {
+      "symbol": "MK_TOAD",
+      "roughness": 0.4,
+      "class": "BrogueMonsterK13",
+      "module": "toad_animation",
+      "model": "13_toad.iqm",
+      "skin": "graphics/BRGTOAD.png",
+      "referenceSkin": "graphics/BRGM13.png",
+      "source": "assets/monsters/toad/toad-animated.blend",
+      "manifest": "assets/monsters/toad/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        68,
+        -86,
+        53
+      ],
+      "previewTarget": [
+        0,
+        0,
+        12
+      ],
+      "clips": [
+        "idle",
+        "crawl",
+        "slime",
+        "slam",
+        "recoil",
+        "death"
+      ],
+      "durations": [
+        0,
+        0,
+        18,
+        22,
+        12,
+        28
+      ],
+      "walkFrames": 24
+    },
+    {
       "symbol": "MK_RAT",
       "class": "BrogueMonsterK01",
       "module": "rat_animation",
@@ -94,6 +250,197 @@
       "walkFrames": 20
     },
     {
+      "symbol": "MK_EEL",
+      "previewCamera": [
+        48,
+        -66,
+        38
+      ],
+      "previewTarget": [
+        0,
+        0,
+        7
+      ],
+      "class": "BrogueMonsterK04",
+      "module": "eel_animation",
+      "model": "04_eel.iqm",
+      "skin": "graphics/BRGEEL.png",
+      "referenceSkin": "graphics/BRGM04.png",
+      "source": "assets/monsters/eel/eel-animated.blend",
+      "manifest": "assets/monsters/eel/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "clips": [
+        "idle",
+        "swim",
+        "bite",
+        "strike",
+        "recoil",
+        "death"
+      ],
+      "durations": [
+        0,
+        0,
+        18,
+        20,
+        12,
+        28
+      ],
+      "walkFrames": 24
+    },
+    {
+      "symbol": "MK_BLOAT",
+      "class": "BrogueMonsterK06",
+      "module": "bloat_animation",
+      "model": "06_bloat.iqm",
+      "skin": "graphics/BRGBLOAT.png",
+      "referenceSkin": "graphics/BRGM06.png",
+      "source": "assets/monsters/bloat/bloat-animated.blend",
+      "manifest": "assets/monsters/bloat/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        65,
+        -82,
+        57
+      ],
+      "previewTarget": [
+        0,
+        0,
+        32
+      ],
+      "clips": [
+        "idle",
+        "drift",
+        "bump",
+        "bump_alt",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        12,
+        14,
+        10,
+        18
+      ],
+      "walkFrames": 24
+    },
+    {
+      "symbol": "MK_PIT_BLOAT",
+      "class": "BrogueMonsterK07",
+      "module": "pit_bloat_animation",
+      "model": "07_pit_bloat.iqm",
+      "skin": "graphics/BRGPITBL.png",
+      "referenceSkin": "graphics/BRGM07.png",
+      "source": "assets/monsters/pit_bloat/pit-bloat-animated.blend",
+      "manifest": "assets/monsters/pit_bloat/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        65,
+        -82,
+        57
+      ],
+      "previewTarget": [
+        0,
+        0,
+        32
+      ],
+      "clips": [
+        "idle",
+        "drift",
+        "bump",
+        "bump_alt",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        12,
+        14,
+        10,
+        18
+      ],
+      "walkFrames": 24
+    },
+    {
+      "symbol": "MK_GOBLIN",
+      "class": "BrogueMonsterK08",
+      "module": "goblin_animation",
+      "model": "08_goblin.iqm",
+      "skin": "graphics/BRGGOB.png",
+      "referenceSkin": "graphics/BRGM08.png",
+      "source": "assets/monsters/goblin/goblin-animated.blend",
+      "manifest": "assets/monsters/goblin/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        65,
+        -82,
+        49
+      ],
+      "previewTarget": [
+        2,
+        0,
+        23
+      ],
+      "clips": [
+        "idle",
+        "walk",
+        "thrust",
+        "cut",
+        "recoil",
+        "death"
+      ],
+      "durations": [
+        0,
+        0,
+        18,
+        20,
+        10,
+        26
+      ],
+      "walkFrames": 20
+    },
+    {
+      "symbol": "MK_GOBLIN_CONJURER",
+      "class": "BrogueMonsterK09",
+      "module": "goblin_conjurer_animation",
+      "model": "09_goblin_conjurer.iqm",
+      "skin": "graphics/BRGCONJ.png",
+      "referenceSkin": "graphics/BRGM09.png",
+      "source": "assets/monsters/goblin_conjurer/goblin-conjurer-animated.blend",
+      "manifest": "assets/monsters/goblin_conjurer/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "sigilAtlas": true,
+      "previewCamera": [
+        65,
+        -82,
+        49
+      ],
+      "previewTarget": [
+        2,
+        0,
+        23
+      ],
+      "clips": [
+        "idle",
+        "walk",
+        "thump",
+        "whack",
+        "recoil",
+        "death"
+      ],
+      "durations": [
+        0,
+        0,
+        18,
+        20,
+        10,
+        26
+      ],
+      "walkFrames": 20
+    },
+    {
       "symbol": "MK_MONKEY",
       "class": "BrogueMonsterK05",
       "module": "monkey_animation",
@@ -127,6 +474,2452 @@
         "release": "released",
         "duration": 21
       }
+    },
+    {
+      "symbol": "MK_ARROW_TURRET",
+      "class": "BrogueMonsterK15",
+      "module": "arrow_turret_animation",
+      "model": "15_arrow_turret.iqm",
+      "skin": "graphics/BRGARROW.png",
+      "referenceSkin": "graphics/BRGM15.png",
+      "source": "assets/monsters/arrow_turret/arrow-turret-animated.blend",
+      "manifest": "assets/monsters/arrow_turret/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        65,
+        -82,
+        49
+      ],
+      "previewTarget": [
+        2,
+        0,
+        23
+      ],
+      "clips": [
+        "idle",
+        "rest",
+        "release",
+        "rearm",
+        "recoil",
+        "break"
+      ],
+      "durations": [
+        0,
+        0,
+        20,
+        24,
+        12,
+        30
+      ],
+      "walkFrames": 20,
+      "wallMountBack": 13.1
+    },
+    {
+      "symbol": "MK_VAMPIRE_BAT",
+      "class": "BrogueMonsterK14",
+      "module": "vampire_bat_animation",
+      "model": "14_vampire_bat.iqm",
+      "skin": "graphics/BRGBAT.png",
+      "referenceSkin": "graphics/BRGM14.png",
+      "source": "assets/monsters/vampire_bat/vampire-bat-animated.blend",
+      "manifest": "assets/monsters/vampire_bat/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        65,
+        -85,
+        60
+      ],
+      "previewTarget": [
+        0,
+        0,
+        23
+      ],
+      "clips": [
+        "idle",
+        "fly",
+        "nip",
+        "feed",
+        "recoil",
+        "death"
+      ],
+      "durations": [
+        0,
+        0,
+        18,
+        24,
+        12,
+        30
+      ],
+      "walkFrames": 24
+    },
+    {
+      "symbol": "MK_ACID_MOUND",
+      "roughness": 0.22,
+      "class": "BrogueMonsterK16",
+      "module": "acid_mound_animation",
+      "model": "16_acid_mound.iqm",
+      "skin": "graphics/BRGACID.png",
+      "referenceSkin": "graphics/BRGM16.png",
+      "source": "assets/monsters/acid_mound/acid-mound-animated.blend",
+      "manifest": "assets/monsters/acid_mound/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        72,
+        -90,
+        59
+      ],
+      "previewTarget": [
+        0,
+        0,
+        10
+      ],
+      "clips": [
+        "idle",
+        "squelch",
+        "slime",
+        "douse",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        20,
+        24,
+        14,
+        30
+      ],
+      "walkFrames": 28
+    },
+    {
+      "symbol": "MK_GOBLIN_MYSTIC",
+      "class": "BrogueMonsterK10",
+      "module": "goblin_mystic_animation",
+      "model": "10_goblin_mystic.iqm",
+      "skin": "graphics/BRGMYST.png",
+      "referenceSkin": "graphics/BRGM10.png",
+      "source": "assets/monsters/goblin_mystic/goblin-mystic-animated.blend",
+      "manifest": "assets/monsters/goblin_mystic/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        65,
+        -82,
+        49
+      ],
+      "previewTarget": [
+        2,
+        0,
+        23
+      ],
+      "clips": [
+        "idle",
+        "walk",
+        "palm",
+        "sweep",
+        "recoil",
+        "death"
+      ],
+      "durations": [
+        0,
+        0,
+        18,
+        20,
+        10,
+        26
+      ],
+      "walkFrames": 20
+    },
+    {
+      "symbol": "MK_CENTIPEDE",
+      "roughness": 0.36,
+      "class": "BrogueMonsterK17",
+      "module": "centipede_animation",
+      "model": "17_centipede.iqm",
+      "skin": "graphics/BRGCENT.png",
+      "referenceSkin": "graphics/BRGM17.png",
+      "source": "assets/monsters/centipede/centipede-animated.blend",
+      "manifest": "assets/monsters/centipede/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        55,
+        -70,
+        52
+      ],
+      "previewTarget": [
+        0,
+        0,
+        5
+      ],
+      "clips": [
+        "idle",
+        "scuttle",
+        "prick",
+        "sting",
+        "recoil",
+        "death"
+      ],
+      "durations": [
+        0,
+        0,
+        18,
+        22,
+        12,
+        30
+      ],
+      "walkFrames": 28
+    },
+    {
+      "symbol": "MK_BOG_MONSTER",
+      "roughness": 0.37,
+      "class": "BrogueMonsterK19",
+      "module": "bog_monster_animation",
+      "model": "19_bog_monster.iqm",
+      "skin": "graphics/BRGBOG.png",
+      "referenceSkin": "graphics/BRGM19.png",
+      "source": "assets/monsters/bog_monster/bog-monster-animated.blend",
+      "manifest": "assets/monsters/bog_monster/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        65,
+        -80,
+        52
+      ],
+      "previewTarget": [
+        0,
+        0,
+        14
+      ],
+      "clips": [
+        "idle",
+        "drift",
+        "squeeze",
+        "coil",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        22,
+        26,
+        14,
+        32
+      ],
+      "walkFrames": 28
+    },
+    {
+      "symbol": "MK_OGRE",
+      "roughness": 0.73,
+      "class": "BrogueMonsterK18",
+      "module": "ogre_animation",
+      "model": "18_ogre.iqm",
+      "skin": "graphics/BRGOGRE.png",
+      "referenceSkin": "graphics/BRGM18.png",
+      "source": "assets/monsters/ogre/ogre-animated.blend",
+      "manifest": "assets/monsters/ogre/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        125,
+        -140,
+        90
+      ],
+      "previewTarget": [
+        0,
+        0,
+        40
+      ],
+      "clips": [
+        "idle",
+        "lumber",
+        "cudgel",
+        "batter",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        26,
+        28,
+        14,
+        36
+      ],
+      "walkFrames": 32
+    },
+    {
+      "symbol": "MK_SPIDER",
+      "roughness": 0.43,
+      "class": "BrogueMonsterK21",
+      "module": "spider_animation",
+      "model": "21_spider.iqm",
+      "skin": "graphics/BRGSPID.png",
+      "referenceSkin": "graphics/BRGM21.png",
+      "source": "assets/monsters/spider/spider-animated.blend",
+      "manifest": "assets/monsters/spider/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        70,
+        -85,
+        52
+      ],
+      "previewTarget": [
+        0,
+        0,
+        9
+      ],
+      "clips": [
+        "idle",
+        "scuttle",
+        "bite",
+        "threaten",
+        "recoil",
+        "death"
+      ],
+      "durations": [
+        0,
+        0,
+        20,
+        24,
+        12,
+        32
+      ],
+      "walkFrames": 28
+    },
+    {
+      "symbol": "MK_EXPLOSIVE_BLOAT",
+      "class": "BrogueMonsterK30",
+      "module": "explosive_bloat_animation",
+      "model": "30_explosive_bloat.iqm",
+      "skin": "graphics/BRGEXBL.png",
+      "referenceSkin": "graphics/BRGM30.png",
+      "source": "assets/monsters/explosive_bloat/explosive-bloat-animated.blend",
+      "manifest": "assets/monsters/explosive_bloat/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        65,
+        -82,
+        57
+      ],
+      "previewTarget": [
+        0,
+        0,
+        32
+      ],
+      "clips": [
+        "idle",
+        "drift",
+        "bump",
+        "bump_alt",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        12,
+        14,
+        10,
+        18
+      ],
+      "walkFrames": 24,
+      "roughness": 0.54
+    },
+    {
+      "symbol": "MK_DAR_BLADEMASTER",
+      "roughness": 0.54,
+      "class": "BrogueMonsterK31",
+      "module": "dar_blademaster_animation",
+      "model": "31_dar_blademaster.iqm",
+      "skin": "graphics/BRGDAR.png",
+      "referenceSkin": "graphics/BRGM31.png",
+      "source": "assets/monsters/dar_blademaster/dar-blademaster-animated.blend",
+      "manifest": "assets/monsters/dar_blademaster/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        85,
+        -105,
+        70
+      ],
+      "previewTarget": [
+        0,
+        0,
+        30
+      ],
+      "clips": [
+        "idle",
+        "advance",
+        "slash",
+        "thrust",
+        "recoil",
+        "fall"
+      ],
+      "durations": [
+        0,
+        0,
+        24,
+        26,
+        14,
+        36
+      ],
+      "walkFrames": 32
+    },
+    {
+      "symbol": "MK_WILL_O_THE_WISP",
+      "module": "wisp_animation",
+      "model": "23_will_o_the_wisp.iqm",
+      "skin": "graphics/BRGWISP.png",
+      "referenceSkin": "graphics/BRGM23.png",
+      "source": "assets/monsters/wisp/wisp-animated.blend",
+      "manifest": "assets/monsters/wisp/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        80,
+        -90,
+        60
+      ],
+      "previewTarget": [
+        0,
+        0,
+        32
+      ],
+      "clips": [
+        "idle",
+        "drift",
+        "flare",
+        "lash",
+        "recoil",
+        "extinguish"
+      ],
+      "durations": [
+        0,
+        0,
+        20,
+        22,
+        14,
+        30
+      ],
+      "walkFrames": 32,
+      "emissive": true,
+      "class": "BrogueMonsterK23",
+      "additiveFlame": true
+    },
+    {
+      "symbol": "MK_WRAITH",
+      "module": "wraith_animation",
+      "model": "24_wraith.iqm",
+      "skin": "graphics/BRGWRAIT.png",
+      "referenceSkin": "graphics/BRGM24.png",
+      "source": "assets/monsters/wraith/wraith-animated.blend",
+      "manifest": "assets/monsters/wraith/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        85,
+        -105,
+        70
+      ],
+      "previewTarget": [
+        0,
+        0,
+        30
+      ],
+      "clips": [
+        "idle",
+        "advance",
+        "rake",
+        "clutch",
+        "recoil",
+        "fall"
+      ],
+      "durations": [
+        0,
+        0,
+        24,
+        26,
+        14,
+        36
+      ],
+      "walkFrames": 32,
+      "class": "BrogueMonsterK24"
+    },
+    {
+      "symbol": "MK_SPARK_TURRET",
+      "class": "BrogueMonsterK22",
+      "module": "spark_turret_animation",
+      "model": "22_spark_turret.iqm",
+      "skin": "graphics/BRGSPARK.png",
+      "referenceSkin": "graphics/BRGM22.png",
+      "source": "assets/monsters/spark_turret/spark-turret-animated.blend",
+      "manifest": "assets/monsters/spark_turret/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        65,
+        -82,
+        49
+      ],
+      "previewTarget": [
+        2,
+        0,
+        23
+      ],
+      "clips": [
+        "idle",
+        "rest",
+        "discharge",
+        "recharge",
+        "impact",
+        "break"
+      ],
+      "durations": [
+        0,
+        0,
+        22,
+        26,
+        12,
+        32
+      ],
+      "walkFrames": 20,
+      "wallMountBack": 12
+    },
+    {
+      "symbol": "MK_ZOMBIE",
+      "module": "zombie_animation",
+      "model": "25_zombie.iqm",
+      "skin": "graphics/BRGZOMB.png",
+      "referenceSkin": "graphics/BRGM25.png",
+      "source": "assets/monsters/zombie/zombie-animated.blend",
+      "manifest": "assets/monsters/zombie/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        85,
+        -105,
+        70
+      ],
+      "previewTarget": [
+        0,
+        0,
+        30
+      ],
+      "clips": [
+        "idle",
+        "shamble",
+        "strike",
+        "bite",
+        "recoil",
+        "fall"
+      ],
+      "durations": [
+        0,
+        0,
+        24,
+        26,
+        14,
+        36
+      ],
+      "walkFrames": 32,
+      "class": "BrogueMonsterK25"
+    },
+    {
+      "symbol": "MK_TROLL",
+      "module": "troll_animation",
+      "model": "26_troll.iqm",
+      "skin": "graphics/BRGTROLL.png",
+      "referenceSkin": "graphics/BRGM26.png",
+      "source": "assets/monsters/troll/troll-animated.blend",
+      "manifest": "assets/monsters/troll/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "roughness": 0.36,
+      "previewCamera": [
+        110,
+        -130,
+        90
+      ],
+      "previewTarget": [
+        0,
+        0,
+        36
+      ],
+      "clips": [
+        "idle",
+        "lumber",
+        "pummel",
+        "batter",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        26,
+        28,
+        14,
+        36
+      ],
+      "walkFrames": 32,
+      "class": "BrogueMonsterK26"
+    },
+    {
+      "symbol": "MK_NAGA",
+      "module": "naga_animation",
+      "model": "28_naga.iqm",
+      "skin": "graphics/BRGNAGA.png",
+      "referenceSkin": "graphics/BRGM28.png",
+      "source": "assets/monsters/naga/naga-animated.blend",
+      "manifest": "assets/monsters/naga/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "roughness": 0.4,
+      "previewCamera": [
+        95,
+        -110,
+        75
+      ],
+      "previewTarget": [
+        0,
+        0,
+        28
+      ],
+      "clips": [
+        "idle",
+        "slither",
+        "claw",
+        "tailwhip",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        24,
+        28,
+        14,
+        36
+      ],
+      "walkFrames": 28,
+      "class": "BrogueMonsterK28"
+    },
+    {
+      "symbol": "MK_SALAMANDER",
+      "module": "salamander_animation",
+      "model": "29_salamander.iqm",
+      "skin": "graphics/BRGSALM.png",
+      "referenceSkin": "graphics/BRGM29.png",
+      "source": "assets/monsters/salamander/salamander-animated.blend",
+      "manifest": "assets/monsters/salamander/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "roughness": 0.4,
+      "previewCamera": [
+        95,
+        -110,
+        75
+      ],
+      "previewTarget": [
+        0,
+        0,
+        28
+      ],
+      "clips": [
+        "idle",
+        "slither",
+        "whip",
+        "lash",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        24,
+        28,
+        14,
+        36
+      ],
+      "walkFrames": 28,
+      "class": "BrogueMonsterK29"
+    },
+    {
+      "symbol": "MK_OGRE_SHAMAN",
+      "roughness": 0.78,
+      "class": "BrogueMonsterK27",
+      "module": "ogre_shaman_animation",
+      "model": "27_ogre_shaman.iqm",
+      "skin": "graphics/BRGOGSH.png",
+      "referenceSkin": "graphics/BRGM27.png",
+      "source": "assets/monsters/ogre_shaman/ogre-shaman-animated.blend",
+      "manifest": "assets/monsters/ogre_shaman/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        110,
+        -130,
+        82
+      ],
+      "previewTarget": [
+        2,
+        0,
+        38
+      ],
+      "clips": [
+        "idle",
+        "hobble",
+        "cudgel",
+        "chant_strike",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        28,
+        30,
+        14,
+        40
+      ],
+      "walkFrames": 32
+    },
+    {
+      "symbol": "MK_CENTAUR",
+      "roughness": 0.74,
+      "class": "BrogueMonsterK35",
+      "module": "centaur_animation",
+      "model": "35_centaur.iqm",
+      "skin": "graphics/BRGCTR.png",
+      "referenceSkin": "graphics/BRGM35.png",
+      "source": "assets/monsters/centaur/centaur-animated.blend",
+      "manifest": "assets/monsters/centaur/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        120,
+        -140,
+        70
+      ],
+      "previewTarget": [
+        0,
+        0,
+        36
+      ],
+      "clips": [
+        "idle",
+        "trot",
+        "shoot",
+        "rear_shot",
+        "flinch",
+        "fall"
+      ],
+      "durations": [
+        0,
+        0,
+        38,
+        42,
+        14,
+        46
+      ],
+      "walkFrames": 32
+    },
+    {
+      "symbol": "MK_ACID_JELLY",
+      "roughness": 0.22,
+      "class": "BrogueMonsterK34",
+      "module": "acid_jelly_animation",
+      "model": "34_acid_jelly.iqm",
+      "skin": "graphics/BRGACJLY.png",
+      "referenceSkin": "graphics/BRGM34.png",
+      "source": "assets/monsters/acid_jelly/acid-jelly-animated.blend",
+      "manifest": "assets/monsters/acid_jelly/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        80,
+        -100,
+        62
+      ],
+      "previewTarget": [
+        0,
+        0,
+        14
+      ],
+      "clips": [
+        "idle",
+        "creep",
+        "burn",
+        "engulf",
+        "recoil",
+        "dissolve"
+      ],
+      "durations": [
+        0,
+        0,
+        26,
+        32,
+        16,
+        40
+      ],
+      "walkFrames": 32
+    },
+    {
+      "symbol": "MK_PIXIE",
+      "roughness": 0.55,
+      "class": "BrogueMonsterK42",
+      "module": "pixie_animation",
+      "model": "42_pixie.iqm",
+      "skin": "graphics/BRGPIXIE.png",
+      "referenceSkin": "graphics/BRGM42.png",
+      "source": "assets/monsters/pixie/pixie-animated.blend",
+      "manifest": "assets/monsters/pixie/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        70,
+        -80,
+        48
+      ],
+      "previewTarget": [
+        0,
+        0,
+        32
+      ],
+      "clips": [
+        "idle",
+        "flit",
+        "poke",
+        "hex",
+        "flinch",
+        "fall"
+      ],
+      "durations": [
+        0,
+        0,
+        24,
+        30,
+        16,
+        40
+      ],
+      "walkFrames": 24
+    },
+    {
+      "symbol": "MK_FLAME_TURRET",
+      "class": "BrogueMonsterK44",
+      "module": "flame_turret_animation",
+      "model": "44_flame_turret.iqm",
+      "skin": "graphics/BRGFTUR.png",
+      "referenceSkin": "graphics/BRGM44.png",
+      "source": "assets/monsters/flame_turret/flame-turret-animated.blend",
+      "manifest": "assets/monsters/flame_turret/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "roughness": 0.6,
+      "previewCamera": [
+        70,
+        -82,
+        50
+      ],
+      "previewTarget": [
+        6,
+        0,
+        24
+      ],
+      "clips": [
+        "idle",
+        "rest",
+        "spit",
+        "gout",
+        "jolt",
+        "extinguish"
+      ],
+      "durations": [
+        0,
+        0,
+        24,
+        28,
+        14,
+        36
+      ],
+      "walkFrames": 20,
+      "wallMountBack": 11
+    },
+    {
+      "symbol": "MK_DART_TURRET",
+      "class": "BrogueMonsterK38",
+      "module": "dart_turret_animation",
+      "model": "38_dart_turret.iqm",
+      "skin": "graphics/BRGDTUR.png",
+      "referenceSkin": "graphics/BRGM38.png",
+      "source": "assets/monsters/dart_turret/dart-turret-animated.blend",
+      "manifest": "assets/monsters/dart_turret/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "roughness": 0.55,
+      "previewCamera": [
+        70,
+        -82,
+        50
+      ],
+      "previewTarget": [
+        6,
+        0,
+        24
+      ],
+      "clips": [
+        "idle",
+        "rest",
+        "loose",
+        "snap",
+        "jar",
+        "jam"
+      ],
+      "durations": [
+        0,
+        0,
+        24,
+        28,
+        14,
+        36
+      ],
+      "walkFrames": 20,
+      "wallMountBack": 10
+    },
+    {
+      "symbol": "MK_DAR_PRIESTESS",
+      "roughness": 0.58,
+      "class": "BrogueMonsterK32",
+      "module": "dar_priestess_animation",
+      "model": "32_dar_priestess.iqm",
+      "skin": "graphics/BRGDPRS.png",
+      "referenceSkin": "graphics/BRGM32.png",
+      "source": "assets/monsters/dar_priestess/dar-priestess-animated.blend",
+      "manifest": "assets/monsters/dar_priestess/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        85,
+        -105,
+        70
+      ],
+      "previewTarget": [
+        0,
+        0,
+        30
+      ],
+      "clips": [
+        "idle",
+        "advance",
+        "slice",
+        "invoke",
+        "recoil",
+        "fall"
+      ],
+      "durations": [
+        0,
+        0,
+        24,
+        26,
+        14,
+        36
+      ],
+      "walkFrames": 32,
+      "report": "docs/dar-priestess-animation.md",
+      "traits": [
+        "elf",
+        "relics",
+        "robe"
+      ]
+    },
+    {
+      "symbol": "MK_DAR_BATTLEMAGE",
+      "roughness": 0.6,
+      "class": "BrogueMonsterK33",
+      "module": "dar_battlemage_animation",
+      "model": "33_dar_battlemage.iqm",
+      "skin": "graphics/BRGDBMG.png",
+      "referenceSkin": "graphics/BRGM33.png",
+      "source": "assets/monsters/dar_battlemage/dar-battlemage-animated.blend",
+      "manifest": "assets/monsters/dar_battlemage/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        85,
+        -105,
+        70
+      ],
+      "previewTarget": [
+        0,
+        0,
+        30
+      ],
+      "clips": [
+        "idle",
+        "advance",
+        "cut",
+        "conjure",
+        "recoil",
+        "fall"
+      ],
+      "durations": [
+        0,
+        0,
+        24,
+        26,
+        14,
+        36
+      ],
+      "walkFrames": 32,
+      "report": "docs/dar-battlemage-animation.md",
+      "traits": [
+        "elf",
+        "ember_eyes",
+        "hot_hands",
+        "robe"
+      ],
+      "ownedFiles": [
+        "mod/BrogueDoom/shaders/dar-battlemage-embers.fp"
+      ]
+    },
+    {
+      "symbol": "MK_GOBLIN_CHIEFTAN",
+      "roughness": 0.7,
+      "class": "BrogueMonsterK51",
+      "module": "goblin_chieftan_animation",
+      "model": "51_goblin_chieftan.iqm",
+      "skin": "graphics/BRGWARLD.png",
+      "referenceSkin": "graphics/BRGM51.png",
+      "source": "assets/monsters/goblin_chieftan/goblin-chieftan-animated.blend",
+      "manifest": "assets/monsters/goblin_chieftan/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        90,
+        -110,
+        66
+      ],
+      "previewTarget": [
+        2,
+        0,
+        28
+      ],
+      "clips": [
+        "idle",
+        "walk",
+        "thrust",
+        "cleave",
+        "recoil",
+        "death"
+      ],
+      "durations": [
+        0,
+        0,
+        22,
+        24,
+        12,
+        32
+      ],
+      "walkFrames": 24,
+      "report": "docs/goblin-chieftan-animation.md",
+      "traits": [
+        "primate",
+        "spear",
+        "crest",
+        "fur",
+        "helm",
+        "war cloak",
+        "pennant"
+      ]
+    },
+    {
+      "symbol": "MK_BLACK_JELLY",
+      "roughness": 0.12,
+      "class": "BrogueMonsterK52",
+      "module": "black_jelly_animation",
+      "model": "52_black_jelly.iqm",
+      "skin": "graphics/BRGBKJLY.png",
+      "referenceSkin": "graphics/BRGM52.png",
+      "source": "assets/monsters/black_jelly/black-jelly-animated.blend",
+      "manifest": "assets/monsters/black_jelly/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        85,
+        -105,
+        66
+      ],
+      "previewTarget": [
+        0,
+        0,
+        15
+      ],
+      "clips": [
+        "idle",
+        "ooze",
+        "slime",
+        "drench",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        26,
+        30,
+        16,
+        40
+      ],
+      "walkFrames": 32,
+      "report": "docs/black-jelly-animation.md",
+      "traits": [
+        "connected melting ink heap",
+        "curtain folds pooling into drips",
+        "glossy spill-pool apron",
+        "violet-depth inclusions",
+        "view-dependent gloss sheen"
+      ],
+      "ownedFiles": [
+        "mod/BrogueDoom/shaders/black-jelly-sheen.fp"
+      ]
+    },
+    {
+      "symbol": "MK_UNICORN",
+      "roughness": 0.7,
+      "class": "BrogueMonsterK63",
+      "module": "unicorn_animation",
+      "model": "63_unicorn.iqm",
+      "skin": "graphics/BRGUNI.png",
+      "referenceSkin": "graphics/BRGM63.png",
+      "source": "assets/monsters/unicorn/unicorn-animated.blend",
+      "manifest": "assets/monsters/unicorn/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        120,
+        -140,
+        70
+      ],
+      "previewTarget": [
+        0,
+        0,
+        36
+      ],
+      "clips": [
+        "idle",
+        "trot",
+        "gore",
+        "rear_strike",
+        "flinch",
+        "fall"
+      ],
+      "durations": [
+        0,
+        0,
+        36,
+        40,
+        14,
+        46
+      ],
+      "walkFrames": 32,
+      "report": "docs/unicorn-animation.md",
+      "traits": [
+        "slender white equine",
+        "gilded spiral horn",
+        "rainbow-shaded flowing mane and tail",
+        "dark lashed eyes",
+        "feathered gilded hooves",
+        "limp side collapse"
+      ]
+    },
+    {
+      "symbol": "MK_KRAKEN",
+      "roughness": 0.3,
+      "class": "BrogueMonsterK39",
+      "module": "kraken_animation",
+      "model": "39_kraken.iqm",
+      "skin": "graphics/BRGKRAK.png",
+      "referenceSkin": "graphics/BRGM39.png",
+      "source": "assets/monsters/kraken/kraken-animated.blend",
+      "manifest": "assets/monsters/kraken/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        110,
+        -130,
+        70
+      ],
+      "previewTarget": [
+        0,
+        0,
+        32
+      ],
+      "clips": [
+        "idle",
+        "surge",
+        "slap",
+        "seize",
+        "recoil",
+        "sink"
+      ],
+      "durations": [
+        0,
+        0,
+        25,
+        29,
+        15,
+        37
+      ],
+      "walkFrames": 32,
+      "report": "docs/kraken-animation.md",
+      "traits": [
+        "squat rearing maroon cephalopod",
+        "forward-facing golden bar-pupil eyes",
+        "heavy parrot beak in a crown of eight arms",
+        "two clubbed feeding tentacles",
+        "thick coiling sucker-lined arms",
+        "limp sprawled death"
+      ]
+    },
+    {
+      "symbol": "MK_PHANTOM",
+      "module": "phantom_animation",
+      "model": "43_phantom.iqm",
+      "skin": "graphics/BRGPHANT.png",
+      "referenceSkin": "graphics/BRGM43.png",
+      "source": "assets/monsters/phantom/phantom-animated.blend",
+      "manifest": "assets/monsters/phantom/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        85,
+        -105,
+        70
+      ],
+      "previewTarget": [
+        0,
+        0,
+        32
+      ],
+      "clips": [
+        "idle",
+        "drift",
+        "lunge",
+        "wail",
+        "recoil",
+        "dissipate"
+      ],
+      "durations": [
+        0,
+        0,
+        24,
+        26,
+        14,
+        36
+      ],
+      "walkFrames": 32,
+      "emissive": true,
+      "class": "BrogueMonsterK43",
+      "additiveFlame": true,
+      "report": "docs/phantom-animation.md",
+      "traits": [
+        "hovering legless apparition",
+        "luminous outline around a dim violet interior",
+        "rage-slanted hollow sockets and long gaping mouth",
+        "streaming hair tendrils",
+        "long spectral claws",
+        "ragged ectoplasm tail and tatters",
+        "hanging glowing ectoplasm droplets"
+      ],
+      "ownedFiles": [
+        "mod/BrogueDoom/shaders/phantom-veil.fp"
+      ]
+    },
+    {
+      "symbol": "MK_IMP",
+      "roughness": 0.5,
+      "class": "BrogueMonsterK45",
+      "module": "imp_animation",
+      "model": "45_imp.iqm",
+      "skin": "graphics/BRGIMP.png",
+      "referenceSkin": "graphics/BRGM45.png",
+      "source": "assets/monsters/imp/imp-animated.blend",
+      "manifest": "assets/monsters/imp/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        70,
+        -80,
+        44
+      ],
+      "previewTarget": [
+        0,
+        0,
+        24
+      ],
+      "clips": [
+        "idle",
+        "walk",
+        "slice",
+        "snatch",
+        "recoil",
+        "death"
+      ],
+      "durations": [
+        0,
+        0,
+        28,
+        28,
+        14,
+        38
+      ],
+      "walkFrames": 24,
+      "report": "docs/imp-animation.md",
+      "traits": [
+        "demon",
+        "horns",
+        "tail",
+        "claws",
+        "ears"
+      ]
+    },
+    {
+      "symbol": "MK_FURY",
+      "roughness": 0.35,
+      "class": "BrogueMonsterK46",
+      "module": "fury_animation",
+      "model": "46_fury.iqm",
+      "skin": "graphics/BRGFURY.png",
+      "referenceSkin": "graphics/BRGM46.png",
+      "source": "assets/monsters/fury/fury-animated.blend",
+      "manifest": "assets/monsters/fury/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        90,
+        -110,
+        60
+      ],
+      "previewTarget": [
+        0,
+        0,
+        30
+      ],
+      "clips": [
+        "idle",
+        "fly",
+        "drub",
+        "lash",
+        "recoil",
+        "death"
+      ],
+      "durations": [
+        0,
+        0,
+        28,
+        28,
+        14,
+        42
+      ],
+      "walkFrames": 24,
+      "report": "docs/fury-animation.md",
+      "traits": [
+        "demon",
+        "winged",
+        "feathers",
+        "talons",
+        "wild hair"
+      ]
+    },
+    {
+      "symbol": "MK_REVENANT",
+      "module": "revenant_animation",
+      "model": "47_revenant.iqm",
+      "skin": "graphics/BRGREVNT.png",
+      "referenceSkin": "graphics/BRGM47.png",
+      "source": "assets/monsters/revenant/revenant-animated.blend",
+      "manifest": "assets/monsters/revenant/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        90,
+        -110,
+        72
+      ],
+      "previewTarget": [
+        0,
+        0,
+        34
+      ],
+      "clips": [
+        "idle",
+        "stalk",
+        "smash",
+        "rend",
+        "recoil",
+        "fall"
+      ],
+      "durations": [
+        0,
+        0,
+        24,
+        26,
+        14,
+        36
+      ],
+      "walkFrames": 32,
+      "roughness": 0.85,
+      "class": "BrogueMonsterK47",
+      "report": "docs/revenant-animation.md",
+      "traits": [
+        "stooped looming hunch under a high mantle",
+        "skull deep in a near-black cowl",
+        "shredded strips fading before the floor",
+        "layered grave-shroud wrappings and binding strips",
+        "rot and grave-earth staining",
+        "aged bone hands with hooked talons",
+        "slow relentless stalk"
+      ]
+    },
+    {
+      "symbol": "MK_GOLEM",
+      "module": "golem_animation",
+      "model": "49_golem.iqm",
+      "skin": "graphics/BRGGOLEM.png",
+      "referenceSkin": "graphics/BRGM49.png",
+      "source": "assets/monsters/golem/golem-animated.blend",
+      "manifest": "assets/monsters/golem/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "roughness": 0.85,
+      "previewCamera": [
+        130,
+        -150,
+        100
+      ],
+      "previewTarget": [
+        0,
+        0,
+        42
+      ],
+      "clips": [
+        "idle",
+        "stomp",
+        "smash",
+        "backhand",
+        "recoil",
+        "crumble"
+      ],
+      "durations": [
+        0,
+        0,
+        37,
+        34,
+        18,
+        53
+      ],
+      "walkFrames": 36,
+      "class": "BrogueMonsterK49",
+      "report": "docs/golem-animation.md",
+      "traits": [
+        "carved gray stone statue",
+        "bevelled chipped segments",
+        "dark ball joints",
+        "huge knuckled fists",
+        "boulder pauldrons",
+        "incised glyph bands",
+        "rubble collapse"
+      ]
+    },
+    {
+      "symbol": "MK_TENTACLE_HORROR",
+      "roughness": 0.25,
+      "class": "BrogueMonsterK48",
+      "module": "tentacle_horror_animation",
+      "model": "48_tentacle_horror.iqm",
+      "skin": "graphics/BRGTHOR.png",
+      "referenceSkin": "graphics/BRGM48.png",
+      "source": "assets/monsters/tentacle_horror/tentacle-horror-animated.blend",
+      "manifest": "assets/monsters/tentacle_horror/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        140,
+        -165,
+        90
+      ],
+      "previewTarget": [
+        0,
+        0,
+        42
+      ],
+      "clips": [
+        "idle",
+        "slink",
+        "batter",
+        "crush",
+        "flinch",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        27,
+        31,
+        15,
+        41
+      ],
+      "walkFrames": 32,
+      "report": "docs/tentacle-horror-animation.md",
+      "traits": [
+        "towering braided tentacle column",
+        "eyeless crown with a hooked sucking maw",
+        "irregular writhing crown of varied tentacles",
+        "bruised veined aubergine flesh",
+        "pale sucker-lined undersides",
+        "buckled heap death"
+      ]
+    },
+    {
+      "symbol": "MK_SPECTRAL_BLADE",
+      "module": "spectral_blade_animation",
+      "model": "55_spectral_blade.iqm",
+      "skin": "graphics/BRGSBLAD.png",
+      "referenceSkin": "graphics/BRGM55.png",
+      "source": "assets/monsters/spectral_blade/spectral-blade-animated.blend",
+      "manifest": "assets/monsters/spectral_blade/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        80,
+        -95,
+        62
+      ],
+      "previewTarget": [
+        0,
+        0,
+        30
+      ],
+      "clips": [
+        "idle",
+        "drift",
+        "slash",
+        "whirl",
+        "recoil",
+        "shatter"
+      ],
+      "durations": [
+        0,
+        0,
+        19,
+        21,
+        13,
+        35
+      ],
+      "walkFrames": 24,
+      "emissive": true,
+      "class": "BrogueMonsterK55",
+      "additiveFlame": true,
+      "report": "docs/spectral-blade-animation.md",
+      "traits": [
+        "hovering hilt-less curved blade of conjured light",
+        "white-hot cutting edge and point",
+        "see-through fuller with flickering rune dashes",
+        "glowing base knot streaming three flame-wisps",
+        "three orbiting motes",
+        "slash and whirl light trails",
+        "shatters into shards that fall to the floor"
+      ],
+      "ownedFiles": [
+        "mod/BrogueDoom/shaders/spectral-blade-glow.fp"
+      ]
+    },
+    {
+      "symbol": "MK_SPECTRAL_IMAGE",
+      "module": "spectral_sword_animation",
+      "model": "56_spectral_image.iqm",
+      "skin": "graphics/BRGSSWRD.png",
+      "referenceSkin": "graphics/BRGM56.png",
+      "source": "assets/monsters/spectral_sword/spectral-sword-animated.blend",
+      "manifest": "assets/monsters/spectral_sword/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        80,
+        -95,
+        62
+      ],
+      "previewTarget": [
+        0,
+        0,
+        30
+      ],
+      "clips": [
+        "idle",
+        "drift",
+        "cleave",
+        "thrust",
+        "recoil",
+        "fall"
+      ],
+      "durations": [
+        0,
+        0,
+        19,
+        21,
+        13,
+        35
+      ],
+      "walkFrames": 24,
+      "emissive": true,
+      "class": "BrogueMonsterK56",
+      "additiveFlame": true,
+      "report": "docs/spectral-sword-animation.md",
+      "traits": [
+        "hovering point-down crimson broadsword image",
+        "straight double-edged blade with see-through fuller and engraved line",
+        "curved crossguard, front gem, wrapped grip and wheel pommel",
+        "projection scanlines",
+        "two fainter echo after-images that trail its motion",
+        "diagonal cleave leaves a fan of three swords",
+        "echoes fly apart and vanish as the sword drops flat on the floor"
+      ],
+      "ownedFiles": [
+        "mod/BrogueDoom/shaders/spectral-sword-glow.fp"
+      ]
+    },
+    {
+      "symbol": "MK_PHYLACTERY",
+      "roughness": 0.45,
+      "class": "BrogueMonsterK41",
+      "module": "phylactery_animation",
+      "model": "41_phylactery.iqm",
+      "skin": "graphics/BRGPHYL.png",
+      "referenceSkin": "graphics/BRGM41.png",
+      "source": "assets/monsters/phylactery/phylactery-animated.blend",
+      "manifest": "assets/monsters/phylactery/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        70,
+        -86,
+        52
+      ],
+      "previewTarget": [
+        0,
+        0,
+        20
+      ],
+      "clips": [
+        "idle",
+        "rest",
+        "enchant",
+        "sorcery",
+        "recoil",
+        "shatter"
+      ],
+      "durations": [
+        0,
+        0,
+        21,
+        24,
+        14,
+        35
+      ],
+      "walkFrames": 20,
+      "report": "docs/phylactery-animation.md",
+      "traits": [
+        "faceted lich-green soul gem",
+        "gilded thorned claw reliquary",
+        "serpentine plinth on talon feet",
+        "bone skull boss"
+      ],
+      "ownedFiles": [
+        "mod/BrogueDoom/shaders/phylactery-gem.fp"
+      ]
+    },
+    {
+      "symbol": "MK_ELDRITCH_TOTEM",
+      "roughness": 0.7,
+      "class": "BrogueMonsterK61",
+      "module": "eldritch_totem_animation",
+      "model": "61_eldritch_totem.iqm",
+      "skin": "graphics/BRGELDT.png",
+      "referenceSkin": "graphics/BRGM61.png",
+      "source": "assets/monsters/eldritch_totem/eldritch-totem-animated.blend",
+      "manifest": "assets/monsters/eldritch_totem/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        90,
+        -110,
+        66
+      ],
+      "previewTarget": [
+        0,
+        0,
+        30
+      ],
+      "clips": [
+        "idle",
+        "rest",
+        "crackle",
+        "strike",
+        "recoil",
+        "topple"
+      ],
+      "durations": [
+        0,
+        0,
+        21,
+        24,
+        14,
+        35
+      ],
+      "walkFrames": 20,
+      "report": "docs/eldritch-totem-animation.md",
+      "traits": [
+        "twisted pentagonal alien spire",
+        "glowing red glyph channels",
+        "stacked segments over a red ichor core",
+        "ring of spectral-blue blades",
+        "rooted tendril base"
+      ],
+      "ownedFiles": [
+        "mod/BrogueDoom/shaders/eldritch-totem-glyphs.fp"
+      ]
+    },
+    {
+      "symbol": "MK_MIRRORED_TOTEM",
+      "roughness": 0.12,
+      "class": "BrogueMonsterK62",
+      "module": "mirrored_totem_animation",
+      "model": "62_mirrored_totem.iqm",
+      "skin": "graphics/BRGMIRT.png",
+      "referenceSkin": "graphics/BRGM62.png",
+      "source": "assets/monsters/mirrored_totem/mirrored-totem-animated.blend",
+      "manifest": "assets/monsters/mirrored_totem/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        85,
+        -105,
+        62
+      ],
+      "previewTarget": [
+        0,
+        0,
+        26
+      ],
+      "clips": [
+        "idle",
+        "rest",
+        "flash",
+        "beckon",
+        "recoil",
+        "shatter"
+      ],
+      "durations": [
+        0,
+        0,
+        21,
+        24,
+        14,
+        35
+      ],
+      "walkFrames": 20,
+      "report": "docs/mirrored-totem-animation.md",
+      "traits": [
+        "shoulder-high triangular mirror prism",
+        "view-dependent mirror glass",
+        "polished silver frames and crown",
+        "blue-black lacquer plinth",
+        "hidden fullbright flash crystal"
+      ],
+      "ownedFiles": [
+        "mod/BrogueDoom/shaders/mirrored-totem-mirror.fp"
+      ]
+    },
+    {
+      "symbol": "MK_PHOENIX_EGG",
+      "roughness": 0.5,
+      "class": "BrogueMonsterK66",
+      "module": "phoenix_egg_animation",
+      "model": "66_phoenix_egg.iqm",
+      "skin": "graphics/BRGPHEGG.png",
+      "referenceSkin": "graphics/BRGM66.png",
+      "source": "assets/monsters/phoenix_egg/phoenix-egg-animated.blend",
+      "manifest": "assets/monsters/phoenix_egg/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        70,
+        -86,
+        48
+      ],
+      "previewTarget": [
+        0,
+        0,
+        16
+      ],
+      "clips": [
+        "idle",
+        "rest",
+        "kindle",
+        "bloom",
+        "recoil",
+        "burst"
+      ],
+      "durations": [
+        0,
+        0,
+        21,
+        24,
+        14,
+        35
+      ],
+      "walkFrames": 20,
+      "report": "docs/phoenix-egg-animation.md",
+      "traits": [
+        "fullbright translucent ember-veined membrane",
+        "glowing yolk",
+        "ember-lit crack seams",
+        "nest of cooling ash and charred twigs",
+        "glowing embers"
+      ],
+      "ownedFiles": [
+        "mod/BrogueDoom/shaders/phoenix-egg-membrane.fp"
+      ]
+    },
+    {
+      "symbol": "MK_LICH",
+      "module": "lich_animation",
+      "model": "40_lich.iqm",
+      "skin": "graphics/BRGLICH.png",
+      "referenceSkin": "graphics/BRGM40.png",
+      "source": "assets/monsters/lich/lich-animated.blend",
+      "manifest": "assets/monsters/lich/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        90,
+        -110,
+        72
+      ],
+      "previewTarget": [
+        0,
+        0,
+        34
+      ],
+      "clips": [
+        "idle",
+        "stride",
+        "touch",
+        "incant",
+        "recoil",
+        "crumble"
+      ],
+      "durations": [
+        0,
+        0,
+        24,
+        26,
+        14,
+        36
+      ],
+      "walkFrames": 32,
+      "roughness": 0.7,
+      "class": "BrogueMonsterK40",
+      "report": "docs/lich-animation.md",
+      "traits": [
+        "gaunt upright sorcerer-king",
+        "tall spiked gold crown grown onto a mummified skull",
+        "royal blue cope with gold orphreys and crimson lining",
+        "gold brocade stole",
+        "caged green phylactery gem on the breast, guarded by the left claw",
+        "thin forked ash-grey beard",
+        "gold-ringed desiccated claws",
+        "green lich-light eye pinpoints"
+      ],
+      "ownedFiles": [
+        "mod/BrogueDoom/shaders/lich-phylactery.fp"
+      ]
+    },
+    {
+      "symbol": "MK_VAMPIRE",
+      "module": "vampire_animation",
+      "model": "53_vampire.iqm",
+      "skin": "graphics/BRGVAMP.png",
+      "referenceSkin": "graphics/BRGM53.png",
+      "source": "assets/monsters/vampire/vampire-animated.blend",
+      "manifest": "assets/monsters/vampire/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        90,
+        -110,
+        72
+      ],
+      "previewTarget": [
+        0,
+        0,
+        34
+      ],
+      "clips": [
+        "idle",
+        "prowl",
+        "bite",
+        "spread",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        24,
+        26,
+        14,
+        36
+      ],
+      "walkFrames": 32,
+      "roughness": 0.6,
+      "class": "BrogueMonsterK53",
+      "report": "docs/vampire-animation.md",
+      "traits": [
+        "gaunt stooped aristocratic predator",
+        "bald bloodless head with long swept bat ears",
+        "two long fangs and blood at the mouth",
+        "oxblood frock coat with velvet lapels and silver buttons",
+        "blood-flecked white lace jabot",
+        "leathery low-collared cloak with bat-wing scallops and ribs",
+        "cloak opens like wings when he spreads it",
+        "long pale clawed hands",
+        "tall black riding boots"
+      ]
+    },
+    {
+      "symbol": "MK_GUARDIAN",
+      "module": "stone_guardian_animation",
+      "model": "57_guardian.iqm",
+      "skin": "graphics/BRGSGRD.png",
+      "referenceSkin": "graphics/BRGM57.png",
+      "source": "assets/monsters/stone_guardian/stone-guardian-animated.blend",
+      "manifest": "assets/monsters/stone_guardian/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "roughness": 0.85,
+      "previewCamera": [
+        120,
+        -140,
+        95
+      ],
+      "previewTarget": [
+        0,
+        0,
+        38
+      ],
+      "clips": [
+        "idle",
+        "advance",
+        "cleave",
+        "sweep",
+        "recoil",
+        "crumble"
+      ],
+      "durations": [
+        0,
+        0,
+        23,
+        23,
+        18,
+        53
+      ],
+      "walkFrames": 36,
+      "class": "BrogueMonsterK57",
+      "report": "docs/stone-guardian-animation.md",
+      "traits": [
+        "weathered sandstone knight statue",
+        "open kettle helm over a carved bearded face",
+        "layered pauldrons and hanging carved cape",
+        "great dark basalt double-bitted battleaxe",
+        "overhead floor-striking cleave",
+        "rubble collapse"
+      ]
+    },
+    {
+      "symbol": "MK_WINGED_GUARDIAN",
+      "module": "winged_guardian_animation",
+      "model": "58_winged_guardian.iqm",
+      "skin": "graphics/BRGWGRD.png",
+      "referenceSkin": "graphics/BRGM58.png",
+      "source": "assets/monsters/winged_guardian/winged-guardian-animated.blend",
+      "manifest": "assets/monsters/winged_guardian/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "roughness": 0.8,
+      "previewCamera": [
+        120,
+        -140,
+        95
+      ],
+      "previewTarget": [
+        0,
+        0,
+        38
+      ],
+      "clips": [
+        "idle",
+        "stride",
+        "thrust",
+        "slash",
+        "recoil",
+        "crumble"
+      ],
+      "durations": [
+        0,
+        0,
+        23,
+        23,
+        18,
+        53
+      ],
+      "walkFrames": 36,
+      "class": "BrogueMonsterK58",
+      "report": "docs/winged-guardian-animation.md",
+      "traits": [
+        "white marble armoured angel statue",
+        "carved stone wings with feather vanes",
+        "serene carved face under a circlet",
+        "split robe over plate",
+        "blue-grey stone longsword",
+        "wing-flaring lunge thrust",
+        "rubble collapse"
+      ]
+    },
+    {
+      "symbol": "MK_CHARM_GUARDIAN",
+      "module": "guardian_spirit_animation",
+      "model": "59_charm_guardian.iqm",
+      "skin": "graphics/BRGGSPR.png",
+      "referenceSkin": "graphics/BRGM59.png",
+      "source": "assets/monsters/guardian_spirit/guardian-spirit-animated.blend",
+      "manifest": "assets/monsters/guardian_spirit/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "roughness": 0.6,
+      "previewCamera": [
+        120,
+        -140,
+        95
+      ],
+      "previewTarget": [
+        0,
+        0,
+        40
+      ],
+      "clips": [
+        "idle",
+        "glide",
+        "reap",
+        "jab",
+        "recoil",
+        "fade"
+      ],
+      "durations": [
+        0,
+        0,
+        23,
+        23,
+        18,
+        53
+      ],
+      "walkFrames": 36,
+      "emissive": true,
+      "class": "BrogueMonsterK59",
+      "report": "docs/guardian-spirit-animation.md",
+      "traits": [
+        "hovering spectral knight outline",
+        "translucent crimson spectral light with a bright rim and dim core",
+        "closed crested great helm with bright visor slits",
+        "great bearded battleaxe held at port",
+        "legs and cloak hem fading to nothing",
+        "diagonal reaping cut and spike jab",
+        "empty armour collapse"
+      ],
+      "ownedFiles": [
+        "mod/BrogueDoom/shaders/guardian-spirit-glow.fp"
+      ],
+      "additiveFlame": true
+    },
+    {
+      "symbol": "MK_SENTINEL",
+      "module": "sentinel_animation",
+      "model": "37_sentinel.iqm",
+      "skin": "graphics/BRGSNTL.png",
+      "referenceSkin": "graphics/BRGM37.png",
+      "source": "assets/monsters/sentinel/sentinel-animated.blend",
+      "manifest": "assets/monsters/sentinel/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "roughness": 0.8,
+      "previewCamera": [
+        110,
+        -130,
+        85
+      ],
+      "previewTarget": [
+        0,
+        0,
+        34
+      ],
+      "clips": [
+        "idle",
+        "rest",
+        "focus",
+        "mend",
+        "jolt",
+        "shatter"
+      ],
+      "durations": [
+        0,
+        0,
+        23,
+        23,
+        18,
+        53
+      ],
+      "walkFrames": 40,
+      "class": "BrogueMonsterK37",
+      "report": "docs/sentinel-animation.md",
+      "traits": [
+        "immobile faceless indigo-stone statue on a plinth",
+        "glowing blue warding crystal held aloft",
+        "orbiting crystal shards",
+        "crystal-thrust casting pulse with a blazing shard ring",
+        "low healing ring",
+        "shattering collapse into rubble"
+      ],
+      "ownedFiles": [
+        "mod/BrogueDoom/shaders/sentinel-crystal.fp"
+      ]
+    },
+    {
+      "symbol": "MK_UNDERWORM",
+      "module": "underworm_animation",
+      "model": "36_underworm.iqm",
+      "skin": "graphics/BRGWORM.png",
+      "referenceSkin": "graphics/BRGM36.png",
+      "source": "assets/monsters/underworm/underworm-animated.blend",
+      "manifest": "assets/monsters/underworm/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "roughness": 0.3,
+      "previewCamera": [
+        95,
+        -110,
+        70
+      ],
+      "previewTarget": [
+        0,
+        0,
+        22
+      ],
+      "clips": [
+        "idle",
+        "crawl",
+        "lunge",
+        "slam",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        25,
+        29,
+        15,
+        37
+      ],
+      "walkFrames": 28,
+      "class": "BrogueMonsterK36",
+      "report": "docs/underworm-animation.md",
+      "traits": [
+        "huge legless annulated worm coiled on the floor",
+        "about thirty painted ridge-and-groove segments with wet highlights",
+        "pale saddle band behind a blunt swollen head",
+        "round toothed maw: lip ring, outer and inner tooth rings, dark throat",
+        "hinged lower jaw that opens wide; no eyes",
+        "salmon-pink flanks, pale cream belly, dark mauve back"
+      ]
+    },
+    {
+      "symbol": "MK_DRAGON",
+      "roughness": 0.45,
+      "class": "BrogueMonsterK50",
+      "module": "dragon_animation",
+      "model": "50_dragon.iqm",
+      "skin": "graphics/BRGDRGN.png",
+      "referenceSkin": "graphics/BRGM50.png",
+      "source": "assets/monsters/dragon/dragon-animated.blend",
+      "manifest": "assets/monsters/dragon/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        105,
+        -120,
+        70
+      ],
+      "previewTarget": [
+        0,
+        0,
+        26
+      ],
+      "clips": [
+        "idle",
+        "stalk",
+        "breathe",
+        "lash",
+        "recoil",
+        "death"
+      ],
+      "durations": [
+        0,
+        0,
+        35,
+        33,
+        17,
+        47
+      ],
+      "walkFrames": 32,
+      "report": "docs/dragon-animation.md",
+      "traits": [
+        "winged four-legged emerald dragon",
+        "long swept-back horns and a hinged fanged jaw",
+        "amber slit-pupil eyes",
+        "tall S-curved neck carrying the horned head high",
+        "pale yellow-ochre belly plates and a ridge of dorsal spines",
+        "directional overlapping scales, dark green back and brighter flanks",
+        "olive membrane wings with bone fingers folded back beside the body",
+        "coiled tail ending in a blade",
+        "fullbright orange fire breath with a wide, low, wings-flared pose",
+        "slumped death with wings draped on the floor"
+      ],
+      "ownedFiles": [
+        "mod/BrogueDoom/shaders/dragon-flame.fp"
+      ]
+    },
+    {
+      "symbol": "MK_FLAMEDANCER",
+      "module": "flamedancer_animation",
+      "model": "54_flamedancer.iqm",
+      "skin": "graphics/BRGFDANC.png",
+      "referenceSkin": "graphics/BRGM54.png",
+      "source": "assets/monsters/flamedancer/flamedancer-animated.blend",
+      "manifest": "assets/monsters/flamedancer/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        90,
+        -110,
+        60
+      ],
+      "previewTarget": [
+        0,
+        0,
+        34
+      ],
+      "clips": [
+        "idle",
+        "dance",
+        "sear",
+        "bolt",
+        "recoil",
+        "gutter"
+      ],
+      "durations": [
+        0,
+        0,
+        24,
+        26,
+        14,
+        36
+      ],
+      "walkFrames": 32,
+      "roughness": 0.4,
+      "class": "BrogueMonsterK54",
+      "report": "docs/flamedancer-animation.md",
+      "traits": [
+        "living column of fire, not a robed figure",
+        "white-hot head with dark eye slits and a hot core",
+        "spiral of twelve flame tongues with side licks",
+        "two ribbon arms ending in finger-flames",
+        "swirling flame skirt and drifting sparks",
+        "fireball cage that forms between the hands only when casting",
+        "fullbright with a view-angle rim and rising shimmer"
+      ],
+      "ownedFiles": [
+        "mod/BrogueDoom/shaders/flamedancer-fire.fp"
+      ]
+    },
+    {
+      "symbol": "MK_IFRIT",
+      "module": "ifrit_animation",
+      "model": "64_ifrit.iqm",
+      "skin": "graphics/BRGIFRIT.png",
+      "referenceSkin": "graphics/BRGM64.png",
+      "source": "assets/monsters/ifrit/ifrit-animated.blend",
+      "manifest": "assets/monsters/ifrit/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        90,
+        -110,
+        60
+      ],
+      "previewTarget": [
+        0,
+        0,
+        34
+      ],
+      "clips": [
+        "idle",
+        "fly",
+        "slash",
+        "discord",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        26,
+        28,
+        14,
+        40
+      ],
+      "walkFrames": 32,
+      "roughness": 0.55,
+      "class": "BrogueMonsterK64",
+      "report": "docs/ifrit-animation.md",
+      "traits": [
+        "very broad dark-violet storm-djinn: torso, neck, shoulders and arms are one fused connected skin with fan-shaped pecs, flat abdominal plate, lats, traps and tapering biceps and forearms",
+        "large fanged face under a heavy brow, swept-back horns, full moustache and beard",
+        "gold collar, armlets and bracers over a crimson sash",
+        "twin curved scimitars with dark spines and ember-forged edge strips",
+        "no legs: tapering vortex of layered, ragged smoke sheets around a dark core, sparked with embers",
+        "ember eyes, blade edges, crown flame and burst flecks fullbright; skin lighting baked with ember under-glow"
+      ],
+      "ownedFiles": [
+        "mod/BrogueDoom/shaders/ifrit-embers.fp"
+      ]
+    },
+    {
+      "symbol": "MK_PHOENIX",
+      "roughness": 0.45,
+      "class": "BrogueMonsterK65",
+      "module": "phoenix_animation",
+      "model": "65_phoenix.iqm",
+      "skin": "graphics/BRGPHNX.png",
+      "referenceSkin": "graphics/BRGM65.png",
+      "source": "assets/monsters/phoenix/phoenix-animated.blend",
+      "manifest": "assets/monsters/phoenix/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "previewCamera": [
+        80,
+        -98,
+        58
+      ],
+      "previewTarget": [
+        0,
+        0,
+        30
+      ],
+      "clips": [
+        "idle",
+        "fly",
+        "claw",
+        "peck",
+        "recoil",
+        "death"
+      ],
+      "durations": [
+        0,
+        0,
+        21,
+        24,
+        14,
+        35
+      ],
+      "walkFrames": 24,
+      "report": "docs/phoenix-animation.md",
+      "traits": [
+        "hawk-bodied fire bird with a heavy hooked bronze-tipped beak, dark scowling brow wedges and narrow glowing slit eyes",
+        "full-span cupped flame wings: feathered leading edge, nine fullbright flame primaries fanned from the wrist",
+        "crimson-to-gold plumage following Brogue's red-to-yellow phoenixColor",
+        "burning crest and long flowing flame tail",
+        "scaled talons",
+        "collapses prone with folded wings onto a wide ash pool with ember mounds and glints"
+      ],
+      "ownedFiles": [
+        "mod/BrogueDoom/shaders/phoenix-fire.fp"
+      ]
+    },
+    {
+      "symbol": "MK_WARDEN_OF_YENDOR",
+      "module": "warden_of_yendor_animation",
+      "model": "60_warden_of_yendor.iqm",
+      "skin": "graphics/BRGWRDN.png",
+      "referenceSkin": "graphics/BRGM60.png",
+      "source": "assets/monsters/warden_of_yendor/warden-of-yendor-animated.blend",
+      "manifest": "assets/monsters/warden_of_yendor/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "roughness": 0.7,
+      "previewCamera": [
+        120,
+        -140,
+        95
+      ],
+      "previewTarget": [
+        0,
+        0,
+        38
+      ],
+      "clips": [
+        "idle",
+        "stride",
+        "strike",
+        "sweep",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        39,
+        37,
+        18,
+        60
+      ],
+      "walkFrames": 44,
+      "class": "BrogueMonsterK60",
+      "report": "docs/warden-of-yendor-animation.md",
+      "traits": [
+        "towering faceless armoured hunter in dark aubergine-violet plate",
+        "tall blank helm with a narrow burning violet visor slit and a fan of crest blades",
+        "vast spiked pauldrons over a wasp-waisted plated body and long tassets",
+        "massive black-iron gauntlets with knuckle plates",
+        "Yendorian violet-magenta light in a chest seam, visor slit, forearm strips and rune lines",
+        "low two-handed overhead-to-forward hammer blow",
+        "collapses into broken armour and rubble as the light goes out"
+      ],
+      "ownedFiles": [
+        "mod/BrogueDoom/shaders/warden-yendor-light.fp"
+      ]
+    },
+    {
+      "symbol": "MK_ANCIENT_SPIRIT",
+      "module": "mangrove_dryad_animation",
+      "model": "67_mangrove_dryad.iqm",
+      "skin": "graphics/BRGDRYAD.png",
+      "referenceSkin": "graphics/BRGM67.png",
+      "source": "assets/monsters/mangrove_dryad/mangrove-dryad-animated.blend",
+      "manifest": "assets/monsters/mangrove_dryad/animation.json",
+      "baseClass": "BrogueMonsterProxyBase",
+      "roughness": 0.85,
+      "previewCamera": [
+        105,
+        -125,
+        80
+      ],
+      "previewTarget": [
+        0,
+        0,
+        34
+      ],
+      "clips": [
+        "idle",
+        "stride",
+        "lash",
+        "vines",
+        "recoil",
+        "collapse"
+      ],
+      "durations": [
+        0,
+        0,
+        26,
+        28,
+        14,
+        40
+      ],
+      "walkFrames": 32,
+      "class": "BrogueMonsterK67",
+      "report": "docs/mangrove-dryad-animation.md",
+      "traits": [
+        "pale-tan (Brogue tanColor) twisted mangrove bark figure, fluted trunk with burls, dark fissures and knot holes",
+        "eight arching fused prop roots form its legs and skirt, planted on the floor",
+        "long tapering branch arms ending in khaki thorned vine lashes",
+        "heavy-browed bark face with deep sunken glowing eyes and a splintered mouth",
+        "crown of bare twisted branches with a few olive leaves and hanging moss",
+        "collapses into a limp heap of dead roots and splintered bark"
+      ]
     }
   ]
 }

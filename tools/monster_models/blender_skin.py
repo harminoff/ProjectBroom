@@ -53,7 +53,8 @@ def build(enemy):
     bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(mesh);bm.free()
     canonicalize(obj)
     modifier=obj.modifiers.new('Fuse overlapping anatomical volumes','REMESH')
-    modifier.mode='VOXEL';modifier.voxel_size=.14 if enemy=='rat' else .24
+    # New creatures may set SKIN_VOXEL_SIZE / SKIN_FACE_BUDGET in their own module.
+    modifier.mode='VOXEL';modifier.voxel_size=getattr(rig,'SKIN_VOXEL_SIZE',.14 if enemy=='rat' else {'pixie':.1}.get(enemy,.24))
     bpy.ops.object.modifier_apply(modifier=modifier.name)
     canonicalize(obj)
     modifier=obj.modifiers.new('Relax blockout junctions','SMOOTH');modifier.factor=1;modifier.iterations=4
@@ -65,7 +66,9 @@ def build(enemy):
     # surface; skin continuity and the actual clip poses are verified separately.
     modifier=obj.modifiers.new('Bounded connected animation cage','DECIMATE')
     modifier.decimate_type='COLLAPSE'
-    modifier.ratio=min(1,5600/sum(len(f.vertices)-2 for f in obj.data.polygons))
+    # Optional per-enemy face budget; the default 5600 keeps earlier bakes unchanged.
+    budget=getattr(rig,'SKIN_FACE_BUDGET',{'ogre_shaman':7800,'centaur':11600,'pixie':7900}.get(enemy,5600))
+    modifier.ratio=min(1,budget/sum(len(f.vertices)-2 for f in obj.data.polygons))
     modifier.use_collapse_triangulate=True
     bpy.ops.object.modifier_apply(modifier=modifier.name)
     canonicalize(obj)

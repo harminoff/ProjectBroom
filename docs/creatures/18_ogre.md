@@ -15,13 +15,15 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `humanoid`.
-- Authored silhouette dimensions: 44 / 46 / 82 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-ogre`.
+- Authored silhouette dimensions: 21.7472 / 44.9857 / 75.9189 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: brute, club, skin.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/18_ogre.obj).
-- [Editable Blender source](../../assets/monsters/sources/18_ogre.blend).
+- Visual construction cues: barrel-chested brute, blunt brow and jaw, heavy bowed legs, closed club grip, knotted timber club, earth-red skin, ragged hide wrap.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/18_ogre.iqm).
+- [Editable Blender source](../../assets/monsters/ogre/ogre-animated.blend).
+- [Animation manifest](../../assets/monsters/ogre/animation.json); 19 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
 
 ## Brogue encounter-table references
 
@@ -49,6 +51,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

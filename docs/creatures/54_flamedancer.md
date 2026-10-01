@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `flame`.
-- Authored silhouette dimensions: 40 / 46 / 80 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-flamedancer`.
+- Authored silhouette dimensions: 45.3604 / 51.2179 / 67.9 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: humanoid, white_hot.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/54_flamedancer.obj).
-- [Editable Blender source](../../assets/monsters/sources/54_flamedancer.blend).
+- Visual construction cues: living column of fire, not a robed figure, white-hot head with dark eye slits and a hot core, spiral of twelve flame tongues with side licks, two ribbon arms ending in finger-flames, swirling flame skirt and drifting sparks, fireball cage that forms between the hands only when casting, fullbright with a view-angle rim and rising shimmer.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/54_flamedancer.iqm).
+- [Editable Blender source](../../assets/monsters/flamedancer/flamedancer-animated.blend).
+- [Animation manifest](../../assets/monsters/flamedancer/animation.json); 153 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Flamedancer authoring and actual verification](../flamedancer-animation.md).
 
 ## Brogue encounter-table references
 
@@ -38,6 +41,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

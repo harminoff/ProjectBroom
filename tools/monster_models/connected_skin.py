@@ -7,10 +7,35 @@ consume the committed bake, without launching Blender or changing topology.
 import gzip
 import hashlib
 import json
+import sys
 from .rat import ROOT, Part
 
 
 def selected(enemy, name):
+    # New creatures declare CONNECTED_SKIN(name) -> bool in their own
+    # <enemy>_animation module instead of editing this shared selector.
+    hook=getattr(sys.modules.get(f'tools.monster_models.{enemy}_animation'),'CONNECTED_SKIN',None)
+    if hook is not None:return bool(hook(name))
+    if enemy in ('naga','salamander'):return name.startswith('skin_')
+    if enemy == 'pixie':return name.startswith('skin_')
+    if enemy == 'zombie':return name == 'pelvis' or name.startswith(('torso','head_','shoulder_','arm_','leg_','hand_','foot_'))
+    if enemy == 'wraith':return name == 'pelvis' or name.startswith(('torso','head_','shoulder_','arm_','leg_','hand_','foot_'))
+    if enemy == 'dar_blademaster':return name in ('pelvis','torso') or name.startswith(('head_','shoulder_','arm_','leg_','hand_','foot_'))
+    if enemy == 'troll':return name == 'pelvis' or name.startswith(('torso','head_','shoulder_','arm_','leg_','hand_','foot_'))
+    if enemy in ('ogre','ogre_shaman'):return name in ('pelvis','torso') or name.startswith(('head_','shoulder_','arm_','leg_','hand_','foot_'))
+    if enemy == 'centaur':
+        return (name in ('horse_body','tail_dock') or name.startswith(('torso','head_','shoulder_','arm_','hand_'))
+                or (name.startswith(('fore_','hind_'))))
+    if enemy == 'bog_monster':return name == 'mantle' or name.startswith('tentacle_')
+    if enemy == 'vampire_bat':
+        return not name.startswith(('eye','ear_inner','nostril','mouth','fang','claw'))
+    if enemy == 'toad':
+        return (name in ('body','belly','head','throat')
+                or name.startswith(('head_brow','head_lid','gland','fore_','hind_','foot_','toe_')))
+    if enemy in ('goblin', 'goblin_conjurer', 'goblin_mystic'):
+        return (name in ('pelvis','torso','neck','head_cranium','head_face','head_muzzle','head_nose')
+                or name.startswith(('arm_','leg_','shoulder_','hand_','foot_','coat_','head_cheek','head_brow'))
+                or name.startswith('head_ear_') and 'inner' not in name)
     if enemy == 'monkey':
         return name in ('pelvis','torso','neck','head_skull','head_face','head_muzzle','tail') or name.startswith(('shoulder_','arm_','leg_','hand_','foot_'))
     if enemy == 'kobold':

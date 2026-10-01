@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `turret`.
-- Authored silhouette dimensions: 30 / 32 / 38 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-arrow_turret`.
+- Authored silhouette dimensions: 33.1 / 40.3246 / 41.76 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: mechanism, crossbow.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/15_arrow_turret.obj).
-- [Editable Blender source](../../assets/monsters/sources/15_arrow_turret.blend).
+- Visual construction cues: fixed wall plate, braced oak crossbow, wound steel springs, brass ratchets, sliding bolt carriage, fletched arrow, spare bolt rack.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/15_arrow_turret.iqm).
+- [Editable Blender source](../../assets/monsters/arrow_turret/arrow-turret-animated.blend).
+- [Animation manifest](../../assets/monsters/arrow_turret/animation.json); 8 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Arrow turret authoring, wall projection and actual verification](../arrow-turret-animation.md).
 
 ## Brogue encounter-table references
 
@@ -37,8 +40,8 @@ These are nominal table ranges and weights, not guaranteed encounter depths or p
 Machine-readable results live in [bestiary-index.json](../../assets/monsters/bestiary-index.json). A generated asset is not automatically visually approved. These generated cards are not a hand-edited checklist: record later acceptance under the index entry’s `verification` object, which regeneration preserves.
 
 - [ ] Individual art/signature-feature approval.
-- [ ] Normal encounter at gameplay distance and lighting.
+- [x] Fixed-seed normal encounter captured; see verification object for limited scope.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

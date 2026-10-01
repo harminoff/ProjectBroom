@@ -15,13 +15,16 @@ Exact upstream placeholders such as `$HISHER` are intentionally preserved. [Cata
 
 ## Model work card
 
-- Status: authored-static.
-- Recipe: `dryad`.
-- Authored silhouette dimensions: 48 / 58 / 84 map units. Clearance: 0 units.
+- Status: authored-skeletal.
+- Recipe: `weighted-ancient_spirit`.
+- Authored silhouette dimensions: 50.1709 / 53.7189 / 72.8993 map units. Clearance: 0 units.
 - Numerical size and details not explicitly stated by Brogue are artistic interpretation, not new game facts.
-- Visual construction cues: bark, roots, branches.
-- [Runtime model](../../mod/BrogueDoom/models/monsters/67_ancient_spirit.obj).
-- [Editable Blender source](../../assets/monsters/sources/67_ancient_spirit.blend).
+- Visual construction cues: pale-tan (Brogue tanColor) twisted mangrove bark figure, fluted trunk with burls, dark fissures and knot holes, eight arching fused prop roots form its legs and skirt, planted on the floor, long tapering branch arms ending in khaki thorned vine lashes, heavy-browed bark face with deep sunken glowing eyes and a splintered mouth, crown of bare twisted branches with a few olive leaves and hanging moss, collapses into a limp heap of dead roots and splintered bark.
+- [Runtime model](../../mod/BrogueDoom/models/monsters/67_mangrove_dryad.iqm).
+- [Editable Blender source](../../assets/monsters/mangrove_dryad/mangrove-dryad-animated.blend).
+- [Animation manifest](../../assets/monsters/mangrove_dryad/animation.json); 51 bones.
+- [Shared skeletal workflow and verification](../skeletal-enemy-workflow.md).
+- [Mangrove dryad authoring and actual verification](../mangrove-dryad-animation.md).
 
 ## Brogue encounter-table references
 
@@ -38,6 +41,6 @@ Machine-readable results live in [bestiary-index.json](../../assets/monsters/bes
 - [ ] Individual art/signature-feature approval.
 - [ ] Normal encounter at gameplay distance and lighting.
 - [ ] Turnaround, feet/hover, 64-unit corridor clearance and camera comparison.
-- [ ] Animation refinement if later requested (current pose is static).
+- [x] Skeletal clips authored; see animation report for actual verification and approval scope.
 
 Original generated Project Broom mesh/skin: CC-BY-SA-4.0. Brogue text remains under its existing upstream licensing. No third-party artwork imported.

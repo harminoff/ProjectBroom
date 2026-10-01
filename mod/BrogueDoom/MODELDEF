@@ -88,6 +88,18 @@ Model BrogueSearchNet
  FrameIndex BRGD A 0 0
 }
 #include "models/terrain/MODELDEF.txt"
+
+// Kept outside the generated terrain catalog: this is a presentation effect,
+// not a Brogue terrain actor mapping.
+Model BrogueTerrainSunRay
+{
+    Path "models/terrain"
+    Model 0 "sun_ray.obj"
+    Skin 0 "graphics/BRGSUNRY.png"
+    Scale 1 1 1
+    FrameIndex BRGD A 0 0
+}
+#include "models/terrain/catalog/MODELDEF.txt"
 Model BrogueSearchAlarm
 {
  Path "models/search"
@@ -120,6 +132,8 @@ Model BrogueSearchRim
  Scale 1.0 1.0 1.0
  FrameIndex BRGD A 0 0
 }
+#include "models/pickups/FLAVORS.txt"
+#include "models/pickups/SCROLLINK.txt"
 Model BrogueSearchCover
 {
  Path "models/search"

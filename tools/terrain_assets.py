@@ -7,6 +7,8 @@ sys.path.insert(0, str(ROOT))
 from tools.search_models.generate import box
 
 def generate():
+    from tools.terrain_catalog_assets import generate as generate_catalog
+    generate_catalog()
     from tools.shoreline_assets import generate as generate_shorelines
     generate_shorelines()
     out = ROOT/'mod/BrogueDoom/models/terrain'

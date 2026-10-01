@@ -25,3 +25,13 @@ class HeldMovementTests(unittest.TestCase):
         self.assertNotIn('BufferedAction =', repeat)
         action = source.split('bool PerformAction(')[1].split('bool PerformItemCommand')[0]
         self.assertIn('command.expectedRevision = State.revision;', action)
+
+    def test_full_map_keeps_movement_on_authoritative_input_path(self):
+        source = (ROOT / 'src/gzdoom-bridge/brogue_bridge_frontend.cpp').read_text()
+        allowed = source.split('bool ForwardInputAllowed()')[1].split('void TickForwardHold()')[0]
+        self.assertNotIn('!FullMapOpen', allowed)
+        handler = source.split('bool BrogueBridge_HandleInput(')[1].split('void BrogueBridge_PrepareTiccmd')[0]
+        modal = handler.split('if (FullMapOpen) {', 1)[1].split('\n\t}', 1)[0]
+        self.assertIn('if (!MapKeyToAction(event->data1, mapAction)) return true;', modal)
+        self.assertIn('FullMapOpen = false;', modal)
+        self.assertIn('PerformAction(action, "input")', handler)
