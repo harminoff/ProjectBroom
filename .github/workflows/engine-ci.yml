@@ -43,7 +43,7 @@ jobs:
         if: steps.scope.outputs.build == 'true'
         with:
           python-version: '3.11'
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         if: steps.scope.outputs.build == 'true'
         with:
           dotnet-version: '8.0.x'
